@@ -18,5 +18,12 @@
 
 - "petit bac" block
 - UI improvements
-- 
-- 
+
+
+# MVP X
+
+- add block X
+
+# Optional UI improvement releases
+
+# Final version
