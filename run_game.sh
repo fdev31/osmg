@@ -1,7 +1,9 @@
-#!/bin/sh
+#!/bin/bash
+PY=python
+
 if [ ! -d venv ]; then
-    python -m venv venv
+    $PY -m venv venv
 fi
 source venv/bin/activate
-(cd back && python setup.py install)
+(cd back && $PY setup.py install)
 exec back-start front
