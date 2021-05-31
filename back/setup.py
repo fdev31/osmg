@@ -14,7 +14,9 @@ setup(
     description="Our awesome game",
     long_description=getdesc(),
     install_requires=[
-        'fastapi>=0.65.0',
+        'aiofiles==0.7.0',
+        'fastapi==0.65.1',
+        'uvicorn==0.13.4',
         ],
     scripts=['back-start'],
     packages=find_packages(),
