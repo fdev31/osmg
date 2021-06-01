@@ -1,4 +1,0 @@
-#!/home/olivier/Dev/perso/projets/game/gamefdev31/venv/bin/python3
-# EASY-INSTALL-SCRIPT: 'back==0.0.0','back-start'
-__requires__ = 'back==0.0.0'
-__import__('pkg_resources').run_script('back==0.0.0', 'back-start')
