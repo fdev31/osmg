@@ -2,10 +2,15 @@ import random
 
 from fastapi.encoders import jsonable_encoder
 
+from typing import Optional
+from pydantic import BaseModel
 
-def getDiceResuls(count: int=1, faces: int = 6):
-    data = jsonable_encoder([random.randint(1, faces+1) for i in range(count)])
-    return data
+class Throw(BaseModel):
+    faces: Optional[int] = 6
+    count: Optional[int] = 1
+
+def getDiceResuls(throw: Throw):
+    return jsonable_encoder([random.randint(1, throw.faces+1) for i in range(throw.count)])
 
 def init(app, config):
-    app.get('/api/getDiceResults')(getDiceResuls)
+    app.post('/api/getDiceResults')(getDiceResuls)
