@@ -15,16 +15,9 @@ var app = new Vue({
   }
 })
 
-function getThrowResults(throws) {
+async function getThrowResults(throws) {
   if (!Number.isInteger(throws)) throw 'Paramater is not an integer';
-  console.log(throws);
-  results = [];
-  for (var i = 0; i < throws; i++) {
-    results.push(getDiceResult(6));
-  }
-
-  return results;
-}
-function getDiceResult(max) {
-  return Math.floor(Math.random() * max)
+  let response = fetch('/api/getDiceResults', {faces: 6, count: throws});
+  let data = await response.json();
+  return data;
 }
