@@ -21,3 +21,6 @@ staticfiles.init(app, config)
 
 from back import index
 index.init(app, config)
+
+from back import api
+api.init(app, config)
