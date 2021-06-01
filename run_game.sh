@@ -6,5 +6,6 @@ if [ ! -d venv ]; then
 fi
 source venv/bin/activate
 (cd back && $PY setup.py install)
-#exec uvicorn back.routes:app --reload
+export PREFIX=$(pwd)
+exec $VIRTUAL_ENV/bin/uvicorn back.routes:app --reload
 exec back-start front

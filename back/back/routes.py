@@ -1,7 +1,9 @@
+import os
 import sys
 from fastapi import FastAPI
 
 app = FastAPI()
+
 class ODict(dict):
     def __getattr__(self, k):
         try:
@@ -10,7 +12,7 @@ class ODict(dict):
             raise AttributeError(k)
 
 config = ODict(
-        static_dir=sys.argv[1]
+        static_dir=os.environ['PREFIX'],
         )
 
 # Load submodules
