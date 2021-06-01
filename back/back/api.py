@@ -10,7 +10,7 @@ class Throw(BaseModel):
     count: Optional[int] = 1
 
 def getDiceResuls(throw: Throw):
-    return jsonable_encoder([random.randint(1, throw.faces+1) for i in range(throw.count)])
+    return jsonable_encoder([random.randint(1, throw.faces) for i in range(throw.count)])
 
 def init(app, config):
     app.post('/api/getDiceResults')(getDiceResuls)
