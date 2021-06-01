@@ -1,2 +1,5 @@
 node_modules
 venv
+back/build
+back/back.egg-info
+back/dist
