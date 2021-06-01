@@ -12,7 +12,7 @@ class ODict(dict):
             raise AttributeError(k)
 
 config = ODict(
-        static_dir=os.environ['PREFIX'],
+        static_dir=os.path.join(os.environ['PREFIX'], 'front'),
         )
 
 # Load submodules
