@@ -1,5 +1,5 @@
 #!/bin/bash
-PY=python
+PY=python3
 
 if [ ! -d venv ]; then
     $PY -m venv venv

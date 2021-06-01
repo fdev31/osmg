@@ -1,0 +1,13 @@
+Metadata-Version: 1.1
+Name: back
+Version: 0.0.0
+Summary: Our awesome game
+Home-page: https://github.com/jomenoube60/our-awesome-game
+Author: Fabien Devaux & Jean Olivier Menoube
+Author-email: UNKNOWN
+License: proprietary
+Description: UNKNOWN
+Platform: UNKNOWN
+Classifier: Environment :: Console
+Classifier: Development Status :: 4 - Beta
+Classifier: Programming Language :: Python :: 3
