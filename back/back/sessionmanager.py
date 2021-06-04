@@ -1,17 +1,18 @@
-from fastapi import HTTPException
 from itertools import count
 import time
+
+from fastapi import HTTPException
 from pydantic import BaseModel
 from typing import List
-
-t0 = time.time()*1000
+import aioredis
 
 from .utils import ODict
 
-import aioredis
+t0 = time.time()*1000
 ctx = ODict(sessions=[])
-ctx_by_name = {}
 ctxidGen = count()
+
+GAME_DATA = 'gameData'
 
 async def _getUniquePlayerId():
     pid = await ctx.redis.incr('count_players')
@@ -38,7 +39,6 @@ class Session(BaseModel):
     gameType: str = "dice"
     gameData: dict = {}
 
-
 def _getSessionPrefix(uid):
     return 'S%s_'%uid
 
@@ -52,14 +52,14 @@ async def getSession(uid):
             cur, keys = await conn.scan(cur, match=prefix+"*")
             all_keys.extend(keys)
 
-    o = {'gameData': {}}
+    o = {GAME_DATA: {}}
     players = {}
     for key in all_keys:
         val = await ctx.redis.get(key)
         splitk = key.split('_')
         if len(splitk) == 2:
             o[splitk[1]] = val
-        elif splitk[1] == 'gameData':
+        elif splitk[1] == GAME_DATA:
             o[splitk[2]] = splitk[3]
         else: # players
             if splitk[1] not in players:
@@ -69,9 +69,8 @@ async def getSession(uid):
     o['players'] = list(players.values())
     return o
 
-
 def getGameDataPrefix(uid):
-    return 'S%s_gameData_'%uid
+    return 'S%s_%s_'%(uid, GAME_DATA)
 
 async def makeSession():
     " Create a new emtpy session with no players "
@@ -83,9 +82,6 @@ async def makeSession():
     prefix = _getSessionPrefix(uid)
     await ctx.redis.set(prefix+'gameType', sess.gameType)
     await ctx.redis.set(prefix+'name', sess.name)
-    
-#    ctx.sessions.append(sess)
-#    ctx_by_name[uid] = sess
     return sess
 
 async def addPlayer(player: newPlayer):
