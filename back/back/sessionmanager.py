@@ -1,4 +1,3 @@
-from itertools import count
 import time
 
 from fastapi import HTTPException
@@ -10,16 +9,15 @@ from .utils import ODict
 
 t0 = time.time()*1000
 ctx = ODict(sessions=[])
-ctxidGen = count()
 
 GAME_DATA = 'gameData'
 
 async def _getUniquePlayerId():
-    pid = await ctx.redis.incr('count_players')
+    pid = await getRedis().incr('count_players')
     return pid
 
 async def _genUniqueId():
-    pid = await ctx.redis.incr('count_session')
+    pid = await getRedis().incr('count_session')
     return hex(int("%d%d"%(pid, (time.time()*1000)-t0)))[2:]
 
 class Player(BaseModel):
@@ -38,33 +36,35 @@ class Session(BaseModel):
     name: str
     gameType: str = "dice"
     gameData: dict = {}
+    creationTime: int
 
 def _getSessionPrefix(uid):
     return 'S%s_'%uid
 
-async def getSession(uid):
+async def getSession(uid, client=None):
     " fetch session info from redis "
-    prefix = _getSessionPrefix(uid)
+    pattern = _getSessionPrefix(uid) + "*"
     all_keys = []
-    async with ctx.redis.client() as conn:
-        cur = b"0"  # set initial cursor to 0
+    async with (client or getRedis().client()) as conn:
+        cur = -1
         while cur:
-            cur, keys = await conn.scan(cur, match=prefix+"*")
+            cur, keys = await conn.scan(cur, match=pattern)
             all_keys.extend(keys)
 
     o = {GAME_DATA: {}}
     players = {}
-    for key in all_keys:
-        val = await ctx.redis.get(key)
-        splitk = key.split('_')
-        if len(splitk) == 2:
-            o[splitk[1]] = val
-        elif splitk[1] == GAME_DATA:
-            o[splitk[2]] = splitk[3]
-        else: # players
-            if splitk[1] not in players:
-                players[splitk[1]] = {}
-            players[splitk[1]][splitk[2]] = val
+    with getRedis().client as conn:
+        for key in all_keys:
+            val = await conn.get(key)
+            splitk = key.split('_')
+            if len(splitk) == 2:
+                o[splitk[1]] = val
+            elif splitk[1] == GAME_DATA:
+                o[splitk[2]] = splitk[3]
+            else: # players
+                if splitk[1] not in players:
+                    players[splitk[1]] = {}
+                players[splitk[1]][splitk[2]] = val
 
     o['players'] = list(players.values())
     return o
@@ -75,13 +75,12 @@ def getGameDataPrefix(uid):
 async def makeSession():
     " Create a new emtpy session with no players "
     uid = await _genUniqueId()
-    sess = Session(
-        players = [],
-        name = uid)
+    sess = Session(name = uid, players = [], creationTime=time.time())
 
     prefix = _getSessionPrefix(uid)
-    await ctx.redis.set(prefix+'gameType', sess.gameType)
-    await ctx.redis.set(prefix+'name', sess.name)
+    with getRedis().client() as conn:
+        await conn.set(prefix+'gameType', sess.gameType)
+        await conn.set(prefix+'name', sess.name)
     return sess
 
 async def addPlayer(player: newPlayer):
@@ -89,21 +88,22 @@ async def addPlayer(player: newPlayer):
     sess = await getSession(player.sessionName)
     for p in sess['players']:
         if p['name'] == player.name:
-            raise HTTPException(500, "A player called %s already exists"%player.name)
+            raise HTTPException(503, "A player called %s already exists"%player.name)
     player_info = player.dict()
     pid = await _getUniquePlayerId()
     player_info['id'] = pid
     del player_info['sessionName']
     prefix = _getSessionPrefix(player.sessionName)
 
-    for name, value in player_info.items():
-        await ctx.redis.set("%sP%d_%s"%(prefix, pid, name), value)
+    with getRedis().client() as conn:
+        for name, value in player_info.items():
+            await conn.set("%sP%d_%s"%(prefix, pid, name), value)
 
-    sess = await getSession(player.sessionName)
+        sess = await getSession(player.sessionName, conn)
     return sess
 
 def getRedis():
-    return ctx.redis
+    return ctx['redis']
 
 def init(app, config):
     ctx['redis'] = aioredis.from_url('redis://'+config.redis_server,  decode_responses=True)
