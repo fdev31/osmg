@@ -39,7 +39,7 @@ class Session(BaseModel):
     creationTime: int
 
 def _getSessionPrefix(uid):
-    return 'S%s_'%uid
+    return 'S%s:'%uid
 
 async def getSession(uid, client=None):
     " fetch session info from redis "
@@ -56,7 +56,7 @@ async def getSession(uid, client=None):
     with getRedis().client as conn:
         for key in all_keys:
             val = await conn.get(key)
-            splitk = key.split('_')
+            splitk = key.split(':')
             if len(splitk) == 2:
                 o[splitk[1]] = val
             elif splitk[1] == GAME_DATA:
@@ -70,7 +70,7 @@ async def getSession(uid, client=None):
     return o
 
 def getGameDataPrefix(uid):
-    return 'S%s_%s_'%(uid, GAME_DATA)
+    return 'S%s:%s:'%(uid, GAME_DATA)
 
 async def makeSession():
     " Create a new emtpy session with no players "
@@ -89,15 +89,16 @@ async def addPlayer(player: newPlayer):
     for p in sess['players']:
         if p['name'] == player.name:
             raise HTTPException(503, "A player called %s already exists"%player.name)
+    pidP = _getUniquePlayerId()
     player_info = player.dict()
-    pid = await _getUniquePlayerId()
-    player_info['id'] = pid
     del player_info['sessionName']
     prefix = _getSessionPrefix(player.sessionName)
 
+    pid = await pidP
+    player_info['id'] = pid
     with getRedis().client() as conn:
         for name, value in player_info.items():
-            await conn.set("%sP%d_%s"%(prefix, pid, name), value)
+            await conn.set("%sP%d:%s"%(prefix, pid, name), value)
 
         sess = await getSession(player.sessionName, conn)
     return sess
