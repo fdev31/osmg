@@ -15,6 +15,7 @@ setup(
     long_description=getdesc(),
     install_requires=[
         'aiofiles==0.7.0',
+        'aioredis[hiredis]',
         'fastapi==0.65.1',
         'uvicorn==0.13.4',
         ],

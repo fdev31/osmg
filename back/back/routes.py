@@ -2,22 +2,18 @@ import os
 import sys
 from fastapi import FastAPI
 
-app = FastAPI()
+from .utils import ODict
 
-class ODict(dict):
-    def __getattr__(self, k):
-        try:
-            return self[k]
-        except KeyError:
-            raise AttributeError(k)
+app = FastAPI(debug=True)
 
 config = ODict(
         static_dir=os.path.join(os.environ['PREFIX'], 'front'),
+        redis_server=os.environ.get('REDIS_SERVER', 'localhost'),
         )
 
 # Load submodules
 
-# Serve static files under /static (XXX: use nginx for production)
+# Serve static files under /static (TODO: use nginx for production)
 from back import staticfiles
 staticfiles.init(app, config)
 
@@ -26,3 +22,9 @@ index.init(app, config)
 
 from back import api
 api.init(app, config)
+
+from back import sessionmanager
+sessionmanager.init(app, config)
+
+from back import games
+games.init(app, config)
