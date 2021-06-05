@@ -3,13 +3,15 @@ from typing import List, Dict
 
 __all__ = ['Player', 'newPlayer', 'Session']
 
-class Player(BaseModel):
-    " Participant to a game session "
+class _BasePlayer(BaseModel):
     name: str
     avatar: str
+
+class Player(_BasePlayer):
+    " Participant to a game session "
     id: int
 
-class newPlayer(Player):
+class newPlayer(_BasePlayer):
     " Player with associated session to join "
     sessionName: str
 

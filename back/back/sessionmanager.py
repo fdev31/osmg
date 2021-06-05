@@ -138,7 +138,6 @@ async def eventStream(topic: str, request: Request) -> EventSourceResponse:
     " Returns an event source for the provided topic "
     return EventSourceResponse(event_source(request, topic))
 
-
 def init(app, config):
     ctx.app = app
     ctx['redis'] = aioredis.from_url('redis://'+config.redis_server,  decode_responses=True)
