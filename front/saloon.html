@@ -4,23 +4,26 @@
     <meta charset="utf-8">
     <title></title>
   </head>
-  <body>
+  <body onload="initApp()">
 
-    <div id="saloon">
+    <div id="app">
       <div class="">
         <h2>Joueur</h2>
         <ul>
-          <li>Moi</li>
+          <li v-for="item in players" >
+            {{ item.name }}
+          </li>
         </ul>
 
       </div>
       <div class="">
         <span>settings</span>
       </div>
-      <button type="button" name="button">Inviter</button>
+      <button type="button" name="button" v-on:click>Inviter</button>
       <button type="button" name="button">Jouer</button>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+    <script src="/static/js/lounge.js" charset="utf-8"></script>
   </body>
 </html>

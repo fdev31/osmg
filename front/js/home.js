@@ -4,7 +4,7 @@ function initApp() {
     el: "#app",
     data: {
       sessionName : "Pas de données",
-      playerName : "Pas de nom"
+      playerName : "Pas de nom",
     },
     methods: {
       play_game :  async function(game) {
@@ -30,7 +30,9 @@ function initApp() {
           body: raw,
         });
         const player = await response_player.json();
-        console.log(player);
+        document.cookie = JSON.stringify(player);
+        window.location = "saloon.html";
+
       }
     }
   });
