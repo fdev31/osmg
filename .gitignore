@@ -1,4 +1,5 @@
 node_modules
+dump.rdb
 venv
 back/build
 back/back.egg-info
