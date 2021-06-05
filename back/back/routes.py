@@ -4,7 +4,7 @@ from fastapi import FastAPI
 
 from .utils import ODict
 
-app = FastAPI(debug=True)
+app = FastAPI(debug=bool(os.environ.get('DEBUG', False)))
 
 config = ODict(
         static_dir=os.path.join(os.environ['PREFIX'], 'front'),
@@ -19,9 +19,6 @@ staticfiles.init(app, config)
 
 from back import index
 index.init(app, config)
-
-from back import api
-api.init(app, config)
 
 from back import sessionmanager
 sessionmanager.init(app, config)
