@@ -1,5 +1,5 @@
 from pydantic import BaseModel
-from typing import List
+from typing import List, Dict
 
 __all__ = ['Player', 'newPlayer', 'Session']
 
@@ -19,5 +19,6 @@ class Session(BaseModel):
     name: str
     gameType: str = "dice"
     gameData: dict = {}
+    playersData: Dict = {}
     creationTime: int
 

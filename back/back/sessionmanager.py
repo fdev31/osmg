@@ -1,5 +1,5 @@
 import time
-import asyncio
+import json
 import logging
 logger = logging.getLogger("Session")
 
@@ -25,7 +25,6 @@ async def _genUniqueId():
     pid = await getRedis().incr('count_session')
     return hex(int("%d%d"%(pid, (time.time()*1000)-t0)))[2:]
 
-
 def _getSessionPrefix(uid):
     return 'S%s:'%uid
 
@@ -33,15 +32,15 @@ async def getSession(uid, client=None):
     " fetch session info from redis "
     pattern = _getSessionPrefix(uid) + "*"
     all_keys = []
+    o = {GAME_DATA: {}}
+    players = {}
+    players_data = {}
     async with (client or getRedis().client()) as conn:
-        cur = -1
+        cur = b"0"
         while cur:
             cur, keys = await conn.scan(cur, match=pattern)
             all_keys.extend(keys)
 
-    o = {GAME_DATA: {}}
-    players = {}
-    with getRedis().client as conn:
         for key in all_keys:
             val = await conn.get(key)
             splitk = key.split(':')
@@ -52,9 +51,14 @@ async def getSession(uid, client=None):
             else: # players
                 if splitk[1] not in players:
                     players[splitk[1]] = {}
-                players[splitk[1]][splitk[2]] = val
+                    players_data[splitk[1]] = {}
+                if splitk[2] == 'g': # players data
+                    players_data[splitk[1]][splitk[3]] = val
+                else:
+                    players[splitk[1]][splitk[2]] = val
 
     o['players'] = list(players.values())
+    o['playersData'] = players_data
     return o
 
 def getGameDataPrefix(uid, playerId=None):
@@ -62,24 +66,35 @@ def getGameDataPrefix(uid, playerId=None):
         return 'S%s:%s:P%s' % (uid, GAME_DATA, playerId)
     return 'S%s:%s:'%(uid, GAME_DATA)
 
-async def makeSession():
+async def makeSession() -> Session:
     " Create a new emtpy session with no players "
     uid = await _genUniqueId()
-    sess = Session(name = uid, players = [], creationTime=time.time())
+    sess = Session(name = uid, players = [], creationTime=int(time.time()))
 
     prefix = _getSessionPrefix(uid)
-    with getRedis().client() as conn:
-        #await conn.publish('sessionNameHere', 'pifou!')
-        await conn.set(prefix+'gameType', sess.gameType)
-        await conn.set(prefix+'name', sess.name)
+
+    async with getRedis().client() as conn:
+
+        for name, value in games[sess.gameType].getGameData().items():
+            await conn.set("%s%s:%s"%(prefix, GAME_DATA, name), value)
+            sess[name] = value
+
+        for field in ('creationTime', 'name', 'gameType'):
+            await conn.set(prefix+field, getattr(sess, field))
     return sess
 
-async def addPlayer(player: newPlayer):
+games = {}
+def registerGame(name, iface):
+    games[name] = iface
+
+async def addPlayer(player: newPlayer) -> Session:
     " Add a player to an existing session "
     sess = await getSession(player.sessionName)
+
     for p in sess['players']:
         if p['name'] == player.name:
             raise HTTPException(503, "A player called %s already exists"%player.name)
+
     pidP = _getUniquePlayerId()
     player_info = player.dict()
     del player_info['sessionName']
@@ -87,26 +102,24 @@ async def addPlayer(player: newPlayer):
 
     pid = await pidP
     player_info['id'] = pid
-    with getRedis().client() as conn:
+    async with getRedis().client() as conn:
         for name, value in player_info.items():
             await conn.set("%sP%d:%s"%(prefix, pid, name), value)
 
+        gameType = await conn.get(prefix+'gameType')
+        for name, value in games[gameType].getPlayerData().items():
+            await conn.set("%sP%d:g:%s"%(prefix, pid, name), value)
+
+        pub = publishEvent(player.sessionName, None, cat='newPlayer', name=player.name, avatar=player.avatar)
         sess = await getSession(player.sessionName, conn)
+        await pub
     return sess
 
+def publishEvent(topic, client=None, **params):
+    return (client or getRedis()).publish(topic, json.dumps(params))
+
 def getRedis():
-    print("REDIS", ctx['redis'])
     return ctx['redis']
-
-# async def on_startup() -> None:
-#     print("Startup")
-#     await redis_plugin.init_app(ctx.app)
-#     await redis_plugin.init()
-
-# async def on_shutdown() -> None:
-#     await redis_plugin.terminate()
-
-# https://medium.com/deepdesk/server-sent-events-in-fastapi-using-redis-pub-sub-eba1dbfe8031
 
 async def event_source(request, params):
     channel = getRedis().pubsub()
@@ -117,13 +130,13 @@ async def event_source(request, params):
             break
         if message['type'] == 'message':
             yield {
-                    "event": "Blah",
-                    "data": message['data'],
+                "event": "update",
+                "data": message['data'],
             }
-        #await asyncio.sleep(1)
 
-async def eventStream(param: str, request: Request):
-    return EventSourceResponse(event_source(request, param))
+async def eventStream(topic: str, request: Request) -> EventSourceResponse:
+    " Returns an event source for the provided topic "
+    return EventSourceResponse(event_source(request, topic))
 
 
 def init(app, config):
@@ -132,7 +145,3 @@ def init(app, config):
     app.post('/session/new', response_model=Session)(makeSession)
     app.post('/session/join', response_model=Session)(addPlayer)
     app.get('/stream')(eventStream)
-
-#     app.on_event("startup")(on_startup)
-#     app.on_event("shutdown")(on_shutdown)
-

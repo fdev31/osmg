@@ -1,6 +1,8 @@
 import os
 import sys
 from fastapi import FastAPI
+import logging
+logging.basicConfig()
 
 from .utils import ODict
 
