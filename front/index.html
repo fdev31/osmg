@@ -23,8 +23,8 @@
         function onStreamEnd(event) {
             evtSource.close(); 
         }
-        const evtSource = new EventSource("/stream?param=sessionNameHere");
-        evtSource.addEventListener("Blah", eventHandler); // Blah : just a sample event name
+        const evtSource = new EventSource("/stream?topic=sessionNameHere");
+        evtSource.addEventListener("update", eventHandler);
         evtSource.addEventListener("end", onStreamEnd);
     </script>
 </html>
