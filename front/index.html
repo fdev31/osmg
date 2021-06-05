@@ -11,8 +11,8 @@
     <div>
       <div id="app">
         <h1 v-on:click="play_game()">Page d'Accueil</h1>
-        <a href="#" v-on:click.stop="play_game()">Jouer au dés</a>
-        <button type="button" name="button" v-on:click="play_game()">test</button>
+        <a href="#" v-on:click.stop="play_game('dice')">Jouer au dés</a>
+        <span>{{ sessionName }}</span> <span>{{ playerName }}</span>
       </div>
 
     </div>
