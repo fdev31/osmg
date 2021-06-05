@@ -27,3 +27,14 @@
 # Optional UI improvement releases
 
 # Final version
+
+---------
+
+# Environment variables
+
+REDIS_SERVER
+    host & port of the Redis server
+DEBUG
+    run in debug mode (enables reload & traces)
+PREFIX
+    prefix to the "front" folder
