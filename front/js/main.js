@@ -1,20 +1,50 @@
+
 var app = new Vue({
-  el: '#dice',
-  data: {
-    result: "Pas de dé lancé",
-  },
+  el: '#app',
   methods: {
-    throw_dices : async function () {
-      throws = await getThrowResults(2);
-      result = ""
-      for (var i = 0; i < throws.length; i++) {
-        result = result + `${throws[i]} `;
-      }
-      this.result = result;
+    play_game : async function(e) {
+      e.stopPropagation();
+      console.log(e);
     }
   }
 })
 
+
+var marathon = new Vue({
+  el: '#marathon',
+  data: {
+    player_action : "Lancer le dé",
+    result: "Pas de dé lancé",
+    remain : 42195,
+    choice : 0,
+
+  },
+  methods: {
+    throw_dices : async function () {
+      throws = await getThrowResults(4);
+
+      this.result = showResults(throws);
+      console.log(this.player_action);
+      this.player_action =`Avancez de ${this.player_action} km`;
+      console.log(this.player_action);
+    },
+    player_advance : async function() {
+      if (! await check_choice(choice)) throw "Choississez les bons dés";
+      this.remain -= this.choice;
+      console.log(this.player_action);
+      this.player_action =`Lancer le dé`;
+    }
+  }
+})
+
+
+function showResults(throws) {
+  result = ""
+  for (var i = 0; i < throws.length; i++) {
+    result = result + `${throws[i]} `;
+  }
+  return result;
+}
 async function getThrowResults(throws) {
 
 
@@ -22,7 +52,7 @@ async function getThrowResults(throws) {
   var myHeaders = new Headers();
   myHeaders.append("Content-Type", "application/json");
 
-  var raw = JSON.stringify({"faces":10,"count":6});
+  var raw = JSON.stringify({"faces":6,"count":throws});
 
   var requestOptions = {
     method: 'POST',
@@ -37,4 +67,7 @@ async function getThrowResults(throws) {
   return result;
 
 
+}
+async function check_choice(choice) {
+  return true
 }

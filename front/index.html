@@ -11,7 +11,7 @@
     <div>
       <div id="app">
       </div>
-      <a href="jeudedes.html">Lien vers Jouer au dés</a>
+      <a href="saloon.html" v-on:click.prevent="play_game()">Jouer au dés</a>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
 
@@ -21,7 +21,7 @@
             console.log(JSON.parse(event.data));
         }
         function onStreamEnd(event) {
-            evtSource.close(); 
+            evtSource.close();
         }
         const evtSource = new EventSource("/stream?topic=sessionNameHere");
         evtSource.addEventListener("update", eventHandler);
