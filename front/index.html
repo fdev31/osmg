@@ -6,11 +6,13 @@
   </head>
   <body onload="initApp()" >
 
-    <h1>Page d'Accueil</h1>
+
 
     <div>
       <div id="app">
-        <a href="#" v-on:click.stop="play_game($event)">Jouer au dés</a>
+        <h1 v-on:click="play_game()">Page d'Accueil</h1>
+        <a href="#" v-on:click.stop="play_game()">Jouer au dés</a>
+        <button type="button" name="button" v-on:click="play_game()">test</button>
       </div>
 
     </div>
