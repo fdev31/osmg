@@ -16,4 +16,15 @@
     <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
 
   </body>
+    <script>
+        function eventHandler(event) {
+            console.log(JSON.parse(event.data));
+        }
+        function onStreamEnd(event) {
+            evtSource.close(); 
+        }
+        const evtSource = new EventSource("/stream?param=sessionNameHere");
+        evtSource.addEventListener("Blah", eventHandler); // Blah : just a sample event name
+        evtSource.addEventListener("end", onStreamEnd);
+    </script>
 </html>

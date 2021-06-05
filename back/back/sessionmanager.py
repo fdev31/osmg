@@ -1,11 +1,16 @@
 import time
+import asyncio
+import logging
+logger = logging.getLogger("Session")
 
-from fastapi import HTTPException
-from pydantic import BaseModel
-from typing import List
+from fastapi import HTTPException, Request
 import aioredis
+# SSE
+#from fastapi_plugins import depends_redis, redis_plugin
+from sse_starlette.sse import EventSourceResponse
 
 from .utils import ODict
+from .models import Player, newPlayer, Session
 
 t0 = time.time()*1000
 ctx = ODict(sessions=[])
@@ -20,23 +25,6 @@ async def _genUniqueId():
     pid = await getRedis().incr('count_session')
     return hex(int("%d%d"%(pid, (time.time()*1000)-t0)))[2:]
 
-class Player(BaseModel):
-    " Participant to a game session "
-    name: str
-    avatar: str
-    id: int
-
-class newPlayer(Player):
-    " Player with associated session to join "
-    sessionName: str
-
-class Session(BaseModel):
-    " Game instance description & states "
-    players: List[Player] = []
-    name: str
-    gameType: str = "dice"
-    gameData: dict = {}
-    creationTime: int
 
 def _getSessionPrefix(uid):
     return 'S%s:'%uid
@@ -69,7 +57,9 @@ async def getSession(uid, client=None):
     o['players'] = list(players.values())
     return o
 
-def getGameDataPrefix(uid):
+def getGameDataPrefix(uid, playerId=None):
+    if playerId:
+        return 'S%s:%s:P%s' % (uid, GAME_DATA, playerId)
     return 'S%s:%s:'%(uid, GAME_DATA)
 
 async def makeSession():
@@ -79,6 +69,7 @@ async def makeSession():
 
     prefix = _getSessionPrefix(uid)
     with getRedis().client() as conn:
+        #await conn.publish('sessionNameHere', 'pifou!')
         await conn.set(prefix+'gameType', sess.gameType)
         await conn.set(prefix+'name', sess.name)
     return sess
@@ -104,9 +95,44 @@ async def addPlayer(player: newPlayer):
     return sess
 
 def getRedis():
+    print("REDIS", ctx['redis'])
     return ctx['redis']
 
+# async def on_startup() -> None:
+#     print("Startup")
+#     await redis_plugin.init_app(ctx.app)
+#     await redis_plugin.init()
+
+# async def on_shutdown() -> None:
+#     await redis_plugin.terminate()
+
+# https://medium.com/deepdesk/server-sent-events-in-fastapi-using-redis-pub-sub-eba1dbfe8031
+
+async def event_source(request, params):
+    channel = getRedis().pubsub()
+    await channel.subscribe(params)
+    async for message in channel.listen():
+        if await request.is_disconnected():
+            logger.debug('Request disconnected')
+            break
+        if message['type'] == 'message':
+            yield {
+                    "event": "Blah",
+                    "data": message['data'],
+            }
+        #await asyncio.sleep(1)
+
+async def eventStream(param: str, request: Request):
+    return EventSourceResponse(event_source(request, param))
+
+
 def init(app, config):
+    ctx.app = app
     ctx['redis'] = aioredis.from_url('redis://'+config.redis_server,  decode_responses=True)
     app.post('/session/new', response_model=Session)(makeSession)
     app.post('/session/join', response_model=Session)(addPlayer)
+    app.get('/stream')(eventStream)
+
+#     app.on_event("startup")(on_startup)
+#     app.on_event("shutdown")(on_shutdown)
+

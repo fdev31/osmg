@@ -2,12 +2,13 @@ from back.sessionmanager import getRedis, getSession, getGameDataPrefix, Session
 
 async def dieAction(player: newPlayer, value: int):
     redis = getRedis()
-    prefix = getGameDataPrefix(newPlayer.sessionName)
-    propName = "%s:%s:dievalue"%(prefix, newPlayer.name)
-    await redis.incrby(propName, value)
-    await redis.get(propName)
+    prefix = getGameDataPrefix(newPlayer.sessionName, newPlayer.id)
+    propName = "%s:dievalue"%(prefix)
+    with redis.client() as conn:
+        await conn.incrby(propName, value)
+        await conn.get(propName)
+        sess = await getSession(newPlayer.sessionName, conn)
     # TODO: update session + publish notification
-    sess = await getSession(newPlayer.sessionName)
     return sess
 
 def init(app, config):

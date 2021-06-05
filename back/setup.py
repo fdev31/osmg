@@ -15,7 +15,11 @@ setup(
     long_description=getdesc(),
     install_requires=[
         'aiofiles==0.7.0',
-        'aioredis[hiredis]',
+#        'fastapi-plugins==0.8.1',
+        'aiojobs==0.3.0',
+        'sse-starlette==0.7.2',
+        'hiredis==2.0.0',
+        'aioredis',
         'fastapi==0.65.1',
         'uvicorn==0.13.4',
         ],
