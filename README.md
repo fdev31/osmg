@@ -27,7 +27,8 @@
 # Optional UI improvement releases
 
 # Final version
-
+- CNIL
+- Mentions légales / Références droits d'auteurs pour les assets
 ---------
 
 # Environment variables
