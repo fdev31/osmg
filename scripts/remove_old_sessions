@@ -1,0 +1,41 @@
+#!./venv/bin/python
+import time
+import asyncio
+import itertools
+import aioredis
+
+counter = itertools.count()
+now = int(time.time())
+MAX_TIME = 3600 # 3600=1h
+MAX_TIME *=  2 # 2h max
+
+old_keys = []
+
+async def main():
+    redis = aioredis.from_url("redis://localhost", decode_responses=True)
+    async with redis.client() as conn:
+        cur = b"0"
+        while cur:
+            cur, keys = await conn.scan(cur, match="*creationTime")
+            for key in keys:
+                name, vname = key.split(':')
+                ts = int(await conn.get(key))
+                diff = now-ts
+                if diff > MAX_TIME:
+                    old_keys.append(name)
+                    next(counter)
+                print("%s = %s"%(name, diff))
+        print(old_keys)
+        print("%d old sessions found (%d total)"%(len(old_keys), next(counter)))
+        input("Remove (^C to abort) ?")
+
+
+        for prefix in old_keys:
+            cur = b"0"
+            while cur:
+                cur, keys = await conn.scan(cur, match=prefix+":*")
+                for key in keys:
+                    await conn.delete(key)
+
+if __name__ == "__main__":
+    asyncio.run(main())
