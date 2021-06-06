@@ -4,9 +4,9 @@
     <meta charset="utf-8">
     <title>Le Jeu de dés</title>
   </head>
-  <body>
+  <body onload="initApp()">
 <h1>Le Jeu de dés Marathon</h1>
-<div id="marathon">
+<div id="app">
     <div class="">
       <span>restant:</span> <span> {{ remain }} kilomètres</span>
     </div>
@@ -24,9 +24,7 @@
     <button v-if="player_action='Lancer le dé'" v-on:click="throw_dices" type="button" name="button">{{ player_action }}</button>
     <button v-else v-on:click="player_advance" type="button" name="button">{{ player_action }}</button>
 </div>
-<script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js">
-
-</script>
-<script src="js/main.js" charset="utf-8"></script>
+<script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+<script src="js/dice.js" charset="utf-8"></script>
   </body>
 </html>
