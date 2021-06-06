@@ -19,8 +19,8 @@ function initApp() {
         // create a standard player for creator of session game
         var myHeaders = new Headers();
         myHeaders.append("Content-Type", "application/json");
-        var raw = JSON.stringify({"name": "Plop",
-                                  "avatar": "azcsde",
+        var raw = JSON.stringify({"name": "Creator",
+                                  "avatar": 1,
                                   "sessionName": result.name});
         console.log(raw);
         var response_player = await fetch("/session/join", {
