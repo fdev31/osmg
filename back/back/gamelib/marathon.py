@@ -42,22 +42,16 @@ async def throwDice(player: PlayerIdentifier) -> List[int]:
     gprefix = getGameDataPrefix(player.sessionName)
     prefix = getGameDataPrefix(player.sessionName, player.id)
     propName = prefix + "_diceValue"
-    value = 4
 
-    dices = [random.randint(1, 6) for x in range(value)]
     async with redis.client() as conn:
         if not await isPlayerTurn(conn, gprefix, player.id):
             return HTTPException(500, "Not your turn!")
         tmpDice = await conn.get(propName)
         if tmpDice:
             return HTTPException(503, "Dice already thrown")
-        remainingDistance = int(await conn.get(prefix+'diceValue'))
-        if remainingDistance <= 9:
-            dices = dices[:1]
-        elif remainingDistance <= 99:
-            dices = dices[:2]
-        elif remainingDistance <= 999:
-            dices = dices[:3]
+        remainingDistance = await conn.get(prefix+'diceValue')
+
+        dices = [random.randint(1, 6) for x in range(len(remainingDistance))]
         await conn.set(propName, json.dumps(dices))
     return dices
 
