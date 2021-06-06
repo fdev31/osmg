@@ -1,53 +1,56 @@
 import json
 import random
+import logging
 
 from fastapi import HTTPException
 
 from typing import List
-from back.models import newPlayer, Session
-from back.sessionmanager import getSession
-from back.globalHandlers import getRedis, getGameDataPrefix
+from back.models import PlayerIdentifier
+from back.globalHandlers import getRedis, getGameDataPrefix, publishEvent
 
-async def throwDice(player: newPlayer, value: int) -> List[int]:
+GAME_NAME = "dice"
+logger = logging.getLogger(GAME_NAME)
+
+async def throwDice(player: PlayerIdentifier, value: int) -> List[int]:
     """ Throw a number of dices """
     redis = getRedis()
-    prefix = getGameDataPrefix(newPlayer.sessionName, newPlayer.id)
-    propName = "%s:_diceValue"%(prefix)
+    prefix = getGameDataPrefix(player.sessionName, player.id)
+    propName = prefix + "_diceValue"
 
     dices = [random.randint(1, 6) for x in range(value)]
-    with redis.client() as conn:
-        tmpDice = int(await conn.get(propName))
+    async with redis.client() as conn:
+        tmpDice = await conn.get(propName)
         if tmpDice:
             return HTTPException(503, "Dice already thrown")
-        await conn.set(propName, dices)
+        await conn.set(propName, json.dumps(dices))
     return dices
 
-
-async def validateDice(player: newPlayer, value: str):
+async def validateDice(player: PlayerIdentifier, value: str):
     """ Validate a previously thrown dice with a new order """
     redis = getRedis()
-    prefix = getGameDataPrefix(newPlayer.sessionName, newPlayer.id)
-    propName = "%s:_diceValue"%(prefix)
+    prefix = getGameDataPrefix(player.sessionName, player.id)
+    propName = prefix + "_diceValue"
     newVal = None
-    with redis.client() as conn:
-        previous = await conn.get(propName)
+    async with redis.client() as conn:
+        previous = json.loads(await conn.get(propName))
         current = [int(x) for x in value]
         try:
             for c in current:
                 previous.remove(c)
         except ValueError:
             return HTTPException(503, "Dice not matching")
-        await conn.set(propName, 0)
-        propName = "%s:diceValue" % (prefix)
+        await conn.delete(propName)
+        propName = prefix + "diceValue"
         await conn.decrby(propName, int(value))
         newVal = await conn.get(propName)
+        logger.debug(f"{player} decr dice by {value}, it's now {newVal}")
+        await publishEvent(player.sessionName, conn, cat="varUpdate", var="diceValue", val=newVal, player=player.id)
     return {"diceValue": newVal}
-
 
 class DiceInterface:
     @staticmethod
     def getPlayerData():
-        return dict(diceValue=2040, turn=0)
+        return dict(diceValue=402030, turn=0)
 
     @staticmethod
     def getGameData():
@@ -61,4 +64,4 @@ class DiceInterface:
         'validateDice': validateDice,
     }
 
-definition = {'dice': DiceInterface}
+definition = {GAME_NAME: DiceInterface}
