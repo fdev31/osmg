@@ -4,13 +4,17 @@
     <meta charset="utf-8">
     <title></title>
   </head>
-  <body>
-    <form class="" method="post">
-      <label for=""></label>
-      <input type="text">
-      <label for=""></label>
-      <input type="text">
-    </form>
+  <body onload="initApp()">
+    <div id="app">
+      <form class="" @submit="checkForm" method="post">
+        <label for="">Votre nom</label>
+        <input v-model="name" type="text">
+        <label for="">Votre avatar</label>
+        <input v-model="avatar" type="text">
+        <button type="submit" name="button">Rejoindre</button>
+      </form>
+    </div>
+
     <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
     <script src="/static/js/join.js" charset="utf-8"></script>
   </body>

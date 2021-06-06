@@ -11,7 +11,7 @@
         <h2>Joueur</h2>
         <ul>
           <li v-for="item in players" >
-            {{ item.name }}
+           <img :src="'/static/img/svg/avatar/' + item.avatar + '.svg'" width="75" alt="">  {{ item.name }}
           </li>
         </ul>
 
@@ -19,6 +19,7 @@
       <div class="">
         <span>settings</span>
       </div>
+      <span>{{ 'http://localhost:5000/r/' + name }}</span>
       <button type="button" name="button" v-on:click>Inviter</button>
       <button type="button" name="button">Jouer</button>
     </div>
