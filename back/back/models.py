@@ -23,4 +23,5 @@ class Session(BaseModel):
     gameData: dict = {}
     playersData: Dict = {}
     creationTime: int
+    startTime: int = 0
 

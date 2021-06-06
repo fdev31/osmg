@@ -1,21 +1,17 @@
+__all__ = ['getSession', 'registerGame']
 import time
-import json
 import logging
 logger = logging.getLogger("Session")
 
-from fastapi import HTTPException, Request
+from fastapi import HTTPException
 import aioredis
-# SSE
-#from fastapi_plugins import depends_redis, redis_plugin
-from sse_starlette.sse import EventSourceResponse
 
-from .utils import ODict
-from .models import Player, newPlayer, Session
+from back.models import newPlayer, Session
+from back.globalHandlers import getRedis, setRedis, publishEvent, getSessionPrefix
 
 t0 = time.time()*1000
-ctx = ODict(sessions=[])
 
-GAME_DATA = 'gameData'
+GAME_DATA = 'g'
 
 async def _getUniquePlayerId():
     pid = await getRedis().incr('count_players')
@@ -25,12 +21,9 @@ async def _genUniqueId():
     pid = await getRedis().incr('count_session')
     return hex(int("%d%d"%(pid, (time.time()*1000)-t0)))[2:]
 
-def _getSessionPrefix(uid):
-    return 'S%s:'%uid
-
 async def getSession(uid, client=None):
     " fetch session info from redis "
-    pattern = _getSessionPrefix(uid) + "*"
+    pattern = getSessionPrefix(uid) + "*"
     all_keys = []
     o = {GAME_DATA: {}}
     players = {}
@@ -61,17 +54,12 @@ async def getSession(uid, client=None):
     o['playersData'] = players_data
     return o
 
-def getGameDataPrefix(uid, playerId=None):
-    if playerId:
-        return 'S%s:%s:P%s' % (uid, GAME_DATA, playerId)
-    return 'S%s:%s:'%(uid, GAME_DATA)
-
 async def makeSession() -> Session:
     " Create a new emtpy session with no players "
     uid = await _genUniqueId()
     sess = Session(name = uid, players = [], creationTime=int(time.time()))
 
-    prefix = _getSessionPrefix(uid)
+    prefix = getSessionPrefix(uid)
 
     async with getRedis().client() as conn:
 
@@ -98,7 +86,7 @@ async def addPlayer(player: newPlayer) -> Session:
     pidP = _getUniquePlayerId()
     player_info = player.dict()
     del player_info['sessionName']
-    prefix = _getSessionPrefix(player.sessionName)
+    prefix = getSessionPrefix(player.sessionName)
 
     pid = await pidP
     player_info['id'] = pid
@@ -115,32 +103,7 @@ async def addPlayer(player: newPlayer) -> Session:
         await pub
     return sess
 
-def publishEvent(topic, client=None, **params):
-    return (client or getRedis()).publish(topic, json.dumps(params))
-
-def getRedis():
-    return ctx['redis']
-
-async def event_source(request, params):
-    channel = getRedis().pubsub()
-    await channel.subscribe(params)
-    async for message in channel.listen():
-        if await request.is_disconnected():
-            logger.debug('Request disconnected')
-            break
-        if message['type'] == 'message':
-            yield {
-                "event": "update",
-                "data": message['data'],
-            }
-
-async def eventStream(topic: str, request: Request) -> EventSourceResponse:
-    " Returns an event source for the provided topic "
-    return EventSourceResponse(event_source(request, topic))
-
 def init(app, config):
-    ctx.app = app
-    ctx['redis'] = aioredis.from_url('redis://'+config.redis_server,  decode_responses=True)
+    setRedis(aioredis.from_url('redis://'+config.redis_server,  decode_responses=True))
     app.post('/session/new', response_model=Session)(makeSession)
     app.post('/session/join', response_model=Session)(addPlayer)
-    app.get('/stream')(eventStream)

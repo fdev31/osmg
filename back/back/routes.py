@@ -1,29 +1,41 @@
 import os
-import sys
-from fastapi import FastAPI
+import importlib
 import logging
-logging.basicConfig()
+
+from fastapi import FastAPI
 
 from .utils import ODict
 
-app = FastAPI(debug=bool(os.environ.get('DEBUG', False)))
+debug = bool(os.environ.get('DEBUG', False))
+logger = logging.getLogger()
+
+logLevel = logging.DEBUG if debug else logging.WARNING
+
+for name in 'access error'.split():
+    l = logging.getLogger('uvicorn.'+name)
+    l.propagate = False
+
+logger.setLevel(logLevel)
+logging.getLogger('uvicorn').setLevel(logLevel)
+logging.getLogger('fastapi').setLevel(logLevel)
+logging.getLogger('asyncio').setLevel(logLevel)
+
+app = FastAPI(debug=debug)
 
 config = ODict(
-        static_dir=os.path.join(os.environ['PREFIX'], 'front'),
-        redis_server=os.environ.get('REDIS_SERVER', 'localhost'),
-        )
+    static_dir=os.path.join(os.environ['PREFIX'], 'front'),
+    redis_server=os.environ.get('REDIS_SERVER', 'localhost'),
+    debug=debug,
+)
 
 # Load submodules
 
-# Serve static files under /static (TODO: use nginx for production)
-from back import staticfiles
-staticfiles.init(app, config)
+MODULES = 'staticfiles index sessionmanager stream games'.split()
 
-from back import index
-index.init(app, config)
+if not debug:
+    MODULES.pop(0)
 
-from back import sessionmanager
-sessionmanager.init(app, config)
-
-from back import games
-games.init(app, config)
+for name in MODULES:
+    logging.info("Loading %s ..." % name)
+    mod = importlib.import_module('back.'+name)
+    mod.init(app, config)
