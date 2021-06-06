@@ -96,7 +96,7 @@ async def addPlayer(player: newPlayer) -> Session:
     for p in sess['players']:
         if p['name'] == player.name:
             logger.debug(f"Attempt to create same player twice {player.name}")
-            raise HTTPException(503, "A player called %s already exists"%player.name)
+            raise HTTPException(503, f"A player called {player.name} already exists")
 
     pidP = _getUniquePlayerId()
     player_info = player.dict()
@@ -120,7 +120,6 @@ async def addPlayer(player: newPlayer) -> Session:
         sess = await getSession(player.sessionName, conn)
         await pub
 
-    sess['sessionName'] = player.sessionName
     logger.debug(f"New player {pid}")
     return sess
 

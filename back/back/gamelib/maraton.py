@@ -41,8 +41,7 @@ async def validateDice(player: PlayerIdentifier, value: str):
             return HTTPException(503, "Dice not matching")
         await conn.delete(propName)
         propName = prefix + "diceValue"
-        await conn.decrby(propName, int(value))
-        newVal = await conn.get(propName)
+        newVal = await conn.decrby(propName, int(value))
         logger.debug(f"{player} decr dice by {value}, it's now {newVal}")
         await publishEvent(player.sessionName, conn, cat="varUpdate", var="diceValue", val=newVal, player=player.id)
     return {"diceValue": newVal}
