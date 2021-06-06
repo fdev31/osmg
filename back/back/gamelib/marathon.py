@@ -1,4 +1,5 @@
 import json
+import time
 import random
 import logging
 from back.gamelib.interfaces import GameInterface
@@ -8,21 +9,55 @@ from fastapi import HTTPException
 
 from typing import List
 from back.models import PlayerIdentifier
-from back.globalHandlers import getRedis, getGameDataPrefix, publishEvent
+from back.globalHandlers import getRedis, getSessionPrefix, getGameDataPrefix, publishEvent
 
 from .interfaces import GameInterface
 
-async def throwDice(player: PlayerIdentifier, value: int) -> List[int]:
-    """ Throw a number of dices """
+async def startGame(player: PlayerIdentifier):
+    " Notifies that some player is ready to start the game "
     redis = getRedis()
+    prefix = getGameDataPrefix(player.sessionName)
+    async with redis.client() as conn:
+        pr = prefix+'playersReady'
+        if await conn.sismember(pr, player.id):
+            return HTTPException(503, "Action already done")
+        await publishEvent(player.sessionName, conn, cat="ready", player=player.id)
+        await conn.sadd(pr, player.id)
+        await conn.rpush(prefix+'playerOrder', player.id)
+        nbPlayersReady = await conn.scard(pr)
+        if nbPlayersReady == await conn.get(getSessionPrefix(player.sessionName)+'nbPlayers'):
+             # all players are ready!
+             await conn.set(f'S{player.sessionName}:startTime', int(time.time()))
+             await publishEvent(player.sessionName, conn, cat="start", msg="game started")
+    
+async def isPlayerTurn(conn, prefix, playerId):
+    print(prefix+"curPlayer")
+    curPlayer = await conn.get(prefix+"curPlayer")
+    curPlayerId = await conn.lindex(prefix+"playerOrder", int(curPlayer))
+    return int(curPlayerId) == int(playerId)
+
+async def throwDice(player: PlayerIdentifier) -> List[int]:
+    """ Throw a number of dices (defined by the current player score) """
+    redis = getRedis()
+    gprefix = getGameDataPrefix(player.sessionName)
     prefix = getGameDataPrefix(player.sessionName, player.id)
     propName = prefix + "_diceValue"
+    value = 4
 
     dices = [random.randint(1, 6) for x in range(value)]
     async with redis.client() as conn:
+        if not await isPlayerTurn(conn, gprefix, player.id):
+            return HTTPException(500, "Not your turn!")
         tmpDice = await conn.get(propName)
         if tmpDice:
             return HTTPException(503, "Dice already thrown")
+        remainingDistance = int(await conn.get(prefix+'diceValue'))
+        if remainingDistance <= 9:
+            dices = dices[:1]
+        elif remainingDistance <= 99:
+            dices = dices[:2]
+        elif remainingDistance <= 999:
+            dices = dices[:3]
         await conn.set(propName, json.dumps(dices))
     return dices
 
@@ -30,6 +65,7 @@ async def validateDice(player: PlayerIdentifier, value: str):
     """ Validate a previously thrown dice with a new order """
     redis = getRedis()
     prefix = getGameDataPrefix(player.sessionName, player.id)
+    g_prefix = getGameDataPrefix(player.sessionName)
     propName = prefix + "_diceValue"
     newVal = None
     async with redis.client() as conn:
@@ -45,10 +81,27 @@ async def validateDice(player: PlayerIdentifier, value: str):
         newVal = await conn.decrby(propName, int(value))
         logger.debug(f"{player} decr dice by {value}, it's now {newVal}")
         await publishEvent(player.sessionName, conn, cat="varUpdate", var="diceValue", val=newVal, player=player.id)
+
+        nbPlayers = int(await conn.get(getSessionPrefix(player.sessionName)+"nbPlayers"))
+        curPlayer = int(await conn.incr(g_prefix+"curPlayer"))
+
+        if newVal == 0: # End of game
+            await publishEvent(player.sessionName, conn, cat="endOfGame", message="We have a winner!", player=player.id)
+        elif newVal < 0:
+            await conn.sadd(g_prefix+"losers", player.id)
+        else: # check if it's the last player
+            nbLosers = int(await conn.scard(g_prefix+"losers"))
+            if nbLosers == nbPlayers - 1:
+                await publishEvent(player.sessionName, conn, cat="endOfGame", message="We have a winner!", player=player.id)
+
+        if curPlayer +1 >= nbPlayers:
+            turn = await conn.incr(g_prefix + "turns")
+            await publishEvent(player.sessionName, conn, cat="new turn", val=turn)
+            await conn.set(g_prefix + "curPlayer", 0)
+
     return {"diceValue": newVal}
 
 class DiceInterface(GameInterface):
-
     name = "marathon"
     description = "A multi-player maraton-like dice game"
     min_players = 2
@@ -68,7 +121,9 @@ class DiceInterface(GameInterface):
     actions = {
         'throwDice': throwDice,
         'validateDice': validateDice,
+        'start': startGame,
     }
 
 logger = logging.getLogger(DiceInterface.name)
+
 definition = DiceInterface.definition()

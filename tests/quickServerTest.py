@@ -34,6 +34,9 @@ print("My data:")
 pprint(session['playersData']['P'+myId])
 sessionData['id'] = myId
 
+r = requests.post(HOST+'/game/marathon/start', json=sessionData)
+print("STARTED", r.json())
+
 r = requests.post(HOST+'/game/marathon/throwDice?value=4', json=sessionData)
 values = r.json()
 print("GOT", values)

@@ -77,7 +77,8 @@ async def makeSession() -> Session:
 
     prefix = getSessionPrefix(uid)
 
-    props = {}
+    props = {prefix+'nbPlayers': 0}
+
     for name, value in getGameInitialData(sess.gameType):
         props[f"{prefix}{GAME_DATA}:{name}"] = value
         sess.gameData[name] = value
@@ -116,6 +117,8 @@ async def addPlayer(player: newPlayer) -> Session:
 
     async with getRedis().client() as conn:
         await conn.mset(redisObj)
+        await conn.incr(prefix+'nbPlayers')
+
         pub = publishEvent(player.sessionName, None, cat='newPlayer', name=player.name, avatar=player.avatar)
         sess = await getSession(player.sessionName, conn)
         await pub
