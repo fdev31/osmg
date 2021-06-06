@@ -16,7 +16,14 @@ async def main():
         while cur:
             cur, keys = await conn.scan(cur, match=f"S{sys.argv[1]}:*")
             for key in keys:
-                val = await conn.get(key)
+                try:
+                    val = await conn.get(key)
+                except aioredis.exceptions.ResponseError:
+                    try:
+                        val = await conn.smembers(key)
+                    except aioredis.exceptions.ResponseError as e:
+                        llen = await conn.llen(key)
+                        val = [await conn.lindex(key, i) for i in range(llen)]
                 splitk = key.split(':')
                 if splitk[0] not in sessions:
                     sessions[splitk[0]] = {}
