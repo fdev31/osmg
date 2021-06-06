@@ -1,14 +1,16 @@
 #!/bin/env python
+from pprint import pprint
 
 HOST='http://localhost:5000'
 import requests
-# create a new session
+
+print("New session")
 r = requests.post(HOST+'/session/new')
 data = r.json()
 
-print(data)
+pprint(data)
 
-# join a session
+print("Join session")
 
 sessionData = {
   "name": "Toto",
@@ -17,4 +19,4 @@ sessionData = {
 }
 r = requests.post(HOST+'/session/join', json=sessionData)
 
-print(r.json())
+pprint(r.json())

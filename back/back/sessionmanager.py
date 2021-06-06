@@ -25,9 +25,10 @@ async def getSession(uid, client=None):
     " fetch session info from redis "
     pattern = getSessionPrefix(uid) + "*"
     all_keys = []
-    o = {GAME_DATA: {}}
+    o = {}
     players = {}
     players_data = {}
+    game_data = {}
     async with (client or getRedis().client()) as conn:
         cur = b"0"
         while cur:
@@ -40,7 +41,7 @@ async def getSession(uid, client=None):
             if len(splitk) == 2:
                 o[splitk[1]] = val
             elif splitk[1] == GAME_DATA:
-                o[splitk[2]] = splitk[3]
+                game_data[splitk[2]] = val
             else: # players
                 if splitk[1] not in players:
                     players[splitk[1]] = {}
@@ -52,6 +53,7 @@ async def getSession(uid, client=None):
 
     o['players'] = list(players.values())
     o['playersData'] = players_data
+    o['gameData'] = game_data
     return o
 
 async def makeSession() -> Session:
@@ -65,7 +67,7 @@ async def makeSession() -> Session:
 
         for name, value in games[sess.gameType].getGameData().items():
             await conn.set("%s%s:%s"%(prefix, GAME_DATA, name), value)
-            sess[name] = value
+            sess.gameData[name] = value
 
         for field in ('creationTime', 'name', 'gameType'):
             await conn.set(prefix+field, getattr(sess, field))
