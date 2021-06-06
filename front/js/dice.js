@@ -2,6 +2,7 @@
 // Il faut vérifier que chacun soit synchrone avec l'état de la partie
 // Quand dois je utiliser l'api diceAction
 // Il me faut les données pour ne plus hardcoder , de quoi rafraichir l'état du jeu relancer session join
+// vérifier avancé utilisateur coté serveur
 function initApp() {
   try {
     var cookie = JSON.parse(document.cookie.split('; ')[0]);
