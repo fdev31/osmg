@@ -23,7 +23,7 @@ class Session(BaseModel):
     " Game instance description & states "
     players: List[dict] = []
     name: str
-    gameType: str = "dice"
+    gameType: str = "marathon"
     gameData: dict = {}
     playersData: Dict = {}
     creationTime: int
