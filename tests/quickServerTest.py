@@ -34,7 +34,7 @@ print("My data:")
 pprint(session['playersData']['P'+myId])
 sessionData['id'] = myId
 
-r = requests.post(HOST+'/game/dice/throwDice?value=4', json=sessionData)
+r = requests.post(HOST+'/game/marathon/throwDice?value=4', json=sessionData)
 values = r.json()
 print("GOT", values)
 
@@ -43,7 +43,7 @@ print("SEND", values)
 
 newVal = ''.join(str(x) for x in values)
 
-r = requests.post(HOST+'/game/dice/validateDice?value='+newVal, json=sessionData)
+r = requests.post(HOST+'/game/marathon/validateDice?value='+newVal, json=sessionData)
 print(r.json())
 
 
