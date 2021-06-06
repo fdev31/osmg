@@ -2,15 +2,15 @@ import json
 import time
 import random
 import logging
-from back.gamelib.interfaces import GameInterface
-from back.sessionmanager import GAME_DATA
+from typing import List
 
 from fastapi import HTTPException
+from starlette import status as httpstatus
 
-from typing import List
+from back.gamelib.interfaces import GameInterface
+from back.sessionmanager import GAME_DATA
 from back.models import PlayerIdentifier
 from back.globalHandlers import getRedis, getSessionPrefix, getGameDataPrefix, publishEvent
-
 from .interfaces import GameInterface
 
 async def startGame(player: PlayerIdentifier):
@@ -20,7 +20,7 @@ async def startGame(player: PlayerIdentifier):
     async with redis.client() as conn:
         pr = prefix+'playersReady'
         if await conn.sismember(pr, player.id):
-            return HTTPException(503, "Action already done")
+            return HTTPException(httpstatus.HTTP_409_CONFLICT, "Action already done")
         await publishEvent(player.sessionName, conn, cat="ready", player=player.id)
         await conn.sadd(pr, player.id)
         await conn.rpush(prefix+'playerOrder', player.id)
@@ -45,13 +45,13 @@ async def throwDice(player: PlayerIdentifier) -> List[int]:
 
     async with redis.client() as conn:
         if not await isPlayerTurn(conn, gprefix, player.id):
-            return HTTPException(500, "Not your turn!")
+            return HTTPException(httpstatus.HTTP_403_FORBIDDEN, "Not your turn!")
         tmpDice = await conn.get(propName)
         if tmpDice:
-            return HTTPException(503, "Dice already thrown")
+            return HTTPException(httpstatus.HTTP_409_CONFLICT, "Dice already thrown")
         remainingDistance = await conn.get(prefix+'diceValue')
 
-        dices = [random.randint(1, 6) for x in range(len(remainingDistance))]
+        dices = [random.randint(1, 6) for x in range(min(4, len(remainingDistance)))]
         await conn.set(propName, json.dumps(dices))
     return dices
 
@@ -69,7 +69,7 @@ async def validateDice(player: PlayerIdentifier, value: str):
             for c in current:
                 previous.remove(c)
         except ValueError:
-            return HTTPException(503, "Dice not matching")
+            return HTTPException(httpstatus.HTTP_403_FORBIDDEN, "Dice not matching")
         await conn.delete(propName)
         propName = prefix + "diceValue"
         newVal = await conn.decrby(propName, int(value))

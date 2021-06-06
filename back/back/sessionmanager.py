@@ -2,8 +2,9 @@ __all__ = ['getSession', 'registerGame']
 import time
 import logging
 
-from fastapi import HTTPException
 import aioredis
+from fastapi import HTTPException
+from starlette import status as httpstatus
 
 from back.models import newPlayer, Session
 from back.globalHandlers import getRedis, setRedis, publishEvent, getSessionPrefix
@@ -97,7 +98,7 @@ async def addPlayer(player: newPlayer) -> Session:
     for p in sess['players']:
         if p['name'] == player.name:
             logger.debug(f"Attempt to create same player twice {player.name}")
-            raise HTTPException(503, f"A player called {player.name} already exists")
+            raise HTTPException(httpstatus.HTTP_409_CONFLICT, f"A player called {player.name} already exists")
 
     pidP = _getUniquePlayerId()
     player_info = player.dict()
