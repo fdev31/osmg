@@ -1,5 +1,8 @@
 function initApp() {
-
+  var cookie = JSON.parse(document.cookie.split('; ')[0]);
+  if (typeof cookie.name != "undefined" && cookie.name != null) {
+    window.location = "http://localhost:5000/static/saloon.html";
+  }
   var url = new URL(document.URL);
   var session = url.searchParams.get("session");
   lounge = new Vue({
