@@ -1,0 +1,66 @@
+#!./venv/bin/python
+import sys
+import asyncio
+import aioredis
+
+sessions = {}
+
+if len(sys.argv) != 2:
+    raise SystemExit("Error: Requires one session name as parameter")
+
+async def main():
+    redis = aioredis.from_url("redis://localhost", decode_responses=True)
+    async with redis.client() as conn:
+        cur = b"0"
+        # collect data
+        while cur:
+            cur, keys = await conn.scan(cur, match=f"S{sys.argv[1]}:*")
+            for key in keys:
+                val = await conn.get(key)
+                splitk = key.split(':')
+                if splitk[0] not in sessions:
+                    sessions[splitk[0]] = {}
+                o = sessions[splitk[0]]
+                if len(splitk) == 2:
+                    o[splitk[1]] = val
+                elif splitk[1] == 'g':
+                    if 'game_data' not in o:
+                        o['game_data'] = {}
+                    o['game_data'][splitk[2]] = val
+                else: # players
+                    if 'players' not in o:
+                        o['players'] = {}
+                        o['players_data'] = {}
+
+                    if splitk[1] not in o['players']:
+                        o['players'][splitk[1]] = {}
+                        o['players_data'][splitk[1]] = {}
+                    if splitk[2] == 'g': # players data
+                        o['players_data'][splitk[1]][splitk[3]] = val
+                    else:
+                        o['players'][splitk[1]][splitk[2]] = val
+        # display
+        for session_name, session_data in sorted(sessions.items()):
+            print(f"Session << {session_name} >>")
+            for k, v in sorted(session_data.items()):
+                if k in ('players', 'players_data'):
+                    if k == 'players':
+                        showPlayersInfo('Player', v)
+                        print("    player data:")
+                        showPlayersInfo(None, session_data['players_data'])
+                elif k == 'game_data':
+                    print(f'  * {k}')
+                    for k, v in sorted(v.items()):
+                        print(f"    - {k:14s} : {v}")
+                else:
+                    print(f"  * {k:14s} : {v}")
+
+def showPlayersInfo(title, pi):
+    for name, info in sorted(pi.items()):
+        if title:
+            print(f'  * {title} "{name}"')
+        for k, v in info.items():
+            print(f'     - {k:14} : {v}')
+
+if __name__ == "__main__":
+    asyncio.run(main())
