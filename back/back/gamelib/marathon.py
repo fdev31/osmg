@@ -1,6 +1,7 @@
 import json
 import random
 import logging
+from back.sessionmanager import GAME_DATA
 
 from fastapi import HTTPException
 
@@ -8,7 +9,7 @@ from typing import List
 from back.models import PlayerIdentifier
 from back.globalHandlers import getRedis, getGameDataPrefix, publishEvent
 
-GAME_NAME = "dice"
+GAME_NAME = "marathon"
 logger = logging.getLogger(GAME_NAME)
 
 async def throwDice(player: PlayerIdentifier, value: int) -> List[int]:
@@ -47,6 +48,10 @@ async def validateDice(player: PlayerIdentifier, value: str):
     return {"diceValue": newVal}
 
 class DiceInterface:
+
+    name = GAME_NAME
+    description = "A multi-player maraton-like dice game"
+
     @staticmethod
     def getPlayerData():
         return dict(diceValue=42195, turn=0)
