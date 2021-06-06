@@ -49,7 +49,7 @@ async def validateDice(player: PlayerIdentifier, value: str):
 class DiceInterface:
     @staticmethod
     def getPlayerData():
-        return dict(diceValue=402030, turn=0)
+        return dict(diceValue=42195, turn=0)
 
     @staticmethod
     def getGameData():
