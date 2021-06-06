@@ -5,7 +5,7 @@ from back.sessionmanager import registerGame
 
 logger = logging.getLogger()
 
-GAMES = ['maraton']
+GAMES = ['marathon']
 
 def init(app, config):
     for game in GAMES:
