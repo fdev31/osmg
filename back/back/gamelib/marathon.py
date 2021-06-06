@@ -48,7 +48,7 @@ async def throwDice(player: PlayerIdentifier) -> List[int]:
             return HTTPException(httpstatus.HTTP_403_FORBIDDEN, "Not your turn!")
         tmpDice = await conn.get(propName)
         if tmpDice:
-            return HTTPException(httpstatus.HTTP_409_CONFLICT, "Dice already thrown")
+            return HTTPException(httpstatus.HTTP_421_MISDIRECTED_REQUEST, "Dice already thrown")
         remainingDistance = await conn.get(prefix+'diceValue')
 
         dices = [random.randint(1, 6) for x in range(min(4, len(remainingDistance)))]
@@ -69,7 +69,7 @@ async def validateDice(player: PlayerIdentifier, value: str):
             for c in current:
                 previous.remove(c)
         except ValueError:
-            return HTTPException(httpstatus.HTTP_403_FORBIDDEN, "Dice not matching")
+            return HTTPException(httpstatus.HTTP_421_MISDIRECTED_REQUEST, "Dice not matching")
         await conn.delete(propName)
         propName = prefix + "diceValue"
         newVal = await conn.decrby(propName, int(value))
