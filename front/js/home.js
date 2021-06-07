@@ -1,10 +1,13 @@
 
+let home;
+
 function initApp() {
   home = new Vue({
     el: "#app",
     data: {
       sessionName : "Pas de données",
       playerName : "Pas de nom",
+      games: {},
     },
     methods: {
       play_game :  async function(game) {
@@ -22,7 +25,6 @@ function initApp() {
         var raw = JSON.stringify({"name": "Creator",
                                   "avatar": 1,
                                   "sessionName": result.name});
-        console.log(raw);
         var response_player = await fetch("/session/join", {
           method: 'POST',
           redirect: 'follow',
@@ -30,10 +32,12 @@ function initApp() {
           body: raw,
         });
         const player = await response_player.json();
-        document.cookie = JSON.stringify(player);
+        document.cookie = "JS=" + JSON.stringify(player) + '; SameSite=Strict';
         window.location = "saloon.html";
-
       }
     }
+  });
+  getJson("/gamelist").then( (data)=>{
+    home.games = data;
   });
 }
