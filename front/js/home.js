@@ -7,6 +7,8 @@ function initApp() {
     data: {
       sessionName : "Pas de données",
       playerName : "Pas de nom",
+      avatar : 1,
+      nickname : "Goldorak",
       games: {},
     },
     methods: {
@@ -22,8 +24,8 @@ function initApp() {
         // create a standard player for creator of session game
         var myHeaders = new Headers();
         myHeaders.append("Content-Type", "application/json");
-        var raw = JSON.stringify({"name": "Creator",
-                                  "avatar": 1,
+        var raw = JSON.stringify({"name": this.nickname,
+                                  "avatar": this.avatar,
                                   "sessionName": result.name});
         var response_player = await fetch("/session/join", {
           method: 'POST',

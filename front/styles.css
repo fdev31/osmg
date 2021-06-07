@@ -5,6 +5,10 @@
     background-color: rgb(229, 173, 173);
     cursor: pointer;
 }
+
+.avatar {
+    max-height: 128px;
+}
 .avatar-saloon {
     max-height: 30px;
     vertical-align: bottom;
