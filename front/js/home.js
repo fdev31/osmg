@@ -1,10 +1,15 @@
 
+let home;
+
 function initApp() {
   home = new Vue({
     el: "#app",
     data: {
       sessionName : "Pas de données",
       playerName : "Pas de nom",
+      avatar : 1,
+      nickname : "Goldorak",
+      games: {},
     },
     methods: {
       play_game :  async function(game) {
@@ -19,10 +24,9 @@ function initApp() {
         // create a standard player for creator of session game
         var myHeaders = new Headers();
         myHeaders.append("Content-Type", "application/json");
-        var raw = JSON.stringify({"name": "Creator",
-                                  "avatar": 1,
+        var raw = JSON.stringify({"name": this.nickname,
+                                  "avatar": this.avatar,
                                   "sessionName": result.name});
-        console.log(raw);
         var response_player = await fetch("/session/join", {
           method: 'POST',
           redirect: 'follow',
@@ -30,10 +34,12 @@ function initApp() {
           body: raw,
         });
         const player = await response_player.json();
-        document.cookie = JSON.stringify(player);
+        document.cookie = "JS=" + JSON.stringify(player) + '; SameSite=Strict';
         window.location = "saloon.html";
-
       }
     }
+  });
+  getJson("/gamelist").then( (data)=>{
+    home.games = data;
   });
 }

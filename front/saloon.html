@@ -3,31 +3,31 @@
   <head>
     <meta charset="utf-8">
     <title></title>
+    <link rel="stylesheet" href="styles.css">
   </head>
   <body onload="initApp()">
 
     <div id="app">
       <div class="">
-        <h2>Joueur</h2>
-        <ul>
-          <li v-for="item in players" >
-           <img :src="'/static/img/svg/avatar/' + item.avatar + '.svg'" width="75" alt="">  {{ item.name }}
-          </li>
-        </ul>
-
+        <h2>Joueurs</h2>
+        <div v-for="item in players" class="players">
+          <img class="avatar-saloon" v-bind:src="`/static/img/avatar/${item.avatar}.svg`" width="75" alt="" />
+          {{ item.name }}
+        </div>
       </div>
       <div class="">
         <span>settings</span>
 
         <span>{{ gameType}}</span>
       </div>
-      <span>{{ 'http://localhost:5000/r/' + name }}</span>
+      <span>http://localhost:5000/r/{{name}}</span>
       <button type="button" name="button" v-on:click>Inviter</button>
       <button type="button" name="button">Jouer</button>
       <a :href="'/static/' + gameType + '.html' ">Jouer</a>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+    <script src="/static/js/utils.js" charset="utf-8"></script>
     <script src="/static/js/lounge.js" charset="utf-8"></script>
   </body>
 </html>

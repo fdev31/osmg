@@ -1,0 +1,23 @@
+body {
+    font-family: 'Roboto', sans-serif;
+}
+.gamebutton {
+    width: 400px;
+    padding: 1ex;
+    border-radius: 5px;
+    box-shadow: 2px 2px 10px grey;
+    float: left;
+    background-color: rgb(224, 224, 224);
+}
+.gamebutton:hover {
+    background-color: rgb(255, 254, 211);
+    cursor: pointer;
+}
+
+.avatar {
+    max-height: 128px;
+}
+.avatar-saloon {
+    max-height: 30px;
+    vertical-align: bottom;
+}
