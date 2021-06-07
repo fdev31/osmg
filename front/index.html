@@ -18,9 +18,9 @@
     </select>
     <h1>Pick a game:</h1>
     <div>
-        <div v-for="(info, game) in games">
-          <span v-on:click.stop="play_game('{{game}}')" class="gamebutton">
-            <div><b>{{game}}</b></div>
+        <div v-for="(info, game) in games" class="gamebutton">
+          <span v-on:click.stop="play_game('{{game}}')">
+            <div><b>{{game.toUpperCase()}}</b></div>
             {{info.description}}
           </span>
         </div>
