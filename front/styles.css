@@ -1,5 +1,6 @@
-body {
+html {
     font-family: 'Roboto', sans-serif;
+    background-color: #9abac1;
 }
 .gamebutton {
     width: 400px;
