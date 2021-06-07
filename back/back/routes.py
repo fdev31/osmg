@@ -20,7 +20,10 @@ logging.getLogger('uvicorn').setLevel(logLevel)
 logging.getLogger('fastapi').setLevel(logLevel)
 logging.getLogger('asyncio').setLevel(logLevel)
 
-app = FastAPI(debug=debug)
+if debug:
+    app = FastAPI(debug=True)
+else:
+    app = FastAPI(debug=False, docs_url=None, redoc_url=None)
 
 config = ODict(
     static_dir=os.path.join(os.environ['PREFIX'], 'front'),
