@@ -5,3 +5,7 @@
     background-color: rgb(229, 173, 173);
     cursor: pointer;
 }
+.avatar-saloon {
+    max-height: 30px;
+    vertical-align: bottom;
+}
