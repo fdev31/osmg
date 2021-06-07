@@ -3,19 +3,26 @@
   <head>
     <meta charset="utf-8">
     <title></title>
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
   </head>
   <body onload="initApp()">
     <div id="app">
-      <form class="" @submit="checkForm" method="post">
-        <label for="">Votre nom</label>
-        <input v-model="name" type="text">
-        <label for="">Votre avatar</label>
-        <input v-model="avatar" type="text">
-        <button type="submit" name="button">Rejoindre</button>
-      </form>
+      <h1>Your info:</h1>
+      <img :src="`./img/avatar/${avatar}.svg`" class="avatar" />
+      <br/>
+      <input v-model:value="nickname" type="text" placeholder="nickname"></input>
+      <select v-model="avatar" type="select">
+        <option v-bind:value="1">Avatar 1</option>
+        <option v-bind:value="2">Avatar 2</option>
+        <option v-bind:value="3">Avatar 3</option>
+      </select>
+      <button v-on:click.stop="validate" type="button" name="button">Rejoindre</button>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+    <script src="/static/js/utils.js" charset="utf-8"></script>
     <script src="/static/js/join.js" charset="utf-8"></script>
   </body>
 </html>
