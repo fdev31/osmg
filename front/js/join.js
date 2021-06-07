@@ -5,9 +5,6 @@ function initApp() {
     var cookie = {};
   }
 
-  // if (typeof cookie.name != "undefined" && cookie.name != null) {
-  //   window.location = "http://localhost:5000/static/saloon.html";
-  // }
   var url = new URL(document.URL);
   var session = url.searchParams.get("session");
   lounge = new Vue({
@@ -24,14 +21,21 @@ function initApp() {
         var raw = JSON.stringify({"name": this.nickname,
                                   "avatar": this.avatar,
                                   "sessionName": this.session});
-        var response_player = await fetch("/session/join", {
+        var response = await fetch("/session/join", {
           method: 'POST',
           redirect: 'follow',
           headers: myHeaders,
           body: raw,
         });
-        const player = await response_player.json();
-        document.cookie = "JS=" + JSON.stringify(player) + '; SameSite=Strict';
+        const data = await response.json();
+        for (let player of data.players) {
+          if (player.name == this.nickname) data.myId = player.id;
+        }
+
+        document.cookie = "JS=" + JSON.stringify(data) + '; SameSite=Strict';
+
+
+
         window.location = "saloon.html";
       }
     }

@@ -17,9 +17,8 @@ function initApp() {
           method: 'POST',
           redirect: 'follow'
         });
-        const result = await response.json();
+        let result = await response.json();
         this.sessionName = result.name;
-        console.log(result);
 
         // create a standard player for creator of session game
         var myHeaders = new Headers();
@@ -33,8 +32,12 @@ function initApp() {
           headers: myHeaders,
           body: raw,
         });
-        const player = await response_player.json();
-        document.cookie = "JS=" + JSON.stringify(player) + '; SameSite=Strict';
+
+        result = await response_player.json();
+        for (let player of result.players) {
+          if (player.name == this.nickname) result.myId = player.id;
+        }
+        document.cookie = "JS=" + JSON.stringify(result) + '; SameSite=Strict';
         window.location = "saloon.html";
       }
     }

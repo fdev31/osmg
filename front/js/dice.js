@@ -3,13 +3,15 @@
 // Le client doit connaitre sa propre identité
 // Api Start lance la partie. Elle doit se lancer quand tout le monde a fait start ?
 function initApp() {
+
+
   try {
-    var cookie = JSON.parse(document.cookie.split('; ')[0]);
+    var cookie = extractJsonFromCookie();
   } catch (e) {
-    window.location = "http://localhost:5000/static/index.html";
+    // window.location = "http://localhost:5000/static/index.html";
   }
 
-  if (typeof cookie.name == "undefined" && cookie.name == null) {
+  if (typeof cookie.name == "undefined" || cookie.name == null) {
     window.location = "http://localhost:5000/static/saloon.html";
   }
   marathon = new Vue({
