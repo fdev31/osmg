@@ -1,8 +1,7 @@
 // Il faut déterminer comment se lance le jeu . Cela nécessite de répérer le créateur de la session. Vérifier la présence de chacun au début et pendant le jeu
 // Il faut vérifier que chacun soit synchrone avec l'état de la partie
-// Quand dois je utiliser l'api diceAction
-// Il me faut les données pour ne plus hardcoder , de quoi rafraichir l'état du jeu relancer session join
-// vérifier avancé utilisateur coté serveur
+// Le client doit connaitre sa propre identité
+// Api Start lance la partie. Elle doit se lancer quand tout le monde a fait start ?
 function initApp() {
   try {
     var cookie = JSON.parse(document.cookie.split('; ')[0]);
@@ -21,27 +20,59 @@ function initApp() {
           dice_throws : [],
           remain : 42195,
           choice : 0,
-          game : cookie
+          game : cookie,
+          status : "waiting"
       },
       methods: {
         throw_dices : async function () {
-          this.dice_throws = await getThrowResults(4);
+          this.dice_throws = await this.getThrowResults(4);
 
           this.result = showResults(this.dice_throws);
           this.player_action =`Avancez de ${this.player_action} km`;
         },
         player_advance : async function() {
-          console.log(arrayEquals( processStringToArrayNumber(this.choice), this.dice_throws));
           if ( arrayEquals( processStringToArrayNumber(this.choice), this.dice_throws)) {
-            this.remain -= this.choice; //
-            console.log(this.player_action);
+            action = post("http://localhost:5000/game/marathon/throwDice", {
+              "id":42,
+              "sessionName":this.game.name
+            });
             this.player_action =`Lancer le dé`;
           }
-
-
-
-
         },
+        getThrowResults : async function() {
+          var myHeaders = new Headers();
+          myHeaders.append("Content-Type", "application/json");
+
+          var raw = JSON.stringify({"id":42,"sessionName":this.game.name});
+          var requestOptions = {
+            method: 'POST',
+            headers: myHeaders,
+            body: raw,
+            redirect: 'follow'
+          };
+
+
+          var response = await fetch("http://localhost:5000/game/marathon/throwDice", requestOptions);
+          const result = await response.json();
+          return result;
+        },
+        startGame : async function() {
+          var myHeaders = new Headers();
+          myHeaders.append("Content-Type", "application/json");
+
+          var raw = JSON.stringify({"id":42,"sessionName":this.game.name});
+          var requestOptions = {
+            method: 'POST',
+            headers: myHeaders,
+            body: raw,
+            redirect: 'follow'
+          };
+
+
+          var response = await fetch("http://localhost:5000/game/marathon/start", requestOptions);
+          const result = await response.json();
+          return result;
+        }
 
       }
   });
@@ -57,32 +88,46 @@ function showResults(throws) {
   }
   return result;
 }
-async function getThrowResults(throws) {
-  var result = []
-  for (var i = 0; i < throws; i++) {
-    result.push(Math.floor(Math.random() * 6))
-  }
-  return result
-
-  // if (!Number.isInteger(throws)) throw 'Paramater is not an integer';
-  // var myHeaders = new Headers();
-  // myHeaders.append("Content-Type", "application/json");
-  //
-  // var raw = JSON.stringify({"faces":6,"count":throws});
-  //
-  // var requestOptions = {
-  //   method: 'POST',
-  //   headers: myHeaders,
-  //   body: raw,
-  //   redirect: 'follow'
-  // };
-  //
-  //
-  // var response = await fetch("http://localhost:5000/api/getDiceResults", requestOptions);
-  // const result = await response.json();
-  // return result;
+async function getThrowResults() {
 
 
+  var myHeaders = new Headers();
+  myHeaders.append("Content-Type", "application/json");
+
+  var raw = JSON.stringify({"id":42,"sessionName":throws});
+
+  var requestOptions = {
+    method: 'POST',
+    headers: myHeaders,
+    body: raw,
+    redirect: 'follow'
+  };
+
+
+  var response = await fetch("http://localhost:5000/api/getDiceResults", requestOptions);
+  const result = await response.json();
+  return result;
+
+
+}
+
+async function post(url , body) {
+  var myHeaders = new Headers();
+  myHeaders.append("Content-Type", "application/json");
+
+  var raw = JSON.stringify(body);
+
+  var requestOptions = {
+    method: 'POST',
+    headers: myHeaders,
+    body: raw,
+    redirect: 'follow'
+  };
+
+
+  var response = await fetch(url, requestOptions);
+  const result = await response.json();
+  return result;
 }
 
 function processStringToArrayNumber (choice) {

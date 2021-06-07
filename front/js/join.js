@@ -1,25 +1,29 @@
 function initApp() {
-  var cookie = JSON.parse(document.cookie.split('; ')[0]);
-  if (typeof cookie.name != "undefined" && cookie.name != null) {
-    window.location = "http://localhost:5000/static/saloon.html";
+  try {
+    var cookie = extractJsonFromCookie();
+  } catch (e) {
+    var cookie = {};
   }
+
+  // if (typeof cookie.name != "undefined" && cookie.name != null) {
+  //   window.location = "http://localhost:5000/static/saloon.html";
+  // }
   var url = new URL(document.URL);
   var session = url.searchParams.get("session");
   lounge = new Vue({
     el : "#app",
     data : {
       session : session,
-      name : "",
-      avatar : "",
+      nickname : "San Goku",
+      avatar : 1,
     } ,
     methods : {
-      checkForm : async function () {
+      validate : async function () {
         var myHeaders = new Headers();
         myHeaders.append("Content-Type", "application/json");
-        var raw = JSON.stringify({"name": this.name,
+        var raw = JSON.stringify({"name": this.nickname,
                                   "avatar": this.avatar,
                                   "sessionName": this.session});
-        console.log(raw);
         var response_player = await fetch("/session/join", {
           method: 'POST',
           redirect: 'follow',
@@ -27,7 +31,7 @@ function initApp() {
           body: raw,
         });
         const player = await response_player.json();
-        document.cookie = JSON.stringify(player);
+        document.cookie = "JS=" + JSON.stringify(player) + '; SameSite=Strict';
         window.location = "saloon.html";
       }
     }
