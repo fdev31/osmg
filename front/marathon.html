@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>Le Jeu de dés</title>
+  </head>
+  <body onload="initApp()">
+<h1>Le Jeu de dés Marathon</h1>
+<div id="app">
+    <div class="">
+      <h2>Joueur</h2>
+      <ul>
+        <li v-for="item in game.players" >
+         <img :src="'/static/img/avatar/' + item.avatar + '.svg'" width="75" alt="">  {{ item.name }}
+        </li>
+      </ul>
+
+    </div>
+    <div class="">
+      <span>restant:</span> <span> {{ remain }} kilomètres</span>
+    </div>
+    <div class="">
+      <span>action:</span> <span> {{ player_action }} </span>
+    </div>
+    <span>Résultat :</span> <div id="dice_results">
+      <span v-for="item in dice_throws">{{ item }}</span>
+
+    </div>  <span>{{ result }}</span>
+
+
+    <br>
+    <label>Mise</label><input v-model="choice" type="number" name="" min="0"value="0">
+    <br>
+    <button v-if="player_action='Lancer le dé'" v-on:click="throw_dices" type="button" name="button">{{ player_action }}</button>
+    <button v-on:click="player_advance" type="button" name="button">Avancer</button>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+<script src="js/dice.js" charset="utf-8"></script>
+  </body>
+</html>
