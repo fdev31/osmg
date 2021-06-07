@@ -1,5 +1,3 @@
-console.log(extractJsonFromCookie());
-
 function initApp() {
    lounge = new Vue({
     el : "#app",
