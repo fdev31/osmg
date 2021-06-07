@@ -10,3 +10,8 @@ function extractJsonFromCookie() {
     }
   }
 }
+
+function setEventStreamHandler(handler , topicName) {
+  const evtSource = new EventSource(`/stream?topic=${topicName}`);
+  evtSource.addEventListener("update", (event) => handler(JSON.parse(event.data)) );
+}
