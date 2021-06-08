@@ -11,20 +11,21 @@
 <h1>Le Jeu de dés Marathon</h1>
 <div id="app">
     <div class="">
-      <h2>Joueur</h2>
-        <div v-for="item in game.players" class="avatar">
-         <img :src="'/static/img/avatar/' + item.avatar + '.svg'" width="75" alt="">  {{ item.name }}
+        <h2>Joueur</h2>
+        <div class="playerlist">
+            <div v-for="item in game.players" class="avatar">
+                <img :src="'/static/img/avatar/' + item.avatar + '.svg'" width="75" alt="">  {{ item.name }}
+            </div>
         </div>
-
     </div>
     <div class="">
-      <span>restant:</span> <span> {{ remain }} kilomètres</span>
+        <span>restant:</span> <span> {{ remain }} kilomètres</span>
     </div>
     <div class="">
-      <span>action:</span> <span> {{ player_action }} </span>
+        <span>action:</span> <span> {{ player_action }} </span>
     </div>
     <span>Résultat :</span> <div id="dice_results">
-      <span v-for="item in dice_throws">{{ item }}</span>
+        <span v-for="item in dice_throws">{{ item }}</span>
 
     </div>
 

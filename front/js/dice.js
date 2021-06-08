@@ -3,17 +3,16 @@
 // Le client doit connaitre sa propre identité
 // Api Start lance la partie. Elle doit se lancer quand tout le monde a fait start ?
 function initApp() {
+    let host = document.location.host;
+    try {
+        var cookie = extractJsonFromCookie();
+    } catch (e) {
+        window.location = `http://${host}/static/index.html`;
+    }
 
-
-  try {
-    var cookie = extractJsonFromCookie();
-  } catch (e) {
-    window.location = "http://localhost:5000/static/index.html";
-  }
-
-  if (typeof cookie.name == "undefined" || cookie.name == null) {
-    window.location = "http://localhost:5000/static/saloon.html";
-  }
+    if (typeof cookie.name == "undefined" || cookie.name == null) {
+        window.location = `http://${host}/static/saloon.html`;
+    }
   marathon = new Vue({
       el: "#app",
       data: {
@@ -22,11 +21,12 @@ function initApp() {
           remain : 42195,
           choice : 0,
           game : cookie,
+          host: document.location.host,
           status : "waiting"
       },
       methods: {
         throw_dices : async function () {
-          this.dice_throws = await post("http://localhost:5000/game/marathon/throwDice", {
+          this.dice_throws = await post(`http://${host}/game/marathon/throwDice`, {
             "id":parseInt(this.game.myId),
             "sessionName":this.game.name
           });
@@ -35,7 +35,7 @@ function initApp() {
         player_advance : async function() {
           var choice = processStringToArrayNumber(this.choice.toString())
           if ( arrayEquals( choice, this.dice_throws)) {
-            action = await post(`http://localhost:5000/game/marathon/validateDice?value=${this.choice}`, {
+            action = await post(`http://${host}/game/marathon/validateDice?value=${this.choice}`, {
               "id":parseInt(this.game.myId),
               "sessionName":this.game.name
             });
@@ -43,7 +43,7 @@ function initApp() {
           }
         },
         startGame : async function() {
-          start = await post("http://localhost:5000/game/marathon/start", {
+          start = await post(`http://${host}/game/marathon/start`, {
             "id":this.game.myId,
             "sessionName":this.game.name
           });
@@ -86,7 +86,7 @@ async function getThrowResults() {
   };
 
 
-  var response = await fetch("http://localhost:5000/api/getDiceResults", requestOptions);
+  var response = await fetch(`http://${document.location.host}/api/getDiceResults`, requestOptions);
   const result = await response.json();
   return result;
 

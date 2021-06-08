@@ -29,7 +29,7 @@ async def startGame(player: PlayerIdentifier):
              # all players are ready!
              await conn.set(f'S{player.sessionName}:startTime', int(time.time()))
              await publishEvent(player.sessionName, conn, cat="start", msg="game started")
-    
+
 async def isPlayerTurn(conn, prefix, playerId):
     print(prefix+"curPlayer")
     curPlayer = await conn.get(prefix+"curPlayer")
