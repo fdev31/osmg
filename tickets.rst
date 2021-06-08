@@ -63,17 +63,6 @@ Do something between turn of other player
 
 --------------------------------------------------------------------------------
 
-Selected avatar color to be inverted
-====================================
-
-:bugid: 6
-:created: 2021-06-06T14:54:52
-:priority: 0
-
--Start the game immediately
-
---------------------------------------------------------------------------------
-
 Handle errors on dice throws (421 dice already thrown)
 ======================================================
 
