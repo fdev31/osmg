@@ -32,3 +32,14 @@ function extractList(l) {
         r.push(extractObj(l[i]));
     return r;
 }
+
+function setupStreamEventHandler(topic, handlers) {
+    setEventStreamHandler((data) => {
+        if(handlers[data.cat]) {
+            handlers[data.cat](data)
+        } else {
+            console.error("No handler for "+data.cat);
+            console.log(data);
+        }
+    }, topic);
+}

@@ -37,13 +37,14 @@ function initApp() {
         },
         player_advance : async function() {
           var choice = processStringToArrayNumber(this.choice.toString())
-          if ( arrayEquals( choice, this.dice_throws)) {
+// XXX: will grey out the buttons instead
+//          if ( arrayEquals( choice, this.dice_throws)) {
             action = await post(`http://${host}/game/marathon/validateDice?value=${this.choice}`, {
               "id":parseInt(this.game.myId),
               "sessionName":this.game.name
             });
             this.player_action =`Lancer le dé`;
-          }
+//          }
         },
         startGame : async function() {
           start = await post(`http://${host}/game/marathon/start`, {
@@ -61,14 +62,7 @@ function initApp() {
 
       }
   });
-    setEventStreamHandler((data) => {
-        if(handlers[data.cat]) {
-            handlers[data.cat](data)
-        } else {
-            console.error("No handler for "+data.cat);
-            console.debug(data);
-        }
-    }, marathon.game.name);
+    setupStreamEventHandler(marathon.game.name, handlers);
 }
 
 function updateState() {

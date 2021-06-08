@@ -14,12 +14,5 @@ function initApp() {
         el : "#app",
         data : data
     });
-    setEventStreamHandler((data) => {
-        if(handlers[data.cat]) {
-            handlers[data.cat](data)
-        } else {
-            console.error("No handler for "+data.cat);
-            console.debug(data);
-        }
-    }, lounge.name);
+    setupStreamEventHandler(lounge.name, handlers);
 }
