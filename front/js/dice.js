@@ -2,6 +2,9 @@
 // Il faut vérifier que chacun soit synchrone avec l'état de la partie
 // Le client doit connaitre sa propre identité
 // Api Start lance la partie. Elle doit se lancer quand tout le monde a fait start ?
+
+handlers = {}
+
 function initApp() {
     let host = document.location.host;
     try {
@@ -58,6 +61,14 @@ function initApp() {
 
       }
   });
+    setEventStreamHandler((data) => {
+        if(handlers[data.cat]) {
+            handlers[data.cat](data)
+        } else {
+            console.error("No handler for "+data.cat);
+            console.debug(data);
+        }
+    }, marathon.game.name);
 }
 
 function updateState() {
