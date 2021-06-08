@@ -11,7 +11,10 @@ function initApp() {
           name : data.name
         }
       lounge.players.push(newPlayer);
+
+    setCookie(lounge)
     }
+
 
   },
   lounge.name);

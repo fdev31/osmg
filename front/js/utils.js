@@ -11,6 +11,11 @@ function extractJsonFromCookie() {
   }
 }
 
+function setCookie(data) {
+  document.cookie = "JS=" + JSON.stringify(data) + '; SameSite=Strict';
+  return document.cookie;
+}
+
 function setEventStreamHandler(handler , topicName) {
   const evtSource = new EventSource(`/stream?topic=${topicName}`);
   evtSource.addEventListener("update", (event) => handler(JSON.parse(event.data)) );

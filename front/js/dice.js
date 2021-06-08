@@ -8,7 +8,7 @@ function initApp() {
   try {
     var cookie = extractJsonFromCookie();
   } catch (e) {
-    // window.location = "http://localhost:5000/static/index.html";
+    window.location = "http://localhost:5000/static/index.html";
   }
 
   if (typeof cookie.name == "undefined" || cookie.name == null) {
@@ -17,8 +17,7 @@ function initApp() {
   marathon = new Vue({
       el: "#app",
       data: {
-          player_action : "Lancer le dé",
-          result: "Pas de dé lancé",
+          player_action : "Commencez le jeu",
           dice_throws : [],
           remain : 42195,
           choice : 0,
@@ -27,53 +26,34 @@ function initApp() {
       },
       methods: {
         throw_dices : async function () {
-          this.dice_throws = await this.getThrowResults(4);
-
-          this.result = showResults(this.dice_throws);
-          this.player_action =`Avancez de ${this.player_action} km`;
+          this.dice_throws = await post("http://localhost:5000/game/marathon/throwDice", {
+            "id":parseInt(this.game.myId),
+            "sessionName":this.game.name
+          });
+          this.player_action =`A votre tour`;
         },
         player_advance : async function() {
-          if ( arrayEquals( processStringToArrayNumber(this.choice), this.dice_throws)) {
-            action = post("http://localhost:5000/game/marathon/throwDice", {
-              "id":42,
+          var choice = processStringToArrayNumber(this.choice.toString())
+          if ( arrayEquals( choice, this.dice_throws)) {
+            action = await post(`http://localhost:5000/game/marathon/validateDice?value=${this.choice}`, {
+              "id":parseInt(this.game.myId),
               "sessionName":this.game.name
             });
             this.player_action =`Lancer le dé`;
           }
         },
-        getThrowResults : async function() {
-          var myHeaders = new Headers();
-          myHeaders.append("Content-Type", "application/json");
-
-          var raw = JSON.stringify({"id":42,"sessionName":this.game.name});
-          var requestOptions = {
-            method: 'POST',
-            headers: myHeaders,
-            body: raw,
-            redirect: 'follow'
-          };
-
-
-          var response = await fetch("http://localhost:5000/game/marathon/throwDice", requestOptions);
-          const result = await response.json();
-          return result;
-        },
         startGame : async function() {
-          var myHeaders = new Headers();
-          myHeaders.append("Content-Type", "application/json");
-
-          var raw = JSON.stringify({"id":42,"sessionName":this.game.name});
-          var requestOptions = {
-            method: 'POST',
-            headers: myHeaders,
-            body: raw,
-            redirect: 'follow'
-          };
-
-
-          var response = await fetch("http://localhost:5000/game/marathon/start", requestOptions);
-          const result = await response.json();
-          return result;
+          start = await post("http://localhost:5000/game/marathon/start", {
+            "id":this.game.myId,
+            "sessionName":this.game.name
+          });
+          this.player_action =`Lancer le dé`;
+          return start;
+        },
+        finalOwnData : function() {
+          for (var [key , player] of this.game.playersData) {
+            console.log(key.substring(0,1))
+          }
         }
 
       }
@@ -96,7 +76,7 @@ async function getThrowResults() {
   var myHeaders = new Headers();
   myHeaders.append("Content-Type", "application/json");
 
-  var raw = JSON.stringify({"id":42,"sessionName":throws});
+  var raw = JSON.stringify({"id":this.game.myId,"sessionName":throws});
 
   var requestOptions = {
     method: 'POST',
@@ -141,7 +121,7 @@ function processStringToArrayNumber (choice) {
   return res;
 }
 function arrayEquals(arr1 , arr2) {
-  if (!Array.isArray(arr1) || !Array.isArray(arr2)) throw "arguments must be Array objects";
+  if (!Array.isArray(arr1) || !Array.isArray(arr2)) throw `arguments must be Array objects , ${typeof arr1} and ${typeof arr2} given`;
   if (arr1.length != arr2.length)return false;
   arr1.sort();
   arr2.sort();
