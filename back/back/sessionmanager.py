@@ -90,6 +90,9 @@ async def makeSession() -> Session:
     logger.debug(f"New session {uid}")
     return sess
 
+async def disconnectPlayer(playerId):
+    return publishEvent(player.sessionName, None, cat='disconnectPlayer', name=playerId)
+    # TODO: mark as not ready
 
 async def addPlayer(player: newPlayer) -> Session:
     " Add a player to an existing session "

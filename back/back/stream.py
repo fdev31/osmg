@@ -3,6 +3,7 @@ import logging
 from fastapi import Request
 from sse_starlette.sse import EventSourceResponse
 
+from back.sessionManager import disconnectPlayer
 from back.globalHandlers import getRedis
 
 logger = logging.getLogger("Stream")
@@ -12,6 +13,7 @@ async def event_source(request, params):
     await channel.subscribe(params)
     async for message in channel.listen():
         if await request.is_disconnected():
+            await disconnectPlayer()
             logger.debug('Request disconnected')
             break
         if message['type'] == 'message':
