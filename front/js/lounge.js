@@ -12,7 +12,7 @@ function initApp() {
         }
       lounge.players.push(newPlayer);
 
-    setCookie(lounge)
+    setCookie(lounge) // throw TypeError : "Converting circular structure to JSON'
     }
 
 
