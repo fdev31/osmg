@@ -1,7 +1,9 @@
 function initApp() {
-   lounge = new Vue({
-    el : "#app",
-    data : extractJsonFromCookie()
+    let data = extractJsonFromCookie();
+    data.host = document.location.host;
+    lounge = new Vue({
+        el : "#app",
+        data : data
   });
   setEventStreamHandler((data) => {
     console.log(data)
