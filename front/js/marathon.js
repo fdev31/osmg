@@ -8,6 +8,9 @@ handlers = {
         if (data.val == marathon.game.myId)
             alert("A toi de jouer!");
     },
+    ready: (data) => {
+        // data.player == id of ready player
+    },
     varUpdate: (data) => {
         console.log(data);
         if (data.var == "diceVal")
