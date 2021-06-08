@@ -1,23 +1,25 @@
+handlers = {
+    'newPlayer': (data)=>{
+        lounge.players.push({
+            avatar : data.avatar,
+            name : data.name
+        });
+        setCookie(extractObj(lounge._data));
+    }
+};
 function initApp() {
     let data = extractJsonFromCookie();
     data.host = document.location.host;
     lounge = new Vue({
         el : "#app",
         data : data
-  });
-  setEventStreamHandler((data) => {
-    console.log(data)
-    if (data.cat == "newPlayer") {
-      var newPlayer = {
-          avatar : data.avatar,
-          name : data.name
+    });
+    setEventStreamHandler((data) => {
+        if(handlers[data.cat]) {
+            handlers[data.cat](data)
+        } else {
+            console.error("No handler for "+data.cat);
+            console.debug(data);
         }
-      lounge.players.push(newPlayer);
-
-    setCookie(lounge) // throw TypeError : "Converting circular structure to JSON'
-    }
-
-
-  },
-  lounge.name);
+    }, lounge.name);
 }
