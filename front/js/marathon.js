@@ -3,7 +3,30 @@
 // Le client doit connaitre sa propre identité
 // Api Start lance la partie. Elle doit se lancer quand tout le monde a fait start ?
 
-handlers = {}
+handlers = {
+    curPlayer: (data) => {
+        if (data.val == marathon.game.myId)
+            alert("A toi de jouer!");
+    },
+    varUpdate: (data) => {
+        console.log(data);
+        if (data.var == "diceVal")
+            console.log(data.player, marathon.game.myId);
+            if (data.player == marathon.game.myId) {
+                marathon.remain = data.val;
+                marathon.choice = data.val;
+            }
+    },
+    endOfGame: (data) => {
+        message = data.message;
+        for (let player of marathon.game.players) {
+            if (player.id == data.player) {
+                message += "\nPlayer " + player.name + " wins!";
+            }
+        }
+        alert(message);
+    }
+};
 
 function initApp() {
     let host = document.location.host;
