@@ -90,7 +90,7 @@ async def validateDice(player: PlayerIdentifier, value: str):
             if nbLosers == nbPlayers - 1:
                 await publishEvent(player.sessionName, conn, cat="endOfGame", message="We have a winner!", player=player.id)
 
-        if curPlayer + 1 >= nbPlayers:
+        if curPlayer >= nbPlayers:
             turn = await conn.incr(g_prefix + "turns")
             await publishEvent(player.sessionName, conn, cat="newTurn", val=turn)
             await conn.set(g_prefix + "curPlayer", 0)
