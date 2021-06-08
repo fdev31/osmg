@@ -63,6 +63,8 @@ async def validateDice(player: PlayerIdentifier, value: str):
     propName = prefix + "_diceValue"
     newVal = None
     async with redis.client() as conn:
+        if not await isPlayerTurn(conn, g_prefix, player.id):
+            return HTTPException(httpstatus.HTTP_403_FORBIDDEN, "Not your turn!")
         previous = json.loads(await conn.get(propName))
         current = [int(x) for x in value]
         try:
@@ -88,10 +90,14 @@ async def validateDice(player: PlayerIdentifier, value: str):
             if nbLosers == nbPlayers - 1:
                 await publishEvent(player.sessionName, conn, cat="endOfGame", message="We have a winner!", player=player.id)
 
-        if curPlayer +1 >= nbPlayers:
+        if curPlayer + 1 >= nbPlayers:
             turn = await conn.incr(g_prefix + "turns")
-            await publishEvent(player.sessionName, conn, cat="new turn", val=turn)
+            await publishEvent(player.sessionName, conn, cat="newTurn", val=turn)
             await conn.set(g_prefix + "curPlayer", 0)
+            curPlayer = 0
+
+        curPlayerId = await conn.lindex(g_prefix + "playerOrder", curPlayer)
+        await publishEvent(player.sessionName, conn, cat="curPlayer", val=curPlayerId)
 
     return {"diceValue": newVal}
 
