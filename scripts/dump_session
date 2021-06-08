@@ -52,9 +52,10 @@ async def main():
             for k, v in sorted(session_data.items()):
                 if k in ('players', 'players_data'):
                     if k == 'players':
-                        showPlayersInfo('Player', v)
-                        print("    player data:")
-                        showPlayersInfo(None, session_data['players_data'])
+                        for playername, v in v.items():
+                            showPlayersInfo('Player '+playername, v)
+                            print("    player data:")
+                            showPlayersInfo(None, session_data['players_data'][playername])
                 elif k == 'game_data':
                     print(f'  * {k}')
                     for k, v in sorted(v.items()):
@@ -63,11 +64,10 @@ async def main():
                     print(f"  * {k:14s} : {v}")
 
 def showPlayersInfo(title, pi):
+    if title:
+        print(title)
     for name, info in sorted(pi.items()):
-        if title:
-            print(f'  * {title} "{name}"')
-        for k, v in info.items():
-            print(f'     - {k:14} : {v}')
+        print(f'     - {name:14} : {info}')
 
 if __name__ == "__main__":
     asyncio.run(main())
