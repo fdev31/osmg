@@ -17,7 +17,6 @@ handlers = {
             console.log(data.player, marathon.game.myId);
             if (data.player == marathon.game.myId) {
                 marathon.remain = data.val;
-                marathon.choice = data.val;
             }
     },
     newTurn: (data) => {
@@ -63,6 +62,7 @@ function initApp() {
             "id":parseInt(this.game.myId),
             "sessionName":this.game.name
           });
+          this.choice = this.dice_throws.join('');
           this.player_action =`A votre tour`;
         },
         player_advance : async function() {
