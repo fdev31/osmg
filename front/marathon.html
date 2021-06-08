@@ -10,16 +10,15 @@
   <body onload="initApp()">
 <h1>Le Jeu de dés Marathon</h1>
 <div id="app">
-    <div class="">
-        <h2>Joueur</h2>
-        <div class="playerlist">
-            <div v-for="item in game.players">
-                <div  :class="item.id == game.myId ?'avatar':'myavatar'">
-                <img :src="'/static/img/avatar/' + item.avatar + '.svg'" width="75" alt="">  {{ item.name }}
-                </div>
+    <div class="playerlist">
+        <div v-for="item in game.players">
+            <div  :class="item.id == game.myId ?'avatar':'myavatar'">
+            <img :src="'/static/img/avatar/' + item.avatar + '.svg'" width="75" alt="">  {{ item.name }}
             </div>
         </div>
     </div>
+    <h2>Joueur</h2>
+    <h3>Tour {{turn}}</h3>
     <div class="">
         <span>restant:</span> <span> {{ remain }} kilomètres</span>
     </div>

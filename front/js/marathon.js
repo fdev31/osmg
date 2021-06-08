@@ -17,6 +17,9 @@ handlers = {
                 marathon.choice = data.val;
             }
     },
+    newTurn: (data) => {
+        marathon.turn = data.val;
+    },
     endOfGame: (data) => {
         message = data.message;
         for (let player of marathon.game.players) {
@@ -45,6 +48,7 @@ function initApp() {
           player_action : "Commencez le jeu",
           dice_throws : [],
           remain : 42195,
+          turn: 0,
           choice : 0,
           game : cookie,
           host: document.location.host,
