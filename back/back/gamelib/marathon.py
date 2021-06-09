@@ -16,8 +16,8 @@ from .interfaces import GameInterface
 
 logger = logging.getLogger('marathon')
 
-async def startGame(player: PlayerIdentifier, tasks: BackgroundTasks):
-    " Notifies that some player is ready to start the game "
+async def startGame(player: PlayerIdentifier, tasks: BackgroundTasks) -> None:
+    """ Notifies that some player is ready to start the game """
     redis = getRedis()
     g_prefix = getGameDataPrefix(player.sessionName)
     async with redis.client() as conn:
@@ -30,7 +30,7 @@ async def startGame(player: PlayerIdentifier, tasks: BackgroundTasks):
         await conn.set(f'S{player.sessionName}:startTime', int(time.time()))
 
         async def checkStartOfGame():
-            await asyncio.sleep(2);
+            await asyncio.sleep(1);
             nbPlayersReady = await conn.scard(pr)
             if int(nbPlayersReady) == int(await conn.get(getSessionPrefix(player.sessionName)+'nbPlayers')):
                 # all players are ready!
@@ -64,7 +64,7 @@ async def throwDice(player: PlayerIdentifier) -> List[int]:
         await conn.set(propName, dumps(dices))
     return dices
 
-async def validateDice(player: PlayerIdentifier, value: str):
+async def validateDice(player: PlayerIdentifier, value: str) -> None:
     """ Validate a previously thrown dice with a new order """
     redis = getRedis()
     prefix = getGameDataPrefix(player.sessionName, player.id)
@@ -88,7 +88,6 @@ async def validateDice(player: PlayerIdentifier, value: str):
         await publishEvent(player.sessionName, conn, cat="varUpdate", var="diceValue", val=newVal, player=player.id)
         curPlayer = int(await conn.incr(g_prefix+"curPlayer"))
         await turnLogic(newVal, curPlayer, player, conn)
-    return {"diceValue": newVal}
 
 async def turnLogic(diceValue, curPlayer: int, player: PlayerIdentifier, conn=None):
     if not conn:
@@ -134,10 +133,14 @@ class DiceInterface(GameInterface):
         }
 
     actions = {
-        'start': startGame,
-        'throwDice': dict(handler=throwDice,
-            response_model=List[int],
+        'start': dict(handler=startGame,
+            response_model=None,
             responses={
+                409: {"description": "player already exists"},
+            }),
+        'throwDice': dict(handler=throwDice,
+            response_model = List[int],
+            responses = {
                 403: {'description': "not your turn"},
                 421: {'description': "you already did this action"},
                 200: {
@@ -148,7 +151,13 @@ class DiceInterface(GameInterface):
                         }
                     }
                 }}),
-        'validateDice': validateDice,
+        'validateDice': dict(handler=validateDice,
+            response_model = None,
+            responses = {
+                403: {'description': "you tried to played but it's another player's turn"},
+                421: {'description': "cheating attempt detected (wrong dice!)"}
+            }
+        )
     }
 
 logger = logging.getLogger(DiceInterface.name)

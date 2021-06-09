@@ -136,5 +136,10 @@ async def addPlayer(player: newPlayer) -> Session:
 
 def init(app, config):
     setRedis(aioredis.from_url('redis://'+config.redis_server,  decode_responses=True))
-    app.post('/session/new', response_model=Session)(makeSession)
-    app.post('/session/join', response_model=Session)(addPlayer)
+    app.post('/session/new',
+        response_model=Session)(makeSession)
+    app.post('/session/join',
+        responses={
+            409: {'description': "player already joined"},
+        },
+        response_model=Session)(addPlayer)

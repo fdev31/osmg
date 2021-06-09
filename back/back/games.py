@@ -1,6 +1,8 @@
 import importlib
 import logging
 
+from typing import Dict
+
 from back.sessionmanager import registerGame
 
 logger = logging.getLogger()
@@ -14,7 +16,7 @@ def listGames() -> dict:
     return gameDB
 
 def init(app, config):
-    app.get('/gamelist')(listGames)
+    app.get('/gamelist', response_model=Dict)(listGames)
 
     for game in GAMES:
         logger.info(f"Game {game}")
