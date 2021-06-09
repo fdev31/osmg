@@ -24,6 +24,12 @@ def init(app, config):
             registerGame(gameName, api)
             for actionName in api.actions:
                 logger.debug(f"importing {game} action: {actionName}")
-                app.post(f'/game/{gameName}/{actionName}')(api.actions[actionName])
+                handler = api.actions[actionName]
+                if hasattr(handler, 'items'): # this is a dict
+                    properties = handler
+                    handler = properties.pop('handler')
+                else:
+                    properties = {}
+                app.post(f'/game/{gameName}/{actionName}', **properties)(handler)
 
     app.get('/gamelist')(listGames)
