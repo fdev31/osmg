@@ -16,8 +16,9 @@ function setCookie(data) {
   return document.cookie;
 }
 
-function setEventStreamHandler(handler , topicName) {
-  const evtSource = new EventSource(`/stream?topic=${topicName}`);
+function setEventStreamHandler(handler , query ) {
+  if (typeof query.topic == "undefined" || typeof query.uid == "undefined") throw "paramater missing"
+  const evtSource = new EventSource(`/stream?topic=${query.topic}&uid=${query.uid}`);
   evtSource.addEventListener("update", (event) => handler(JSON.parse(event.data)) );
 }
 
@@ -28,12 +29,12 @@ function extractObj(o) {
 }
 function extractList(l) {
     let r = [];
-    for (let i=0; i<l.length; i++) 
+    for (let i=0; i<l.length; i++)
         r.push(extractObj(l[i]));
     return r;
 }
 
-function setupStreamEventHandler(topic, handlers) {
+function setupStreamEventHandler(query, handlers) {
     setEventStreamHandler((data) => {
         if(handlers[data.cat]) {
             handlers[data.cat](data)
@@ -41,5 +42,24 @@ function setupStreamEventHandler(topic, handlers) {
             console.error("No handler for "+data.cat);
             console.log(data);
         }
-    }, topic);
+    }, query);
+}
+
+async function post(url , body) {
+  var myHeaders = new Headers();
+  myHeaders.append("Content-Type", "application/json");
+
+  var raw = JSON.stringify(body);
+
+  var requestOptions = {
+    method: 'POST',
+    headers: myHeaders,
+    body: raw,
+    redirect: 'follow'
+  };
+
+
+  var response = await fetch(url, requestOptions);
+  const result = await response.json();
+  return result;
 }

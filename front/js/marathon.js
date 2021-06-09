@@ -8,9 +8,6 @@ handlers = {
         if (data.val == marathon.game.myId)
             alert("A toi de jouer!");
     },
-    ready: (data) => {
-        // data.player == id of ready player
-    },
     varUpdate: (data) => {
         console.log(data);
         if (data.var == "diceVal")
@@ -76,14 +73,6 @@ function initApp() {
             this.player_action =`Lancer le dé`;
 //          }
         },
-        startGame : async function() {
-          start = await post(`http://${host}/game/marathon/start`, {
-            "id":this.game.myId,
-            "sessionName":this.game.name
-          });
-          this.player_action =`Lancer le dé`;
-          return start;
-        },
         finalOwnData : function() {
           for (var [key , player] of this.game.playersData) {
             console.log(key.substring(0,1))
@@ -92,7 +81,7 @@ function initApp() {
 
       }
   });
-    setupStreamEventHandler(marathon.game.name, handlers);
+    setupStreamEventHandler({topic :marathon.game.name , uid : marathon.game.myId}, handlers);
 }
 
 function updateState() {
@@ -128,24 +117,7 @@ async function getThrowResults() {
 
 }
 
-async function post(url , body) {
-  var myHeaders = new Headers();
-  myHeaders.append("Content-Type", "application/json");
 
-  var raw = JSON.stringify(body);
-
-  var requestOptions = {
-    method: 'POST',
-    headers: myHeaders,
-    body: raw,
-    redirect: 'follow'
-  };
-
-
-  var response = await fetch(url, requestOptions);
-  const result = await response.json();
-  return result;
-}
 
 function processStringToArrayNumber (choice) {
   if (typeof choice !== "string") throw "argument must be a string";
