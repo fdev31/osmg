@@ -8,6 +8,14 @@
     <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
   </head>
   <body onload="initApp()">
+    <script>
+      function copyURL() {
+        let w = document.getElementById("link");
+        w.select();
+        w.setSelectionRange(0, 999);
+        document.execCommand("copy");
+      }
+    </script>
 
     <div id="app">
       <div class="">
@@ -22,8 +30,9 @@
 
         <span>{{ gameType}}</span>
       </div>
-      <span>http://{{host}}/r/{{name}}</span>
-      <button type="button" >Inviter</button>
+      <input size="40" type="text" id="link" :value="`http://${host}/r/${name}`"></input>
+      <button type="button" onclick="copyURL()" >Inviter</button>
+      <br/>
       <button v-on:click="startGame" type="button">Jouer</button>
       <!-- <a v:href="'/static/' + gameType + '.html' ">Jouer</a> -->
     </div>
