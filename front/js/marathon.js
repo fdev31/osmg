@@ -5,14 +5,14 @@
 
 handlers = {
     curPlayer: (data) => {
-        if (data.val == marathon.game.myId)
+        if (data.val == marathon.myId)
             alert("A toi de jouer!");
     },
     varUpdate: (data) => {
         console.log(data);
         if (data.var == "diceVal")
-            console.log(data.player, marathon.game.myId);
-            if (data.player == marathon.game.myId) {
+            console.log(data.player, marathon.myId);
+            if (data.player == marathon.myId) {
                 marathon.remain = data.val;
             }
     },
@@ -21,7 +21,7 @@ handlers = {
     },
     endOfGame: (data) => {
         message = data.message;
-        for (let player of marathon.game.players) {
+        for (let player of marathon.players) {
             if (player.id == data.player) {
                 message += "\nPlayer " + player.name + " wins!";
             }
@@ -29,6 +29,12 @@ handlers = {
         alert(message);
     }
 };
+
+const statuses = {
+  "UNINITIALIZED" : 0 ,
+  "LOADING" : 1 ,
+  "WAITING" : 2
+}
 
 function initApp() {
     let host = document.location.host;
@@ -41,34 +47,51 @@ function initApp() {
     if (typeof cookie.name == "undefined" || cookie.name == null) {
         window.location = `http://${host}/static/saloon.html`;
     }
+
+    var settings = {
+      player_action : "Commencez le jeu",
+      dice_throws : [],
+      remain : 42195,
+      turn: 0,
+      choice : 0,
+      host: document.location.host,
+      status : 0,
+      statuses : {
+        "UNINITIALIZED" : 0 ,
+        "LOADING" : 1 ,
+        "WAITING" : 2
+      }
+    }
+
+  var data = Object.assign({} , cookie , settings);
   marathon = new Vue({
       el: "#app",
-      data: {
-          player_action : "Commencez le jeu",
-          dice_throws : [],
-          remain : 42195,
-          turn: 0,
-          choice : 0,
-          game : cookie,
-          host: document.location.host,
-          status : "waiting"
-      },
+      data: data ,
       methods: {
         throw_dices : async function () {
-          this.dice_throws = await post(`http://${host}/game/marathon/throwDice`, {
-            "id":parseInt(this.game.myId),
-            "sessionName":this.game.name
-          });
-          this.choice = this.dice_throws.join('');
-          this.player_action =`A votre tour`;
+          try {
+            this.dice_throws = await post(`http://${host}/game/marathon/throwDice`, {
+              "id":parseInt(this.myId),
+              "sessionName":this.name
+            });
+            this.choice = this.dice_throws.join('');
+            this.player_action =`A votre tour`;
+            console.log("Tout est ok");
+          } catch (e) {
+            this.player_action = "Vous avez déja lancez les dés. Choisissez votre mise";
+            console.log("Attrapé");
+          }
+        },
+        findPlayer : function (id) {
+
         },
         player_advance : async function() {
           var choice = processStringToArrayNumber(this.choice.toString())
 // XXX: will grey out the buttons instead
 //          if ( arrayEquals( choice, this.dice_throws)) {
             action = await post(`http://${host}/game/marathon/validateDice?value=${this.choice}`, {
-              "id":parseInt(this.game.myId),
-              "sessionName":this.game.name
+              "id":parseInt(this.myId),
+              "sessionName":this.name
             });
             this.player_action =`Lancer le dé`;
             this.dice_throws = [];
@@ -76,14 +99,14 @@ function initApp() {
 //          }
         },
         finalOwnData : function() {
-          for (var [key , player] of this.game.playersData) {
+          for (var [key , player] of this.playersData) {
             console.log(key.substring(0,1))
           }
         }
 
       }
   });
-    setupStreamEventHandler({topic :marathon.game.name , uid : marathon.game.myId}, handlers);
+    setupStreamEventHandler({topic :marathon.name , uid : marathon.myId}, handlers);
 }
 
 function updateState() {
@@ -102,7 +125,7 @@ async function getThrowResults() {
   var myHeaders = new Headers();
   myHeaders.append("Content-Type", "application/json");
 
-  var raw = JSON.stringify({"id":this.game.myId,"sessionName":throws});
+  var raw = JSON.stringify({"id":this.myId,"sessionName":throws});
 
   var requestOptions = {
     method: 'POST',

@@ -11,8 +11,8 @@
 <h1>Le Jeu de dés Marathon</h1>
 <div id="app">
     <div class="playerlist">
-        <div v-for="item in game.players">
-            <div  :class="item.id == game.myId ?'myavatar':'avatar'">
+        <div v-for="item in players">
+            <div  :class="item.id == myId ?'myavatar':'avatar'">
             <img :src="'/static/img/avatar/' + item.avatar + '.svg'" width="75" alt="">  {{ item.name }}
             </div>
         </div>
@@ -22,16 +22,17 @@
         <span>restant:</span> <span> {{ remain }} mètres</span>
     </div>
     <div class="">
-        <span>action:</span> <span> {{ player_action }} </span>
+        <span>action:</span> {{ player_action }}
     </div>
-    <span>Résultat :</span> <div id="dice_results">
+    <span>Résultat :</span>
+    <div id="dice_results">
         <span v-for="item in dice_throws">{{ item }}</span>
     </div>
 
     <br>
     <label>Mise</label><input onkeydown="autoCheck()" v-model="choice" type="number" name="" min="0"value="0">
     <br>
-    <button v-if="player_action='Lancer le dé'" v-on:click="throw_dices" type="button" name="button">{{ player_action }}</button>
+    <button v-if="status==statuses.UNINITIALIZED" v-on:click="throw_dices" type="button" name="button">{{ player_action }}</button>
     <button v-on:click="player_advance" type="button" name="button">Avancer</button>
 </div>
     <script>
