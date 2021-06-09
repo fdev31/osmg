@@ -1,7 +1,7 @@
 Tickets
 =======
 
-:total-count: 9
+:total-count: 10
 
 --------------------------------------------------------------------------------
 
@@ -59,7 +59,6 @@ Do something between turn of other player
 :created: 2021-06-06T14:54:52
 :priority: 0
 
--Start the game immediately
 
 --------------------------------------------------------------------------------
 
@@ -70,7 +69,6 @@ Handle errors on dice throws (421 dice already thrown)
 :created: 2021-06-06T14:54:52
 :priority: 0
 
--Start the game immediately
 
 --------------------------------------------------------------------------------
 
@@ -83,21 +81,30 @@ Game dont detect losers
 
 -Start the game immediately
 
+--------------------------------------------------------------------------------
+
 Set a timer for a player turn
-========================
+=============================
 
 :bugid: 9
 :created: 2021-06-06T14:54:52
 :priority: 0
 
--Start the game immediately
-=======
+--------------------------------------------------------------------------------
+
+Start the game immediately
+==========================
+
+:bugid: 10
+:created: 2021-06-09T14:52:59
+:priority: 0
+
 --------------------------------------------------------------------------------
 
 JWT support
 ===========
 
-:bugid: 10
+:bugid: 11
 :created: 2021-06-09T14:52:59
 :priority: 0
 
