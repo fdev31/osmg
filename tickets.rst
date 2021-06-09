@@ -1,7 +1,7 @@
 Tickets
 =======
 
-:total-count: 2
+:total-count: 9
 
 --------------------------------------------------------------------------------
 
@@ -82,3 +82,15 @@ Game dont detect losers
 :priority: 0
 
 -Start the game immediately
+
+--------------------------------------------------------------------------------
+
+JWT support
+===========
+
+:bugid: 9
+:created: 2021-06-09T14:52:59
+:priority: 0
+
+Upgrade the current cookie handling with proper JWT
+https://fastapi.tiangolo.com/tutorial/security/oauth2-jwt/
