@@ -71,6 +71,8 @@ function initApp() {
               "sessionName":this.game.name
             });
             this.player_action =`Lancer le dé`;
+            this.dice_throws = [];
+            this.choice = '';
 //          }
         },
         finalOwnData : function() {
