@@ -3,6 +3,7 @@ import importlib
 import logging
 
 from fastapi import FastAPI
+from fastapi.responses import ORJSONResponse
 
 from .utils import ODict
 
@@ -21,9 +22,9 @@ logging.getLogger('fastapi').setLevel(logLevel)
 logging.getLogger('asyncio').setLevel(logLevel)
 
 if debug:
-    app = FastAPI(debug=True)
+    app = FastAPI(debug=True, default_response_class=ORJSONResponse)
 else:
-    app = FastAPI(debug=False, docs_url=None, redoc_url=None)
+    app = FastAPI(debug=False, docs_url=None, redoc_url=None, default_response_class=ORJSONResponse)
 
 config = ODict(
     static_dir=os.path.join(os.environ['PREFIX'], 'front'),

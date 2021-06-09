@@ -12,7 +12,7 @@
 <div id="app">
     <div class="playerlist">
         <div v-for="item in game.players">
-            <div  :class="item.id == game.myId ?'avatar':'myavatar'">
+            <div  :class="item.id == game.myId ?'myavatar':'avatar'">
             <img :src="'/static/img/avatar/' + item.avatar + '.svg'" width="75" alt="">  {{ item.name }}
             </div>
         </div>
