@@ -20,7 +20,7 @@ async def startGame(player: PlayerIdentifier):
     async with redis.client() as conn:
         pr = prefix+'playersReady'
         if await conn.sismember(pr, player.id):
-            return HTTPException(httpstatus.HTTP_409_CONFLICT, "Action already done")
+            raise HTTPException(httpstatus.HTTP_409_CONFLICT, "Action already done")
         await publishEvent(player.sessionName, conn, cat="ready", player=player.id)
         await conn.sadd(pr, player.id)
         await conn.rpush(prefix+'playerOrder', player.id)
@@ -45,10 +45,10 @@ async def throwDice(player: PlayerIdentifier) -> List[int]:
 
     async with redis.client() as conn:
         if not await isPlayerTurn(conn, gprefix, player.id):
-            return HTTPException(httpstatus.HTTP_403_FORBIDDEN, "Not your turn!")
+            raise HTTPException(httpstatus.HTTP_403_FORBIDDEN, "Not your turn!")
         tmpDice = await conn.get(propName)
         if tmpDice:
-            return HTTPException(httpstatus.HTTP_421_MISDIRECTED_REQUEST, "Dice already thrown")
+            raise HTTPException(httpstatus.HTTP_421_MISDIRECTED_REQUEST, "Dice already thrown")
         remainingDistance = await conn.get(prefix+'diceValue')
 
         dices = [random.randint(1, 6) for x in range(min(4, len(remainingDistance)))]
@@ -64,14 +64,14 @@ async def validateDice(player: PlayerIdentifier, value: str):
     newVal = None
     async with redis.client() as conn:
         if not await isPlayerTurn(conn, g_prefix, player.id):
-            return HTTPException(httpstatus.HTTP_403_FORBIDDEN, "Not your turn!")
+            raise HTTPException(httpstatus.HTTP_403_FORBIDDEN, "Not your turn!")
         previous = json.loads(await conn.get(propName))
         current = [int(x) for x in value]
         try:
             for c in current:
                 previous.remove(c)
         except ValueError:
-            return HTTPException(httpstatus.HTTP_421_MISDIRECTED_REQUEST, "Dice not matching")
+            raise HTTPException(httpstatus.HTTP_421_MISDIRECTED_REQUEST, "Dice not matching")
         await conn.delete(propName)
         propName = prefix + "diceValue"
         newVal = await conn.decrby(propName, int(value))
