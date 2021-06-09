@@ -5,3 +5,4 @@ back/build
 back/back.egg-info
 back/dist
 back/**/__pycache__
+done.rst
