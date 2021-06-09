@@ -1,7 +1,7 @@
 Tickets
 =======
 
-:total-count: 10
+:total-count: 11
 
 --------------------------------------------------------------------------------
 
@@ -59,7 +59,6 @@ Do something between turn of other player
 :created: 2021-06-06T14:54:52
 :priority: 0
 
-
 --------------------------------------------------------------------------------
 
 Handle errors on dice throws (421 dice already thrown)
@@ -68,7 +67,6 @@ Handle errors on dice throws (421 dice already thrown)
 :bugid: 7
 :created: 2021-06-06T14:54:52
 :priority: 0
-
 
 --------------------------------------------------------------------------------
 
@@ -110,3 +108,17 @@ JWT support
 
 Upgrade the current cookie handling with proper JWT
 https://fastapi.tiangolo.com/tutorial/security/oauth2-jwt/
+
+--------------------------------------------------------------------------------
+
+Add job queue support
+=====================
+
+:bugid: 11
+:created: 2021-06-09T16:34:38
+:priority: 0
+
+https://arq-docs.helpmanual.io/
+https://python-rq.org/
+
+rabbitmq ?
