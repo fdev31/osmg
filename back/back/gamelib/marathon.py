@@ -121,7 +121,7 @@ class DiceInterface(GameInterface):
     actions = {
         'start': startGame,
         'throwDice': dict(handler=throwDice,
-            response_model=list[int],
+            response_model=List[int],
             responses={
                 403: {'description': "not your turn"},
                 421: {'description': "you already did this action"},
