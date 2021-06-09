@@ -26,9 +26,9 @@ async def event_source(request, params, playerId):
     except asyncio.CancelledError as e:
         await disconnectPlayer(playerId)
 
-async def eventStream(request: Request, player: PlayerIdentifier) -> EventSourceResponse:
+async def eventStream(request: Request, topic: str, uid: str) -> EventSourceResponse:
     " Returns an event source for the provided topic & user "
-    return EventSourceResponse(event_source(request, topic, player.id))
+    return EventSourceResponse(event_source(request, topic, uid))
 
 def init(app, config):
     app.get('/stream')(eventStream)
