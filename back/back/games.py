@@ -14,6 +14,8 @@ def listGames() -> dict:
     return gameDB
 
 def init(app, config):
+    app.get('/gamelist')(listGames)
+
     for game in GAMES:
         logger.info(f"Game {game}")
         mod = importlib.import_module(f'back.gamelib.{game}')
@@ -32,4 +34,3 @@ def init(app, config):
                     properties = {}
                 app.post(f'/game/{gameName}/{actionName}', **properties)(handler)
 
-    app.get('/gamelist')(listGames)

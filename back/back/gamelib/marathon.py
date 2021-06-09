@@ -119,9 +119,21 @@ class DiceInterface(GameInterface):
         }
 
     actions = {
-        'throwDice': throwDice,
-        'validateDice': validateDice,
         'start': startGame,
+        'throwDice': dict(handler=throwDice,
+            response_model=list[int],
+            responses={
+                403: {'description': "not your turn"},
+                421: {'description': "you already did this action"},
+                200: {
+                    'description': "returns dices value",
+                    'content': {
+                        'application/json': {
+                            'example': '[4, 6, 2, 1]'
+                        }
+                    }
+                }}),
+        'validateDice': validateDice,
     }
 
 logger = logging.getLogger(DiceInterface.name)
