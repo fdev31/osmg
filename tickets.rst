@@ -81,3 +81,12 @@ Game dont detect losers
 :priority: 0
 
 -Start the game immediately
+
+Set a timer for a player turn
+========================
+
+:bugid: 9
+:created: 2021-06-06T14:54:52
+:priority: 0
+
+-Start the game immediately
