@@ -1,22 +1,24 @@
 import logging
+import asyncio
 
 from fastapi import Request
 from sse_starlette.sse import EventSourceResponse
 
 from back.models import PlayerIdentifier
-from back.sessionmanager import disconnectPlayer
+from back.sessionmanager import connectPlayer, disconnectPlayer
 from back.globalHandlers import getRedis
 
 logger = logging.getLogger("Stream")
 
-async def event_source(request, params, playerId):
+async def sessionStreamSource(request, topic, playerId):
     channel = getRedis().pubsub()
+    await connectPlayer(topic, playerId)
     try:
-        await channel.subscribe(params)
+        await channel.subscribe(topic)
         async for message in channel.listen():
             if await request.is_disconnected():
-                await disconnectPlayer(playerId)
                 logger.debug('Stream disconnected')
+                await disconnectPlayer(topic, playerId)
                 break
             if message['type'] == 'message':
                 yield {
@@ -24,11 +26,11 @@ async def event_source(request, params, playerId):
                     "data": message['data'],
                 }
     except asyncio.CancelledError as e:
-        await disconnectPlayer(playerId)
+        await disconnectPlayer(topic, playerId)
 
-async def eventStream(request: Request, topic: str, uid: str) -> EventSourceResponse:
+async def gameEventStream(request: Request, topic: str, uid: str) -> EventSourceResponse:
     " Returns an event source for the provided topic & user "
-    return EventSourceResponse(event_source(request, topic, uid))
+    return EventSourceResponse(sessionStreamSource(request, topic, uid))
 
 def init(app, config):
-    app.get('/stream')(eventStream)
+    app.get('/stream')(gameEventStream)

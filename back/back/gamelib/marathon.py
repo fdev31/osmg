@@ -3,7 +3,8 @@ import random
 import logging
 from typing import List
 
-from fastapi import HTTPException
+import asyncio
+from fastapi import HTTPException, BackgroundTasks
 from starlette import status as httpstatus
 
 from back.gamelib.interfaces import GameInterface
@@ -13,22 +14,30 @@ from back.globalHandlers import getRedis, getSessionPrefix, getGameDataPrefix, p
 from back.utils import loads, dumps
 from .interfaces import GameInterface
 
-async def startGame(player: PlayerIdentifier):
+logger = logging.getLogger('marathon')
+
+async def startGame(player: PlayerIdentifier, tasks: BackgroundTasks):
     " Notifies that some player is ready to start the game "
     redis = getRedis()
-    prefix = getGameDataPrefix(player.sessionName)
+    g_prefix = getGameDataPrefix(player.sessionName)
     async with redis.client() as conn:
-        pr = prefix+'playersReady'
+        pr = g_prefix+'playersReady'
         if await conn.sismember(pr, player.id):
             raise HTTPException(httpstatus.HTTP_409_CONFLICT, "Action already done")
         await publishEvent(player.sessionName, conn, cat="ready", player=player.id)
         await conn.sadd(pr, player.id)
-        await conn.rpush(prefix+'playerOrder', player.id)
-        nbPlayersReady = await conn.scard(pr)
-        if nbPlayersReady == await conn.get(getSessionPrefix(player.sessionName)+'nbPlayers'):
-             # all players are ready!
-             await conn.set(f'S{player.sessionName}:startTime', int(time.time()))
-             await publishEvent(player.sessionName, conn, cat="start", msg="game started")
+        await conn.rpush(g_prefix+'playerOrder', player.id)
+        await conn.set(f'S{player.sessionName}:startTime', int(time.time()))
+
+        async def checkStartOfGame():
+            await asyncio.sleep(2);
+            nbPlayersReady = await conn.scard(pr)
+            if int(nbPlayersReady) == int(await conn.get(getSessionPrefix(player.sessionName)+'nbPlayers')):
+                # all players are ready!
+                await publishEvent(player.sessionName, conn, cat="start", msg="game started")
+                await turnLogic(None, 0, player, conn)
+
+        tasks.add_task(checkStartOfGame)
 
 async def isPlayerTurn(conn, prefix, playerId):
     print(prefix+"curPlayer")
@@ -77,29 +86,35 @@ async def validateDice(player: PlayerIdentifier, value: str):
         newVal = await conn.decrby(propName, int(value))
         logger.debug(f"{player} decr dice by {value}, it's now {newVal}")
         await publishEvent(player.sessionName, conn, cat="varUpdate", var="diceValue", val=newVal, player=player.id)
-
-        nbPlayers = int(await conn.get(getSessionPrefix(player.sessionName)+"nbPlayers"))
         curPlayer = int(await conn.incr(g_prefix+"curPlayer"))
+        await turnLogic(newVal, curPlayer, player, conn)
+    return {"diceValue": newVal}
 
-        if newVal == 0: # End of game
+async def turnLogic(diceValue, curPlayer: int, player: PlayerIdentifier, conn=None):
+    if not conn:
+        conn = getRedis()
+
+    g_prefix = getGameDataPrefix(player.sessionName)
+    nbPlayers = int(await conn.get(getSessionPrefix(player.sessionName)+"nbPlayers"))
+
+    if diceValue != None: # check END OF GAME
+        if diceValue == 0: # End of game
             await publishEvent(player.sessionName, conn, cat="endOfGame", message="We have a winner!", player=player.id)
-        elif newVal < 0:
+        elif diceValue < 0:
             await conn.sadd(g_prefix+"losers", player.id)
         else: # check if it's the last player
             nbLosers = int(await conn.scard(g_prefix+"losers"))
             if nbLosers == nbPlayers - 1:
                 await publishEvent(player.sessionName, conn, cat="endOfGame", message="We have a winner!", player=player.id)
 
-        if curPlayer >= nbPlayers:
-            turn = await conn.incr(g_prefix + "turns")
-            await publishEvent(player.sessionName, conn, cat="newTurn", val=turn)
-            await conn.set(g_prefix + "curPlayer", 0)
-            curPlayer = 0
+    if curPlayer >= nbPlayers:
+        turn = await conn.incr(g_prefix + "turns")
+        await publishEvent(player.sessionName, conn, cat="newTurn", val=turn)
+        await conn.set(g_prefix + "curPlayer", 0)
+        curPlayer = 0
 
-        curPlayerId = await conn.lindex(g_prefix + "playerOrder", curPlayer)
-        await publishEvent(player.sessionName, conn, cat="curPlayer", val=curPlayerId)
-
-    return {"diceValue": newVal}
+    curPlayerId = await conn.lindex(g_prefix + "playerOrder", curPlayer)
+    await publishEvent(player.sessionName, conn, cat="curPlayer", val=curPlayerId)
 
 class DiceInterface(GameInterface):
     name = "marathon"

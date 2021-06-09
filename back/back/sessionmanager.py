@@ -90,8 +90,11 @@ async def makeSession() -> Session:
     logger.debug(f"New session {uid}")
     return sess
 
-async def disconnectPlayer(playerId: int):
-    await publishEvent(player.sessionName, None, cat='disconnectPlayer', name=playerId)
+async def connectPlayer(sessionName: str, playerId: str):
+    await publishEvent(sessionName, None, cat='connectPlayer', name=playerId)
+
+async def disconnectPlayer(sessionName: str, playerId: str):
+    await publishEvent(sessionName, None, cat='disconnectPlayer', name=playerId)
     # TODO: mark as not ready
     # TODO: if no players anymore, remove the session
 
