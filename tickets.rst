@@ -12,9 +12,11 @@ Optimize requests
 :created: 2021-06-05T17:23:08
 :priority: 0
 
-- use mset when possible
-- avoid requests when possible
-- review atomicity of keys/values
+- [x] use mset when possible
+- [x] avoid requests when possible
+
+- [x] review atomicity of keys/values:
+    - nbPlayers can be removed (look at array length instead)
 
 --------------------------------------------------------------------------------
 
@@ -27,17 +29,6 @@ Intermission during game
 
 -When a player is idle , give to other player a minigame or a question about the idle player
 -Then show the result in a funny manner
-
---------------------------------------------------------------------------------
-
-Who begin the game
-==================
-
-:bugid: 3
-:created: 2021-06-06T14:54:52
-:priority: 0
-
--Start the game immediately
 
 --------------------------------------------------------------------------------
 
@@ -67,6 +58,8 @@ Handle errors on dice throws (421 dice already thrown)
 :bugid: 7
 :created: 2021-06-06T14:54:52
 :priority: 0
+
+New docs created to detail the errors
 
 --------------------------------------------------------------------------------
 
@@ -104,3 +97,6 @@ https://arq-docs.helpmanual.io/
 https://python-rq.org/
 
 rabbitmq ?
+
+
+Will be used for timeouts...
