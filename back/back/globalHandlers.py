@@ -1,4 +1,4 @@
-import json
+from back.utils import dumps
 
 ctx = {}
 
@@ -9,7 +9,7 @@ def setRedis(handler):
     ctx['redis'] = handler
 
 def publishEvent(topic, client=None, **params):
-    return (client or ctx['redis']).publish(topic, json.dumps(params))
+    return (client or ctx['redis']).publish(topic, dumps(params))
 
 def getSessionPrefix(uid):
     return 'S%s:'%uid

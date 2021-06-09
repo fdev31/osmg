@@ -17,6 +17,8 @@ setup(
         'aiofiles>=0.7.0',
 #        'fastapi-plugins==0.8.1',
         'aiojobs>=0.3.0',
+        'ujson',
+        'orjson',
         'sse-starlette>=0.7.2',
         'hiredis',
         'aioredis',

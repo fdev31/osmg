@@ -1,3 +1,5 @@
+from orjson import dumps, loads
+
 class ODict(dict):
     def __getattr__(self, k):
         try:

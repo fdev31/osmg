@@ -1,4 +1,3 @@
-import json
 import time
 import random
 import logging
@@ -11,6 +10,7 @@ from back.gamelib.interfaces import GameInterface
 from back.sessionmanager import GAME_DATA
 from back.models import PlayerIdentifier
 from back.globalHandlers import getRedis, getSessionPrefix, getGameDataPrefix, publishEvent
+from back.utils import loads, dumps
 from .interfaces import GameInterface
 
 async def startGame(player: PlayerIdentifier):
@@ -52,7 +52,7 @@ async def throwDice(player: PlayerIdentifier) -> List[int]:
         remainingDistance = await conn.get(prefix+'diceValue')
 
         dices = [random.randint(1, 6) for x in range(min(4, len(remainingDistance)))]
-        await conn.set(propName, json.dumps(dices))
+        await conn.set(propName, dumps(dices))
     return dices
 
 async def validateDice(player: PlayerIdentifier, value: str):
@@ -65,7 +65,7 @@ async def validateDice(player: PlayerIdentifier, value: str):
     async with redis.client() as conn:
         if not await isPlayerTurn(conn, g_prefix, player.id):
             raise HTTPException(httpstatus.HTTP_403_FORBIDDEN, "Not your turn!")
-        previous = json.loads(await conn.get(propName))
+        previous = loads(await conn.get(propName))
         current = [int(x) for x in value]
         try:
             for c in current:
