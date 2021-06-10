@@ -7,7 +7,7 @@ from back.sessionmanager import registerGame
 
 logger = logging.getLogger()
 
-GAMES = ['marathon']
+GAMES = ['marathon', 'mock1', 'mock2']
 
 gameDB = {}
 
