@@ -4,8 +4,12 @@
 // Api Start lance la partie. Elle doit se lancer quand tout le monde a fait start ?
 
 handlers = {
+    start : (data) => {
+      marathon.status = 0;
+    },
     curPlayer: (data) => {
         if (data.val == marathon.myId)
+            marathon.status = 0;
             alert("A toi de jouer!");
     },
     varUpdate: (data) => {
@@ -49,18 +53,22 @@ function initApp() {
     }
 
     var settings = {
-      player_action : "Commencez le jeu",
+      player_action : ["Commencez le jeu","Chargement" , "Attendez" , "Avancez" , "Fin du Tour", "Erreur"],
+      statuses : {
+        "UNINITIALIZED" : 0 ,
+        "LOADING" : 1 ,
+        "WAITING" : 2 ,
+        "DICE_THROWN" : 3,
+        "END_TURN" : 4,
+        "ERROR": 5
+      },
+      status : 0,
       dice_throws : [],
       remain : 42195,
       turn: 0,
       choice : 0,
       host: document.location.host,
-      status : 0,
-      statuses : {
-        "UNINITIALIZED" : 0 ,
-        "LOADING" : 1 ,
-        "WAITING" : 2
-      }
+
     }
 
   var data = Object.assign({} , cookie , settings);
@@ -73,17 +81,24 @@ function initApp() {
             this.dice_throws = await post(`http://${host}/game/marathon/throwDice`, {
               "id":parseInt(this.myId),
               "sessionName":this.name
-            });
-            this.choice = this.dice_throws.join('');
-            this.player_action =`A votre tour`;
-            console.log("Tout est ok");
+            })
+
           } catch (e) {
-            this.player_action = "Vous avez déja lancez les dés. Choisissez votre mise";
-            console.log("Attrapé");
+            this.status = this.statuses.ERROR;
           }
+
+          if (!Array.isArray(this.dice_throws)) {
+              this.dice_throws = [];
+            }
+          this.choice = this.dice_throws.join('');
+          this.status = this.statuses.DICE_THROWN;
         },
         findPlayer : function (id) {
-
+            for (var [key , player] of Object.entries(this.playersData)) {
+                if (key.substring(1) == id) {
+                  return player;
+                }
+            }
         },
         player_advance : async function() {
           var choice = processStringToArrayNumber(this.choice.toString())
@@ -93,7 +108,7 @@ function initApp() {
               "id":parseInt(this.myId),
               "sessionName":this.name
             });
-            this.player_action =`Lancer le dé`;
+            this.status = this.statuses.END_TURN;
             this.dice_throws = [];
             this.choice = '';
 //          }
