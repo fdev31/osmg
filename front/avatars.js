@@ -29,13 +29,26 @@ function getMagicIndex(array) {
 
 class Avatar {
     constructor(domRef) {
-        this.ref = domRef;
+        this._ref = domRef;
         this.skincolor = "edb98a";
         this.hairstyle = "longhair";
         this.haircolor = "bb7748_9a4f2b_6f2912";
         this.fabriccolors = "545454";
         this.backgroundcolors = "ffffff";
         this.glassopacity = 0.5;
+    }
+    asObject() {
+        let r = {};
+        for (let k of Object.keys(this)) {
+            if (k[0] != '_') r[k] = this[k];
+        }
+        return r;
+    }
+    asArray() {
+        return Object.values(this.asObject())
+    }
+    asString() {
+        return this.asArray().join(':');
     }
     random() {
         this.skincolor = getMagicIndex(skins);
@@ -57,7 +70,7 @@ class Avatar {
         return this;
     }
     update() {
-        let o = document.querySelector(this.ref);
+        let o = document.querySelector(this._ref);
         setAttr(o.querySelectorAll(".skin #body"), "fill","#"+this.skincolor);
         hide(o.querySelectorAll("#eyes g"));
         show(o.querySelectorAll("#eyes .e_"+this.eyes));
