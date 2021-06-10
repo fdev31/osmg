@@ -58,7 +58,7 @@ async def throwDice(player: PlayerIdentifier) -> List[int]:
         tmpDice = await conn.get(propName)
         if tmpDice:
             raise HTTPException(httpstatus.HTTP_421_MISDIRECTED_REQUEST, "Dice already thrown")
-        remainingDistance = await conn.get(prefix+'diceValue')
+        remainingDistance = await conn.get(prefix+'distance')
 
         dices = [random.randint(1, 6) for x in range(min(4, len(remainingDistance)))]
         await conn.set(propName, dumps(dices))
@@ -82,24 +82,24 @@ async def validateDice(player: PlayerIdentifier, value: str) -> None:
         except ValueError:
             raise HTTPException(httpstatus.HTTP_421_MISDIRECTED_REQUEST, "Dice not matching")
         await conn.delete(propName)
-        propName = prefix + "diceValue"
+        propName = prefix + "distance"
         newVal = await conn.decrby(propName, int(value))
-        logger.debug(f"{player} decr dice by {value}, it's now {newVal}")
-        await publishEvent(player.sessionName, conn, cat="varUpdate", var="diceValue", val=newVal, player=player.id)
+        logger.debug(f"{player} decr remaining distance by {value}, it's now {newVal}")
+        await publishEvent(player.sessionName, conn, cat="varUpdate", var="distance", val=newVal, player=player.id)
         curPlayer = int(await conn.incr(g_prefix+"curPlayer"))
         await turnLogic(newVal, curPlayer, player, conn)
 
-async def turnLogic(diceValue, curPlayer: int, player: PlayerIdentifier, conn=None):
+async def turnLogic(distance, curPlayer: int, player: PlayerIdentifier, conn=None):
     if not conn:
         conn = getRedis()
 
     g_prefix = getGameDataPrefix(player.sessionName)
     nbPlayers = int(await conn.get(getSessionPrefix(player.sessionName)+"nbPlayers"))
 
-    if diceValue != None: # check END OF GAME
-        if diceValue == 0: # End of game
+    if distance != None: # check END OF GAME
+        if distance == 0: # End of game
             await publishEvent(player.sessionName, conn, cat="endOfGame", message="We have a winner!", player=player.id)
-        elif diceValue < 0:
+        elif distance < 0:
             await conn.sadd(g_prefix+"losers", player.id)
         else: # check if it's the last player
             nbLosers = int(await conn.scard(g_prefix+"losers"))
@@ -125,7 +125,7 @@ class DiceInterface(GameInterface):
 
     @staticmethod
     def getPlayerData():
-        return dict(diceValue=42195, turn=0)
+        return dict(distance=42195, turn=0)
 
     @staticmethod
     def getGameData():
