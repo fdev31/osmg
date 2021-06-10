@@ -7,13 +7,13 @@ from back.sessionmanager import registerGame
 
 logger = logging.getLogger()
 
-GAMES = ['marathon']
+GAMES = ['marathon', 'mock1', 'mock2']
 
 gameDB = {}
 
 def listGames() -> dict:
     " list all games by name "
-    return gameDB
+    return gameDB 
 
 def init(app, config):
     app.get('/gamelist', response_model=Dict)(listGames)
@@ -22,9 +22,7 @@ def init(app, config):
         logger.info(f"Game {game}")
         mod = importlib.import_module(f'back.gamelib.{game}')
         for gameName, api in mod.definition.items():
-            gameDB[gameName] = dict(
-                description=api.description
-            )
+            gameDB[gameName] = api.info()
             registerGame(gameName, api)
             for actionName in api.actions:
                 logger.debug(f"importing {game} action: {actionName}")
