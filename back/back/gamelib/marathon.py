@@ -7,7 +7,6 @@ import asyncio
 from fastapi import HTTPException, BackgroundTasks
 from starlette import status as httpstatus
 
-from back.gamelib.interfaces import GameInterface
 from back.sessionmanager import GAME_DATA
 from back.models import PlayerIdentifier
 from back.globalHandlers import getRedis, getSessionPrefix, getGameDataPrefix, publishEvent

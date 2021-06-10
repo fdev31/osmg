@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Dict, Callable, Optional, Any
 
 class GameInterface:
     name : str = "Unknown game"
@@ -27,7 +27,7 @@ class GameInterface:
     def getGameData():
         return {}
 
-    actions = {}
+    actions: Dict[str, Any]  = {}
 
     @classmethod
     def definition(kls):

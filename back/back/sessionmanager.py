@@ -1,12 +1,13 @@
 __all__ = ['getSession', 'registerGame']
 import time
 import logging
+from typing import Dict, Any
 
 import aioredis
 from fastapi import HTTPException
 from starlette import status as httpstatus
 
-from back.models import newPlayer, Session
+from back.models import newPlayer, Session, Player
 from back.globalHandlers import getRedis, setRedis, publishEvent, getSessionPrefix
 
 logger = logging.getLogger("Session")
@@ -26,8 +27,8 @@ async def getSession(uid, client=None) -> Session:
     pattern = getSessionPrefix(uid) + "*"
     all_keys = []
     o = {}
-    players = {}
-    players_data = {}
+    players : Dict[str, dict] = {}
+    players_data : Dict[str, Any] = {}
     game_data = {}
 
     async with (client or getRedis().client()) as conn:
@@ -56,7 +57,7 @@ async def getSession(uid, client=None) -> Session:
     o['players'] = list(players.values())
     o['playersData'] = players_data
     o['gameData'] = game_data
-    return o
+    return Session(**o)
 
 games = {}
 
@@ -102,7 +103,7 @@ async def addPlayer(player: newPlayer) -> Session:
     " Add a player to an existing session "
     sess = await getSession(player.sessionName)
 
-    for p in sess['players']:
+    for p in sess.players:
         if p['name'] == player.name:
             logger.debug(f"Attempt to create same player twice {player.name}")
             raise HTTPException(httpstatus.HTTP_409_CONFLICT, f"A player called {player.name} already exists")
@@ -120,7 +121,7 @@ async def addPlayer(player: newPlayer) -> Session:
     for name, value in player_info.items():
         redisObj[f"{prefix}P{pid}:{name}"] = value
 
-    for name, value in getPlayerInitialData(sess['gameType']):
+    for name, value in getPlayerInitialData(sess.gameType):
         redisObj[f"{prefix}P{pid}:g:{name}"] = value
 
     async with getRedis().client() as conn:

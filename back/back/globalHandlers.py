@@ -1,6 +1,7 @@
+from typing import Dict, Any
 from back.utils import dumps
 
-ctx = {}
+ctx : Dict[str, Any] = {}
 
 def getRedis():
     return ctx['redis']
