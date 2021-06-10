@@ -10,22 +10,50 @@
   <body onload="initApp()" >
       <div id="app">
     <h1>Your info:</h1>
-    <img :src="`./img/avatar/${avatar}.svg`" class="avatar" />
-    <br/>
-    <input v-model:value="nickname" type="text" placeholder="nickname"></input>
-    <select v-model="avatar" type="select">
-      <option v-bind:value="1">Avatar 1</option>
-      <option v-bind:value="2">Avatar 2</option>
-      <option v-bind:value="3">Avatar 3</option>
-    </select>
+    <div class="container">
+          <div class="avatarframe">
+            <img :src="`./img/avatar/${avatar}.svg`" class="avatar" />
+            <select type="select"><option value="1">Avatar 1</option> <option value="2">Avatar 2</option> <option value="3">Avatar 3</option></select>
+          </div>
+            <input type="text" placeholder="Nickname">
+    </div>
+
     <h1>Pick a game:</h1>
+
     <div>
-        <div v-for="(info, game) in games" class="gamebutton">
+      <div class="wrap">
+
+      <div class=tile>
+          <div v-for="(info, game) in games" class="gamebutton">
           <span v-on:click.stop="play_game('{{game}}')">
-            <div><b>{{game.toUpperCase()}}</b></div>
-            {{info.description}}
+            <img src='./img/marathon.jpg'/>
+              <div class="text">
+                <h1>{{game.toUpperCase()}}</h1>
+                <h2 class="animate-text">{{info.description}}</h2>
+                <p class="animate-text">Ici pour mettre une description étendue des règles pancetta bresaola pork chicken meatloaf. Flank sirloin strip steak prosciutto. </p>
+              </div>
           </span>
         </div>
+      </div>
+
+    <div class=tile>
+          <img src='./img/quiz.gif'/>
+            <div class="text">
+              <h1>Dummy Game 2</h1>
+              <h2 class="animate-text">Dummy Description 2</h2>
+              <p class="animate-text">Ici pour mettre une description étendue des règles pancetta bresaola pork chicken meatloaf. Flank sirloin strip steak prosciutto. </p>
+            </div>
+    </div>
+
+    <div class=tile>
+        <img src='./img/arcade.gif'/>
+          <div class="text">
+            <h1>Dummy Game 3</h1>
+            <h2 class="animate-text">Dummy Description 3</h2>
+            <p class="animate-text">Ici pour mettre une description étendue des règles pancetta bresaola pork chicken meatloaf. Flank sirloin strip steak prosciutto. </p>
+          </div>
+    </div>
+
       </div>
     </div>
 
