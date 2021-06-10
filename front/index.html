@@ -1,66 +1,69 @@
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
-  <head>
-    <meta charset="utf-8">
-    <title>Notre jeu génial</title>
-    <link rel="preconnect" href="https://fonts.gstatic.com">
-    <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="styles.css">
-  </head>
-  <body onload="initApp()" >
-      <div id="app">
-    <h1>Your info:</h1>
-    <div class="container">
-          <div class="avatarframe">
-            <img :src="`./img/avatar/${avatar}.svg`" class="avatar" />
-            <select type="select"><option value="1">Avatar 1</option> <option value="2">Avatar 2</option> <option value="3">Avatar 3</option></select>
-          </div>
-            <input v-model:value="nickname" type="text" placeholder="Nickname">
-    </div>
-
-    <h1>Pick a game:</h1>
-
-    <div>
-      <div class="wrap">
-
-      <div class=tile>
-          <div v-for="(info, game) in games" class="gamebutton">
-          <span v-on:click.stop="play_game('{{game}}')">
-            <img src='./img/marathon.jpg'/>
-              <div class="text">
-                <h1>{{game.toUpperCase()}}</h1>
-                <h2 class="animate-text">{{info.description}}</h2>
-                <p class="animate-text">Ici pour mettre une description étendue des règles pancetta bresaola pork chicken meatloaf. Flank sirloin strip steak prosciutto. </p>
-              </div>
-          </span>
-        </div>
-      </div>
-
-    <div class=tile>
-          <img src='./img/quiz.gif'/>
-            <div class="text">
-              <h1>Dummy Game 2</h1>
-              <h2 class="animate-text">Dummy Description 2</h2>
-              <p class="animate-text">Ici pour mettre une description étendue des règles pancetta bresaola pork chicken meatloaf. Flank sirloin strip steak prosciutto. </p>
+    <head>
+        <meta charset="utf-8">
+        <title>Notre jeu génial</title>
+        <link rel="preconnect" href="https://fonts.gstatic.com">
+        <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="styles.css">
+    </head>
+    <body onload="initApp()" >
+        <div id="app">
+            <h1>Your info:</h1>
+            <div class="container">
+                <div class="avatarframe">
+                    <img :src="`./img/avatar/${avatar}.svg`" class="avatar" />
+                    <select v-model="avatar" type="select">
+                        <option v-bind:value="1">Avatar 1</option>
+                        <option v-bind:value="2">Avatar 2</option>
+                        <option v-bind:value="3">Avatar 3</option>
+                    </select>
+                </div>
+                <input v-model:value="nickname" type="text" placeholder="Nickname"></input>
             </div>
-    </div>
+            <h1>Pick a game:</h1>
 
-    <div class=tile>
-        <img src='./img/arcade.gif'/>
-          <div class="text">
-            <h1>Dummy Game 3</h1>
-            <h2 class="animate-text">Dummy Description 3</h2>
-            <p class="animate-text">Ici pour mettre une description étendue des règles pancetta bresaola pork chicken meatloaf. Flank sirloin strip steak prosciutto. </p>
-          </div>
-    </div>
+            <div>
+                <div class="wrap">
 
-      </div>
-    </div>
+                    <div class=tile>
+                        <div v-for="(info, game) in games" class="gamebutton">
+                            <span v-on:click.stop="play_game('{{game}}')">
+                                <img src='./img/marathon.jpg'/>
+                                <div class="text">
+                                    <h1>{{game.toUpperCase()}}</h1>
+                                    <h2 class="animate-text">{{info.description}}</h2>
+                                    <p class="animate-text">Ici pour mettre une description étendue des règles pancetta bresaola pork chicken meatloaf. Flank sirloin strip steak prosciutto. </p>
+                                </div>
+                            </span>
+                        </div>
+                    </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
-    <script src="js/utils.js" charset="utf-8"></script>
-    <script src="js/home.js" charset="utf-8"></script>
+                    <div class=tile>
+                        <img src='./img/quiz.gif'/>
+                        <div class="text">
+                            <h1>Dummy Game 2</h1>
+                            <h2 class="animate-text">Dummy Description 2</h2>
+                            <p class="animate-text">Ici pour mettre une description étendue des règles pancetta bresaola pork chicken meatloaf. Flank sirloin strip steak prosciutto. </p>
+                        </div>
+                    </div>
 
-  </body>
+                    <div class=tile>
+                        <img src='./img/arcade.gif'/>
+                        <div class="text">
+                            <h1>Dummy Game 3</h1>
+                            <h2 class="animate-text">Dummy Description 3</h2>
+                            <p class="animate-text">Ici pour mettre une description étendue des règles pancetta bresaola pork chicken meatloaf. Flank sirloin strip steak prosciutto. </p>
+                        </div>
+                    </div>
 
+                </div>
+            </div>
+        </div>
+
+            <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+            <script src="js/utils.js" charset="utf-8"></script>
+            <script src="js/home.js" charset="utf-8"></script>
+
+    </body>
 </html>
