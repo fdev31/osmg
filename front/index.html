@@ -22,14 +22,12 @@
                 <input v-model:value="nickname" type="text" placeholder="Nickname"></input>
             </div>
             <h1>Pick a game:</h1>
-
             <div>
                 <div class="wrap">
-
-                    <div class=tile>
-                        <div v-for="(info, game) in games" class="gamebutton">
+                    <div v-for="(info, game) in games" class="gamebutton">
+                        <div class=tile>
                             <span v-on:click.stop="play_game('{{game}}')">
-                                <img src='./img/marathon.jpg'/>
+                                <img :src="'./img/'+info.card+'.jpg'"/>
                                 <div class="text">
                                     <h1>{{game.toUpperCase()}}</h1>
                                     <h2 class="animate-text">{{info.description}}</h2>
@@ -38,25 +36,6 @@
                             </span>
                         </div>
                     </div>
-
-                    <div class=tile>
-                        <img src='./img/quiz.gif'/>
-                        <div class="text">
-                            <h1>Dummy Game 2</h1>
-                            <h2 class="animate-text">Dummy Description 2</h2>
-                            <p class="animate-text">Ici pour mettre une description étendue des règles pancetta bresaola pork chicken meatloaf. Flank sirloin strip steak prosciutto. </p>
-                        </div>
-                    </div>
-
-                    <div class=tile>
-                        <img src='./img/arcade.gif'/>
-                        <div class="text">
-                            <h1>Dummy Game 3</h1>
-                            <h2 class="animate-text">Dummy Description 3</h2>
-                            <p class="animate-text">Ici pour mettre une description étendue des règles pancetta bresaola pork chicken meatloaf. Flank sirloin strip steak prosciutto. </p>
-                        </div>
-                    </div>
-
                 </div>
             </div>
         </div>
