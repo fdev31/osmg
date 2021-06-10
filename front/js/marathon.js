@@ -8,9 +8,12 @@ handlers = {
       marathon.status = 0;
     },
     curPlayer: (data) => {
-        if (data.val == marathon.myId)
+        console.log(data);
+        marathon.gameData.curPlayer = data.val.toString();
+        if (data.val.toString() === marathon.myId.toString()) {
             marathon.status = 0;
             alert("A toi de jouer!");
+        }
     },
     varUpdate: (data) => {
         console.log(data);
