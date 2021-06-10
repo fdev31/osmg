@@ -11,7 +11,7 @@ handlers = {
         console.log(data);
         marathon.gameData.curPlayer = data.val.toString();
         if (data.val.toString() === marathon.myId.toString()) {
-            marathon.status = 0;
+            marathon.status = 1;
             alert("A toi de jouer!");
         }
     },
@@ -37,12 +37,6 @@ handlers = {
     }
 };
 
-const statuses = {
-  "UNINITIALIZED" : 0 ,
-  "LOADING" : 1 ,
-  "WAITING" : 2
-}
-
 function initApp() {
     let host = document.location.host;
     try {
@@ -56,10 +50,10 @@ function initApp() {
     }
 
     var settings = {
-      player_action : ["Commencez le jeu","Chargement" , "Avancez" , "Attendez" , "Fin du Tour", "Erreur"],
+      player_action : ["En attente des autres joueurs","Lancez les dés" , "Avancez" , "Attendez" , "Fin du Tour", "Erreur"],
       statuses : {
         "UNINITIALIZED" : 0 ,
-        "LOADING" : 1 ,
+        "THROW" : 1 ,
         "DICE_THROWN" : 2,
         "WAITING" : 3 ,
         "END_TURN" : 4,
