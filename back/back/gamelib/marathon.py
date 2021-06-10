@@ -65,7 +65,9 @@ async def throwDice(player: PlayerIdentifier) -> List[int]:
     return dices
 
 async def validateDice(player: PlayerIdentifier, value: str) -> None:
-    """ Validate a previously thrown dice with a new order """
+    """ Validate a previously thrown dice with a new order
+    set value=0 to skip the turn
+     """
     redis = getRedis()
     prefix = getGameDataPrefix(player.sessionName, player.id)
     g_prefix = getGameDataPrefix(player.sessionName)
@@ -74,13 +76,14 @@ async def validateDice(player: PlayerIdentifier, value: str) -> None:
     async with redis.client() as conn:
         if not await isPlayerTurn(conn, g_prefix, player.id):
             raise HTTPException(httpstatus.HTTP_403_FORBIDDEN, "Not your turn!")
-        previous = loads(await conn.get(propName))
-        current = [int(x) for x in value]
-        try:
-            for c in current:
-                previous.remove(c)
-        except ValueError:
-            raise HTTPException(httpstatus.HTTP_421_MISDIRECTED_REQUEST, "Dice not matching")
+        if value != '0':
+            previous = loads(await conn.get(propName))
+            current = [int(x) for x in value]
+            try:
+                for c in current:
+                    previous.remove(c)
+            except ValueError:
+                raise HTTPException(httpstatus.HTTP_421_MISDIRECTED_REQUEST, "Dice not matching")
         await conn.delete(propName)
         propName = prefix + "distance"
         newVal = await conn.decrby(propName, int(value))
