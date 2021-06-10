@@ -53,12 +53,12 @@ function initApp() {
     }
 
     var settings = {
-      player_action : ["Commencez le jeu","Chargement" , "Attendez" , "Avancez" , "Fin du Tour", "Erreur"],
+      player_action : ["Commencez le jeu","Chargement" , "Avancez" , "Attendez" , "Fin du Tour", "Erreur"],
       statuses : {
         "UNINITIALIZED" : 0 ,
         "LOADING" : 1 ,
-        "WAITING" : 2 ,
-        "DICE_THROWN" : 3,
+        "DICE_THROWN" : 2,
+        "WAITING" : 3 ,
         "END_TURN" : 4,
         "ERROR": 5
       },
@@ -88,10 +88,14 @@ function initApp() {
           }
 
           if (!Array.isArray(this.dice_throws)) {
+              console.log(!Array.isArray(this.dice_throws));
               this.dice_throws = [];
-            }
-          this.choice = this.dice_throws.join('');
-          this.status = this.statuses.DICE_THROWN;
+          }
+          else {
+            this.choice = this.dice_throws.join('');
+            this.status = this.statuses.DICE_THROWN;
+          }
+
         },
         findPlayer : function (id) {
             for (var [key , player] of Object.entries(this.playersData)) {
@@ -109,7 +113,6 @@ function initApp() {
               "sessionName":this.name
             });
             this.status = this.statuses.END_TURN;
-            this.dice_throws = [];
             this.choice = '';
 //          }
         },
