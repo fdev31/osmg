@@ -1,7 +1,7 @@
 Tickets
 =======
 
-:total-count: 12
+:total-count: 15
 
 --------------------------------------------------------------------------------
 
@@ -100,3 +100,34 @@ rabbitmq ?
 
 
 Will be used for timeouts...
+
+--------------------------------------------------------------------------------
+
+Look for a way to get const variables in vue app
+================================================
+
+:bugid: 13
+:created: 2021-06-09T21:10:24
+:priority: 0
+
+const values are not in reach of vue templating motor. To ease our coding we must find a way to access it easily
+
+--------------------------------------------------------------------------------
+
+Client should know dice throws
+==============================
+
+:bugid: 14
+:created: 2021-06-10T17:59:40
+:priority: 0
+
+When a player reconnect , client doesnt know his last throws. Thus blocking the player for making his choice
+
+--------------------------------------------------------------------------------
+
+change PlayersData attr from "diceValue" to "remainingPoint"
+============================================================
+
+:bugid: 15
+:created: 2021-06-10T18:00:51
+:priority: 0
