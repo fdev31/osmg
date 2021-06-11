@@ -85,21 +85,21 @@ class Avatar {
         seed = parseInt(seed.join(''));
         let serie = serieMaker(seed);
 
-        this.skincolor        = skins[serie[0]%(skins.length-1)];
-        this.eyes             = eyes[serie[1]%(eyes.length-1)];
-        this.eyebrows         = eyebrows[serie[2]%(eyebrows.length-1)];
-        this.mouth            = mouths[serie[3]%(mouths.length-1)];
-        this.hairstyle        = hairstyles[serie[4]%(hairstyles.length-1)];
-        this.haircolor        = haircolors[serie[5]%(haircolors.length-1)];
-        this.facialhair       = facialhairs[serie[6]%(facialhairs.length-1)];
-        this.clothes          = clothes[serie[7]%(clothes.length-1)];
-        this.backgroundcolors = backgroundcolors[serie[8]%(backgroundcolors.length-1)];
-        this.glasses          = glasses[serie[9]%(glasses.length-1)];
+        this.skincolor        = skins[serie[0]%(skins.length)];
+        this.eyes             = eyes[serie[1]%(eyes.length)];
+        this.eyebrows         = eyebrows[serie[2]%(eyebrows.length)];
+        this.mouth            = mouths[serie[3]%(mouths.length)];
+        this.hairstyle        = hairstyles[serie[4]%(hairstyles.length)];
+        this.haircolor        = haircolors[serie[5]%(haircolors.length)];
+        this.facialhair       = facialhairs[serie[6]%(facialhairs.length)];
+        this.clothes          = clothes[serie[7]%(clothes.length)];
+        this.backgroundcolors = backgroundcolors[serie[8]%(backgroundcolors.length)];
+        this.glasses          = glasses[serie[9]%(glasses.length)];
         this.glassopacity     = 0.1*(serie[10]%10);
-        this.tatoos           = tattoos[serie[11]%(tattoos.length-1)];
-        this.accesories       = accesories[serie[12]%(accesories.length-1)];
-        this.fabriccolors     = fabriccolors[serie[13]%(fabriccolors.length-1)];
-        this.backgroundcolors = backgroundcolors[serie[14]%(backgroundcolors.length-1)];
+        this.tatoos           = tattoos[serie[11]%(tattoos.length)];
+        this.accesories       = accesories[serie[12]%(accesories.length)];
+        this.fabriccolors     = fabriccolors[serie[13]%(fabriccolors.length)];
+        this.backgroundcolors = backgroundcolors[serie[14]%(backgroundcolors.length)];
         this.update();
     }
     debug() {
