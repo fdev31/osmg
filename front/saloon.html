@@ -21,8 +21,8 @@
       <div class="">
         <h2>Joueurs</h2>
         <div v-for="item in players" class="players">
-          <img class="avatar-saloon" v-bind:src="`/static/img/avatar/${item.avatar}.svg`" width="75" alt="" />
-          {{ item.name }}
+            <div :id="'avatar_' + item.id" class="avatar-saloon"></div>
+            <h3>{{ item.name }}</h3>
         </div>
       </div>
       <div class="">
@@ -38,6 +38,7 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+    <script src="/static/avatars.js" charset="utf-8"></script>
     <script src="/static/js/utils.js" charset="utf-8"></script>
     <script src="/static/js/lounge.js" charset="utf-8"></script>
   </body>

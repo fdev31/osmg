@@ -12,8 +12,8 @@
 <div id="app">
     <div class="playerlist">
         <div v-for="item in players">
-            <div  :class="gameData.curPlayer == item.id ?'myavatar':'avatar'">
-            <img :src="'/static/img/avatar/' + item.avatar + '.svg'" width="75" alt="">  {{ item.name }}
+            <div :class="gameData.curPlayer == item.id ?'myavatar':'avatar'">
+                <div :id="'avatar_' + item.id" class="avatar-saloon"></div>  {{ item.name }}
             </div>
         </div>
     </div>
@@ -46,6 +46,7 @@
     </script>
 <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
 <script src="js/utils.js" charset="utf-8"></script>
+<script src="avatars.js" charset="utf-8"></script>
 <script src="js/marathon.js" charset="utf-8"></script>
   </body>
 </html>

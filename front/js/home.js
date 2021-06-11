@@ -1,9 +1,12 @@
-
 let home;
 
 function initApp() {
     fetch('avatars.xml')
-    .then( async (q)=> { document.getElementById('avatar').innerHTML = await q.text(); avatar = new Avatar('#avatar'); avatar.fromName(home.nickname)});
+    .then( async (q) => {
+        document.getElementById('avatar').innerHTML = await q.text();
+        avatar = new Avatar('#avatar');
+        avatar.fromName(home.nickname);
+    });
   home = new Vue({
     el: "#app",
     watch: {

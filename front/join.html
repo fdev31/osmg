@@ -10,9 +10,9 @@
   <body onload="initApp()">
     <div id="app">
       <h1>Your info:</h1>
-      <img :src="`./img/avatar/${avatar}.svg`" class="avatar" />
+      <div id="avatar" class="avatar"></div>
       <br/>
-      <input v-model:value="nickname" type="text" placeholder="nickname"></input>
+      <input v-model:value="nickname" type="text" v-on:keyup="updateAvatar($event.target.value)" placeholder="nickname"></input>
       <select v-model="avatar" type="select">
         <option v-bind:value="1">Avatar 1</option>
         <option v-bind:value="2">Avatar 2</option>
@@ -23,6 +23,7 @@
 
     <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
     <script src="/static/js/utils.js" charset="utf-8"></script>
+    <script src="avatars.js" charset="utf-8"></script>
     <script src="/static/js/join.js" charset="utf-8"></script>
   </body>
 </html>

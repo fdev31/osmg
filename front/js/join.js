@@ -15,6 +15,9 @@ function initApp() {
       avatar : 1,
     } ,
     methods : {
+        updateAvatar : function(text) {
+          avatar.fromName(text);
+      },
       validate : async function () {
         var myHeaders = new Headers();
         myHeaders.append("Content-Type", "application/json");
@@ -40,4 +43,10 @@ function initApp() {
       }
     }
   })
+    fetch('avatars.xml')
+        .then( async (q) => {
+            document.getElementById('avatar').innerHTML = await q.text();
+            avatar = new Avatar('#avatar');
+            avatar.fromName(lounge.nickname);
+        });
 }

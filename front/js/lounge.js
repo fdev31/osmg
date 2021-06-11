@@ -27,4 +27,14 @@ function initApp() {
         }
     });
     setupStreamEventHandler({topic :lounge.name , uid : lounge.myId}, handlers);
+    fetch('avatars.xml')
+    .then( async (q) => {
+        let text =  await q.text();
+        for (let player of lounge.players) {
+            let domid= 'avatar_'+player.id;
+            document.getElementById(domid).innerHTML = text;
+            avatar = new Avatar('#'+domid);
+            avatar.fromName(player.name);
+        }
+    });
 }

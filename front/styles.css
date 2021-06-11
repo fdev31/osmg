@@ -16,7 +16,11 @@ html {
 }
 .avatar-saloon {
     max-height: 30px;
+    display: inline-block;
+    transform-origin: top left;
+    margin-left: 200px;
     vertical-align: bottom;
+    scale: 0.1;
 }
 
 .wrap

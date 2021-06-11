@@ -5,7 +5,7 @@
 
 handlers = {
     start : (data) => {
-      marathon.status = 0;
+        marathon.status = 0;
     },
     curPlayer: (data) => {
         console.log(data);
@@ -51,131 +51,131 @@ function initApp() {
     }
 
     var settings = {
-      player_action : ["En attente des autres joueurs","Lancez les dés" , "Avancez" , "Attendez" , "Fin du Tour", "Erreur"],
-      statuses : {
-        "UNINITIALIZED" : 0 ,
-        "THROW" : 1 ,
-        "DICE_THROWN" : 2,
-        "WAITING" : 3 ,
-        "END_TURN" : 4,
-        "ERROR": 5
-      },
-      status : 0,
-      dice_throws : [],
-      remain : 42195,
-      turn: 0,
-      choice : 0,
-      host: document.location.host,
-
+        player_action : ["En attente des autres joueurs","Lancez les dés" , "Avancez" , "Attendez" , "Fin du Tour", "Erreur"],
+        statuses : {
+            "UNINITIALIZED" : 0 ,
+            "THROW" : 1 ,
+            "DICE_THROWN" : 2,
+            "WAITING" : 3 ,
+            "END_TURN" : 4,
+            "ERROR": 5
+        },
+        status : 0,
+        dice_throws : [],
+        remain : 42195,
+        turn: 0,
+        choice : 0,
+        host: document.location.host,
     }
 
-  var data = Object.assign({} , cookie , settings);
-  marathon = new Vue({
-      el: "#app",
-      data: data ,
-      methods: {
-        throw_dices : async function () {
-          try {
-            this.dice_throws = await post(`http://${host}/game/marathon/throwDice`, {
-              "id":parseInt(this.myId),
-              "sessionName":this.name
-            })
+    var data = Object.assign({} , cookie , settings);
+    marathon = new Vue({
+        el: "#app",
+        data: data ,
+        methods: {
+            throw_dices : async function () {
+                try {
+                    this.dice_throws = await post(`http://${host}/game/marathon/throwDice`, {
+                        "id":parseInt(this.myId),
+                        "sessionName":this.name
+                    })
 
-          } catch (e) {
-            this.status = this.statuses.ERROR;
-          }
+                } catch (e) {
+                    this.status = this.statuses.ERROR;
+                }
 
-          if (!Array.isArray(this.dice_throws)) {
-              console.log(!Array.isArray(this.dice_throws));
-              this.dice_throws = [];
-          }
-          else {
-            this.choice = this.dice_throws.join('');
-            this.status = this.statuses.DICE_THROWN;
-          }
+                if (!Array.isArray(this.dice_throws)) {
+                    console.log(!Array.isArray(this.dice_throws));
+                    this.dice_throws = [];
+                }
+                else {
+                    this.choice = this.dice_throws.join('');
+                    this.status = this.statuses.DICE_THROWN;
+                }
 
-        },
-        findPlayer : function (id) {
-            for (var [key , player] of Object.entries(this.playersData)) {
-                if (key.substring(1) == id) {
-                  return player;
+            },
+            findPlayer : function (id) {
+                for (var [key , player] of Object.entries(this.playersData)) {
+                    if (key.substring(1) == id) {
+                        return player;
+                    }
+                }
+            },
+            player_advance : async function() {
+                var choice = processStringToArrayNumber(this.choice.toString())
+                // XXX: will grey out the buttons instead
+                //          if ( arrayEquals( choice, this.dice_throws)) {
+                action = await post(`http://${host}/game/marathon/validateDice?value=${this.choice}`, {
+                    "id":parseInt(this.myId),
+                    "sessionName":this.name
+                });
+                this.status = this.statuses.END_TURN;
+                this.choice = '';
+                //          }
+            },
+            finalOwnData : function() {
+                for (var [key , player] of this.playersData) {
+                    console.log(key.substring(0,1))
                 }
             }
-        },
-        player_advance : async function() {
-          var choice = processStringToArrayNumber(this.choice.toString())
-// XXX: will grey out the buttons instead
-//          if ( arrayEquals( choice, this.dice_throws)) {
-            action = await post(`http://${host}/game/marathon/validateDice?value=${this.choice}`, {
-              "id":parseInt(this.myId),
-              "sessionName":this.name
-            });
-            this.status = this.statuses.END_TURN;
-            this.choice = '';
-//          }
-        },
-        finalOwnData : function() {
-          for (var [key , player] of this.playersData) {
-            console.log(key.substring(0,1))
-          }
+
         }
-
-      }
-  });
+    });
     setupStreamEventHandler({topic :marathon.name , uid : marathon.myId}, handlers);
+    fetch('avatars.xml')
+        .then( async (q) => {
+            let text =  await q.text();
+            for (let player of marathon.players) {
+                let domid = 'avatar_'+player.id;
+                document.getElementById(domid).innerHTML = text;
+                avatar = new Avatar('#'+domid);
+                avatar.fromName(player.name);
+            }
+        });
 }
 
-function updateState() {
-
-}
 function showResults(throws) {
-  result = ""
-  for (var i = 0; i < throws.length; i++) {
-    result = result + `${throws[i]} `;
-  }
-  return result;
+    result = ""
+    for (var i = 0; i < throws.length; i++) {
+        result = result + `${throws[i]} `;
+    }
+    return result;
 }
 async function getThrowResults() {
+    var myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
 
+    var raw = JSON.stringify({"id":this.myId,"sessionName":throws});
 
-  var myHeaders = new Headers();
-  myHeaders.append("Content-Type", "application/json");
+    var requestOptions = {
+        method: 'POST',
+        headers: myHeaders,
+        body: raw,
+        redirect: 'follow'
+    };
 
-  var raw = JSON.stringify({"id":this.myId,"sessionName":throws});
-
-  var requestOptions = {
-    method: 'POST',
-    headers: myHeaders,
-    body: raw,
-    redirect: 'follow'
-  };
-
-
-  var response = await fetch(`http://${document.location.host}/api/getDiceResults`, requestOptions);
-  const result = await response.json();
-  return result;
-
-
+    var response = await fetch(`http://${document.location.host}/api/getDiceResults`, requestOptions);
+    const result = await response.json();
+    return result;
 }
-
-
 
 function processStringToArrayNumber (choice) {
-  if (typeof choice !== "string") throw "argument must be a string";
-  res = []
-  for (var i = 0; i < choice.length; i++) {
-    res.push(parseInt(choice[i]))
-  }
-  return res;
+    if (typeof choice !== "string") throw "argument must be a string";
+    res = []
+    for (var i = 0; i < choice.length; i++) {
+        res.push(parseInt(choice[i]))
+    }
+    return res;
 }
+
 function arrayEquals(arr1 , arr2) {
-  if (!Array.isArray(arr1) || !Array.isArray(arr2)) throw `arguments must be Array objects , ${typeof arr1} and ${typeof arr2} given`;
-  if (arr1.length != arr2.length)return false;
-  arr1.sort();
-  arr2.sort();
-  isEquals = true;
-  arr1.every(function(element, index) {
-    if (element !== arr2[index]) isEquals = false
-  })
-  return isEquals
+    if (!Array.isArray(arr1) || !Array.isArray(arr2)) throw `arguments must be Array objects , ${typeof arr1} and ${typeof arr2} given`;
+    if (arr1.length != arr2.length)return false;
+    arr1.sort();
+    arr2.sort();
+    isEquals = true;
+    arr1.every(function(element, index) {
+        if (element !== arr2[index]) isEquals = false
+    })
+    return isEquals
 }
