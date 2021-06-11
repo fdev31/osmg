@@ -5,7 +5,7 @@ if [ ! -d venv ]; then
     $PY -m venv venv
 fi
 source venv/bin/activate
-(cd back && $PY setup.py develop)
+(cd server && $PY setup.py develop)
 export PREFIX=$(pwd)
 if [ -z "$DEBUG" ]; then
     export WEB_CONCURRENCY=10
