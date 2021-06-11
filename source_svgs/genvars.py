@@ -28,4 +28,4 @@ for k, v in sorted(data.items()):
             for name in list(v):
                 tmp.extend([name, 'none'])
             v = tmp
-        print("const %s = %r;"%(k, v))
+        print("const %s = %r;"%(k, list(sorted(v))))

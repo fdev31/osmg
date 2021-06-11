@@ -33,7 +33,7 @@ for root, dirs, files in os.walk('.'):
     all_data[root[2:]] = all_data['current']
 
     all_data['current'].append(getHeader(root[2:]))
-    for fname in files:
+    for fname in sorted(files):
         digestSVG(
                 fname[:-4],
                 open(os.path.join(root, fname)).read(),
