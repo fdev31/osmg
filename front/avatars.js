@@ -1,17 +1,18 @@
 const skins = ["ffdbb4","edb98a","fd9841","fcee93","d08b5b","ae5d29","614335"];
-const eyes = ["default","dizzy","eyeroll","happy","close","hearts","side","wink","squint","surprised","winkwacky","cry"];
-const eyebrows = ["default","default2","raised","sad","sad2","unibrow","updown","updown2","angry","angry2"];
-const mouths = ["default","twinkle","tongue","smile","serious","scream","sad","grimace","eating","disbelief","concerned","vomit"];
-const hairstyles = ["bold","longhair","longhairbob","hairbun","longhaircurly","longhaircurvy","longhairdread","nottoolong","miawallace","longhairstraight","longhairstraight2","shorthairdreads","shorthairdreads2","shorthairfrizzle","shorthairshaggy","shorthaircurly","shorthairflat","shorthairround","shorthairwaved","shorthairsides"];
-const haircolors = ["bb7748_9a4f2b_6f2912","404040_262626_101010","c79d63_ab733e_844713","e1c68e_d0a964_b88339","906253_663d32_3b1d16","f8afaf_f48a8a_ed5e5e","f1e6cf_e9d8b6_dec393","d75324_c13215_a31608","59a0ff_3777ff_194bff"];
-const facialhairs = ["none","magnum","fancy","magestic","light"];
-const clothes = ["vneck","sweater","hoodie","overall","blazer"];
-const fabriccolors = ["545454","65c9ff","5199e4","25557c","e6e6e6","929598","a7ffc4","ffdeb5","ffafb9","ffffb1","ff5c5c","e3adff"];
 const backgroundcolors = ["ffffff","f5f6eb","e5fde2","d5effd","d1d0fc","f7d0fc","d0d0d0"];
-const glasses = ["none","rambo","fancy","old","nerd","fancy2","harry"];
-//const glassopacities = ["10","25","50","75","100"];
-const tattoos = ["non","harry","airbender","krilin","front","tribal","tribal2","throat"];
-const accesories = ["none","earphones","earring1","earring2","earring3"];
+const fabriccolors = ["545454","65c9ff","5199e4","25557c","e6e6e6","929598","a7ffc4","ffdeb5","ffafb9","ffffb1","ff5c5c","e3adff"];
+const haircolors = ["bb7748_9a4f2b_6f2912","404040_262626_101010","c79d63_ab733e_844713","e1c68e_d0a964_b88339","906253_663d32_3b1d16","f8afaf_f48a8a_ed5e5e","f1e6cf_e9d8b6_dec393","d75324_c13215_a31608","59a0ff_3777ff_194bff"];
+
+// generated from genvars:
+const accesories = ['earphones', 'none', 'earring1', 'none', 'earring2', 'none', 'earring3', 'none'];
+const clothes = ['blazer', 'sweater', 'vneck', 'overall', 'hoodie'];
+const eyebrows = ['default', 'default2', 'raised', 'sad', 'sad2', 'unibrow', 'updown', 'updown2', 'angry', 'angry2'];
+const eyes = ['default', 'dizzy', 'eyeroll', 'happy', 'close', 'hearts', 'side', 'wink', 'squint', 'surprised', 'winkwacky', 'cry'];
+const facialhair = ['magnum', 'fancy', 'magestic', 'light'];
+const glasses = ['rambo', 'none', 'fancy', 'none', 'old', 'none', 'nerd', 'none', 'fancy2', 'none', 'harry', 'none'];
+const hairstyles = ['longhairstraight2', 'shorthairshaggy', 'hairbun', 'shorthaircurly', 'shorthairwaved', 'longhaircurly', 'longhairbob', 'nottoolong', 'miawallace', 'shorthairdreads', 'shorthairround', 'shorthairdreads2', 'longhaircurvy', 'shorthairsides', 'longhair', 'longhairstraight', 'longhairdread', 'shorthairflat'];
+const mouths = ['vomit', 'twinkle', 'tongue', 'smile', 'serious', 'scream', 'sad', 'grimace', 'eating', 'disbelief', 'default', 'concerned'];
+const tattoos = ['harry', 'none', 'airbender', 'none', 'krilin', 'none', 'tribal2', 'none', 'throat', 'none', 'front', 'none'];
 
 function serieMaker(seed) {
     if (!seed) seed = 42;
@@ -92,7 +93,7 @@ class Avatar {
         this.mouth            = mouths[serie[3]%(mouths.length)];
         this.hairstyle        = hairstyles[serie[4]%(hairstyles.length)];
         this.haircolor        = haircolors[serie[5]%(haircolors.length)];
-        this.facialhair       = facialhairs[serie[6]%(facialhairs.length)];
+        this.facialhair       = facialhair[serie[6]%(facialhair.length)];
         this.clothes          = clothes[serie[7]%(clothes.length)];
         this.backgroundcolors = backgroundcolors[serie[8]%(backgroundcolors.length)];
         this.glasses          = glasses[serie[9]%(glasses.length)];
@@ -110,7 +111,7 @@ class Avatar {
        console.log('mouths',  this.mouth );
        console.log('hairstyles',  this.hairstyle );
        console.log('haircolors',  this.haircolor );
-       console.log('facialhairs',  this.facialhair );
+       console.log('facialhair',  this.facialhair );
        console.log('clothes',  this.clothes );
        console.log('backgroundcolors',  this.backgroundcolors );
        console.log('glasses',  this.glasses );
@@ -127,7 +128,7 @@ class Avatar {
         this.mouth = getMagicIndex(mouths);
         this.hairstyle = getMagicIndex(hairstyles);
         this.haircolor = getMagicIndex(haircolors);
-        this.facialhair = getMagicIndex(facialhairs);
+        this.facialhair = getMagicIndex(facialhair);
         this.clothes = getMagicIndex(clothes);
         this.backgroundcolors = getMagicIndex(backgroundcolors);
         this.glasses = getMagicIndex(glasses);
