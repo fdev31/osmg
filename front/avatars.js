@@ -13,6 +13,34 @@ const glasses = ["none","rambo","fancy","old","nerd","fancy2","harry"];
 const tattoos = ["non","harry","airbender","krilin","front","tribal","tribal2","throat"];
 const accesories = ["none","earphones","earring1","earring2","earring3"];
 
+function serieMaker(seed) {
+    if (!seed) seed = 42;
+    if (seed < 1000) {
+        seed *= 1000;
+    }
+    r = [];
+    r.push(seed + Math.floor(seed * 0.5) );
+    r.push(Math.floor(seed * 0.5) );
+    let s = Math.floor(Math.sqrt(seed));
+    r.push(s);
+    let v = seed + r[r.length-1];
+    let x = parseInt(seed.toString().charCodeAt(3) + seed + seed.toString().charCodeAt(0));
+    let z = Math.floor(seed + seed/0.33 + seed*seed);
+    r.push(v);
+    r.push(x);
+    r.push(x+v);
+    r.push(Math.floor(x/2)+v);
+    r.push(x+s);
+    r.push(v+s);
+    r.push(Math.floor(seed/s));
+    r.push(z);
+    r.push(z-s);
+    r.push(z-x);
+    r.push(z+x+s);
+    r.push(z+x+s+v);
+    return r;
+}
+
 function setAttr(e, name, val) {
     e.forEach( x => x.setAttribute(name, val) );
 }
@@ -49,6 +77,30 @@ class Avatar {
     }
     asString() {
         return this.asArray().join(':');
+    }
+    fromName(name) {
+        let seed = [];
+        for (let i=0; i<name.length; i++)
+            seed.push(name.charCodeAt(i));
+        seed = parseInt(seed.join(''));
+        let serie = serieMaker(seed);
+
+        this.skincolor        = skins[serie[0]%(skins.length-1)];
+        this.eyes             = eyes[serie[1]%(eyes.length-1)];
+        this.eyebrows         = eyebrows[serie[2]%(eyebrows.length-1)];
+        this.mouth            = mouths[serie[3]%(mouths.length-1)];
+        this.hairstyle        = hairstyles[serie[4]%(hairstyles.length-1)];
+        this.haircolor        = haircolors[serie[5]%(haircolors.length-1)];
+        this.facialhair       = facialhairs[serie[6]%(facialhairs.length-1)];
+        this.clothes          = clothes[serie[7]%(clothes.length-1)];
+        this.backgroundcolors = backgroundcolors[serie[8]%(backgroundcolors.length-1)];
+        this.glasses          = glasses[serie[9]%(glasses.length-1)];
+        this.glassopacity     = 0.1*(serie[10]%10);
+        this.tatoos           = tattoos[serie[11]%(tattoos.length-1)];
+        this.accesories       = accesories[serie[12]%(accesories.length-1)];
+        this.fabriccolors     = fabriccolors[serie[13]%(fabriccolors.length-1)];
+        this.backgroundcolors = backgroundcolors[serie[14]%(backgroundcolors.length-1)];
+        this.update();
     }
     random() {
         this.skincolor = getMagicIndex(skins);

@@ -6,6 +6,9 @@ function initApp() {
     .then( async (q)=> { document.getElementById('avatar').innerHTML = await q.text(); avatar = new Avatar('#avatar').random()});
   home = new Vue({
     el: "#app",
+    watch: {
+        nickname: (val) => avatar.fromName(val)
+    },
     data: {
       sessionName : "Pas de données",
       playerName : "Pas de nom",
