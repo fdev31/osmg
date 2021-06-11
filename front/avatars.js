@@ -102,6 +102,23 @@ class Avatar {
         this.backgroundcolors = backgroundcolors[serie[14]%(backgroundcolors.length-1)];
         this.update();
     }
+    debug() {
+       console.log('skins',  this.skincolor );
+       console.log('eyes',  this.eyes );
+       console.log('eyebrows',  this.eyebrows );
+       console.log('mouths',  this.mouth );
+       console.log('hairstyles',  this.hairstyle );
+       console.log('haircolors',  this.haircolor );
+       console.log('facialhairs',  this.facialhair );
+       console.log('clothes',  this.clothes );
+       console.log('backgroundcolors',  this.backgroundcolors );
+       console.log('glasses',  this.glasses );
+       console.log('glassOp', this.glassopacity);
+       console.log('tattoos',  this.tatoos );
+       console.log('accesories',  this.accesories );
+       console.log('fabriccolors',  this.fabriccolors );
+       console.log('backgroundcolors',  this.backgroundcolors );
+    }
     random() {
         this.skincolor = getMagicIndex(skins);
         this.eyes = getMagicIndex(eyes);
