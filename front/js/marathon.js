@@ -17,11 +17,12 @@ handlers = {
     },
     varUpdate: (data) => {
         console.log(data);
-        if (data.var == "distance")
+        if (data.var == "distance") {
             console.log(data.player, marathon.myId);
             if (data.player == marathon.myId) {
                 marathon.remain = data.val;
             }
+        }
     },
     newTurn: (data) => {
         marathon.turn = data.val;
