@@ -8,25 +8,32 @@ def getHeader(uid):
 
 svg_fragments = []
 
-def digestSVG(name, data, visible=True):
-    if visible:
-        print('<g class="%s" style="display:none;">'%name)
-    else:
-        print('<g class="%s">'%name)
+all_data = {}
+
+def digestSVG(name, data):
+    all_data['current'].append('<g class="%s">'%name)
     soup = BeautifulSoup(data, 'html.parser')
     for i, svg in enumerate(soup.find('svg')): # expect 1
-        print(''.join(str(x) for x in svg.contents))
+        all_data['current'].append( ''.join(str(x) for x in svg.contents))
     assert i == 0
-    print('</g>')
+    all_data['current'].append('</g>')
 
 for root, dirs, files in os.walk('.'):
     if root == '.':
         continue
-    print(getHeader(root[2:]))
+    all_data['current'] = []
+    all_data[root[2:]] = all_data['current']
+
+    all_data['current'].append(getHeader(root[2:]))
     for fname in files:
         digestSVG(
                 fname[:-4],
                 open(os.path.join(root, fname)).read(),
-                visible = 'default' in fname
                 )
-    print('</svg>')
+    all_data['current'].append('</svg>')
+
+del all_data['current']
+
+names = 'hair_back skincolor tattoos accesories eyes eyebrows mouths clothes hair_front facialhair glasses'.split()
+for name in names:
+    print(''.join(all_data[name]))
