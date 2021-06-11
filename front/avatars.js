@@ -4,15 +4,15 @@ const fabriccolors = ["545454","65c9ff","5199e4","25557c","e6e6e6","929598","a7f
 const haircolors = ["bb7748_9a4f2b_6f2912","404040_262626_101010","c79d63_ab733e_844713","e1c68e_d0a964_b88339","906253_663d32_3b1d16","f8afaf_f48a8a_ed5e5e","f1e6cf_e9d8b6_dec393","d75324_c13215_a31608","59a0ff_3777ff_194bff"];
 
 // generated from genvars:
-const accesories = ['earphones', 'none', 'earring1', 'none', 'earring2', 'none', 'earring3', 'none'];
-const clothes = ['blazer', 'sweater', 'vneck', 'overall', 'hoodie'];
-const eyebrows = ['default', 'default2', 'raised', 'sad', 'sad2', 'unibrow', 'updown', 'updown2', 'angry', 'angry2'];
-const eyes = ['default', 'dizzy', 'eyeroll', 'happy', 'close', 'hearts', 'side', 'wink', 'squint', 'surprised', 'winkwacky', 'cry'];
-const facialhair = ['magnum', 'fancy', 'magestic', 'light'];
-const glasses = ['rambo', 'none', 'fancy', 'none', 'old', 'none', 'nerd', 'none', 'fancy2', 'none', 'harry', 'none'];
-const hairstyles = ['longhairstraight2', 'shorthairshaggy', 'hairbun', 'shorthaircurly', 'shorthairwaved', 'longhaircurly', 'longhairbob', 'nottoolong', 'miawallace', 'shorthairdreads', 'shorthairround', 'shorthairdreads2', 'longhaircurvy', 'shorthairsides', 'longhair', 'longhairstraight', 'longhairdread', 'shorthairflat'];
-const mouths = ['vomit', 'twinkle', 'tongue', 'smile', 'serious', 'scream', 'sad', 'grimace', 'eating', 'disbelief', 'default', 'concerned'];
-const tattoos = ['harry', 'none', 'airbender', 'none', 'krilin', 'none', 'tribal2', 'none', 'throat', 'none', 'front', 'none'];
+const accesories = ['earphones', 'earring1', 'earring2', 'earring3', 'none', 'none', 'none', 'none'];
+const clothes = ['blazer', 'hoodie', 'overall', 'sweater', 'vneck'];
+const eyebrows = ['angry', 'angry2', 'default', 'default2', 'raised', 'sad', 'sad2', 'unibrow', 'updown', 'updown2'];
+const eyes = ['close', 'cry', 'default', 'dizzy', 'evil', 'eyeroll', 'happy', 'hearts', 'side', 'squint', 'surprised', 'wink', 'winkwacky'];
+const facialhair = ['fancy', 'light', 'magestic', 'magnum'];
+const glasses = ['fancy', 'fancy2', 'harry', 'nerd', 'none', 'none', 'none', 'none', 'none', 'none', 'old', 'rambo'];
+const hairstyles = ['hairbun', 'longhair', 'longhairbob', 'longhaircurly', 'longhaircurvy', 'longhairdread', 'longhairstraight', 'longhairstraight2', 'miawallace', 'nottoolong', 'shorthaircurly', 'shorthairdreads', 'shorthairdreads2', 'shorthairflat', 'shorthairround', 'shorthairshaggy', 'shorthairsides', 'shorthairwaved'];
+const mouths = ['concerned', 'default', 'disbelief', 'eating', 'grimace', 'sad', 'scream', 'serious', 'smile', 'tongue', 'twinkle', 'vomit'];
+const tattoos = ['airbender', 'front', 'harry', 'krilin', 'none', 'none', 'none', 'none', 'none', 'none', 'throat', 'tribal2'];
 
 function serieMaker(seed) {
     if (!seed) seed = 42;
