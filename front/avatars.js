@@ -23,8 +23,9 @@ function serieMaker(seed) {
     r.push(Math.floor(seed * 0.5) );
     let s = Math.floor(Math.sqrt(seed));
     r.push(s);
-    let v = seed + r[r.length-1];
-    let x = parseInt(seed.toString().charCodeAt(3) + seed + seed.toString().charCodeAt(0));
+    let strseed = seed.toString();
+    let v = parseInt(strseed.substr(strseed.length/2) + strseed.substr(null, strseed.length/2));
+    let x = parseInt(strseed.charCodeAt(3) + seed + strseed.charCodeAt(0));
     let z = Math.floor(seed + seed/0.33 + seed*seed);
     r.push(v);
     r.push(x);
