@@ -122,12 +122,3 @@ Client should know dice throws
 :priority: 0
 
 When a player reconnect , client doesnt know his last throws. Thus blocking the player for making his choice
-
---------------------------------------------------------------------------------
-
-change PlayersData attr from "diceValue" to "remainingPoint"
-============================================================
-
-:bugid: 15
-:created: 2021-06-10T18:00:51
-:priority: 0
