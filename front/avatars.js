@@ -43,16 +43,6 @@ function serieMaker(seed) {
     return r;
 }
 
-function setAttr(e, name, val) {
-    e.forEach( x => x.setAttribute(name, val) );
-}
-function show(e) {
-    e.forEach( x => x.style.visibility = "visible" );
-}
-function hide(e) {
-    e.forEach( x => x.style.visibility = "hidden" );
-}
-
 function getMagicIndex(array) {
     return array[Math.floor(Math.random()*array.length)];
 }
