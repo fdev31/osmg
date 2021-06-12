@@ -25,11 +25,7 @@
         action: {{getPlayerAction()}}
     </div>
     <span>Résultat :</span>
-    <div id="dice_results">
-        <span v-for="item in dice_throws">{{ item }}</span>
-    </div>
 
-    <br>
     <label>Mise</label><input onkeydown="autoCheck()" v-model="choice" type="number" name="" min="0"value="0">
     <br>
     <button v-on:click="mainPlayButton" type="button">{{ getPlayerAction() }}</button>

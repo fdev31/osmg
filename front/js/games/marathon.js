@@ -12,6 +12,9 @@ const statuses = {
     "ERROR": 5
 }
 
+function isError(res) {
+    return res.detail != undefined;
+}
 
 handlers = {
     curPlayer: (data) => {
@@ -63,8 +66,7 @@ function initApp() {
                 status: 0,
                 remain: 42195, // FIXME: this is a duplicate of player data !
                 turn: 0, // FIXME: this is a duplicate of game data !
-                dice_throws: [], // FIXME: is it more or less similar to choice ?
-                choice: 0, // FIXME: is it more or less similar to dice throws ?
+                choice: 0,
             }
         )
     }
@@ -91,25 +93,19 @@ function initApp() {
             },
             throw_dices: async function() {
                 try {
-                    this.dice_throws = await post(`http://${host}/game/marathon/throwDice`, {
+                    let diceArray = await post(`http://${host}/game/marathon/throwDice`, {
                         "id":parseInt(this.myId),
                         "secret": parseInt(this.secret),
                         "sessionName":this.name
                     })
+                    console.log(diceArray);
+
+                    this.choice = parseInt(diceArray.join(''));
+                    this.setStatus(statuses.DICE_THROWN);
 
                 } catch (e) {
                     this.setStatus ( statuses.ERROR );
                 }
-
-                if (!Array.isArray(this.dice_throws)) {
-                    console.log(!Array.isArray(this.dice_throws));
-                    this.dice_throws = [];
-                }
-                else {
-                    this.choice = this.dice_throws.join('');
-                    this.setStatus ( statuses.DICE_THROWN );
-                }
-
             },
             findPlayer : function (id) {
                 for (var [key , player] of Object.entries(this.playersData)) {
@@ -121,15 +117,17 @@ function initApp() {
             player_advance : async function () {
                 var choice = processStringToArrayNumber(this.choice.toString())
                 // XXX: will grey out the buttons instead
-                //          if ( arrayEquals( choice, this.dice_throws)) {
                 action = await post(`http://${host}/game/marathon/validateDice?value=${this.choice}`, {
                     "id":parseInt(this.myId),
                     "secret": parseInt(this.secret),
                     "sessionName":this.name
                 });
-                this.setStatus ( statuses.END_TURN );
-                this.choice = '';
-                //          }
+                if (!isError(action)) {
+                    this.setStatus ( statuses.END_TURN );
+                    this.choice = '';
+                } else {
+                    alert(action.detail);
+                }
             },
             finalOwnData : function() {
                 for (var [key , player] of this.playersData) {
