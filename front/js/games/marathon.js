@@ -77,6 +77,7 @@ function initApp() {
                 try {
                     this.dice_throws = await post(`http://${host}/game/marathon/throwDice`, {
                         "id":parseInt(this.myId),
+                        "secret": parseInt(this.secret),
                         "sessionName":this.name
                     })
 
@@ -107,6 +108,7 @@ function initApp() {
                 //          if ( arrayEquals( choice, this.dice_throws)) {
                 action = await post(`http://${host}/game/marathon/validateDice?value=${this.choice}`, {
                     "id":parseInt(this.myId),
+                    "secret": parseInt(this.secret),
                     "sessionName":this.name
                 });
                 this.status = this.statuses.END_TURN;
