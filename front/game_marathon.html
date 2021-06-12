@@ -17,7 +17,7 @@
             </div>
         </div>
     </div>
-    <h2>Player {{playerName()}}, turn {{turn+1}}</h2>
+    <h2>Welcome {{playerName()}}, it's turn {{turn+1}}</h2>
     <div v-if="didIWin()">
         <h1>You Win!</h1>
     </div>
@@ -27,7 +27,7 @@
     <div v-else>
         <b>{{getPlayerAction()}}</b>
         <div>
-            {{ remain }} mètres restant
+            {{ remain }} meters left
         </div>
         <label>Dés: </label><input onkeydown="autoCheck()" v-model="choice" type="number" name="" min="0" />
         <button v-on:click="mainPlayButton" type="button">{{ getPlayerAction() }}</button>
