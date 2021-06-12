@@ -3,15 +3,21 @@
 // Le client doit connaitre sa propre identité
 // Api Start lance la partie. Elle doit se lancer quand tout le monde a fait start ?
 
+const statuses = {
+    "UNINITIALIZED" : 0 ,
+    "THROW" : 1 ,
+    "DICE_THROWN" : 2,
+    "WAITING" : 3 ,
+    "END_TURN" : 4,
+    "ERROR": 5
+}
+
+
 handlers = {
-    start : (data) => {
-        marathon.status = 0;
-    },
     curPlayer: (data) => {
-        console.log(data);
         marathon.gameData.curPlayer = data.val.toString();
         if (data.val.toString() === marathon.myId.toString()) {
-            marathon.status = 1;
+            marathon.setStatus (statuses.THROW);
             alert("A toi de jouer!");
         }
     },
@@ -41,39 +47,49 @@ handlers = {
 function initApp() {
     let host = document.location.host;
     try {
-        var cookie = extractJsonFromCookie();
+        var data = extractJsonFromCookie();
     } catch (e) {
         window.location = `http://${host}/static/index.html`;
     }
 
-    if (typeof cookie.name == "undefined" || cookie.name == null) {
+    if (typeof data.name == "undefined" || data.name == null) {
         window.location = `http://${host}/static/lobby.html`;
     }
 
-    var settings = {
-        player_action : ["En attente des autres joueurs","Lancez les dés" , "Avancez" , "Attendez" , "Fin du Tour", "Erreur"],
-        statuses : {
-            "UNINITIALIZED" : 0 ,
-            "THROW" : 1 ,
-            "DICE_THROWN" : 2,
-            "WAITING" : 3 ,
-            "END_TURN" : 4,
-            "ERROR": 5
-        },
-        status : 0,
-        dice_throws : [],
-        remain : 42195,
-        turn: 0,
-        choice : 0,
-        host: document.location.host,
+    if (data.status == undefined) {
+        Object.assign(data,
+            {
+                host: document.location.host,
+                status: 0,
+                remain: 42195, // FIXME: this is a duplicate of player data !
+                turn: 0, // FIXME: this is a duplicate of game data !
+                dice_throws: [], // FIXME: is it more or less similar to choice ?
+                choice: 0, // FIXME: is it more or less similar to dice throws ?
+            }
+        )
     }
-
-    var data = Object.assign({} , cookie , settings);
     marathon = new Vue({
         el: "#app",
         data: data ,
         methods: {
-            throw_dices : async function () {
+            setStatus(status) {
+                this.status = status;
+                setCookie(Vue2Obj(this));
+            },
+            getPlayerAction: function () {
+                return ["En attente des autres joueurs","Lancez les dés" , "Avancez" , "Attendez" , "Fin du Tour", "Erreur"][this.status];
+            },
+            mainPlayButton: async function() {
+                switch(this.status) {
+                    case statuses.THROW:
+                        await this.throw_dices();
+                        break;
+                    case statuses.DICE_THROWN:
+                        await this.player_advance();
+                        break;
+                }
+            },
+            throw_dices: async function() {
                 try {
                     this.dice_throws = await post(`http://${host}/game/marathon/throwDice`, {
                         "id":parseInt(this.myId),
@@ -82,7 +98,7 @@ function initApp() {
                     })
 
                 } catch (e) {
-                    this.status = this.statuses.ERROR;
+                    this.setStatus ( statuses.ERROR );
                 }
 
                 if (!Array.isArray(this.dice_throws)) {
@@ -91,7 +107,7 @@ function initApp() {
                 }
                 else {
                     this.choice = this.dice_throws.join('');
-                    this.status = this.statuses.DICE_THROWN;
+                    this.setStatus ( statuses.DICE_THROWN );
                 }
 
             },
@@ -102,7 +118,7 @@ function initApp() {
                     }
                 }
             },
-            player_advance : async function() {
+            player_advance : async function () {
                 var choice = processStringToArrayNumber(this.choice.toString())
                 // XXX: will grey out the buttons instead
                 //          if ( arrayEquals( choice, this.dice_throws)) {
@@ -111,7 +127,7 @@ function initApp() {
                     "secret": parseInt(this.secret),
                     "sessionName":this.name
                 });
-                this.status = this.statuses.END_TURN;
+                this.setStatus ( statuses.END_TURN );
                 this.choice = '';
                 //          }
             },
@@ -120,7 +136,6 @@ function initApp() {
                     console.log(key.substring(0,1))
                 }
             }
-
         }
     });
     setupStreamEventHandler({topic :marathon.name , uid : marathon.myId}, handlers);

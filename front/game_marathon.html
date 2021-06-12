@@ -22,7 +22,7 @@
         <span>restant:</span> <span> {{ remain }} mètres</span>
     </div>
     <div class="">
-        <span>action:</span> {{ player_action[status] }}
+        action: {{getPlayerAction()}}
     </div>
     <span>Résultat :</span>
     <div id="dice_results">
@@ -32,12 +32,7 @@
     <br>
     <label>Mise</label><input onkeydown="autoCheck()" v-model="choice" type="number" name="" min="0"value="0">
     <br>
-    <button v-if="status==statuses.UNINITIALIZED" type="button" name="button">{{ player_action[status] }}</button>
-    <button v-else-if="status==statuses.THROW" v-on:click="throw_dices"  type="button" name="button">{{ player_action[status] }}</button>
-    <button v-else-if="status==statuses.DICE_THROWN" v-on:click="player_advance"  type="button" name="button">{{ player_action[status] }}</button>
-    <button v-else-if="status==statuses.WAITING"  type="button" name="button">{{ player_action[status] }}</button>
-    <button v-else-if="status==statuses.END_TURN"  type="button" name="button">{{ player_action[status] }}</button>
-    <button v-on:click="findPlayer(myId)"  type="button" name="button">TESTEUR</button>
+    <button v-on:click="mainPlayButton" type="button">{{ getPlayerAction() }}</button>
 </div>
     <script>
       function autoCheck() {
