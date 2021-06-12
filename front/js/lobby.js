@@ -4,9 +4,9 @@ handlers = {
     'newPlayer': (data) => {
         delete data['cat'];
         console.log(data);
-        lounge.players.push(data);
-        setCookie(extractObj(lounge._data));
-        setTimeout( () => lounge.addPlayer(data), 100);
+        lobby.players.push(data);
+        setCookie(extractObj(lobby._data));
+        setTimeout( () => lobby.addPlayer(data), 100);
     },
     ready: (data) => {
         // data.player == id of ready player
@@ -15,7 +15,7 @@ handlers = {
 function initApp() {
     let data = extractJsonFromCookie();
     data.host = document.location.host;
-    lounge = new Vue({
+    lobby = new Vue({
         el : "#app",
         data : data,
         methods : {
@@ -35,12 +35,12 @@ function initApp() {
           }
         }
     });
-    setupStreamEventHandler({topic :lounge.name , uid : lounge.myId}, handlers);
+    setupStreamEventHandler({topic :lobby.name , uid : lobby.myId}, handlers);
     fetch('avatars.xml')
     .then( async (q) => {
         avatarCode =  await q.text();
-        for (let player of lounge.players) {
-            lounge.addPlayer(player);
+        for (let player of lobby.players) {
+            lobby.addPlayer(player);
         }
     });
 }

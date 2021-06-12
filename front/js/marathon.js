@@ -47,7 +47,7 @@ function initApp() {
     }
 
     if (typeof cookie.name == "undefined" || cookie.name == null) {
-        window.location = `http://${host}/static/saloon.html`;
+        window.location = `http://${host}/static/lobby.html`;
     }
 
     var settings = {

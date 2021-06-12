@@ -24,7 +24,7 @@
         <button type="button" onclick="copyURL()" >Inviter</button>
         <div v-for="item in players" class="players">
             <div>
-                <div :id="'avatar_' + item.id" class="avatar-saloon"></div>
+                <div :id="'avatar_' + item.id" class="avatar-lobby"></div>
                 <b>{{ item.name }}</b>
             </div>
         </div>
@@ -36,6 +36,6 @@
     <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
     <script src="/static/avatars.js" charset="utf-8"></script>
     <script src="/static/js/utils.js" charset="utf-8"></script>
-    <script src="/static/js/lounge.js" charset="utf-8"></script>
+    <script src="/static/js/lobby.js" charset="utf-8"></script>
   </body>
 </html>

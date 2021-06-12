@@ -46,7 +46,7 @@ function initApp() {
           if (player.name == this.nickname) result.myId = player.id;
         }
         document.cookie = "JS=" + JSON.stringify(result) + '; SameSite=Strict';
-        window.location = "saloon.html";
+        window.location = "lobby.html";
       }
     }
   });

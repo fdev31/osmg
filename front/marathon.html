@@ -13,7 +13,7 @@
     <div class="playerlist">
         <div v-for="item in players">
             <div :class="gameData.curPlayer == item.id ?'myavatar':'notmyavatar'">
-                <div :id="'avatar_' + item.id" class="avatar-saloon"></div>  {{ item.name }}
+                <div :id="'avatar_' + item.id" class="avatar-lobby"></div>  {{ item.name }}
             </div>
         </div>
     </div>

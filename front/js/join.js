@@ -7,7 +7,7 @@ function initApp() {
 
   var url = new URL(document.URL);
   var session = url.searchParams.get("session");
-  lounge = new Vue({
+  lobby = new Vue({
     el : "#app",
     data : {
       session : session,
@@ -39,7 +39,7 @@ function initApp() {
 
 
 
-        window.location = "saloon.html";
+        window.location = "lobby.html";
       }
     }
   })
@@ -47,6 +47,6 @@ function initApp() {
         .then( async (q) => {
             document.getElementById('avatar').innerHTML = await q.text();
             avatar = new Avatar('#avatar');
-            avatar.fromName(lounge.nickname);
+            avatar.fromName(lobby.nickname);
         });
 }

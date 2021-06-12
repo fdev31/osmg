@@ -165,14 +165,14 @@ svg {
     width: 180px;
     height:230px;
 }
-.avatar-saloon {
+.avatar-lobby {
     position: relative;
     width:36px;
     height:46px;
     display: inline-block;
     vertical-align: bottom;
 }
-.avatar-saloon svg {
+.avatar-lobby svg {
     width:36px;
     height:46px;
 }
