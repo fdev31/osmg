@@ -36,7 +36,7 @@ function initApp() {
         }
     });
     setupStreamEventHandler({topic :lobby.name , uid : lobby.myId}, handlers);
-    fetch('avatars.xml')
+    fetch('avatars.svg')
     .then( async (q) => {
         avatarCode =  await q.text();
         for (let player of lobby.players) {

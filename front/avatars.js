@@ -119,31 +119,31 @@ class Avatar {
         let o = document.querySelector(this._ref);
         setAttr(o.querySelectorAll(".skin #body"), "fill","#"+this.skincolor);
         hide(o.querySelectorAll("#eyes g"));
-        show(o.querySelectorAll("#eyes .e_"+this.eyes));
+        show(o.querySelectorAll("#eyes g."+this.eyes));
         hide(o.querySelectorAll("#eyebrows g"));
-        show(o.querySelectorAll("#eyebrows .eb_"+this.eyebrows));
+        show(o.querySelectorAll("#eyebrows ."+this.eyebrows));
         hide(o.querySelectorAll("#mouths g"));
-        show(o.querySelectorAll("#mouths .m_"+this.mouth));
+        show(o.querySelectorAll("#mouths g."+this.mouth));
         hide(o.querySelectorAll("#hair_front g"));
         hide(o.querySelectorAll("#hair_back g"));
-        show(o.querySelectorAll("#hair_front .h_"+this.hairstyle));
-        show(o.querySelectorAll("#hair_back .h_"+this.hairstyle));
+        show(o.querySelectorAll("#hair_front g."+this.hairstyle));
+        show(o.querySelectorAll("#hair_back g."+this.hairstyle));
         let color = this.haircolor.split('_');
-        setAttr( o.querySelectorAll("#hair_front .h_"+this.hairstyle+" .tinted"), "fill","#"+color[0]);
-        setAttr( o.querySelectorAll("#hair_back .h_"+this.hairstyle+" .tinted"), "fill","#"+color[1]);
+        setAttr( o.querySelectorAll("#hair_front ."+this.hairstyle+" .tinted"), "fill","#"+color[0]);
+        setAttr( o.querySelectorAll("#hair_back ."+this.hairstyle+" .tinted"), "fill","#"+color[1]);
         setAttr( o.querySelectorAll("#facialhair g .tinted"), "fill","#"+color[2]);
         hide(o.querySelectorAll("#facialhair g"));
-        show(o.querySelectorAll("#facialhair .f_"+this.facialhair));
+        show(o.querySelectorAll("#facialhair g."+this.facialhair));
         hide(o.querySelectorAll("#clothes g"));
-        show(o.querySelectorAll("#clothes .c_"+this.clothes));
+        show(o.querySelectorAll("#clothes g."+this.clothes));
         hide(o.querySelectorAll("#glasses g"));
-        show(o.querySelectorAll("#glasses .g_"+this.glasses));
+        show(o.querySelectorAll("#glasses g."+this.glasses));
         setAttr(o.querySelectorAll(".glass"), "fill-opacity",this.glassopacity);
         setAttr(o.querySelectorAll("#clothes g .tinted", "fill","#"+this.fabriccolors));
         hide(o.querySelectorAll("#tattoos g"));
-        show(o.querySelectorAll("#tattoos .t_"+this.tatoos));
+        show(o.querySelectorAll("#tattoos g."+this.tatoos));
         hide(o.querySelectorAll("#accesories g"));
-        show(o.querySelectorAll("#accesories .a_"+this.accessories));
+        show(o.querySelectorAll("#accesories g."+this.accessories));
     }
 }
 

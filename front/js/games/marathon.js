@@ -143,7 +143,7 @@ function initApp() {
         }
     });
     setupStreamEventHandler({topic :marathon.name , uid : marathon.myId}, handlers);
-    fetch('avatars.xml')
+    fetch('avatars.svg')
         .then( async (q) => {
             let text =  await q.text();
             for (let player of marathon.players) {

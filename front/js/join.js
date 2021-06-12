@@ -43,7 +43,7 @@ function initApp() {
       }
     }
   })
-    fetch('avatars.xml')
+    fetch('avatars.svg')
         .then( async (q) => {
             document.getElementById('avatar').innerHTML = await q.text();
             avatar = new Avatar('#avatar');
