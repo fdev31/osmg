@@ -18,16 +18,20 @@
         </div>
     </div>
     <h2>Player {{playerName()}}, turn {{turn+1}}</h2>
-    <div>
+    <div v-if="didIWin()">
+        <h1>You Win!</h1>
+    </div>
+    <div v-else-if="didILose()">
+        <h1>You Lose!</h1>
+    </div>
+    <div v-else>
         <b>{{getPlayerAction()}}</b>
+        <div>
+            {{ remain }} mètres restant
+        </div>
+        <label>Dés: </label><input onkeydown="autoCheck()" v-model="choice" type="number" name="" min="0" />
+        <button v-on:click="mainPlayButton" type="button">{{ getPlayerAction() }}</button>
     </div>
-    <div>
-        {{ remain }} mètres restant
-    </div>
-    <label>Dés: </label><input onkeydown="autoCheck()" v-model="choice" type="number" name="" min="0" />
-    <br>
-    <button v-on:click="mainPlayButton" type="button">{{ getPlayerAction() }}</button>
-</div>
     <script>
       function autoCheck() {
         if (event.key == "Enter") marathon.player_advance();

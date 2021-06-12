@@ -9,7 +9,9 @@ const statuses = {
     "DICE_THROWN" : 2,
     "WAITING" : 3 ,
     "END_TURN" : 4,
-    "ERROR": 5
+    "GAME_OVER": 5,
+    "GAME_WON": 6,
+    "ERROR": 7
 }
 
 function isError(res) {
@@ -38,11 +40,14 @@ handlers = {
     },
     endOfGame: (data) => {
         message = data.message;
+        let myStatus = statuses.GAME_OVER;
         for (let player of marathon.players) {
             if (player.id == data.player) {
                 message += "\nPlayer " + player.name + " wins!";
+                if (player.id == marathon.myId) myStatus = statuses.GAME_WON;
             }
         }
+        setStatus(myStatus);
         alert(message);
     }
 };
@@ -74,6 +79,12 @@ function initApp() {
         el: "#app",
         data: data ,
         methods: {
+            didIWin() {
+                return this.status == statuses.GAME_WON;
+            },
+            didILose() {
+                return this.status == statuses.GAME_OVER;
+            },
             playerName() {
                 for (let p of this.players) {
                     if (p.id == this.myId)
