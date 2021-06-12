@@ -16,7 +16,7 @@ function initApp() {
       sessionName : "Pas de données",
       playerName : "Pas de nom",
       avatar : 1,
-      nickname : "Goldorak",
+      nickname : "Goldor",
       games: {},
     },
     methods: {

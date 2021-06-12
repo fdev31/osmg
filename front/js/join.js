@@ -11,7 +11,7 @@ function initApp() {
     el : "#app",
     data : {
       session : session,
-      nickname : "San Goku",
+      nickname : "Joe",
       avatar : 1,
     } ,
     methods : {
