@@ -17,16 +17,14 @@
             </div>
         </div>
     </div>
-    <h2>Tour {{turn+1}}</h2>
-    <div class="">
-        <span>restant:</span> <span> {{ remain }} mètres</span>
+    <h2>Player {{playerName()}}, turn {{turn+1}}</h2>
+    <div>
+        <b>{{getPlayerAction()}}</b>
     </div>
-    <div class="">
-        action: {{getPlayerAction()}}
+    <div>
+        {{ remain }} mètres restant
     </div>
-    <span>Résultat :</span>
-
-    <label>Mise</label><input onkeydown="autoCheck()" v-model="choice" type="number" name="" min="0"value="0">
+    <label>Dés: </label><input onkeydown="autoCheck()" v-model="choice" type="number" name="" min="0" />
     <br>
     <button v-on:click="mainPlayButton" type="button">{{ getPlayerAction() }}</button>
 </div>

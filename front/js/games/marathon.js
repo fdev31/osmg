@@ -74,6 +74,12 @@ function initApp() {
         el: "#app",
         data: data ,
         methods: {
+            playerName() {
+                for (let p of this.players) {
+                    if (p.id == this.myId)
+                        return p.name;
+                }
+            },
             setStatus(status) {
                 this.status = status;
                 setCookie(Vue2Obj(this));
