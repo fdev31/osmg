@@ -29,7 +29,7 @@ async def startGame(player: PlayerIdentifier, tasks: BackgroundTasks) -> None:
         await conn.set(f'S{player.sessionName}:startTime', int(time.time()))
 
         async def checkStartOfGame():
-            await asyncio.sleep(1);
+            await asyncio.sleep(1)
             nbPlayersReady = await conn.scard(pr)
             if int(nbPlayersReady) == int(await conn.get(getSessionPrefix(player.sessionName)+'nbPlayers')):
                 # all players are ready!
