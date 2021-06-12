@@ -9,12 +9,15 @@ if len(sys.argv) != 2:
     raise SystemExit("Error: Requires one session name as parameter")
 
 async def main():
+    name = sys.argv[1]
+    if name[0] == 'S':
+        name = name[1:]
     redis = aioredis.from_url("redis://localhost", decode_responses=True)
     async with redis.client() as conn:
         cur = b"0"
         # collect data
         while cur:
-            cur, keys = await conn.scan(cur, match=f"S{sys.argv[1]}:*")
+            cur, keys = await conn.scan(cur, match=f"S{name}:*")
             for key in keys:
                 try:
                     val = await conn.get(key)
