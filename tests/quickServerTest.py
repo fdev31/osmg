@@ -9,21 +9,18 @@ NAME="Toto"
 
 print("New session")
 r = requests.post(HOST+'/session/new')
-data = r.json()
-sessionName = data['name']
+sessionData = r.json()
 
-pprint(data)
+pprint(sessionData)
 
 print("Join session")
 
-sessionData = {
+userData = {
   "name": NAME,
   "avatar": "monster",
-  "sessionName": sessionName
+  "sessionName": sessionData['name']
 }
-print(sessionData)
-r = requests.post(HOST+'/session/join', json=sessionData)
-
+r = requests.post(HOST+'/session/join', json=userData)
 session = r.json()
 myId = None
 for player in session['players']:
@@ -32,12 +29,16 @@ for player in session['players']:
 pprint(session)
 print("My data:")
 pprint(session['playersData']['P'+myId])
-sessionData['id'] = myId
-
-r = requests.post(HOST+'/game/marathon/start', json=sessionData)
+playerIdentifier = {
+        'id': myId,
+        'sessionName': sessionData['name'],
+        'secret': session['secret']
+        }
+pprint(session)
+r = requests.post(HOST+'/game/marathon/start', json=playerIdentifier)
 print("STARTED", r.json())
 
-r = requests.post(HOST+'/game/marathon/throwDice?value=4', json=sessionData)
+r = requests.post(HOST+'/game/marathon/throwDice?value=4', json=playerIdentifier)
 values = r.json()
 print("GOT", values)
 
@@ -46,7 +47,7 @@ print("SEND", values)
 
 newVal = ''.join(str(x) for x in values)
 
-r = requests.post(HOST+'/game/marathon/validateDice?value='+newVal, json=sessionData)
+r = requests.post(HOST+'/game/marathon/validateDice?value='+newVal, json=playerIdentifier)
 print(r.json())
 
 
