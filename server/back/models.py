@@ -1,5 +1,5 @@
 from pydantic import BaseModel
-from typing import List, Dict
+from typing import List, Dict, Optional
 
 __all__ = ['Player', 'newPlayer', 'Session']
 
@@ -7,6 +7,7 @@ class PlayerIdentifier(BaseModel):
     " identifies a user "
     id: int
     sessionName: str
+    secret: Optional[int] = None
 
 class _BasePlayer(BaseModel):
     name: str
@@ -28,3 +29,4 @@ class Session(BaseModel):
     playersData: Dict = {}
     creationTime: int
     startTime: int = 0
+    secret: Optional[int] = None

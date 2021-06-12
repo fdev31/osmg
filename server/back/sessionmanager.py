@@ -2,6 +2,7 @@ __all__ = ['getSession', 'registerGame']
 import time
 import logging
 from typing import Dict, Any
+import hashlib
 
 import aioredis
 from fastapi import HTTPException
@@ -35,7 +36,7 @@ async def getSession(uid, client=None) -> Session:
         cur = b"0"
         while cur:
             cur, keys = await conn.scan(cur, match=pattern)
-            all_keys.extend(keys)
+            all_keys.extend((k for k in keys if k[0] != '_'))
 
         all_values = await conn.mget(all_keys)
 
@@ -111,12 +112,16 @@ async def addPlayer(player: newPlayer) -> Session:
     pidP = _getUniquePlayerId()
     player_info = player.dict()
     del player_info['sessionName']
-    prefix = getSessionPrefix(player.sessionName)
 
     pid = await pidP
+    secretId = int((time.time()*1000)%3600) + pid
+
     player_info['id'] = pid
+    player_info['_secret'] = secretId
 
     redisObj = {}
+
+    prefix = getSessionPrefix(player.sessionName)
 
     for name, value in player_info.items():
         redisObj[f"{prefix}P{pid}:{name}"] = value
@@ -132,6 +137,7 @@ async def addPlayer(player: newPlayer) -> Session:
         sess = await getSession(player.sessionName, conn)
         await pub
 
+    sess.secret = secretId
     logger.debug(f"New player {pid}")
     return sess
 

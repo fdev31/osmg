@@ -38,8 +38,10 @@ async def startGame(player: PlayerIdentifier, tasks: BackgroundTasks) -> None:
 
         tasks.add_task(checkStartOfGame)
 
-async def isPlayerTurn(conn, prefix, playerId):
-    print(prefix+"curPlayer")
+async def isPlayerTurn(conn, prefix, playerId, secret):
+    actualSecret = await conn.get(f"{prefix[:-2]}P{playerId}:_secret")
+    if int(actualSecret) != int(secret):
+        return False
     curPlayer = await conn.get(prefix+"curPlayer")
     curPlayerId = await conn.lindex(prefix+"playerOrder", int(curPlayer))
     return int(curPlayerId) == int(playerId)
@@ -52,7 +54,7 @@ async def throwDice(player: PlayerIdentifier) -> List[int]:
     propName = prefix + "_diceValue"
 
     async with redis.client() as conn:
-        if not await isPlayerTurn(conn, gprefix, player.id):
+        if not await isPlayerTurn(conn, gprefix, player.id, player.secret):
             raise HTTPException(httpstatus.HTTP_403_FORBIDDEN, "Not your turn!")
         tmpDice = await conn.get(propName)
         if tmpDice:
@@ -73,7 +75,7 @@ async def validateDice(player: PlayerIdentifier, value: str) -> None:
     propName = prefix + "_diceValue"
     newVal = None
     async with redis.client() as conn:
-        if not await isPlayerTurn(conn, g_prefix, player.id):
+        if not await isPlayerTurn(conn, g_prefix, player.id, player.secret):
             raise HTTPException(httpstatus.HTTP_403_FORBIDDEN, "Not your turn!")
         if value != '0':
             previous = loads(await conn.get(propName))
