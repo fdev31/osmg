@@ -46,17 +46,15 @@ class Avatar {
     fromName(name) {
         if (name == '') name = 'ouf';
         let vals = [];
-        let total = 0;
         let src_idx = 0;
         for (let k of this.getKeys()) {
             let v = name.charCodeAt(src_idx);
-            total += v;
             src_idx++;
             if (src_idx >= name.length) src_idx = 0;
             vals.push(v);
         }
+        let total = Array.from(name).map((c) => c.charCodeAt(0)-60).reduce((a,b)=>a+b);
         for (let i=0; i<vals.length; i++) vals[i] += (total - i);
-
         let i=0;
         for (let k of this.getKeys()) {
             console.log(k, vals[i]);
