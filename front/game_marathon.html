@@ -1,45 +1,46 @@
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
-  <head>
-    <meta charset="utf-8">
-    <title>Le Jeu de dés</title>
-    <link rel="stylesheet" href="styles.css">
-    <link rel="preconnect" href="https://fonts.gstatic.com">
-    <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
-  </head>
-  <body onload="initApp()">
-<h1>Le Jeu de dés Marathon</h1>
-<div id="app">
-    <div class="playerlist">
-        <div v-for="item in players">
-            <div :class="gameData.curPlayer == item.id ?'myavatar':'notmyavatar'">
-                <div :id="'avatar_' + item.id" class="avatar-lobby"></div>  {{ item.name }}
+    <head>
+        <meta charset="utf-8">
+        <title>Le Jeu de dés</title>
+        <link rel="stylesheet" href="styles.css">
+        <link rel="preconnect" href="https://fonts.gstatic.com">
+        <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
+    </head>
+    <body onload="initApp()">
+        <h1>Le Jeu de dés Marathon</h1>
+        <div id="app">
+            <div class="playerlist">
+                <div v-for="item in players">
+                    <div :class="gameData.curPlayer == item.id ?'myavatar':'notmyavatar'">
+                        <div :id="'avatar_' + item.id" class="avatar-lobby"></div>  {{ item.name }}
+                    </div>
+                </div>
             </div>
+            <h2>Welcome {{playerName()}}, it's turn {{turn+1}}</h2>
+            <div v-if="didIWin()">
+                <h1>You Win!</h1>
+            </div>
+            <div v-else-if="didILose()">
+                <h1>You Lose!</h1>
+            </div>
+            <div v-else>
+                <b>{{getPlayerAction()}}</b>
+                <div>
+                    {{ remain }} meters left
+                </div>
+                <label>Dés: </label><input onkeydown="autoCheck()" v-model="choice" type="number" name="" min="0" />
+                <button v-on:click="mainPlayButton" type="button">{{ getPlayerAction() }}</button>
+            </div>
+            <script>
+                function autoCheck() {
+                    if (event.key == "Enter") marathon.player_advance();
+                }
+            </script>
+            <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+            <script src="js/utils.js" charset="utf-8"></script>
+            <script src="avatars.js" charset="utf-8"></script>
+            <script src="js/games/marathon.js" charset="utf-8"></script>
         </div>
-    </div>
-    <h2>Welcome {{playerName()}}, it's turn {{turn+1}}</h2>
-    <div v-if="didIWin()">
-        <h1>You Win!</h1>
-    </div>
-    <div v-else-if="didILose()">
-        <h1>You Lose!</h1>
-    </div>
-    <div v-else>
-        <b>{{getPlayerAction()}}</b>
-        <div>
-            {{ remain }} meters left
-        </div>
-        <label>Dés: </label><input onkeydown="autoCheck()" v-model="choice" type="number" name="" min="0" />
-        <button v-on:click="mainPlayButton" type="button">{{ getPlayerAction() }}</button>
-    </div>
-    <script>
-      function autoCheck() {
-        if (event.key == "Enter") marathon.player_advance();
-      }
-    </script>
-<script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
-<script src="js/utils.js" charset="utf-8"></script>
-<script src="avatars.js" charset="utf-8"></script>
-<script src="js/games/marathon.js" charset="utf-8"></script>
-  </body>
+    </body>
 </html>

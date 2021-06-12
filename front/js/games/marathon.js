@@ -18,12 +18,21 @@ function isError(res) {
     return res.detail != undefined;
 }
 
+function checkLost() {
+    if (marathon.remain < 0) {
+        marathon.setStatus(statuses.GAME_OVER);
+        return true;
+    }
+}
+
 handlers = {
     curPlayer: (data) => {
-        marathon.gameData.curPlayer = data.val.toString();
-        if (data.val.toString() === marathon.myId.toString()) {
-            marathon.setStatus (statuses.THROW);
-            alert("A toi de jouer!");
+        if (!checkLost()) {
+            marathon.gameData.curPlayer = data.val.toString();
+            if (data.val.toString() === marathon.myId.toString()) {
+                marathon.setStatus (statuses.THROW);
+                alert("A toi de jouer!");
+            }
         }
     },
     varUpdate: (data) => {
@@ -34,8 +43,10 @@ handlers = {
                 marathon.remain = data.val;
             }
         }
+        checkLost();
     },
     newTurn: (data) => {
+        checkLost();
         marathon.turn = data.val;
     },
     endOfGame: (data) => {
@@ -47,7 +58,7 @@ handlers = {
                 if (player.id == marathon.myId) myStatus = statuses.GAME_WON;
             }
         }
-        setStatus(myStatus);
+        marathon.setStatus(myStatus);
         alert(message);
     }
 };
@@ -132,7 +143,7 @@ function initApp() {
                 }
             },
             player_advance : async function () {
-                var choice = processStringToArrayNumber(this.choice.toString())
+                var choice =  Array.from(this.choice.toString()).map((o)=>parseInt(o));
                 // XXX: will grey out the buttons instead
                 action = await post(`http://${host}/game/marathon/validateDice?value=${this.choice}`, {
                     "id":parseInt(this.myId),
@@ -166,13 +177,6 @@ function initApp() {
         });
 }
 
-function showResults(throws) {
-    result = ""
-    for (var i = 0; i < throws.length; i++) {
-        result = result + `${throws[i]} `;
-    }
-    return result;
-}
 async function getThrowResults() {
     var myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
@@ -191,23 +195,3 @@ async function getThrowResults() {
     return result;
 }
 
-function processStringToArrayNumber (choice) {
-    if (typeof choice !== "string") throw "argument must be a string";
-    res = []
-    for (var i = 0; i < choice.length; i++) {
-        res.push(parseInt(choice[i]))
-    }
-    return res;
-}
-
-function arrayEquals(arr1 , arr2) {
-    if (!Array.isArray(arr1) || !Array.isArray(arr2)) throw `arguments must be Array objects , ${typeof arr1} and ${typeof arr2} given`;
-    if (arr1.length != arr2.length)return false;
-    arr1.sort();
-    arr2.sort();
-    isEquals = true;
-    arr1.every(function(element, index) {
-        if (element !== arr2[index]) isEquals = false
-    })
-    return isEquals
-}

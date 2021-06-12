@@ -57,7 +57,6 @@ class Avatar {
         for (let i=0; i<vals.length; i++) vals[i] += (total - i);
         let i=0;
         for (let k of this.getKeys()) {
-            console.log(k, vals[i]);
             this[k] = vals[i++];
         }
         this.update();
@@ -97,7 +96,6 @@ class Avatar {
         let keys = this.getKeys();
         let i =0;
         for (let c of code.toString()) {
-            console.log(c);
             this[keys[i]] = parseInt(c);
             i++;
         }
