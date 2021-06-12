@@ -22,6 +22,13 @@ function setEventStreamHandler(handler , query ) {
   evtSource.addEventListener("update", (event) => handler(JSON.parse(event.data)) );
 }
 
+function Vue2Obj(vueApp) {
+  const r = {};
+  for (let k of Object.keys(vueApp._data)) {
+    r[k] = JSON.parse(JSON.stringify(vueApp[k]));
+  }
+  return r;
+}
 function extractObj(o) {
     if (o.charAt || typeof o == "number") return o; // Plain
     if (o.length) return extractList(o); // list
