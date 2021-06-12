@@ -92,10 +92,10 @@ async def makeSession() -> Session:
     return sess
 
 async def connectPlayer(sessionName: str, playerId: str):
-    await publishEvent(sessionName, None, cat='connectPlayer', name=playerId)
+    await publishEvent(sessionName, None, cat='connectPlayer', id=playerId)
 
 async def disconnectPlayer(sessionName: str, playerId: str):
-    await publishEvent(sessionName, None, cat='disconnectPlayer', name=playerId)
+    await publishEvent(sessionName, None, cat='disconnectPlayer', id=playerId)
     # TODO: mark as not ready
     # TODO: if no players anymore, remove the session
 
@@ -128,7 +128,7 @@ async def addPlayer(player: newPlayer) -> Session:
         await conn.mset(redisObj)
         await conn.incr(prefix+'nbPlayers')
 
-        pub = publishEvent(player.sessionName, None, cat='newPlayer', name=player.name, avatar=player.avatar)
+        pub = publishEvent(player.sessionName, None, cat='newPlayer', name=player.name, avatar=player.avatar, id=pid)
         sess = await getSession(player.sessionName, conn)
         await pub
 
