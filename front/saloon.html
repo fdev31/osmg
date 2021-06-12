@@ -19,20 +19,16 @@
 
     <div id="app">
       <div class="">
-        <h2>Joueurs</h2>
+        <h2>{{ gameType}} players</h2>
+        <input size="40" type="text" id="link" :value="`http://${host}/r/${name}`"></input>
+        <button type="button" onclick="copyURL()" >Inviter</button>
         <div v-for="item in players" class="players">
-            <div :id="'avatar_' + item.id" class="avatar-saloon"></div>
-            <h3>{{ item.name }}</h3>
+            <div>
+                <div :id="'avatar_' + item.id" class="avatar-saloon"></div>
+                <b>{{ item.name }}</b>
+            </div>
         </div>
       </div>
-      <div class="">
-        <span>settings</span>
-
-        <span>{{ gameType}}</span>
-      </div>
-      <input size="40" type="text" id="link" :value="`http://${host}/r/${name}`"></input>
-      <button type="button" onclick="copyURL()" >Inviter</button>
-      <br/>
       <button v-on:click="startGame" type="button">Jouer</button>
       <!-- <a v:href="'/static/' + gameType + '.html' ">Jouer</a> -->
     </div>

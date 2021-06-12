@@ -12,17 +12,8 @@
             <h1>Your info:</h1>
             <div class="container">
                 <div class="avatarframe">
-                    <div id="avatar" style="scale: 0.4; display: inline-block; margin: -100px 0 0 100px;" class="avatar">
-                    </div>
-                    <!--                    <img :src="`./img/avatar/${avatar}.svg`" class="avatar" />
-                    <select v-model="avatar" type="select">
-                        <option v-bind:value="1">Avatar 1</option>
-                        <option v-bind:value="2">Avatar 2</option>
-                        <option v-bind:value="3">Avatar 3</option>
-                    </select>
- -->
-                <input v-model:value="nickname" type="text" placeholder="Nickname"></input>
-                <button onclick="avatar.random()">Change avatar</button>
+                    <input v-model:value="nickname" type="text" placeholder="Nickname"></input>
+                    <div id="avatar" style="margin: -36px 0 0 220px;" class="avatar"></div>
                 </div>
             </div>
             <h1>Pick a game:</h1>

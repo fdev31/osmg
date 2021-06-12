@@ -7,21 +7,6 @@ html {
     float: right;
 }
 
-.myavatar {
-    background-color: rgba(255, 255, 0, 0.3);
-}
-
-.avatar {
-    max-height: 128px;
-}
-.avatar-saloon {
-    max-height: 30px;
-    display: inline-block;
-    transform-origin: top left;
-    margin-left: 200px;
-    vertical-align: bottom;
-}
-
 .wrap
 {
   margin:50px auto 0 auto;
@@ -162,24 +147,38 @@ input:focus {
 }
 
 select {
-display: block;
-margin: 0 auto;
+    display: block;
+    margin: 0 auto;
 }
 /* Avatar */
 svg {
     position:absolute;
     top:0;
     left:0;
-    width:360px;
-    height:360px;
 }
-#avatar {
-    position:relative;
-    margin:auto;
-    width:360px;
-    height:460px;
+.avatar {
+    position: relative;
+    width: 180px;
+    height:230px;
 }
-
+.avatar svg {
+    width: 180px;
+    height:230px;
+}
+.avatar-saloon {
+    position: relative;
+    width:36px;
+    height:46px;
+    display: inline-block;
+    vertical-align: bottom;
+}
+.avatar-saloon svg {
+    width:36px;
+    height:46px;
+}
+.myavatar {
+    background-color: rgba(255, 255, 0, 0.3);
+}
 .skins,.eyes,.eyebrows,.mouths,.hairstyles,.haircolors,.facialhairs,.clothes,.fabriccolors,.backgroundcolors,.glasses,.glassopacity,.tattoos,.accesories {
     flex: 0 0 auto;
     top:0;

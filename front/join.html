@@ -10,14 +10,9 @@
   <body onload="initApp()">
     <div id="app">
       <h1>Your info:</h1>
-      <div id="avatar" class="avatar"></div>
-      <br/>
+      <div id="avatar" class="avatar" style="margin: -110px 0px 0px 313px;" ></div>
       <input v-model:value="nickname" type="text" v-on:keyup="updateAvatar($event.target.value)" placeholder="nickname"></input>
-      <select v-model="avatar" type="select">
-        <option v-bind:value="1">Avatar 1</option>
-        <option v-bind:value="2">Avatar 2</option>
-        <option v-bind:value="3">Avatar 3</option>
-      </select>
+      <br/>
       <button v-on:click.stop="validate" type="button" name="button">Rejoindre</button>
     </div>
 
