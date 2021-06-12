@@ -15,7 +15,7 @@ const statuses = {
 }
 
 function isError(res) {
-    return res.detail != undefined;
+    return res && res.detail != undefined;
 }
 
 function checkLost() {
@@ -145,16 +145,16 @@ function initApp() {
             player_advance : async function () {
                 var choice =  Array.from(this.choice.toString()).map((o)=>parseInt(o));
                 // XXX: will grey out the buttons instead
-                action = await post(`http://${host}/game/marathon/validateDice?value=${this.choice}`, {
+                let action = await post(`http://${host}/game/marathon/validateDice?value=${this.choice}`, {
                     "id":parseInt(this.myId),
                     "secret": parseInt(this.secret),
                     "sessionName":this.name
                 });
-                if (!isError(action)) {
+                if (isError(action)) {
+                    alert(action.detail);
+                } else {
                     this.setStatus ( statuses.END_TURN );
                     this.choice = '';
-                } else {
-                    alert(action.detail);
                 }
             },
             finalOwnData : function() {
