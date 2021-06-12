@@ -36,7 +36,7 @@ async def getSession(uid, client=None) -> Session:
         cur = b"0"
         while cur:
             cur, keys = await conn.scan(cur, match=pattern)
-            all_keys.extend((k for k in keys if k[0] != '_'))
+            all_keys.extend((k for k in keys if ':_' not in k))
 
         all_values = await conn.mget(all_keys)
 
