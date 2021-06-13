@@ -31,3 +31,4 @@ def getGameDataPrefix(uid, playerId=None):
 
 PLAYERS_READY = 'playersReady'
 PLAYERS_ORDER = 'playerOrder'
+PLAYERS_CONNECTED = 'playersOnline'

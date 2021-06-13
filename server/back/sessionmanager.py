@@ -12,7 +12,7 @@ from back.models import PlayerIdentifier, newPlayer, Session, RedisSession, getP
 from back.models import SESSION_PLAYERS_DATA, SESSION_S_TIME, SESSION_GAME_TYPE
 from back.models import SESSION_C_TIME, SESSION_GAME_DATA, SESSION_NAME, SESSION_PLAYERS
 from back.globalHandlers import getGameDataPrefix, getRedis, setRedis, publishEvent, getVarName
-from back.globalHandlers import PLAYERS_READY, PLAYERS_ORDER
+from back.globalHandlers import PLAYERS_READY, PLAYERS_ORDER, PLAYERS_CONNECTED
 
 logger = logging.getLogger("Session")
 t0 = time.time()*1000
@@ -106,16 +106,16 @@ async def makeSession() -> Session:
 
 async def connectPlayer(sessionName: str, playerId: str):
     async with getRedis().client() as conn:
-#        await conn.sadd(getVarName(PLAYERS_READY, sessionName, gameData=True), playerId)
+        await conn.sadd(getVarName(PLAYERS_CONNECTED, sessionName), playerId)
         await publishEvent(sessionName, conn, cat='connectPlayer', id=playerId)
 
 async def disconnectPlayer(sessionName: str, playerId: str):
-    pr = getVarName(PLAYERS_READY, sessionName, gameData=True)
+    pr = getVarName(PLAYERS_CONNECTED, sessionName)
     async with getRedis().client() as conn:
-#        await conn.srem(pr, playerId)
+        await conn.srem(pr, playerId)
         nbP = await conn.scard(pr)
         if nbP == 0:
-            logging.warning("TODO: remove session")
+            logging.warning("TODO: remove session, no player connected")
             # TODO: if no players anymore, remove the session
         await publishEvent(sessionName, conn, cat='disconnectPlayer', id=playerId)
 
