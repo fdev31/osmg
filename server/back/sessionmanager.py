@@ -11,7 +11,7 @@ from starlette import status as httpstatus
 from back.models import PlayerIdentifier, newPlayer, Session, RedisSession, getPropertieList
 from back.models import SESSION_PLAYERS_DATA, SESSION_S_TIME, SESSION_GAME_TYPE
 from back.models import SESSION_C_TIME, SESSION_GAME_DATA, SESSION_NAME, SESSION_PLAYERS
-from back.globalHandlers import getGameDataPrefix, getRedis, setRedis, publishEvent, getSessionPrefix, getVarName
+from back.globalHandlers import getGameDataPrefix, getRedis, setRedis, publishEvent, getVarName
 from back.globalHandlers import PLAYERS_READY, PLAYERS_ORDER
 
 logger = logging.getLogger("Session")
@@ -91,19 +91,17 @@ async def makeSession() -> Session:
     " Create a new emtpy session with no players "
     uid = await _genUniqueSessionId()
     sess = Session(name = uid, players = [], creationTime=int(time.time()))
-
-    prefix = getSessionPrefix(uid)
-
     props = {}
 
     for name, value in getGameInitialData(sess.gameType):
-        props[f"{prefix}{GAME_DATA}:{name}"] = value
+        props[getVarName(name, sess.name, gameData=True)] = value
         sess.gameData[name] = value
+
     for field in (SESSION_C_TIME, SESSION_NAME, SESSION_GAME_TYPE):
-        props[prefix+field] = getattr(sess, field)
+        props[getVarName(field, sess.name)] = getattr(sess, field)
 
     await getRedis().mset(props)
-    logger.debug(f"New session {uid}")
+    logger.debug(f"New session {uid} {props}")
     return sess
 
 async def connectPlayer(sessionName: str, playerId: str):
@@ -126,23 +124,18 @@ async def addPlayer(player: newPlayer) -> Session:
     pidP = _getUniquePlayerId()
     player_info = player.dict()
     del player_info['sessionName']
-
     pid = await pidP
     secretId = int((time.time()*1000)%3600) + pid
-
     player_info['id'] = pid
     player_info['_secret'] = secretId
+    initialPlayerData = getPlayerInitialData(sess.gameType)
 
     redisObj = {}
-
-    prefix = getSessionPrefix(player.sessionName)
-
     for name, value in player_info.items():
-        redisObj[f"{prefix}P{pid}:{name}"] = value
+        redisObj[getVarName(name, player.sessionName, pid)] = value
 
-    initialPlayerData = getPlayerInitialData(sess.gameType)
     for name, value in initialPlayerData:
-        redisObj[f"{prefix}P{pid}:g:{name}"] = value
+        redisObj[getVarName(name, player.sessionName, pid, gameData=True)] = value
 
     async with getRedis().client() as conn:
         push = conn.rpush(getVarName(PLAYERS_ORDER, player.sessionName), pid)

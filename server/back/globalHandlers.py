@@ -29,8 +29,5 @@ def getGameDataPrefix(uid, playerId=None):
         return 'S%s:P%s:g:' % (uid, playerId)
     return 'S%s:g:'%(uid)
 
-def getSessionPrefix(uid):
-    return 'S%s:'%uid
-
 PLAYERS_READY = 'playersReady'
 PLAYERS_ORDER = 'playerOrder'
