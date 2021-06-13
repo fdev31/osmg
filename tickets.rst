@@ -1,7 +1,7 @@
 Tickets
 =======
 
-:total-count: 15
+:total-count: 16
 
 --------------------------------------------------------------------------------
 
@@ -130,4 +130,13 @@ change PlayersData attr from "diceValue" to "remainingPoint"
 
 :bugid: 15
 :created: 2021-06-10T18:00:51
+:priority: 0
+
+--------------------------------------------------------------------------------
+
+forbid playing the game again after player finish game
+======================================================
+
+:bugid: 16
+:created: 2021-06-10T21:31:15
 :priority: 0
