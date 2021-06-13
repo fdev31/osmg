@@ -39,3 +39,11 @@ def getPropertieList(kls):
     if kls not in _propCache:
         _propCache[kls] = list(kls.schema()['properties'].keys())
     return _propCache[kls]
+
+SESSION_GAME_TYPE = "gameType"
+SESSION_NAME = "name"
+SESSION_C_TIME = "creationTime"
+SESSION_S_TIME = "startTime"
+SESSION_PLAYERS = "players"
+SESSION_PLAYERS_DATA = "playersData"
+SESSION_GAME_DATA = "gameData"
