@@ -7,18 +7,6 @@ html {
     float: right;
 }
 
-.myavatar {
-    background-color: rgba(255, 255, 0, 0.3);
-}
-
-.avatar {
-    max-height: 128px;
-}
-.avatar-saloon {
-    max-height: 30px;
-    vertical-align: bottom;
-}
-
 .wrap
 {
   margin:50px auto 0 auto;
@@ -159,6 +147,52 @@ input:focus {
 }
 
 select {
-display: block;
-margin: 0 auto;
+    display: block;
+    margin: 0 auto;
+}
+/* Avatar */
+.avatar {
+    position: relative;
+    width: 180px;
+    height:230px;
+}
+.avatar svg {
+    width: 180px;
+    height:230px;
+}
+.avatar-lobby {
+    position: relative;
+    width:36px;
+    height:46px;
+    display: inline-block;
+    vertical-align: bottom;
+}
+.avatar-lobby svg {
+    width:36px;
+    height:46px;
+}
+.myavatar {
+    background-color: rgba(255, 255, 0, 0.3);
+}
+.skins,.eyes,.eyebrows,.mouths,.hairstyles,.haircolors,.facialhairs,.clothes,.fabriccolors,.backgroundcolors,.glasses,.glassopacity,.tattoos,.accesories {
+    flex: 0 0 auto;
+    top:0;
+    width:53px;
+    height:53px;
+    margin:5px;
+    border:1px solid #707070;
+    cursor:pointer;
+    border-radius:10px;
+    background-color:#ffdbb4;
+}
+.eyes,.eyebrows,.mouths,.hairstyles,.facialhairs,.clothes,.glasses,.tattoos,.accesories {
+    background-image:url(https://i.imgur.com/q0DdlUI.png);
+}
+.glassopacity {
+    text-align:center;
+    font-size:21px;
+    font-weight:bold;
+    height:43px;
+    padding-top:10px;
+    color:#707070;
 }

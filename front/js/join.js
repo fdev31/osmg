@@ -7,14 +7,17 @@ function initApp() {
 
   var url = new URL(document.URL);
   var session = url.searchParams.get("session");
-  lounge = new Vue({
+  lobby = new Vue({
     el : "#app",
     data : {
       session : session,
-      nickname : "San Goku",
+      nickname : "Joe",
       avatar : 1,
     } ,
     methods : {
+        updateAvatar : function(text) {
+          avatar.fromName(text);
+      },
       validate : async function () {
         var myHeaders = new Headers();
         myHeaders.append("Content-Type", "application/json");
@@ -36,8 +39,14 @@ function initApp() {
 
 
 
-        window.location = "saloon.html";
+        window.location = "lobby.html";
       }
     }
   })
+    fetch('avatars.svg')
+        .then( async (q) => {
+            document.getElementById('avatar').innerHTML = await q.text();
+            avatar = new Avatar('#avatar');
+            avatar.fromName(lobby.nickname);
+        });
 }

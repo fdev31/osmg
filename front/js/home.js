@@ -1,14 +1,22 @@
-
 let home;
 
 function initApp() {
+    fetch('avatars.svg')
+    .then( async (q) => {
+        document.getElementById('avatar').innerHTML = await q.text();
+        avatar = new Avatar('#avatar');
+        avatar.fromName(home.nickname);
+    });
   home = new Vue({
     el: "#app",
+    watch: {
+        nickname: (val) => avatar.fromName(val)
+    },
     data: {
       sessionName : "Pas de données",
       playerName : "Pas de nom",
       avatar : 1,
-      nickname : "Goldorak",
+      nickname : "Ninon",
       games: {},
     },
     methods: {
@@ -38,7 +46,7 @@ function initApp() {
           if (player.name == this.nickname) result.myId = player.id;
         }
         document.cookie = "JS=" + JSON.stringify(result) + '; SameSite=Strict';
-        window.location = "saloon.html";
+        window.location = "lobby.html";
       }
     }
   });

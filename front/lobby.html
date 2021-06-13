@@ -19,26 +19,22 @@
 
     <div id="app">
       <div class="">
-        <h2>Joueurs</h2>
+        <h2>{{ gameType}} players</h2>
+        <input size="40" type="text" id="link" :value="`http://${host}/r/${name}`"></input>
+        <button type="button" onclick="copyURL()" >Inviter</button>
         <div v-for="item in players" class="players">
-          <img class="avatar-saloon" v-bind:src="`/static/img/avatar/${item.avatar}.svg`" width="75" alt="" />
-          {{ item.name }}
+            <div>
+                <div :id="'avatar_' + item.id" class="avatar-lobby"></div>
+                <b>{{ item.name }}</b>
+            </div>
         </div>
       </div>
-      <div class="">
-        <span>settings</span>
-
-        <span>{{ gameType}}</span>
-      </div>
-      <input size="40" type="text" id="link" :value="`http://${host}/r/${name}`"></input>
-      <button type="button" onclick="copyURL()" >Inviter</button>
-      <br/>
       <button v-on:click="startGame" type="button">Jouer</button>
-      <!-- <a v:href="'/static/' + gameType + '.html' ">Jouer</a> -->
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+    <script src="/static/avatars.js" charset="utf-8"></script>
     <script src="/static/js/utils.js" charset="utf-8"></script>
-    <script src="/static/js/lounge.js" charset="utf-8"></script>
+    <script src="/static/js/lobby.js" charset="utf-8"></script>
   </body>
 </html>

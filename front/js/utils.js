@@ -22,6 +22,13 @@ function setEventStreamHandler(handler , query ) {
   evtSource.addEventListener("update", (event) => handler(JSON.parse(event.data)) );
 }
 
+function Vue2Obj(vueApp) {
+  const r = {};
+  for (let k of Object.keys(vueApp._data)) {
+    r[k] = JSON.parse(JSON.stringify(vueApp[k]));
+  }
+  return r;
+}
 function extractObj(o) {
     if (o.charAt || typeof o == "number") return o; // Plain
     if (o.length) return extractList(o); // list
@@ -39,7 +46,7 @@ function setupStreamEventHandler(query, handlers) {
         if(handlers[data.cat]) {
             handlers[data.cat](data)
         } else {
-            console.error("No handler for "+data.cat);
+            console.warn("No handler for "+data.cat);
             console.log(data);
         }
     }, query);
@@ -62,4 +69,26 @@ async function post(url , body) {
   var response = await fetch(url, requestOptions);
   const result = await response.json();
   return result;
+}
+
+function setAttr(e, name, val) {
+    e.forEach( x => x.setAttribute(name, val) );
+}
+function show(e) {
+    e.forEach( x => x.style.visibility = "visible" );
+}
+function hide(e) {
+    e.forEach( x => x.style.visibility = "hidden" );
+}
+
+function arrayEquals(arr1 , arr2) {
+    if (!Array.isArray(arr1) || !Array.isArray(arr2)) throw `arguments must be Array objects , ${typeof arr1} and ${typeof arr2} given`;
+    if (arr1.length != arr2.length) return false;
+    arr1.sort();
+    arr2.sort();
+    isEquals = true;
+    arr1.every(function(element, index) {
+        if (element !== arr2[index]) isEquals = false
+    })
+    return isEquals
 }

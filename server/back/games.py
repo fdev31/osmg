@@ -9,7 +9,7 @@ logger = logging.getLogger()
 
 GAMES = ['marathon', 'mock1', 'mock2']
 
-gameDB = {}
+gameDB : Dict[str, Dict] = {}
 
 def listGames() -> dict:
     " list all games by name "

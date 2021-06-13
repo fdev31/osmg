@@ -3,46 +3,22 @@ import random
 import logging
 from typing import List
 
-import asyncio
-from fastapi import HTTPException, BackgroundTasks
+from fastapi import HTTPException
 from starlette import status as httpstatus
 
-from back.gamelib.interfaces import GameInterface
-from back.sessionmanager import GAME_DATA
 from back.models import PlayerIdentifier
-from back.globalHandlers import getRedis, getSessionPrefix, getGameDataPrefix, publishEvent
+from back.globalHandlers import getRedis, getGameDataPrefix, getVarName, publishEvent, PLAYERS_ORDER
 from back.utils import loads, dumps
 from .interfaces import GameInterface
 
 logger = logging.getLogger('marathon')
 
-async def startGame(player: PlayerIdentifier, tasks: BackgroundTasks) -> None:
-    """ Notifies that some player is ready to start the game """
-    redis = getRedis()
-    g_prefix = getGameDataPrefix(player.sessionName)
-    async with redis.client() as conn:
-        pr = g_prefix+'playersReady'
-        if await conn.sismember(pr, player.id):
-            raise HTTPException(httpstatus.HTTP_409_CONFLICT, "Action already done")
-        await publishEvent(player.sessionName, conn, cat="ready", player=player.id)
-        await conn.sadd(pr, player.id)
-        await conn.rpush(g_prefix+'playerOrder', player.id)
-        await conn.set(f'S{player.sessionName}:startTime', int(time.time()))
-
-        async def checkStartOfGame():
-            await asyncio.sleep(1);
-            nbPlayersReady = await conn.scard(pr)
-            if int(nbPlayersReady) == int(await conn.get(getSessionPrefix(player.sessionName)+'nbPlayers')):
-                # all players are ready!
-                await publishEvent(player.sessionName, conn, cat="start", msg="game started")
-                await turnLogic(None, 0, player, conn)
-
-        tasks.add_task(checkStartOfGame)
-
-async def isPlayerTurn(conn, prefix, playerId):
-    print(prefix+"curPlayer")
+async def isPlayerTurn(conn, prefix, playerId, secret):
+    actualSecret = await conn.get(f"{prefix[:-2]}P{playerId}:_secret")
+    if int(actualSecret) != int(secret):
+        return False
     curPlayer = await conn.get(prefix+"curPlayer")
-    curPlayerId = await conn.lindex(prefix+"playerOrder", int(curPlayer))
+    curPlayerId = await conn.lindex(prefix[:-2]+PLAYERS_ORDER, int(curPlayer))
     return int(curPlayerId) == int(playerId)
 
 async def throwDice(player: PlayerIdentifier) -> List[int]:
@@ -53,7 +29,7 @@ async def throwDice(player: PlayerIdentifier) -> List[int]:
     propName = prefix + "_diceValue"
 
     async with redis.client() as conn:
-        if not await isPlayerTurn(conn, gprefix, player.id):
+        if not await isPlayerTurn(conn, gprefix, player.id, player.secret):
             raise HTTPException(httpstatus.HTTP_403_FORBIDDEN, "Not your turn!")
         tmpDice = await conn.get(propName)
         if tmpDice:
@@ -74,7 +50,7 @@ async def validateDice(player: PlayerIdentifier, value: str) -> None:
     propName = prefix + "_diceValue"
     newVal = None
     async with redis.client() as conn:
-        if not await isPlayerTurn(conn, g_prefix, player.id):
+        if not await isPlayerTurn(conn, g_prefix, player.id, player.secret):
             raise HTTPException(httpstatus.HTTP_403_FORBIDDEN, "Not your turn!")
         if value != '0':
             previous = loads(await conn.get(propName))
@@ -97,7 +73,8 @@ async def turnLogic(distance, curPlayer: int, player: PlayerIdentifier, conn=Non
         conn = getRedis()
 
     g_prefix = getGameDataPrefix(player.sessionName)
-    nbPlayers = int(await conn.get(getSessionPrefix(player.sessionName)+"nbPlayers"))
+    po = getVarName(PLAYERS_ORDER, player.sessionName)
+    nbPlayers = int(await conn.llen(po))
 
     if distance != None: # check END OF GAME
         if distance == 0: # End of game
@@ -115,7 +92,7 @@ async def turnLogic(distance, curPlayer: int, player: PlayerIdentifier, conn=Non
         await conn.set(g_prefix + "curPlayer", 0)
         curPlayer = 0
 
-    curPlayerId = await conn.lindex(g_prefix + "playerOrder", curPlayer)
+    curPlayerId = await conn.lindex(g_prefix[:-2] + PLAYERS_ORDER, curPlayer)
     await publishEvent(player.sessionName, conn, cat="curPlayer", val=curPlayerId)
 
 class DiceInterface(GameInterface):
@@ -127,8 +104,12 @@ class DiceInterface(GameInterface):
     max_players = None
 
     @staticmethod
+    async def startGame(sessionId, conn):
+        await turnLogic(None, 0, PlayerIdentifier(id=0, sessionName=sessionId), conn)
+
+    @staticmethod
     def getPlayerData():
-        return dict(distance=42195, turn=0)
+        return dict(distance=42195)
 
     @staticmethod
     def getGameData():
@@ -138,11 +119,6 @@ class DiceInterface(GameInterface):
         }
 
     actions = {
-        'start': dict(handler=startGame,
-            response_model=None,
-            responses={
-                409: {"description": "player already exists"},
-            }),
         'throwDice': dict(handler=throwDice,
             response_model = List[int],
             responses = {

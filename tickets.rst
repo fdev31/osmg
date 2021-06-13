@@ -5,21 +5,6 @@ Tickets
 
 --------------------------------------------------------------------------------
 
-Optimize requests
-=================
-
-:bugid: 1
-:created: 2021-06-05T17:23:08
-:priority: 0
-
-- [x] use mset when possible
-- [x] avoid requests when possible
-
-- [x] review atomicity of keys/values:
-    - nbPlayers can be removed (look at array length instead)
-
---------------------------------------------------------------------------------
-
 Intermission during game
 ========================
 
@@ -29,17 +14,6 @@ Intermission during game
 
 -When a player is idle , give to other player a minigame or a question about the idle player
 -Then show the result in a funny manner
-
---------------------------------------------------------------------------------
-
-Who's turn is it ?
-==================
-
-:bugid: 4
-:created: 2021-06-06T14:54:52
-:priority: 0
-
--Start the game immediately
 
 --------------------------------------------------------------------------------
 
@@ -112,31 +86,16 @@ Look for a way to get const variables in vue app
 
 const values are not in reach of vue templating motor. To ease our coding we must find a way to access it easily
 
---------------------------------------------------------------------------------
+=> it helps exposing clear API & not have complex logic in the HTML
 
-Client should know dice throws
-==============================
-
-:bugid: 14
-:created: 2021-06-10T17:59:40
-:priority: 0
-
-When a player reconnect , client doesnt know his last throws. Thus blocking the player for making his choice
 
 --------------------------------------------------------------------------------
 
-change PlayersData attr from "diceValue" to "remainingPoint"
-============================================================
-
-:bugid: 15
-:created: 2021-06-10T18:00:51
-:priority: 0
-
---------------------------------------------------------------------------------
-
-forbid playing the game again after player finish game
+forbid playing the same game session again after player finish game
 ======================================================
 
 :bugid: 16
 :created: 2021-06-10T21:31:15
 :priority: 0
+not sure it should be fixed
+=> it should. Player should at least see results of the game that ends. Not continue the very same game. Stop the game we have a winner should do. 
