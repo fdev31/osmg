@@ -7,7 +7,7 @@ from fastapi import HTTPException
 from starlette import status as httpstatus
 
 from back.models import PlayerIdentifier
-from back.globalHandlers import getRedis, getSessionPrefix, getGameDataPrefix, publishEvent, PLAYERS_ORDER
+from back.globalHandlers import getRedis, getGameDataPrefix, getVarName, publishEvent, PLAYERS_ORDER
 from back.utils import loads, dumps
 from .interfaces import GameInterface
 
@@ -18,7 +18,7 @@ async def isPlayerTurn(conn, prefix, playerId, secret):
     if int(actualSecret) != int(secret):
         return False
     curPlayer = await conn.get(prefix+"curPlayer")
-    curPlayerId = await conn.lindex(prefix+PLAYERS_ORDER, int(curPlayer))
+    curPlayerId = await conn.lindex(prefix[:-2]+PLAYERS_ORDER, int(curPlayer))
     return int(curPlayerId) == int(playerId)
 
 async def throwDice(player: PlayerIdentifier) -> List[int]:
@@ -73,7 +73,8 @@ async def turnLogic(distance, curPlayer: int, player: PlayerIdentifier, conn=Non
         conn = getRedis()
 
     g_prefix = getGameDataPrefix(player.sessionName)
-    nbPlayers = int(await conn.get(getSessionPrefix(player.sessionName)+"nbPlayers"))
+    po = getVarName(PLAYERS_ORDER, player.sessionName)
+    nbPlayers = int(await conn.llen(po))
 
     if distance != None: # check END OF GAME
         if distance == 0: # End of game
@@ -91,7 +92,7 @@ async def turnLogic(distance, curPlayer: int, player: PlayerIdentifier, conn=Non
         await conn.set(g_prefix + "curPlayer", 0)
         curPlayer = 0
 
-    curPlayerId = await conn.lindex(g_prefix + PLAYERS_ORDER, curPlayer)
+    curPlayerId = await conn.lindex(g_prefix[:-2] + PLAYERS_ORDER, curPlayer)
     await publishEvent(player.sessionName, conn, cat="curPlayer", val=curPlayerId)
 
 class DiceInterface(GameInterface):

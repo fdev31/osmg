@@ -28,7 +28,7 @@ for player in session['players']:
         myId = player['id']
 pprint(session)
 print("My data:")
-pprint(session['playersData']['P'+myId])
+#pprint(session['playersData']['P'+myId])
 playerIdentifier = {
         'id': myId,
         'sessionName': sessionData['name'],

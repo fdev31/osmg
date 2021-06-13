@@ -31,7 +31,7 @@ async def getSession(uid, client=None) -> Session:
 
     async with (client or getRedis().client()) as conn:
         gameType  = await conn.get(getVarName(SESSION_GAME_TYPE, uid))
-        vn = getVarName(PLAYERS_ORDER, uid, gameData=True)
+        vn = getVarName(PLAYERS_ORDER, uid)
         allPlayers = await conn.lrange(vn, 0, -1)
 
     iface = games[gameType]
@@ -94,7 +94,7 @@ async def makeSession() -> Session:
 
     prefix = getSessionPrefix(uid)
 
-    props = {prefix+'nbPlayers': 0}
+    props = {}
 
     for name, value in getGameInitialData(sess.gameType):
         props[f"{prefix}{GAME_DATA}:{name}"] = value
@@ -140,18 +140,22 @@ async def addPlayer(player: newPlayer) -> Session:
     for name, value in player_info.items():
         redisObj[f"{prefix}P{pid}:{name}"] = value
 
-    for name, value in getPlayerInitialData(sess.gameType):
+    initialPlayerData = getPlayerInitialData(sess.gameType)
+    for name, value in initialPlayerData:
         redisObj[f"{prefix}P{pid}:g:{name}"] = value
 
     async with getRedis().client() as conn:
-        await conn.rpush(getVarName(PLAYERS_ORDER, player.sessionName, gameData=True), pid)
-        await conn.mset(redisObj)
-        await conn.incr(prefix+'nbPlayers')
+        push = conn.rpush(getVarName(PLAYERS_ORDER, player.sessionName), pid)
+        mset = conn.mset(redisObj)
 
         pub = publishEvent(player.sessionName, None, cat='newPlayer', name=player.name, avatar=player.avatar, id=pid)
-        sess = await getSession(player.sessionName, conn)
+        await push
+        await mset
         await pub
 
+    del player_info['_secret']
+    getattr(sess, SESSION_PLAYERS_DATA)['P%d'%pid] = initialPlayerData
+    getattr(sess, SESSION_PLAYERS).append(player_info)
     sess.secret = secretId
     logger.debug(f"New player {pid}")
     return sess
@@ -172,7 +176,8 @@ async def startGame(player: PlayerIdentifier, tasks: BackgroundTasks) -> None:
             await asyncio.sleep(1)
             async with redis.client() as conn:
                 nbPlayersReady = await conn.scard(pr)
-                if int(nbPlayersReady) == int(await conn.get(getSessionPrefix(player.sessionName)+'nbPlayers')):
+                po = getVarName(PLAYERS_ORDER, player.sessionName)
+                if int(nbPlayersReady) == int(await conn.llen(po)):
                     # all players are ready!
                     await publishEvent(player.sessionName, conn, cat="start", msg="game started")
                     gameType  = await getRedis().get(getVarName(SESSION_GAME_TYPE, player.sessionName))
