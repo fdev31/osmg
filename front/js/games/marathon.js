@@ -137,7 +137,7 @@ function initApp() {
             },
             findPlayer : function (id) {
                 for (var [key , player] of Object.entries(this.playersData)) {
-                    if (key.substring(1) == id) {
+                    if (key == id) {
                         return player;
                     }
                 }
@@ -159,7 +159,7 @@ function initApp() {
             },
             finalOwnData : function() {
                 for (var [key , player] of this.playersData) {
-                    console.log(key.substring(0,1))
+                    console.log(key);
                 }
             }
         }

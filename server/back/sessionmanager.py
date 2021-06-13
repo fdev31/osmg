@@ -154,7 +154,7 @@ async def addPlayer(player: newPlayer) -> Session:
         await pub
 
     del player_info['_secret']
-    getattr(sess, SESSION_PLAYERS_DATA)['P%d'%pid] = initialPlayerData
+    getattr(sess, SESSION_PLAYERS_DATA)[str(pid)] = initialPlayerData
     getattr(sess, SESSION_PLAYERS).append(player_info)
     sess.secret = secretId
     logger.debug(f"New player {pid}")
