@@ -35,7 +35,7 @@ playerIdentifier = {
         'secret': session['secret']
         }
 pprint(session)
-r = requests.post(HOST+'/game/marathon/start', json=playerIdentifier)
+r = requests.post(HOST+'/session/start', json=playerIdentifier)
 print("STARTED", r.json())
 
 r = requests.post(HOST+'/game/marathon/throwDice?value=4', json=playerIdentifier)

@@ -3,8 +3,7 @@ import random
 import logging
 from typing import List
 
-import asyncio
-from fastapi import HTTPException, BackgroundTasks
+from fastapi import HTTPException
 from starlette import status as httpstatus
 
 from back.sessionmanager import GAME_DATA
@@ -14,29 +13,6 @@ from back.utils import loads, dumps
 from .interfaces import GameInterface
 
 logger = logging.getLogger('marathon')
-
-async def startGame(player: PlayerIdentifier, tasks: BackgroundTasks) -> None:
-    """ Notifies that some player is ready to start the game """
-    redis = getRedis()
-    g_prefix = getGameDataPrefix(player.sessionName)
-    async with redis.client() as conn:
-        pr = g_prefix+'playersReady'
-        if await conn.sismember(pr, player.id):
-            raise HTTPException(httpstatus.HTTP_409_CONFLICT, "Action already done")
-        await publishEvent(player.sessionName, conn, cat="ready", player=player.id)
-        await conn.sadd(pr, player.id)
-        await conn.rpush(g_prefix+'playerOrder', player.id)
-        await conn.set(f'S{player.sessionName}:startTime', int(time.time()))
-
-        async def checkStartOfGame():
-            await asyncio.sleep(1)
-            nbPlayersReady = await conn.scard(pr)
-            if int(nbPlayersReady) == int(await conn.get(getSessionPrefix(player.sessionName)+'nbPlayers')):
-                # all players are ready!
-                await publishEvent(player.sessionName, conn, cat="start", msg="game started")
-                await turnLogic(None, 0, player, conn)
-
-        tasks.add_task(checkStartOfGame)
 
 async def isPlayerTurn(conn, prefix, playerId, secret):
     actualSecret = await conn.get(f"{prefix[:-2]}P{playerId}:_secret")
@@ -128,8 +104,12 @@ class DiceInterface(GameInterface):
     max_players = None
 
     @staticmethod
+    async def startGame(sessionId, conn):
+        await turnLogic(None, 0, PlayerIdentifier(id=0, sessionName=sessionId), conn)
+
+    @staticmethod
     def getPlayerData():
-        return dict(distance=42195, turn=0)
+        return dict(distance=42195)
 
     @staticmethod
     def getGameData():
@@ -139,11 +119,6 @@ class DiceInterface(GameInterface):
         }
 
     actions = {
-        'start': dict(handler=startGame,
-            response_model=None,
-            responses={
-                409: {"description": "player already exists"},
-            }),
         'throwDice': dict(handler=throwDice,
             response_model = List[int],
             responses = {

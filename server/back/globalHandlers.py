@@ -19,3 +19,13 @@ def getGameDataPrefix(uid, playerId=None):
     if playerId:
         return 'S%s:P%s:g:' % (uid, playerId)
     return 'S%s:g:'%(uid)
+
+def getVarName(name, sessionId, playerId=None, gameData=False):
+    if gameData and playerId:
+        return f"S{sessionId}:P{playerId}:g:{name}"
+    elif gameData:
+        return f"S{sessionId}:g:{name}"
+    elif playerId:
+        return f"S{sessionId}:P{playerId}:{name}"
+    else:
+        return f"S{sessionId}:{name}"

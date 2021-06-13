@@ -2,14 +2,14 @@ __all__ = ['getSession', 'registerGame']
 import time
 import logging
 from typing import Dict, Any
-import hashlib
+import asyncio
 
 import aioredis
-from fastapi import HTTPException
+from fastapi import HTTPException, BackgroundTasks
 from starlette import status as httpstatus
 
-from back.models import newPlayer, Session, Player
-from back.globalHandlers import getRedis, setRedis, publishEvent, getSessionPrefix
+from back.models import PlayerIdentifier, newPlayer, Session, RedisSession, getPropertieList
+from back.globalHandlers import getGameDataPrefix, getRedis, setRedis, publishEvent, getSessionPrefix, getVarName
 
 logger = logging.getLogger("Session")
 t0 = time.time()*1000
@@ -25,19 +25,27 @@ async def _genUniqueSessionId():
 
 async def getSession(uid, client=None) -> Session:
     " fetch session info from redis "
-    pattern = getSessionPrefix(uid) + "*"
-    all_keys = []
+
+    async with (client or getRedis().client()) as conn:
+        gameType  = await conn.get(getVarName('gameType', uid))
+        vn = getVarName('playerOrder', uid, gameData=True)
+        allPlayers = await conn.lrange(vn, 0, -1)
+
+    iface = games[gameType]
+    all_keys = [getVarName(name, uid) for name in getPropertieList(RedisSession)]
+    all_keys.extend(getVarName(name, uid, gameData=True) for name in iface.getGameData().keys())
+
+    playerDataKeys = list(iface.getPlayerData().keys())
+    for playername in allPlayers:
+        all_keys.extend(getVarName(name, uid, playername, gameData=True) for name in playerDataKeys)
+        all_keys.extend(getVarName(name, uid, playername) for name in iface.getPlayerIdentifiers())
+
     o = {}
     players : Dict[str, dict] = {}
     players_data : Dict[str, Any] = {}
     game_data = {}
 
     async with (client or getRedis().client()) as conn:
-        cur = b"0"
-        while cur:
-            cur, keys = await conn.scan(cur, match=pattern)
-            all_keys.extend((k for k in keys if ':_' not in k))
-
         all_values = await conn.mget(all_keys)
 
     for key, val in zip(all_keys, all_values):
@@ -58,6 +66,9 @@ async def getSession(uid, client=None) -> Session:
     o['players'] = list(players.values())
     o['playersData'] = players_data
     o['gameData'] = game_data
+    o['name'] = uid
+    if o['startTime'] is None:
+        o['startTime'] = 0
     return Session(**o)
 
 games = {}
@@ -130,6 +141,7 @@ async def addPlayer(player: newPlayer) -> Session:
         redisObj[f"{prefix}P{pid}:g:{name}"] = value
 
     async with getRedis().client() as conn:
+        await conn.rpush(getVarName('playerOrder', player.sessionName, gameData=True), pid)
         await conn.mset(redisObj)
         await conn.incr(prefix+'nbPlayers')
 
@@ -141,8 +153,32 @@ async def addPlayer(player: newPlayer) -> Session:
     logger.debug(f"New player {pid}")
     return sess
 
+async def startGame(player: PlayerIdentifier, tasks: BackgroundTasks) -> None:
+    """ Notifies that some player is ready to start the game """
+    redis = getRedis()
+    g_prefix = getGameDataPrefix(player.sessionName)
+    async with redis.client() as conn:
+        pr = g_prefix+'playersReady'
+        if await conn.sismember(pr, player.id):
+            raise HTTPException(httpstatus.HTTP_409_CONFLICT, "Action already done")
+        await publishEvent(player.sessionName, conn, cat="ready", player=player.id)
+        await conn.sadd(pr, player.id)
+        await conn.set(f'S{player.sessionName}:startTime', int(time.time()))
+
+        async def checkStartOfGame():
+            await asyncio.sleep(1)
+            async with redis.client() as conn:
+                nbPlayersReady = await conn.scard(pr)
+                if int(nbPlayersReady) == int(await conn.get(getSessionPrefix(player.sessionName)+'nbPlayers')):
+                    # all players are ready!
+                    await publishEvent(player.sessionName, conn, cat="start", msg="game started")
+                    gameType  = await getRedis().get(getVarName('gameType', player.sessionName))
+                    await games[gameType].startGame(player.sessionName, conn)
+        tasks.add_task(checkStartOfGame)
+
 def init(app, config):
     setRedis(aioredis.from_url('redis://'+config.redis_server,  decode_responses=True))
+
     app.post('/session/new',
         response_model=Session)(makeSession)
     app.post('/session/join',
@@ -150,3 +186,9 @@ def init(app, config):
             409: {'description': "player already joined"},
         },
         response_model=Session)(addPlayer)
+
+    app.post('/session/start',
+            response_model=None,
+            responses={
+                409: {"description": "player already exists"},
+            })(startGame)

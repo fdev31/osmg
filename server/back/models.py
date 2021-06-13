@@ -20,13 +20,22 @@ class newPlayer(_BasePlayer):
     " Player with associated session to join "
     sessionName: str
 
-class Session(BaseModel):
-    " Game instance description & states "
-    players: List[dict] = []
-    name: str
+class RedisSession(BaseModel):
+    " Game instance description & states as stored in Redis "
     gameType: str = "marathon"
-    gameData: dict = {}
-    playersData: Dict = {}
     creationTime: int
     startTime: int = 0
+
+class Session(RedisSession):
+    " Game instance description & states "
+    gameData: dict = {}
+    playersData: Dict = {}
+    players: List[dict] = []
+    name: str
     secret: Optional[int] = None
+
+_propCache = {}
+def getPropertieList(kls):
+    if kls not in _propCache:
+        _propCache[kls] = list(kls.schema()['properties'].keys())
+    return _propCache[kls]

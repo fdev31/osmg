@@ -4,7 +4,7 @@
 // Api Start lance la partie. Elle doit se lancer quand tout le monde a fait start ?
 
 const statuses = {
-    "UNINITIALIZED" : 0 ,
+    "UNINITIALIZED" : 0,
     "THROW" : 1 ,
     "DICE_THROWN" : 2,
     "WAITING" : 3 ,

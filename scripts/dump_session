@@ -25,8 +25,7 @@ async def main():
                     try:
                         val = await conn.smembers(key)
                     except aioredis.exceptions.ResponseError as e:
-                        llen = await conn.llen(key)
-                        val = [await conn.lindex(key, i) for i in range(llen)]
+                        val = await conn.lrange(key, 0, -1)
                 splitk = key.split(':')
                 if splitk[0] not in sessions:
                     sessions[splitk[0]] = {}
