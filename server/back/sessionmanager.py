@@ -106,14 +106,14 @@ async def makeSession() -> Session:
 
 async def connectPlayer(sessionName: str, playerId: str):
     async with getRedis().client() as conn:
-        await conn.sadd(getVarName(PLAYERS_READY, sessionName, gameData=True), playerId)
+#        await conn.sadd(getVarName(PLAYERS_READY, sessionName, gameData=True), playerId)
         await publishEvent(sessionName, conn, cat='connectPlayer', id=playerId)
 
 async def disconnectPlayer(sessionName: str, playerId: str):
     pr = getVarName(PLAYERS_READY, sessionName, gameData=True)
     async with getRedis().client() as conn:
-        await conn.srem(pr, playerId)
-        nbP = await conn.scard(pr, playerId)
+#        await conn.srem(pr, playerId)
+        nbP = await conn.scard(pr)
         if nbP == 0:
             logging.warning("TODO: remove session")
             # TODO: if no players anymore, remove the session
