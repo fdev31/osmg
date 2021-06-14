@@ -105,19 +105,26 @@ async def makeSession() -> Session:
     return sess
 
 async def connectPlayer(sessionName: str, playerId: str):
+    stage = getVarName(PLAYERS_CONNECTED+'stage', sessionName)
     async with getRedis().client() as conn:
-        await conn.sadd(getVarName(PLAYERS_CONNECTED, sessionName), playerId)
-        await publishEvent(sessionName, conn, cat='connectPlayer', id=playerId)
+        if await conn.sismember(stage, playerId):
+            await conn.smove(stage, getVarName(PLAYERS_CONNECTED, sessionName), playerId)
+        else:
+            await conn.sadd(getVarName(PLAYERS_CONNECTED, sessionName), playerId)
+            await publishEvent(sessionName, conn, cat='connectPlayer', id=playerId)
 
 async def disconnectPlayer(sessionName: str, playerId: str):
     pr = getVarName(PLAYERS_CONNECTED, sessionName)
+    stage = getVarName(PLAYERS_CONNECTED+'stage', sessionName)
     async with getRedis().client() as conn:
-        await conn.srem(pr, playerId)
-        nbP = await conn.scard(pr)
-        if nbP == 0:
-            logging.warning("TODO: remove session, no player connected")
-            # TODO: if no players anymore, remove the session
-        await publishEvent(sessionName, conn, cat='disconnectPlayer', id=playerId)
+        await conn.smove(pr, stage, playerId)
+        await asyncio.sleep(1)
+        if not await conn.sismember(pr, playerId): # it has reconnected in the meantime
+            await conn.srem(stage, playerId)
+            nbP = await conn.scard(pr)
+            if nbP == 0:
+                logging.warning("TODO: remove session, no player connected")
+            await publishEvent(sessionName, conn, cat='disconnectPlayer', id=playerId)
 
 async def addPlayer(player: newPlayer) -> Session:
     " Add a player to an existing session "
