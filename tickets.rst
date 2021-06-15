@@ -12,8 +12,8 @@ Intermission during game
 :created: 2021-06-06T14:54:52
 :priority: 0
 
--When a player is idle , give to other player a minigame or a question about the idle player
--Then show the result in a funny manner
+- When a player is idle , give to other player a minigame or a question about the idle player
+- Then show the result in a funny manner
 
 --------------------------------------------------------------------------------
 
@@ -44,7 +44,7 @@ Game dont detect losers
 :created: 2021-06-06T14:54:52
 :priority: 0
 
--Start the game immediately
+- Start the game immediately
 
 --------------------------------------------------------------------------------
 
