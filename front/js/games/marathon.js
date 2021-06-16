@@ -96,9 +96,8 @@ function initApp() {
             }
         )
     // }
-    marathon = new Vue({
-        el: "#app",
-        data: data ,
+    app = Vue.createApp({
+        'data': function() { return data },
         mounted : function () {
           this.enableSnap()
         },
@@ -228,6 +227,7 @@ function initApp() {
             }
         }
     });
+    marathon = app.mount('#app');
     setupStreamEventHandler({topic :marathon.name , uid : marathon.myId}, handlers);
     fetch('avatars.svg')
         .then( async (q) => {
