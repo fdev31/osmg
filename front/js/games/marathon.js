@@ -14,6 +14,15 @@ const statuses = {
     "ERROR": 7
 }
 
+const dices = {
+    "ONE_FACE" : "dice-six-faces-one.svg",
+    "TWO_FACE" : "dice-six-faces-two.svg",
+    "THREE_FACE" : "dice-six-faces-three.svg",
+    "FOUR_FACE" : "dice-six-faces-four.svg",
+    "FIVE_FACE" : "dice-six-faces-five.svg",
+    "SIX_FACE" : "dice-six-faces-six.svg",
+}
+
 function isError(res) {
     return res && res.detail != undefined;
 }
@@ -75,7 +84,7 @@ function initApp() {
         window.location = `http://${host}/static/lobby.html`;
     }
 
-    if (data.status == undefined) {
+    // if (data.status == undefined) {
         Object.assign(data,
             {
                 host: document.location.host,
@@ -83,12 +92,17 @@ function initApp() {
                 remain: 42195, // FIXME: this is a duplicate of player data !
                 turn: 0, // FIXME: this is a duplicate of game data !
                 choice: 0,
+                svg : [],
+                mousePosition : [0,0]
             }
         )
-    }
+    // }
     marathon = new Vue({
         el: "#app",
         data: data ,
+        mounted : function () {
+          this.enableSnap()
+        },
         methods: {
             didIWin() {
                 return this.status == statuses.GAME_WON;
@@ -161,6 +175,32 @@ function initApp() {
                 for (var [key , player] of this.playersData) {
                     console.log(key);
                 }
+            },
+            enableDragDrop : function (element) {
+            var move = function(dx,dy) {
+                    this.attr({
+                                transform: this.data('origTransform') + (this.data('origTransform') ? "T" : "t") + [dx, 0]
+                            });
+            }
+            var start = function() {
+                    this.data('origTransform', this.transform().local );
+            }
+            var stop = function(mouseEvent) {
+                    console.log('finished dragging');
+            }
+            element.drag(move, start, stop );
+
+
+          },
+            enableSnap : function() {
+              this.svg.push(Snap("#svg6684"));
+              var choice = [1,2,3,4]
+              for (var i = 1; i < choice.length; i++) {
+                this.svg.push(this.svg[0].clone())
+                // this.choice[i]
+                this.enableDragDrop(this.svg[i])
+              }
+              this.enableDragDrop(this.svg[0])
             }
         }
     });
@@ -195,3 +235,14 @@ async function getThrowResults() {
     return result;
 }
 
+
+
+
+  function rotateElement(element, angle) {
+  var bbox = s.getBBox();
+  s.stop().animate({ transform: `r${angle},0,0} `}, 500, mina.easeinout);
+  }
+
+  function onSVGLoaded( data ){
+    s.append( data );
+}
