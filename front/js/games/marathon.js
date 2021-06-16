@@ -182,30 +182,20 @@ function initApp() {
                     });
                 }
                 var start = function() {
-                    prevState.order = Array(NB_DICE).fill(0).map( (o, i)=> i); // ref position (0,1,2,3)
                     this.addClass('grabbed');
                     this.data('origTransform', this.transform().local );
                 }
                 var stop = function(mouseEvent) {
                     this.data('z-index', 0);
                     let newOrder = getDiceOrder();
-
                     console.log('finished dragging', newOrder);
-
                     let width = marathon.svg[0].node.getBoundingClientRect().width;
                     this.removeClass('grabbed');
-                    // FIXME: doesn't work property
-                    // may require debugging using paper & pen to understand what to expect and what is the difference
 
-                    let diffs = newOrder.map( (o, i) => (o-i)*width)
-
+                    let diffs = newOrder.map( (o, i) => (newOrder.indexOf(i)-i) *width)
                     // place dices when finished
                     for (let i=0; i<NB_DICE; i++) {
-                        console.log("x");
                         let sv = marathon.svg[NB_DICE-i-1]; // nodes are in reverse order
-                        console.log("diff", diffs[i]);
-                        // translate(0) == original position
-                        // "diff" is supposed to contain the difference in pixels
                         sv.animate({transform: `translate(${diffs[i]})`}, 300);
                     }
                 }
@@ -216,7 +206,7 @@ function initApp() {
               for (var i = 0; i < NB_DICE; i++) {
                   let elt = ref.clone();
                   elt.data('diceNR', i);
-                  elt.addClass('class', 'dice');
+                  elt.addClass('dice');
                   elt.node.querySelector('.diceText').innerHTML = NB_DICE-i;
                   elt.node.style['width'] = '100px';
                   elt.node.style['height'] = '100px';
@@ -239,6 +229,10 @@ function initApp() {
                 avatar.fromName(player.name);
             }
         });
+
+    setInterval( ()=>{
+        rotateElement(marathon.svg[0], 720, ~~(Math.random()*6) + 1)
+    }, 2000);
 }
 
 async function getThrowResults() {
@@ -259,8 +253,16 @@ async function getThrowResults() {
     return result;
 }
 
-function rotateElement(element, angle) {
-    var bbox = s.getBBox();
-    s.stop().animate({ transform: `r${angle},0,0} `}, 500, mina.easeinout);
+function rotateElement(element, angle, new_val) {
+    let d=100;
+    let steps = [];
+    let lastIndex = Math.floor(angle/180);
+    for (let i=0; i<=angle/180; i++) {
+        setTimeout( ()=> {
+            element.animate({ transform: `rotate(${i*180})`}, d, mina.easeinout)
+            if (i==lastIndex) element.node.querySelector('.diceText').innerHTML = new_val;
+        },
+            (d+10)*(i+1));
+    }
 }
 
