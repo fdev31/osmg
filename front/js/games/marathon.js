@@ -182,14 +182,13 @@ function initApp() {
                     });
                 }
                 var start = function() {
-                    prevState.order = Array(NB_DICE).fill(0).map( (o, i)=> i);
+                    prevState.order = Array(NB_DICE).fill(0).map( (o, i)=> i); // ref position (0,1,2,3)
                     this.addClass('grabbed');
                     this.data('origTransform', this.transform().local );
                 }
                 var stop = function(mouseEvent) {
                     this.data('z-index', 0);
-                    let dices = Array.from(document.querySelectorAll('.diceArea svg')).map( (o, i)=> [o.getBoundingClientRect().x, i]);
-                    let newOrder = dices.sort((a, b) => a[0]-b[0]).map( (o)=> o[1] )
+                    let newOrder = getDiceOrder();
 
                     console.log('finished dragging', newOrder);
 
@@ -198,13 +197,16 @@ function initApp() {
                     // FIXME: doesn't work property
                     // may require debugging using paper & pen to understand what to expect and what is the difference
 
+                    let diffs = newOrder.map( (o, i) => (o-i)*width)
+
                     // place dices when finished
                     for (let i=0; i<NB_DICE; i++) {
-                        let sv = marathon.svg[i];
-                        let diff = ( i -(newOrder[i]) ) * width;
+                        console.log("x");
+                        let sv = marathon.svg[NB_DICE-i-1]; // nodes are in reverse order
+                        console.log("diff", diffs[i]);
                         // translate(0) == original position
                         // "diff" is supposed to contain the difference in pixels
-                        sv.animate({transform: `translate(${diff})`}, 300);
+                        sv.animate({transform: `translate(${diffs[i]})`}, 300);
                     }
                 }
                 element.drag(move, start, stop );
