@@ -93,7 +93,6 @@ function initApp() {
                 turn: 0, // FIXME: this is a duplicate of game data !
                 choice: 0,
                 svg : [],
-                mousePosition : [0,0]
             }
         )
     // }
@@ -122,6 +121,31 @@ function initApp() {
             },
             getPlayerAction: function () {
                 return ["En attente des autres joueurs","Lancez les dés" , "Avancez" , "Attendez" , "Fin du Tour", "Erreur"][this.status];
+            },
+            getDiceSvg : function(number) {
+                switch (number) {
+                  case 1:
+                    return dices.ONE_FACE;
+                    break;
+                  case 2:
+                    return dices.TWO_FACE;
+                    break;
+                  case 3:
+                    return dices.THREE_FACE;
+                    break;
+                  case 4:
+                    return dices.FOUR_FACE;
+                    break;
+                  case 5:
+                    return dices.FIVE_FACE;
+                    break;
+                  case 6:this.getDiceSvg(choice[i])
+                    return dices.SIX_FACE;
+                    break;
+
+                  default:
+                    return dices.ONE_FACE;
+                }
             },
             mainPlayButton: async function() {
                 switch(this.status) {
