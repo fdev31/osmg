@@ -1,7 +1,7 @@
 Tickets
 =======
 
-:total-count: 16
+:total-count: 17
 
 --------------------------------------------------------------------------------
 
@@ -88,7 +88,6 @@ const values are not in reach of vue templating motor. To ease our coding we mus
 
 => it helps exposing clear API & not have complex logic in the HTML
 
-
 --------------------------------------------------------------------------------
 
 forbid playing the same game session again after player finish game
@@ -100,4 +99,15 @@ forbid playing the same game session again after player finish game
 
 not sure it should be fixed
 
-=> it should. Player should at least see results of the game that ends. Not continue the very same game. Stop the game we have a winner should do. 
+=> it should. Player should at least see results of the game that ends. Not continue the very same game. Stop the game we have a winner should do.
+
+--------------------------------------------------------------------------------
+
+dice bug: rotate loses the translation
+======================================
+
+:bugid: 17
+:created: 2021-06-16T22:27:08
+:priority: 0
+
+the transformation is overriden instead of updating it
