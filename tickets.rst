@@ -92,10 +92,12 @@ const values are not in reach of vue templating motor. To ease our coding we mus
 --------------------------------------------------------------------------------
 
 forbid playing the same game session again after player finish game
-======================================================
+===================================================================
 
 :bugid: 16
 :created: 2021-06-10T21:31:15
 :priority: 0
+
 not sure it should be fixed
+
 => it should. Player should at least see results of the game that ends. Not continue the very same game. Stop the game we have a winner should do. 
