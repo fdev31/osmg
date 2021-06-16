@@ -14,15 +14,6 @@ const statuses = {
     "ERROR": 7
 }
 
-const dices = {
-    "ONE_FACE" : "dice-six-faces-one.svg",
-    "TWO_FACE" : "dice-six-faces-two.svg",
-    "THREE_FACE" : "dice-six-faces-three.svg",
-    "FOUR_FACE" : "dice-six-faces-four.svg",
-    "FIVE_FACE" : "dice-six-faces-five.svg",
-    "SIX_FACE" : "dice-six-faces-six.svg",
-}
-
 function isError(res) {
     return res && res.detail != undefined;
 }
@@ -45,18 +36,16 @@ handlers = {
         }
     },
     varUpdate: (data) => {
-        console.log(data);
-        if (data.var == "distance") {
-            console.log(data.player, marathon.myId);
-            if (data.player == marathon.myId) {
-                marathon.remain = data.val;
-            }
+        if (data.player) {
+            marathon.playersData[data.player][data.var] = data.val;
+        } else {
+            marathon.gameData[data.var] = data.val;
         }
         checkLost();
     },
     newTurn: (data) => {
         checkLost();
-        marathon.turn = data.val;
+        marathon.gameData.turn = data.val;
     },
     endOfGame: (data) => {
         message = data.message;
@@ -72,6 +61,11 @@ handlers = {
     }
 };
 
+function getDiceOrder() {
+    let dices = Array.from(document.querySelectorAll('.diceArea svg')).map( (o, i)=> [o.getBoundingClientRect().x, i]);
+    return dices.sort((a, b) => a[0]-b[0]).map( (o)=> o[1] );
+}
+
 function initApp() {
     let host = document.location.host;
     try {
@@ -84,22 +78,28 @@ function initApp() {
         window.location = `http://${host}/static/lobby.html`;
     }
 
-    // if (data.status == undefined) {
-        Object.assign(data,
-            {
+    if (data.status == undefined) { // please do not remove this check, it was a huge bug...
+        // if you do so for some reason, we need to discuss solutions
+        // Do not remove code which has been added if you don't know what it's doing ;)
+        Object.assign(data, {
                 host: document.location.host,
                 status: 0,
                 remain: 42195, // FIXME: this is a duplicate of player data !
-                turn: 0, // FIXME: this is a duplicate of game data !
                 choice: 0,
-                svg : [],
-            }
-        )
-    // }
+            })
+    }
+    data.svg = []; // XXX: do you need it in app data ? looks strange since it's not even done with the template
+    const NB_DICE = 4;
+
     app = Vue.createApp({
         'data': function() { return data },
         mounted : function () {
           this.enableSnap()
+        },
+        computed: {
+            turn() {
+                return parseInt(this.gameData.turns) + 1;
+            }
         },
         methods: {
             didIWin() {
@@ -120,31 +120,6 @@ function initApp() {
             },
             getPlayerAction: function () {
                 return ["En attente des autres joueurs","Lancez les dés" , "Avancez" , "Attendez" , "Fin du Tour", "Erreur"][this.status];
-            },
-            getDiceSvg : function(number) {
-                switch (number) {
-                  case 1:
-                    return dices.ONE_FACE;
-                    break;
-                  case 2:
-                    return dices.TWO_FACE;
-                    break;
-                  case 3:
-                    return dices.THREE_FACE;
-                    break;
-                  case 4:
-                    return dices.FOUR_FACE;
-                    break;
-                  case 5:
-                    return dices.FIVE_FACE;
-                    break;
-                  case 6:this.getDiceSvg(choice[i])
-                    return dices.SIX_FACE;
-                    break;
-
-                  default:
-                    return dices.ONE_FACE;
-                }
             },
             mainPlayButton: async function() {
                 switch(this.status) {
@@ -200,30 +175,53 @@ function initApp() {
                 }
             },
             enableDragDrop : function (element) {
-            var move = function(dx,dy) {
+                let prevState = {}
+                var move = function(dx,dy) {
                     this.attr({
-                                transform: this.data('origTransform') + (this.data('origTransform') ? "T" : "t") + [dx, 0]
-                            });
-            }
-            var start = function() {
+                        transform: this.data('origTransform') + (this.data('origTransform') ? "T" : "t") + [dx, 0]
+                    });
+                }
+                var start = function() {
+                    prevState.order = Array(NB_DICE).fill(0).map( (o, i)=> i);
+                    this.addClass('grabbed');
                     this.data('origTransform', this.transform().local );
-            }
-            var stop = function(mouseEvent) {
-                    console.log('finished dragging');
-            }
-            element.drag(move, start, stop );
+                }
+                var stop = function(mouseEvent) {
+                    this.data('z-index', 0);
+                    let dices = Array.from(document.querySelectorAll('.diceArea svg')).map( (o, i)=> [o.getBoundingClientRect().x, i]);
+                    let newOrder = dices.sort((a, b) => a[0]-b[0]).map( (o)=> o[1] )
 
+                    console.log('finished dragging', newOrder);
 
+                    let width = marathon.svg[0].node.getBoundingClientRect().width;
+                    this.removeClass('grabbed');
+                    // FIXME: doesn't work property
+                    // may require debugging using paper & pen to understand what to expect and what is the difference
+
+                    // place dices when finished
+                    for (let i=0; i<NB_DICE; i++) {
+                        let sv = marathon.svg[i];
+                        let diff = ( i -(newOrder[i]) ) * width;
+                        // translate(0) == original position
+                        // "diff" is supposed to contain the difference in pixels
+                        sv.animate({transform: `translate(${diff})`}, 300);
+                    }
+                }
+                element.drag(move, start, stop );
           },
             enableSnap : function() {
-              this.svg.push(Snap("#svg6684"));
-              var choice = [1,2,3,4]
-              for (var i = 1; i < choice.length; i++) {
-                this.svg.push(this.svg[0].clone())
-                // this.choice[i]
-                this.enableDragDrop(this.svg[i])
+              let ref = Snap("#diceREF");
+              for (var i = 0; i < NB_DICE; i++) {
+                  let elt = ref.clone();
+                  elt.data('diceNR', i);
+                  elt.addClass('class', 'dice');
+                  elt.node.querySelector('.diceText').innerHTML = NB_DICE-i;
+                  elt.node.style['width'] = '100px';
+                  elt.node.style['height'] = '100px';
+                  this.svg.push(elt);
+                  this.enableDragDrop(elt);
               }
-              this.enableDragDrop(this.svg[0])
+              ref.remove();
             }
         }
     });
@@ -259,14 +257,8 @@ async function getThrowResults() {
     return result;
 }
 
-
-
-
-  function rotateElement(element, angle) {
-  var bbox = s.getBBox();
-  s.stop().animate({ transform: `r${angle},0,0} `}, 500, mina.easeinout);
-  }
-
-  function onSVGLoaded( data ){
-    s.append( data );
+function rotateElement(element, angle) {
+    var bbox = s.getBBox();
+    s.stop().animate({ transform: `r${angle},0,0} `}, 500, mina.easeinout);
 }
+
