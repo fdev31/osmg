@@ -255,14 +255,13 @@ async function getThrowResults() {
 
 function rotateElement(element, angle, new_val) {
     let d=100;
-    let steps = [];
-    let lastIndex = Math.floor(angle/180);
-    for (let i=0; i<=angle/180; i++) {
+    let lastIndex = Math.floor(angle/90);
+    for (let i=1; i<=angle/90; i++) {
         setTimeout( ()=> {
-            element.animate({ transform: `rotate(${i*180})`}, d, mina.easeinout)
+            if (i==1) element.node.querySelector('.diceText').innerHTML = '?';
+            element.animate({ transform: `rotate(${i*180})`}, d, mina.easeinout);
             if (i==lastIndex) element.node.querySelector('.diceText').innerHTML = new_val;
-        },
-            (d+10)*(i+1));
+        }, (d+10)*(i-1));
     }
 }
 
