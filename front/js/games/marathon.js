@@ -133,8 +133,7 @@ function initApp() {
                         "secret": parseInt(this.secret),
                         "sessionName":this.name
                     })
-                    console.log(diceArray);
-
+                    this.refreshDice(diceArray);
                     this.choice = parseInt(diceArray.join(''));
                     this.setStatus(statuses.DICE_THROWN);
 
@@ -184,6 +183,7 @@ function initApp() {
                     this.data('z-index', 0);
                     let newOrder = getDiceOrder();
                     console.log('finished dragging', newOrder);
+                    marathon.choice = ArrayToString(newOrder);
                     let width = marathon.svg[0].node.getBoundingClientRect().width;
                     this.removeClass('grabbed');
 
@@ -197,7 +197,7 @@ function initApp() {
                 element.drag(move, start, stop );
           },
             enableSnap : function() {
-              let ref = Snap("#diceREF");
+              ref = Snap("#diceREF");
               for (var i = 0; i < NB_DICE; i++) {
                   let elt = ref.clone();
                   elt.data('diceNR', i);
@@ -209,6 +209,14 @@ function initApp() {
                   this.enableDragDrop(elt);
               }
               ref.remove();
+            }
+            , refreshDice : function (throws) {
+              if (throws.length === this.svg.length) {
+                for (var i = 0; i < throws.length; i++) {
+                    rotateElement(this.svg[this.svg.length -i -1], 720 , throws[i])
+                }
+              }
+
             }
         }
     });
@@ -225,11 +233,15 @@ function initApp() {
             }
         });
 
-    setInterval( ()=>{
-        rotateElement(marathon.svg[0], 720, ~~(Math.random()*6) + 1)
-    }, 2000);
 }
 
+function ArrayToString(array){
+  let res = "";
+  for (var i = 0; i < array.length; i++) {
+    res+= array[i].toString();
+  }
+  return res;
+}
 async function getThrowResults() {
     var myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
