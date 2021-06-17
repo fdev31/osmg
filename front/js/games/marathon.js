@@ -1,8 +1,3 @@
-// Il faut déterminer comment se lance le jeu . Cela nécessite de répérer le créateur de la session. Vérifier la présence de chacun au début et pendant le jeu
-// Il faut vérifier que chacun soit synchrone avec l'état de la partie
-// Le client doit connaitre sa propre identité
-// Api Start lance la partie. Elle doit se lancer quand tout le monde a fait start ?
-
 const statuses = {
     "UNINITIALIZED" : 0,
     "THROW" : 1 ,
@@ -264,4 +259,3 @@ function rotateElement(element, angle, new_val) {
         }, (d+10)*(i-1));
     }
 }
-
