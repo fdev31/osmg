@@ -16,4 +16,4 @@ else
     export DEBUG
     exec $VIRTUAL_ENV/bin/uvicorn back.routes:app --reload --port 5000
 fi
-#exec back-start front
+#exec back-start front # yey
