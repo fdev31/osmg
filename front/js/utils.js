@@ -24,7 +24,7 @@ function setEventStreamHandler(handler , query ) {
 
 function Vue2Obj(vueApp) {
   const r = {};
-  for (let k of Object.keys(vueApp._data)) {
+  for (let k of Object.keys(vueApp.$data)) {
     r[k] = JSON.parse(JSON.stringify(vueApp[k]));
   }
   return r;
