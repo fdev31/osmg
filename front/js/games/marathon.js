@@ -9,6 +9,50 @@ const statuses = {
     "ERROR": 7
 }
 
+const diceComponent = {
+  data : function() {
+    return {choices : "" , nbDice : 4};
+  },
+  created() {
+    this.domId = this.$attrs.useid || "dice-" + (Math.floor(Math.random()*999999)).toString(36);
+  },
+  mounted() {
+    this.$el.id = this.domId;
+
+  },
+  // render() {
+  //
+  // },
+  render() {
+    ref = document.getElementById("diceREF")
+    let result = [];
+    for (var i = 0; i < this.nbDice; i++) {
+        let elt = ref.cloneNode(true);
+        // elt.data('diceNR', i);
+        elt.classList.add('dice');
+        this.$_setText("?", elt);
+        elt.style['width'] = '100px';
+        elt.style['height'] = '100px';
+        result.push(elt.outerHTML);
+    };
+    return Vue.h("div", {innerHTML:result.join("")}, "") ;
+  },
+
+  methods : {
+    setValue : function(value){
+      let elementArr = document.getElementsByClassName('diceText');
+      for (var elem of elementArr) {
+          if (elem.innerHTML == "?") elem.innerHTML = Math.floor(Math.random() * 6);
+      }
+      // animate & set value
+    },
+    $_setText(text , elt){
+      (elt || this.$el).querySelector('.diceText').innerHTML = text;
+
+    },
+
+  }
+}
 function isError(res) {
     return res && res.detail != undefined;
 }
@@ -87,15 +131,16 @@ function initApp() {
     const NB_DICE = 4;
 
     app = Vue.createApp({
-        'data': function() { return data },
-        mounted : function () {
-          this.enableSnap()
-        },
-        computed: {
-            turn() {
-                return parseInt(this.gameData.turns) + 1;
-            }
-        },
+        data: function() { return data },
+        components: {"dice-array": diceComponent},
+        // mounted : function () {
+        //   // this.enableSnap()
+        // },
+        // computed: {
+        //     turn() {
+        //         return parseInt(this.gameData.turns) + 1;
+        //     }
+        // },
         methods: {
             didIWin() {
                 return this.status == statuses.GAME_WON;
