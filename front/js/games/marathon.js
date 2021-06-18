@@ -229,7 +229,7 @@ function initApp() {
                     this.data('z-index', 0);
                     let newOrder = getDiceOrder();
                     console.log('finished dragging', newOrder);
-                    marathon.choice = ArrayToString(newOrder);
+                    marathon.choice = arrayToString(newOrder);
                     let width = marathon.svg[0].node.getBoundingClientRect().width;
                     this.removeClass('grabbed');
 
@@ -281,12 +281,8 @@ function initApp() {
 
 }
 
-function ArrayToString(array){
-  let res = "";
-  for (var i = 0; i < array.length; i++) {
-    res+= array[i].toString();
-  }
-  return res;
+function arrayToString(array) {
+    return array.map((o) => o.toString()).join('');
 }
 async function getThrowResults() {
     var myHeaders = new Headers();
