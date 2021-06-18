@@ -12,7 +12,7 @@
       <h1>Your info:</h1>
       <input v-model="nickname" type="text"  placeholder="nickname"></input>
       <button v-on:click.stop="validate" type="button" name="button">Rejoindre</button>
-      <avatar-card ref="myavatar" v-bind:avatar-name="nickname" />
+      <avatar-card ref="myavatar" noname v-bind:avatar-name="nickname" />
     </div>
 
     <script src="https://unpkg.com/vue@next"></script>

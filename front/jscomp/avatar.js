@@ -20,11 +20,12 @@ const getAvatarComponent = (svgData) => {
 			};
 		},
 		render() {
+			let name = (this.$attrs.noname === undefined)? `<span class="playerName">${this.name}</span>` : '';
 			return Vue.h("div", {
 				id: this.domId,
 				innerHTML: `
 		    ${svgData}
-			<span>${this.name}</span>
+			${name}
 		    `
 			})
 		}
