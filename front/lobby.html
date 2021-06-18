@@ -8,20 +8,11 @@
     <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
   </head>
   <body onload="initApp()">
-    <script>
-      function copyURL() {
-        let w = document.getElementById("link");
-        w.select();
-        w.setSelectionRange(0, 999);
-        document.execCommand("copy");
-      }
-    </script>
-
     <div id="app">
       <div class="">
         <h2>{{ gameType}} players</h2>
         <input size="40" type="text" id="link" :value="`http://${host}/r/${name}`"></input>
-        <button type="button" onclick="copyURL()" >Inviter</button>
+        <button type="button" onclick="copyURL('link')" >Inviter</button>
         <div v-for="item in players" class="players">
             <div>
                 <div :id="'avatar_' + item.id" class="avatar-lobby"></div>

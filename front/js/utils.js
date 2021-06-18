@@ -21,7 +21,12 @@ function setEventStreamHandler(handler , query ) {
   const evtSource = new EventSource(`/stream?topic=${query.topic}&uid=${query.uid}`);
   evtSource.addEventListener("update", (event) => handler(JSON.parse(event.data)) );
 }
-
+function copyURL(inputId) {
+  let w = document.getElementById(inputId);
+  w.select();
+  w.setSelectionRange(0, 999);
+  document.execCommand("copy");
+}
 function Vue2Obj(vueApp) {
   const r = {};
   for (let k of Object.keys(vueApp.$data)) {
