@@ -50,8 +50,8 @@ function initApp() {
     .then( async (q) => {
       app.component("avatar-card", getAvatarComponent(await q.text()));
       home = app.mount("#app");
+      getJson("/gamelist").then( (data)=>{
+          home.games = data;
+      });
     });
-  getJson("/gamelist").then( (data)=>{
-    home.games = data;
-  });
 }
