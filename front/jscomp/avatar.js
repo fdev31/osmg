@@ -10,7 +10,7 @@ const getAvatarComponent = (svgData) => {
 		},
 		watch: {
 			name(newVal) {
-				this.$_obj && this.$_obj.fromName(newVal)
+				this.$_obj && setTimeout( ()=> this.$_obj.fromName(newVal), 5)
 			}
 		},
 		data() {

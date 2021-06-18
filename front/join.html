@@ -10,14 +10,15 @@
   <body onload="initApp()">
     <div id="app">
       <h1>Your info:</h1>
-      <input v-model:value="nickname" type="text" v-on:keyup="updateAvatar($event.target.value)" placeholder="nickname"></input>
+      <input v-model="nickname" type="text"  placeholder="nickname"></input>
       <button v-on:click.stop="validate" type="button" name="button">Rejoindre</button>
-      <div id="avatar" class="avatar" style="margin: -110px 0px 0px 313px; float: right;" ></div>
+      <avatar-card ref="myavatar" v-bind:avatar-name="nickname" />
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+    <script src="https://unpkg.com/vue@next"></script>
     <script src="/static/js/utils.js" charset="utf-8"></script>
     <script src="avatars.js" charset="utf-8"></script>
+    <script src="/static/jscomp/avatar.js" charset="utf-8"></script>
     <script src="/static/js/join.js" charset="utf-8"></script>
   </body>
 </html>

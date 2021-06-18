@@ -1,23 +1,18 @@
 function initApp() {
-  try {
-    var cookie = extractJsonFromCookie();
-  } catch (e) {
-    var cookie = {};
-  }
-
   var url = new URL(document.URL);
   var session = url.searchParams.get("session");
-  lobby = new Vue({
-    el : "#app",
-    data : {
+  let app = Vue.createApp({
+    data() { return {
       session : session,
       nickname : "Joe",
       avatar : 1,
+    }} ,
+    watch:{
+      nickname(newVal) {
+        this.$refs.myavatar.name = newVal;
+      }
     } ,
     methods : {
-        updateAvatar : function(text) {
-          avatar.fromName(text);
-      },
       validate : async function () {
         var myHeaders = new Headers();
         myHeaders.append("Content-Type", "application/json");
@@ -34,19 +29,14 @@ function initApp() {
         for (let player of data.players) {
           if (player.name == this.nickname) data.myId = player.id;
         }
-
         document.cookie = "JS=" + JSON.stringify(data) + '; SameSite=Strict';
-
-
-
         window.location = "lobby.html";
       }
     }
   })
-    fetch('avatars.svg')
-        .then( async (q) => {
-            document.getElementById('avatar').innerHTML = await q.text();
-            avatar = new Avatar('#avatar');
-            avatar.fromName(lobby.nickname);
-        });
+fetch('avatars.svg')
+  .then(async (q) => {
+    app.component("avatar-card", getAvatarComponent(await q.text()));
+    lobby = app.mount('#app');
+  });
 }
