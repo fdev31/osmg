@@ -35,6 +35,7 @@ const diceComponent = {
         elt.style['height'] = '100px';
         result.push(elt.outerHTML);
     };
+    ref.remove();
     return Vue.h("div", {innerHTML:result.join("")}, "") ;
   },
 
@@ -42,7 +43,7 @@ const diceComponent = {
     setValue : function(value){
       let elementArr = document.getElementsByClassName('diceText');
       for (var elem of elementArr) {
-          if (elem.innerHTML == "?") elem.innerHTML = Math.floor(Math.random() * 6);
+          elem.innerHTML = Math.floor(Math.random() * 6);
       }
       // animate & set value
     },
