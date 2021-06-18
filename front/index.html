@@ -12,8 +12,8 @@
             <h1>Your info:</h1>
             <div class="container">
                 <div class="avatarframe">
-                    <input v-model:value="nickname" type="text" placeholder="Nickname"></input>
-                    <div id="avatar" style="margin: -36px 0 0 220px;" class="avatar"></div>
+                    <input v-model="nickname" type="text" placeholder="Nickname"></input>
+                    <avatar-card ref="myavatar" v-bind:avatar-name="nickname" style="margin: -36px 0 0 220px;" class="avatar"/>
                 </div>
             </div>
             <h1>Pick a game:</h1>
@@ -35,9 +35,10 @@
             </div>
         </div>
 
-            <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
-            <script src="js/utils.js" charset="utf-8"></script>
-            <script src="js/home.js" charset="utf-8"></script>
-            <script src="avatars.js" charset="utf-8"></script>
+        <script src="https://unpkg.com/vue@next"></script>
+        <script src="js/utils.js" charset="utf-8"></script>
+        <script src="avatars.js" charset="utf-8"></script>
+        <script src="jscomp/avatar.js" charset="utf-8"></script>
+        <script src="js/home.js" charset="utf-8"></script>
     </body>
 </html>

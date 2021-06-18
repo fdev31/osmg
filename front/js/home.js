@@ -1,24 +1,19 @@
 let home;
 
 function initApp() {
-    fetch('avatars.svg')
-    .then( async (q) => {
-        document.getElementById('avatar').innerHTML = await q.text();
-        avatar = new Avatar('#avatar');
-        avatar.fromName(home.nickname);
-    });
-  home = new Vue({
-    el: "#app",
+  let app = Vue.createApp({
     watch: {
-        nickname: (val) => avatar.fromName(val)
+      nickname(val) {
+        this.$refs.myavatar.name = val
+      }
     },
-    data: {
+    data() { return {
       sessionName : "Pas de données",
       playerName : "Pas de nom",
       avatar : 1,
       nickname : "Ninon",
       games: {},
-    },
+    }},
     methods: {
       play_game :  async function(game) {
         var response = await fetch("/session/new", {
@@ -50,6 +45,12 @@ function initApp() {
       }
     }
   });
+
+    fetch('avatars.svg')
+    .then( async (q) => {
+      app.component("avatar-card", getAvatarComponent(await q.text()));
+      home = app.mount("#app");
+    });
   getJson("/gamelist").then( (data)=>{
     home.games = data;
   });
