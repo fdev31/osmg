@@ -56,11 +56,6 @@ handlers = {
     }
 };
 
-function getDiceOrder() {
-    let dices = Array.from(document.querySelectorAll('.diceArea svg')).map( (o, i)=> [o.getBoundingClientRect().x, i]);
-    return dices.sort((a, b) => a[0]-b[0]).map( (o)=> o[1] );
-}
-
 function initApp() {
     let host = document.location.host;
     try {
