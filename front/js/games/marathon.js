@@ -9,51 +9,6 @@ const statuses = {
     "ERROR": 7
 }
 
-const diceComponent = {
-  data : function() {
-    return {choices : "" , nbDice : 4};
-  },
-  created() {
-    this.domId = this.$attrs.useid || "dice-" + (Math.floor(Math.random()*999999)).toString(36);
-  },
-  mounted() {
-    this.$el.id = this.domId;
-
-  },
-  // render() {
-  //
-  // },
-  render() {
-    ref = document.getElementById("diceREF")
-    let result = [];
-    for (var i = 0; i < this.nbDice; i++) {
-        let elt = ref.cloneNode(true);
-        // elt.data('diceNR', i);
-        elt.classList.add('dice');
-        this.$_setText("?", elt);
-        elt.style['width'] = '100px';
-        elt.style['height'] = '100px';
-        result.push(elt.outerHTML);
-    };
-    ref.remove();
-    return Vue.h("div", {innerHTML:result.join("")}, "") ;
-  },
-
-  methods : {
-    setValue : function(value){
-      let elementArr = document.getElementsByClassName('diceText');
-      for (var elem of elementArr) {
-          elem.innerHTML = Math.floor(Math.random() * 6);
-      }
-      // animate & set value
-    },
-    $_setText(text , elt){
-      (elt || this.$el).querySelector('.diceText').innerHTML = text;
-
-    },
-
-  }
-}
 function isError(res) {
     return res && res.detail != undefined;
 }
@@ -133,15 +88,6 @@ function initApp() {
 
     app = Vue.createApp({
         data: function() { return data },
-        components: {"dice-array": diceComponent},
-        // mounted : function () {
-        //   // this.enableSnap()
-        // },
-        // computed: {
-        //     turn() {
-        //         return parseInt(this.gameData.turns) + 1;
-        //     }
-        // },
         methods: {
             didIWin() {
                 return this.status == statuses.GAME_WON;
@@ -242,43 +188,10 @@ function initApp() {
                 }
                 element.drag(move, start, stop );
           },
-            enableSnap : function() {
-              ref = Snap("#diceREF");
-              for (var i = 0; i < NB_DICE; i++) {
-                  let elt = ref.clone();
-                  elt.data('diceNR', i);
-                  elt.addClass('dice');
-                  elt.node.querySelector('.diceText').innerHTML = NB_DICE-i;
-                  elt.node.style['width'] = '100px';
-                  elt.node.style['height'] = '100px';
-                  this.svg.push(elt);
-                  this.enableDragDrop(elt);
-              }
-              ref.remove();
-            }
-            , refreshDice : function (throws) {
-              if (throws.length === this.svg.length) {
-                for (var i = 0; i < throws.length; i++) {
-                    rotateElement(this.svg[this.svg.length -i -1], 720 , throws[i])
-                }
-              }
-
-            }
         }
     });
     marathon = app.mount('#app');
     setupStreamEventHandler({topic :marathon.name , uid : marathon.myId}, handlers);
-    fetch('avatars.svg')
-        .then( async (q) => {
-            let text =  await q.text();
-            for (let player of marathon.players) {
-                let domid = 'avatar_'+player.id;
-                document.getElementById(domid).innerHTML = text;
-                avatar = new Avatar('#'+domid);
-                avatar.fromName(player.name);
-            }
-        });
-
 }
 
 function arrayToString(array) {
@@ -300,16 +213,4 @@ async function getThrowResults() {
     var response = await fetch(`http://${document.location.host}/api/getDiceResults`, requestOptions);
     const result = await response.json();
     return result;
-}
-
-function rotateElement(element, angle, new_val) {
-    let d=100;
-    let lastIndex = Math.floor(angle/90);
-    for (let i=1; i<=angle/90; i++) {
-        setTimeout( ()=> {
-            if (i==1) element.node.querySelector('.diceText').innerHTML = '?';
-            element.animate({ transform: `rotate(${i*180})`}, d, mina.easeinout);
-            if (i==lastIndex) element.node.querySelector('.diceText').innerHTML = new_val;
-        }, (d+10)*(i-1));
-    }
 }
