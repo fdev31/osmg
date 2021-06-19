@@ -5,7 +5,23 @@ export default {
   components : {dice},
   data() {
     return{
-      dices: [1, 2, 3, 4],
+      diceNumber: 4,
+    }
+  },
+  methods : {
+    updateDice(values) {
+      for (let i=0; i < this.diceNumber ; i++) {
+        let ref = `dice${i+1}`;
+        this.$refs[ref].setValue(values[i] , true);
+      }
+    },
+    getDiceValues(){
+      let result = []
+      for (let i=0 ; i < this.diceNumber ; i++) {
+        let ref = `dice${i+1}`;
+        result.push(this.$refs[ref].getValue())
+      }
+      return result;
     }
   }
 }
@@ -14,7 +30,8 @@ export default {
 <template>
   <div class="dices">
     <dice
-      v-for="index in dices"
+      :ref="'dice' + index"
+      v-for="index in diceNumber"
       :value="index"
       :key="index"
     />
