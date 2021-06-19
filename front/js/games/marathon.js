@@ -88,6 +88,15 @@ function initApp() {
 
     app = Vue.createApp({
         data: function() { return data },
+        components: {'player-list': window['player-list']},
+        watch: {
+            players(newVal) {
+                this.$refs.playerlist.players = newVal;
+            }
+        },
+        mounted() {
+            this.$refs.playerlist.players = this.players;
+        },
         methods: {
             didIWin() {
                 return this.status == statuses.GAME_WON;

@@ -10,13 +10,7 @@
     <body onload="initApp()">
         <h1>Le Jeu de dés Marathon</h1>
         <div id="app">
-            <div class="playerlist">
-                <div v-for="item in players">
-                    <div :class="gameData.curPlayer == item.id ?'myavatar':'notmyavatar'">
-                        <div :id="'avatar_' + item.id" class="avatar-lobby"></div>  {{ item.name }}
-                    </div>
-                </div>
-            </div>
+            <player-list ref="playerlist"></player-list>
             <h2>Welcome {{playerName()}}, it's turn {{parseInt(gameData.turns)+1}}</h2>
             <div v-if="didIWin()">
                 <h1>You Win!</h1>
@@ -43,6 +37,7 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/snap.svg/0.5.1/snap.svg-min.js"></script>
         <script src="https://unpkg.com/vue@next"></script>
         <script src="js/utils.js" charset="utf-8"></script>
+        <script src="/static/jscomp/player-list.umd.js" charset="utf-8"></script>
         <script src="js/games/marathon.js" charset="utf-8"></script>
     </body>
 </html>
