@@ -12,7 +12,7 @@
           <h2>{{ gameType}} players</h2>
           <input size="40" type="text" id="link" :value="`http://${host}/r/${name}`"></input>
           <button type="button" onclick="copyURL('link')" >Inviter</button>
-          <player-list ref="playerlist" />
+          <player-list ref="playerlist"></player-list>
           <button v-on:click="startGame" type="button">Jouer</button>
       </div>
       <script src="https://unpkg.com/vue@next"></script>
