@@ -88,7 +88,10 @@ function initApp() {
 
     app = Vue.createApp({
         data: function() { return data },
-        components: {'player-list': window['player-list']},
+        components: {
+            'player-list': window['player-list'],
+            'dice-single': window['dice'],
+        },
         watch: {
             players(newVal) {
                 this.$refs.playerlist.players = newVal;
@@ -163,39 +166,6 @@ function initApp() {
                     this.choice = '';
                 }
             },
-            finalOwnData : function() {
-                for (var [key , player] of this.playersData) {
-                    console.log(key);
-                }
-            },
-            enableDragDrop : function (element) {
-                let prevState = {}
-                var move = function(dx,dy) {
-                    this.attr({
-                        transform: this.data('origTransform') + (this.data('origTransform') ? "T" : "t") + [dx, 0]
-                    });
-                }
-                var start = function() {
-                    this.addClass('grabbed');
-                    this.data('origTransform', this.transform().local );
-                }
-                var stop = function(mouseEvent) {
-                    this.data('z-index', 0);
-                    let newOrder = getDiceOrder();
-                    console.log('finished dragging', newOrder);
-                    marathon.choice = arrayToString(newOrder);
-                    let width = marathon.svg[0].node.getBoundingClientRect().width;
-                    this.removeClass('grabbed');
-
-                    let diffs = newOrder.map( (o, i) => (newOrder.indexOf(i)-i) *width)
-                    // place dices when finished
-                    for (let i=0; i<NB_DICE; i++) {
-                        let sv = marathon.svg[NB_DICE-i-1]; // nodes are in reverse order
-                        sv.animate({transform: `translate(${diffs[i]})`}, 300);
-                    }
-                }
-                element.drag(move, start, stop );
-          },
         }
     });
     marathon = app.mount('#app');
