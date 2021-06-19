@@ -13,14 +13,22 @@ function initApp() {
     data.host = document.location.host;
     let app = Vue.createApp({
         components: {
-            'avatar-card': window['avatar-card'],
+            'player-list': window['player-list'],
+        },
+        watch: {
+            players(val) {
+                this.$refs.playerlist.players = val;
+            }
         },
         data() { return data},
+        mounted() {
+            this.$refs.playerlist.players = this.players;
+        },
         methods : {
           startGame : async function () {
             start = await post(`http://${this.host}/session/start`, {
               "id": this.myId,
-              "sessionName":this.name
+              "sessionName": this.name
             });
             window.location = `/static/game_${this.gameType}.html`;
           }

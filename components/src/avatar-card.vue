@@ -2,35 +2,32 @@
 import { Avatar } from "./ext/avatars.js";
 
 export default {
-  created() {
+  computed: {
+      showName() {
+          return this.$attrs["noname"] == undefined;
+      }
+  },
+  mounted: function() {
+    this.name = this.$attrs["avatar-name"];
     this.$_id =
       "av-" +
       (this.$attrs["avatar-id"] ||
         Math.floor(Math.random() * 999999).toString(36));
-    this.name = this.$attrs["avatar-name"];
-    this.$_showName = this.$attrs["noname"] == undefined;
-  },
-  mounted() {
     this.$el.id = this.$_id;
+
     this.$_obj = new Avatar("#" + this.$_id);
-    this.$_obj.fromName(this.name);
     // workaround to force update
     this.$el.querySelector("svg").setAttribute("viewBox", "0 0 360 460");
   },
-  data() {
+  data: function() {
     return {
       name: "",
       domId: "",
     };
   },
-  computed: {
-    caption() {
-      return this.$_showName ? this.name : "";
-    },
-  },
   watch: {
-    name(newVal) {
-      this.$_obj && setTimeout(() => this.$_obj.fromName(newVal), 5);
+    name: function(newVal) {
+      this.$_obj && this.$_obj.fromName(newVal);
     },
   },
 };
@@ -1192,6 +1189,6 @@ export default {
         </g>
       </g>
     </svg>
-    <span v-if="$_showName" class="avatarName">{{ name }}</span>
+    <span v-if="showName" class="avatarName">{{ name }}</span>
   </div>
 </template>
