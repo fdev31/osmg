@@ -8,23 +8,20 @@
     <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
   </head>
   <body onload="initApp()">
-    <div id="app">
-      <div class="">
-        <h2>{{ gameType}} players</h2>
-        <input size="40" type="text" id="link" :value="`http://${host}/r/${name}`"></input>
-        <button type="button" onclick="copyURL('link')" >Inviter</button>
-        <div class="players">
-          <avatar-card class="avatar-lobby" :avatar-name="item.name" :avatar-id="item.id" 
-          v-for="item in players" :key="item.id"
-          />
+      <div id="app">
+          <h2>{{ gameType}} players</h2>
+          <input size="40" type="text" id="link" :value="`http://${host}/r/${name}`"></input>
+          <button type="button" onclick="copyURL('link')" >Inviter</button>
+          <div class="players">
+              <avatar-card class="avatar-lobby" :avatar-name="item.name" :avatar-id="item.id"
+                  v-for="item in players" :key="item.id" />
+          </div>
+          <button v-on:click="startGame" type="button">Jouer</button>
       </div>
-      </div>
-      <button v-on:click="startGame" type="button">Jouer</button>
-    </div>
 
-    <script src="https://unpkg.com/vue@next"></script>
-    <script src="/static/js/utils.js" charset="utf-8"></script>
-    <script src="/static/jscomp/avatar-card.umd.js" charset="utf-8"></script>
-    <script src="/static/js/lobby.js" charset="utf-8"></script>
+      <script src="https://unpkg.com/vue@next"></script>
+      <script src="/static/js/utils.js" charset="utf-8"></script>
+      <script src="/static/jscomp/avatar-card.umd.js" charset="utf-8"></script>
+      <script src="/static/js/lobby.js" charset="utf-8"></script>
   </body>
 </html>

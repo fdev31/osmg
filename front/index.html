@@ -17,19 +17,17 @@
                 </div>
             </div>
             <h1>Pick a game:</h1>
-            <div>
-                <div class="wrap">
-                    <div v-for="(info, game) in games" class="gamebutton">
-                        <div class=tile>
-                            <span @click="play_game('{{game}}')">
-                                <img :src="'./img/'+info.card+'.jpg'"/>
-                                <div class="text">
-                                    <h1>{{game.toUpperCase()}}</h1>
-                                    <h2 class="animate-text">{{info.description}}</h2>
-                                    <p class="animate-text">{{info.long_description}}.</p>
-                                </div>
-                            </span>
-                        </div>
+            <div class="wrap">
+                <div v-for="(info, game) in games" class="gamebutton">
+                    <div class=tile>
+                        <span @click="play_game('{{game}}')">
+                            <img :src="'./img/'+info.card+'.jpg'"/>
+                            <div class="text">
+                                <h1>{{game.toUpperCase()}}</h1>
+                                <h2 class="animate-text">{{info.description}}</h2>
+                                <p class="animate-text">{{info.long_description}}.</p>
+                            </div>
+                        </span>
                     </div>
                 </div>
             </div>
