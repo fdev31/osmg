@@ -21,6 +21,9 @@ function setEventStreamHandler(handler , query ) {
   const evtSource = new EventSource(`/stream?topic=${query.topic}&uid=${query.uid}`);
   evtSource.addEventListener("update", (event) => handler(JSON.parse(event.data)) );
 }
+function runOnEnter(code) {
+    if (event.key == "Enter") eval(code);
+}
 function copyURL(inputId) {
   let w = document.getElementById(inputId);
   w.select();
