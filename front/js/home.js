@@ -2,6 +2,7 @@ let home;
 
 function initApp() {
   let app = Vue.createApp({
+    components : {'avatar-card': window['avatar-card']},
     watch: {
       nickname(val) {
         this.$refs.myavatar.name = val
@@ -45,13 +46,8 @@ function initApp() {
       }
     }
   });
-
-    fetch('avatars.svg')
-    .then( async (q) => {
-      app.component("avatar-card", getAvatarComponent(await q.text()));
-      home = app.mount("#app");
-      getJson("/gamelist").then( (data)=>{
-          home.games = data;
-      });
+    home = app.mount("#app");
+    getJson("/gamelist").then( (data)=>{
+        home.games = data;
     });
 }

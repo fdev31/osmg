@@ -2,6 +2,7 @@ function initApp() {
   var url = new URL(document.URL);
   var session = url.searchParams.get("session");
   let app = Vue.createApp({
+    components: { 'avatar-card': window['avatar-card'] },
     data() { return {
       session : session,
       nickname : "Joe",
@@ -33,10 +34,6 @@ function initApp() {
         window.location = "lobby.html";
       }
     }
-  })
-fetch('avatars.svg')
-  .then(async (q) => {
-    app.component("avatar-card", getAvatarComponent(await q.text()));
-    lobby = app.mount('#app');
   });
+  lobby = app.mount('#app');
 }

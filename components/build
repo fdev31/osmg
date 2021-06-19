@@ -1,0 +1,17 @@
+#!/bin/sh
+
+function shorten() {
+    sn=${1#*/}
+    sn=${sn%.vue}
+    echo $sn
+}
+
+if [ -n "$1" ]; then
+    yarn build --target lib --name $(shorten "$1") "$1" --fix
+else
+    for component in src/*.vue; do
+        yarn build --target lib --name $(shorten "$component") "$component"
+    done
+fi
+
+cp dist/*.umd.js ../front/jscomp
