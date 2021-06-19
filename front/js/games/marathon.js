@@ -134,7 +134,6 @@ function initApp() {
                         "secret": parseInt(this.secret),
                         "sessionName":this.name
                     })
-                    this.refreshDice(diceArray);
                     this.choice = parseInt(diceArray.join(''));
                     this.setStatus(statuses.DICE_THROWN);
 
