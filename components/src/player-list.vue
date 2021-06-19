@@ -5,7 +5,7 @@ export default {
   components: { avatarCard },
   data() {
     return {
-    players: []
+    players : []
     };
   },
 };
