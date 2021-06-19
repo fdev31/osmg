@@ -91,6 +91,7 @@ function initApp() {
         components: {
             'player-list': window['player-list'],
             'dice-single': window['dice'],
+            'dice-array': window['dicearray'],
         },
         watch: {
             players(newVal) {

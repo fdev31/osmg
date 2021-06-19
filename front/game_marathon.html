@@ -27,7 +27,7 @@
                 <button v-on:click="mainPlayButton" type="button">{{ getPlayerAction() }}</button>
             </div>
             <div class="diceArea">
-                <dice-single ref="mydice"></dice-single>
+                    <dice-array ref="mydice">></dice-array>
             </div>
         </div>
         <script>
@@ -39,7 +39,7 @@
         <script src="https://unpkg.com/vue@next"></script>
         <script src="js/utils.js" charset="utf-8"></script>
         <script src="/static/jscomp/player-list.umd.js" charset="utf-8"></script>
-        <script src="/static/jscomp/dice.umd.js" charset="utf-8"></script>
+        <script src="/static/jscomp/dicearray.umd.js" charset="utf-8"></script>
         <script src="js/games/marathon.js" charset="utf-8"></script>
     </body>
 </html>
