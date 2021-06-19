@@ -5,7 +5,8 @@ import mina from "snapsvg-cjs";
 export default {
    mounted() {
       this.$_snap = Snap(this.$el.querySelector('svg'));
-      this.$_value = '?';
+      this.$_value = this.$attrs['value'] || '?';
+      this.setValue(this.$_value);
    },
    methods: {
       getValue() {

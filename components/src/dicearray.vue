@@ -5,17 +5,17 @@ export default {
   components : {dice},
   data() {
     return{
-      dices: [],
+      dices: [1, 2, 3, 4],
     }
   }
 }
 </script>
 
-
 <template>
   <div class="dices">
     <dice
-      v-for="index in 4"
+      v-for="index in dices"
+      :value="index"
       :key="index"
     />
   </div>
