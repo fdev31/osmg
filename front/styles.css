@@ -202,7 +202,11 @@ select {
   transition-duration: 0.3s;
 }
 
-#toaster.visible {    
+#toaster.visible {
     top: 5px;
     opacity: 1;
+}
+
+[v-cloak] {
+  display: none;
 }
