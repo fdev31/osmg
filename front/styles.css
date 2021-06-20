@@ -3,6 +3,10 @@
     z-index: 0;
     position: relative;
 }
+.dice > svg {
+    width: 40px;
+    height: auto;
+}
 .grabbed {
     z-index: 10;
     opacity: 0.5;
