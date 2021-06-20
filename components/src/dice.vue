@@ -36,10 +36,9 @@ export default {
 <style scoped lang="less"></style>
 
 <template>
-<div class="dice">
+<span class="dice">
 <svg
    viewBox="0 0 512 512"
-   style="height: 512px; width: 512px;"
    version="1.1"
    sodipodi:docname="foo.svg"
    inkscape:version="1.1 (c4e8f9ed74, 2021-05-24)"
@@ -78,5 +77,5 @@ export default {
      id="layer1"
      inkscape:label="Layer 1" />
 </svg>
-</div>
+</span>
 </template>
