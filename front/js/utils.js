@@ -102,15 +102,16 @@ function arrayEquals(arr1 , arr2) {
 }
 
 class Toaster {
-
   constructor(frameId = "toaster"){
     this.frame = document.getElementById(frameId);
   }
 
   show(message , time=1000, type="" ){
-    this.frame.innerHTML = `<div class="toast">${message}</div>`; 
+    this.frame.innerHTML = `<div class="${type}">${message}</div>`; 
     setTimeout(() => {
+        this.frame.classList.remove('visible');
       this.frame.innerHTML = ""; 
     },time)
+    this.frame.classList.add('visible');
   }
 }

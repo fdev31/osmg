@@ -192,43 +192,23 @@ select {
     background-color: rgba(255, 255, 0, 0.3);
 }
 
-.toast {
+#toaster {
   /* visibility: hidden; Hidden by default */
   position: fixed;
   height: auto;
-  left: 45%;
-  top: 5em;
-  border : 4mm ridge rgba(26, 61, 126, 0.6);
-  border-radius: 2em;
+  left: auto;
+  right: 10px;
+  top: -50px;
+  opacity: 0;
+  border : 4px ridge rgba(26, 61, 126, 0.6);
+  border-radius: 999px;
   padding: 2em;
   background-color: darkviolet;
   color: white;
-  -webkit-animation: fadein 0.5s;
-  animation: fadein 0.5s;
+  transition-duration: 0.3s;
 }
 
-/* .toast.show {
-  visibility: visible;
-  -webkit-animation: fadein 0.5s , fadeout 0.5s 2.5s;
-  animation: fadein 0.5s , fadeout 0.5s 2.5s;
-} */
-
-@-webkit-keyframes fadein {
-  from {bottom: 0; opacity:0;}
-  to {bottom:30px;opacity: 1;}
-}
-
-@keyframes fadein {
-  from {bottom: 0; opacity:0;}
-  to {bottom:30px;opacity: 1;}
-}
-
-/* @-webkit-keyframes fadeout {
-  from {bottom: 30px; opacity:1;}
-  to {bottom:0;opacity: 0;}
-}
-
-@keyframes fadeout {
-  from {bottom: 30px; opacity:1;}
-  to {bottom:0;opacity: 0;} */
+#toaster.visible {
+    top: 5px;
+    opacity: 1;
 }
