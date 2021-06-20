@@ -104,13 +104,26 @@ function arrayEquals(arr1 , arr2) {
 class Toaster {
   constructor(frameId = "toaster"){
     this.frame = document.getElementById(frameId);
+    this.pending = [];
+    this.displayed = false;
   }
 
-  show(message , time=1000, type="" ){
-    this.frame.innerHTML = `<div class="${type}">${message}</div>`; 
-    setTimeout(() => {
-        this.frame.classList.remove('visible');
-    },time)
-    this.frame.classList.add('visible');
+  show(message , {time=1000, type=""}){
+    if (this.displayed) {
+        this.pending.push({message, time, type});
+    } else {
+        this.displayed = true;
+        this.frame.innerHTML = `<div class="${type}">${message}</div>`; 
+        setTimeout(() => {
+            this.displayed = false;
+            if (this.pending.length) {
+                let val = this.pending.pop();
+                return this.show(val.message, val);
+            } else {
+                this.frame.classList.remove('visible');
+            }
+        },time)
+        this.frame.classList.add('visible');
+    }
   }
 }
