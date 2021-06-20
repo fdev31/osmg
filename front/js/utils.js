@@ -104,13 +104,13 @@ function arrayEquals(arr1 , arr2) {
 class Toaster {
 
   constructor(frameId = "toaster"){
-    this.framework = document.getElementById(frameId);
+    this.frame = document.getElementById(frameId);
   }
 
   show(message , time=1000, type="" ){
-    this.framework.innerHTML = `<div class="toast ${type}">${message}</div>`;
+    this.frame.innerHTML = `<div class="toast">${message}</div>`; 
     setTimeout(() => {
-      this.framework.innerHTML = ``;
+      this.frame.innerHTML = ""; 
     },time)
   }
 }
