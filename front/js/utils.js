@@ -110,7 +110,6 @@ class Toaster {
     this.frame.innerHTML = `<div class="${type}">${message}</div>`; 
     setTimeout(() => {
         this.frame.classList.remove('visible');
-      this.frame.innerHTML = ""; 
     },time)
     this.frame.classList.add('visible');
   }
