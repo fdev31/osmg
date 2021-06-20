@@ -100,3 +100,14 @@ function arrayEquals(arr1 , arr2) {
     })
     return isEquals
 }
+
+class Toaster {
+
+  constructor(frameId = "toaster"){
+    this.framework = document.getElementById(frameId);
+  }
+
+  show(message , time=1000, type="" ){
+    this.framework.innerHTML = `<div class="toast ${type}">${message}</div>`;
+  }
+}

@@ -186,3 +186,14 @@ select {
 .myavatar {
     background-color: rgba(255, 255, 0, 0.3);
 }
+
+.toast {
+  position: fixed;
+  left: 45%;
+  top: 5em;
+  border : 4mm ridge rgba(26, 61, 126, 0.6);
+  border-radius: 2em;
+  padding: 2em;
+  background-color: darkviolet;
+  color: white;
+}

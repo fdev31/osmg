@@ -8,6 +8,7 @@
         <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
     </head>
     <body onload="initApp()">
+        <div id="toaster"></div>
         <h1>Le Jeu de dés Marathon</h1>
         <div id="app">
             <player-list ref="playerlist"></player-list>
@@ -23,7 +24,7 @@
                 <div>
                     {{ remain }} meters left
                 </div>
-                <label>Dés: </label><input v-on:keydown="mainPlayButton" v-model="choice" type="number" name="name" min="0" />
+                <label>Dés: </label>
                 <button v-on:click="mainPlayButton" type="button">{{ getPlayerAction() }}</button>
             </div>
             <div class="diceArea">

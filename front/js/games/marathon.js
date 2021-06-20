@@ -26,7 +26,8 @@ handlers = {
             marathon.gameData.curPlayer = data.val.toString();
             if (data.val.toString() === marathon.myId.toString()) {
                 marathon.setStatus (statuses.THROW);
-                alert("A toi de jouer!");
+                let toaster = new Toaster();
+                toaster.show("A toi de jouer!");
             }
         }
     },
@@ -75,7 +76,6 @@ function initApp() {
                 host: document.location.host,
                 status: 0,
                 remain: 42195, // FIXME: this is a duplicate of player data !
-                choice: 0,
             })
     }
     data.svg = []; // XXX: do you need it in app data ? looks strange since it's not even done with the template
@@ -133,7 +133,8 @@ function initApp() {
                         "secret": parseInt(this.secret),
                         "sessionName":this.name
                     })
-                    this.choice = parseInt(diceArray.join(''));
+                    this.$refs["mydice"].diceNumber = diceArray.length;
+                    this.$refs["mydice"].updateDice(diceArray);
                     this.setStatus(statuses.DICE_THROWN);
 
                 } catch (e) {
@@ -148,9 +149,9 @@ function initApp() {
                 }
             },
             player_advance : async function () {
-                var choice =  Array.from(this.choice.toString()).map((o)=>parseInt(o));
-                // XXX: will grey out the buttons instead
-                let action = await post(`http://${host}/game/marathon/validateDice?value=${this.choice}`, {
+                let choice = this.$refs.mydice.getDiceValues().join("");
+
+                let action = await post(`http://${host}/game/marathon/validateDice?value=${choice}`, {
                     "id":parseInt(this.myId),
                     "secret": parseInt(this.secret),
                     "sessionName":this.name
@@ -159,7 +160,6 @@ function initApp() {
                     alert(action.detail);
                 } else {
                     this.setStatus ( statuses.END_TURN );
-                    this.choice = '';
                 }
             },
         }
