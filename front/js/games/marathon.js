@@ -27,7 +27,7 @@ handlers = {
             if (data.val.toString() === marathon.myId.toString()) {
                 marathon.setStatus (statuses.THROW);
                 let toaster = new Toaster();
-                toaster.show("A toi de jouer!");
+                toaster.show("A toi de jouer!", 3500);
             }
         }
     },

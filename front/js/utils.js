@@ -109,5 +109,8 @@ class Toaster {
 
   show(message , time=1000, type="" ){
     this.framework.innerHTML = `<div class="toast ${type}">${message}</div>`;
+    setTimeout(() => {
+      this.framework.innerHTML = ``;
+    },time)
   }
 }
