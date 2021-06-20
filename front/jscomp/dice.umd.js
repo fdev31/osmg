@@ -8817,7 +8817,7 @@ if (typeof window !== 'undefined') {
 // EXTERNAL MODULE: external {"commonjs":"vue","commonjs2":"vue","root":"Vue"}
 var external_commonjs_vue_commonjs2_vue_root_Vue_ = __webpack_require__("8bbf");
 
-// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js??ref--12-0!./node_modules/thread-loader/dist/cjs.js!./node_modules/babel-loader/lib!./node_modules/vue-loader-v16/dist/templateLoader.js??ref--6!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader-v16/dist??ref--0-1!./src/dice.vue?vue&type=template&id=225a621c
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js??ref--12-0!./node_modules/thread-loader/dist/cjs.js!./node_modules/babel-loader/lib!./node_modules/vue-loader-v16/dist/templateLoader.js??ref--6!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader-v16/dist??ref--0-1!./src/dice.vue?vue&type=template&id=3a4920b3
 
 var _hoisted_1 = {
   class: "dice"
@@ -8825,10 +8825,6 @@ var _hoisted_1 = {
 
 var _hoisted_2 = /*#__PURE__*/Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createVNode"])("svg", {
   viewBox: "0 0 512 512",
-  style: {
-    "height": "512px",
-    "width": "512px"
-  },
   version: "1.1",
   "sodipodi:docname": "foo.svg",
   "inkscape:version": "1.1 (c4e8f9ed74, 2021-05-24)",
@@ -8887,9 +8883,9 @@ var _hoisted_2 = /*#__PURE__*/Object(external_commonjs_vue_commonjs2_vue_root_Vu
 })], -1);
 
 function render(_ctx, _cache, $props, $setup, $data, $options) {
-  return Object(external_commonjs_vue_commonjs2_vue_root_Vue_["openBlock"])(), Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createBlock"])("div", _hoisted_1, [_hoisted_2]);
+  return Object(external_commonjs_vue_commonjs2_vue_root_Vue_["openBlock"])(), Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createBlock"])("span", _hoisted_1, [_hoisted_2]);
 }
-// CONCATENATED MODULE: ./src/dice.vue?vue&type=template&id=225a621c
+// CONCATENATED MODULE: ./src/dice.vue?vue&type=template&id=3a4920b3
 
 // EXTERNAL MODULE: ./node_modules/snapsvg-cjs/dist/snap.svg-cjs.js
 var snap_svg_cjs = __webpack_require__("41cc");
