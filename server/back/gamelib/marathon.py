@@ -14,7 +14,7 @@ from .interfaces import GameInterface
 logger = logging.getLogger('marathon')
 
 async def isPlayerTurn(conn, prefix, playerId, secret):
-    actualSecret = await conn.get(f"{prefix[:-2]}P{playerId}:_secret")
+    actualSecret = await conn.get(f"{prefix[:-2]}{playerId}:_secret")
     if int(actualSecret) != int(secret):
         return False
     curPlayer = await conn.get(prefix+"curPlayer")

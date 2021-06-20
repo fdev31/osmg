@@ -14,9 +14,9 @@ def publishEvent(topic, client=None, **params):
 
 def getVarName(name, sessionId, playerId=None, gameData=False):
     if gameData and playerId:
-        return f"S{sessionId}:P{playerId}:g:{name}"
+        return f"S{sessionId}:{playerId}:g:{name}"
     elif playerId:
-        return f"S{sessionId}:P{playerId}:{name}"
+        return f"S{sessionId}:{playerId}:{name}"
     elif gameData:
         return f"S{sessionId}:g:{name}"
     else:
@@ -26,7 +26,7 @@ def getVarName(name, sessionId, playerId=None, gameData=False):
 
 def getGameDataPrefix(uid, playerId=None):
     if playerId:
-        return 'S%s:P%s:g:' % (uid, playerId)
+        return 'S%s:%s:g:' % (uid, playerId)
     return 'S%s:g:'%(uid)
 
 PLAYERS_READY = 'playersReady'
