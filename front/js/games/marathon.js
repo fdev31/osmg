@@ -26,14 +26,17 @@ handlers = {
             marathon.gameData.curPlayer = data.val.toString();
             if (data.val.toString() === marathon.myId.toString()) {
                 marathon.setStatus (statuses.THROW);
-                let toaster = new Toaster();
                 toaster.show("A toi de jouer!", 3500);
             }
         }
     },
     varUpdate: (data) => {
         if (data.player) {
-            marathon.playersData[data.player][data.var] = data.val;
+            let pd = marathon.playersData[data.player];
+            if (pd === undefined) {
+                pd = marathon.playersData[data.player] = {};
+            }
+            pd[data.var] = data.val;
         } else {
             marathon.gameData[data.var] = data.val;
         }
@@ -58,6 +61,7 @@ handlers = {
 };
 
 function initApp() {
+    toaster = new Toaster();
     let host = document.location.host;
     try {
         var data = extractJsonFromCookie();
@@ -138,6 +142,7 @@ function initApp() {
                     this.setStatus(statuses.DICE_THROWN);
 
                 } catch (e) {
+                    toaster.show(e.message, 10000);
                     this.setStatus ( statuses.ERROR );
                 }
             },
