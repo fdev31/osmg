@@ -10,7 +10,7 @@
     <body onload="initApp()">
         <div id="toaster"></div>
         <h1>Le Jeu de dés Marathon</h1>
-        <div id="app">
+        <div id="app" v-cloak>
             <player-list ref="playerlist"></player-list>
             <h2>Welcome {{playerName()}}, it's turn {{parseInt(gameData.turns)+1}}</h2>
             <div v-if="didIWin()">
