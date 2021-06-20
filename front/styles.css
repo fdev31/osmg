@@ -1,11 +1,6 @@
-[v-cloak] { display: none; }
 .dice {
     z-index: 0;
     position: relative;
-}
-.dice > svg {
-    width: 40px;
-    height: auto;
 }
 .grabbed {
     z-index: 10;
@@ -192,23 +187,21 @@ select {
     background-color: rgba(255, 255, 0, 0.3);
 }
 
-#toaster {
+.toast {
   /* visibility: hidden; Hidden by default */
   position: fixed;
-  height: auto;
-  left: auto;
-  right: 10px;
-  top: -50px;
-  opacity: 0;
-  border : 4px ridge rgba(26, 61, 126, 0.6);
-  border-radius: 999px;
+  height: 1.8em;
+  left: 45%;
+  top: 5em;
+  border : 4mm ridge rgba(26, 61, 126, 0.6);
+  border-radius: 2em;
   padding: 2em;
   background-color: darkviolet;
   color: white;
   transition-duration: 0.3s;
 }
 
-#toaster.visible {
+.toaster.visible {
     top: 5px;
     opacity: 1;
 }
