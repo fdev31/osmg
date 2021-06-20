@@ -49,24 +49,6 @@ export default {
    xmlns:svg="http://www.w3.org/2000/svg">
   <defs
      id="defs12" />
-  <sodipodi:namedview
-     id="namedview10"
-     pagecolor="#ffffff"
-     bordercolor="#666666"
-     borderopacity="1.0"
-     inkscape:pageshadow="2"
-     inkscape:pageopacity="0.0"
-     inkscape:pagecheckerboard="0"
-     showgrid="false"
-     inkscape:zoom="0.91150484"
-     inkscape:cx="307.73287"
-     inkscape:cy="357.65032"
-     inkscape:window-width="1920"
-     inkscape:window-height="1056"
-     inkscape:window-x="0"
-     inkscape:window-y="1080"
-     inkscape:window-maximized="1"
-     inkscape:current-layer="diceREF" />
   <g
      id="g2334">
     <rect
