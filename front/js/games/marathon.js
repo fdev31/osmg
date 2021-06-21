@@ -56,7 +56,7 @@ handlers = {
             }
         }
         marathon.setStatus(myStatus);
-        alert(message);
+        window.location = "endgame.html";
     }
 };
 
