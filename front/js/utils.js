@@ -101,6 +101,13 @@ function arrayEquals(arr1 , arr2) {
     return isEquals
 }
 
+function findPlayer(data , pid) {
+  for (const player of data.players) {
+    if (player.id == pid) {
+      return player;
+    }
+  }
+}
 class Toaster {
   constructor(frameId = "toaster"){
     this.frame = document.getElementById(frameId);
