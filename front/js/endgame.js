@@ -8,11 +8,19 @@ function initApp() {
     }catch {
         window.location = `http://${host/static/index.html}`;
     }
-    console.log(data);
     app = Vue.createApp({
         data : function () {
             return data;
         },
+        watch: {
+            players(newVal) {
+                this.$refs.playerlist.players = newVal;
+            }
+        },
+        mounted() {
+            this.$refs.playerlist.players = this.players;
+        },
+        components: {"avatar-card" : window["avatar-card"] , "player-list" : window["player-list"]},
         methods : {
             findPlayer(playerId) {
               return findPlayer(this , playerId);  
