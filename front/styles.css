@@ -212,3 +212,13 @@ select {
     top: 5px;
     opacity: 1;
 }
+
+
+
+.finalist {
+  position:relative;
+}
+
+.podium-svg {
+  position:relative;
+}
