@@ -18,7 +18,7 @@ function initApp() {
         //     }
         // },
         mounted() {
-            setPodiumLocation()
+            setPodiumLocation("Capa_1")
         },
         components: {"avatar-card" : window["avatar-card"] , "player-list" : window["player-list"]},
         methods : {
@@ -32,9 +32,9 @@ function initApp() {
     endgame = app.mount('#app');
 }
 
-function setPodiumLocation() {
+function setPodiumLocation(elemId) {
     let finalistsElts = document.getElementsByClassName("finalist");
-    let svgDim= document.getElementById("Capa_1").getBoundingClientRect();
+    let svgDim= document.getElementById(elemId).getBoundingClientRect();
     for (const elt of finalistsElts) {
         switch (0) {
             case 0:
