@@ -56,8 +56,14 @@
                 </div>
             
             </div>
-       
+        <div>
+            <ul>
+                <li v-for="(player , name , index) in playersData" >  {{ index +1 }}{{ index == 0? "er" : "ème" }} : {{ findPlayer(name).name }} {{ player.distance}} mètres restant</li>
+            </ul>
+        </div>      
          </div>
+
+
         <div><a href="lobby.html">Quitter</a></div>
 
         <script src="https://unpkg.com/vue@next"></script>
