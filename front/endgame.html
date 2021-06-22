@@ -58,7 +58,14 @@
             </div>
         <div>
             <ul>
-                <li v-for="(player , name , index) in playersData" >  {{ index +1 }}{{ index == 0? "er" : "ème" }} : {{ findPlayer(name).name }} {{ player.distance}} mètres restant</li>
+                <li v-for="(player , name , index) in playersData" > 
+                        <avatar-card ref="avatarcard"
+                        :key="findPlayer(name).id"
+                        class="avatar-lobby"
+                        :avatar-name="findPlayer(name).name"
+                        :avatar-id="findPlayer(name).avatar">
+                        </avatar-card>
+                    {{ index +1 }}{{ index == 0? "er" : "ème" }} => {{ player.distance}} mètres restant</li>
             </ul>
         </div>      
          </div>
