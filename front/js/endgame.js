@@ -34,9 +34,7 @@ function initApp() {
 
 function setPodiumLocation() {
     let finalistsElts = document.getElementsByClassName("finalist");
-    let svg = document.getElementById("Capa_1");
-    let svgDim= svg.getBoundingClientRect();
-    console.log(svgDim);
+    let svgDim= document.getElementById("Capa_1").getBoundingClientRect();
     for (const elt of finalistsElts) {
         switch (0) {
             case 0:
