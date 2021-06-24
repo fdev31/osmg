@@ -21,11 +21,11 @@
                 <div v-for="(info, game) in games" class="gamebutton">
                     <div class=tile>
                         <span @click="play_game('{{game}}')">
-                            <img :src="'./img/'+info.card+'.jpg'"/>
+                            <img :src="`./img/${info.card}.jpg`"/>
                             <div class="text">
-                                <h1>{{game.toUpperCase()}}</h1>
-                                <h2 class="animate-text">{{info.description}}</h2>
-                                <p class="animate-text">{{info.long_description}}.</p>
+                                <h1>{{T(game)}}</h1>
+                                <h2 class="animate-text">{{T(game + "_description")}}</h2>
+                                <p class="animate-text" v-html="T(game + '_long_description')"></p>
                             </div>
                         </span>
                     </div>
