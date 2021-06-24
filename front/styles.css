@@ -180,15 +180,17 @@ select {
   background-repeat: no-repeat;
   background-size: 100%;
   min-height: 1000px; /* TODO: COMPUTE ME !!! */
+  background-position-y: 10%;
 }
 li > .avatarCard > svg  {
   height: 64px;
 }
 .podium1 {
   margin-left: 40%;
+  margin-top: -7%;
 }
 .podium2 {
-  margin-top: -15%;
+  margin-top: -10.5%;
   margin-left: 5%;
 }
 .podium3 {

@@ -13,6 +13,7 @@
             <div id="podium">
                     <div v-for="(player , index) in getSortedPlayers()" > 
                         <avatar-card :ref="'podiumavatar'+player.id"
+                        noname
                         :key="player.id"
                         :class="'finalist podium'+ (index+1)"
                         :avatar-name="player.name">
