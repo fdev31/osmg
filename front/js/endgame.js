@@ -43,7 +43,8 @@ function setPodiumLocation(svgId) {
     let finalistsElts = document.getElementsByClassName("finalist");
     let svgDim= document.getElementById(svgId).getBoundingClientRect();
     for (const elt of finalistsElts) {
-        switch (0) {
+        console.log(elt.dataset.pos,typeof(elt.dataset.pos));
+        switch (parseInt(elt.dataset.pos)) {
             case 0:
                 elt.style.top = svgDim.height * (1/5);elt.style.left = svgDim.width * (1/3);
                 break;
