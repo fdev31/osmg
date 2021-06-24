@@ -59,7 +59,7 @@
         <div>
             <ul>
                 <li v-for="(player , name , index) in playersData" > 
-                        <avatar-card ref="avatarcard"
+                        <avatar-card :ref="'avatarcard'+findPlayer(name).id"
                         :key="findPlayer(name).id"
                         class="avatar-lobby"
                         :avatar-name="findPlayer(name).name"
