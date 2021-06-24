@@ -134,3 +134,21 @@ class Toaster {
     }
   }
 }
+
+let currentLocale = null;
+
+function initLocales() {
+  //currentLocale = 'fr'; // to test a locale
+  let langs = navigator.languages;
+  let lang = langs[langs.length-1];
+  if (locales[lang]) {
+    currentLocale = lang;
+  }
+}
+
+function getTranslation(text) {
+  if (currentLocale === null) return text;
+  let r = locales[currentLocale][text];
+  if (r) return r;
+  console.warn(`No translation found for "${text}" using ${currentLocale}`);
+}

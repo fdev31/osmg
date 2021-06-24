@@ -1,0 +1,1 @@
+const locales = {"fr": {"Your info": "Vos infos", "Pick a game": "Choisissez un jeu"}}
