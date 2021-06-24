@@ -1,7 +1,7 @@
 Tickets
 =======
 
-:total-count: 17
+:total-count: 18
 
 --------------------------------------------------------------------------------
 
@@ -111,3 +111,14 @@ dice bug: rotate loses the translation
 :priority: 0
 
 the transformation is overriden instead of updating it
+
+--------------------------------------------------------------------------------
+
+When one player lose , other cant play
+======================================
+
+:bugid: 18
+:created: 2021-06-24T17:52:39
+:priority: 0
+
+Game is still waiting for the loser to play. For end users , it block the game as ui forbid losers to throw dices. The game is then stuck at loser's turn.
