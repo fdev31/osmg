@@ -9,6 +9,7 @@ handlers = {
 };
 
 function initApp() {
+    initLocales();
     let data = extractJsonFromCookie();
     data.host = document.location.host;
     let app = Vue.createApp({
@@ -25,6 +26,9 @@ function initApp() {
             this.$refs.playerlist.players = this.players;
         },
         methods : {
+          T(text) {
+              return getTranslation(text)
+          },
           startGame : async function () {
             start = await post(`http://${this.host}/session/start`, {
               "id": this.myId,

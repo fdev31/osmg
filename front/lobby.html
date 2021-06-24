@@ -9,13 +9,14 @@
   </head>
   <body onload="initApp()">
       <div id="app" v-cloak>
-          <h2>{{ gameType}} players</h2>
+          <h2>{{ gameType}} {{T("players")}}</h2>
           <input size="40" type="text" id="link" :value="`http://${host}/r/${name}`"></input>
-          <button type="button" onclick="copyURL('link')" >Inviter</button>
+          <button type="button" onclick="copyURL('link')" >{{T("Invite")}}</button>
           <player-list ref="playerlist"></player-list>
-          <button v-on:click="startGame" type="button">Jouer</button>
+          <button v-on:click="startGame" type="button">{{T("Play")}}</button>
       </div>
       <script src="https://unpkg.com/vue@next"></script>
+      <script src="js/locales.js" charset="utf-8"></script>
       <script src="/static/js/utils.js" charset="utf-8"></script>
       <script src="/static/jscomp/player-list.umd.js" charset="utf-8"></script>
       <script src="/static/js/lobby.js" charset="utf-8"></script>
