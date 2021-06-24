@@ -1,7 +1,7 @@
 Tickets
 =======
 
-:total-count: 19
+:total-count: 20
 
 --------------------------------------------------------------------------------
 
@@ -133,3 +133,12 @@ When playing with 3 players , game wont declare game won
 :priority: 0
 
 the game is still pl
+
+--------------------------------------------------------------------------------
+
+Add a QR code in the lobby for fun
+==================================
+
+:bugid: 20
+:created: 2021-06-25T00:15:13
+:priority: 0
