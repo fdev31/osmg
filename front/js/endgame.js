@@ -39,9 +39,9 @@ function initApp() {
     endgame = app.mount('#app');
 }
 
-function setPodiumLocation(elemId) {
+function setPodiumLocation(svgId) {
     let finalistsElts = document.getElementsByClassName("finalist");
-    let svgDim= document.getElementById(elemId).getBoundingClientRect();
+    let svgDim= document.getElementById(svgId).getBoundingClientRect();
     for (const elt of finalistsElts) {
         switch (0) {
             case 0:
