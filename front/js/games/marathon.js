@@ -14,7 +14,7 @@ function isError(res) {
 }
 
 function checkLost() {
-    if (marathon.remain < 0) {
+    if (marathon.playersData[marathon.myId].distance < 0) {
         marathon.setStatus(statuses.GAME_OVER);
         return true;
     }
@@ -79,7 +79,6 @@ function initApp() {
         Object.assign(data, {
                 host: document.location.host,
                 status: 0,
-                remain: 42195, // FIXME: this is a duplicate of player data !
             })
     }
     data.svg = []; // XXX: do you need it in app data ? looks strange since it's not even done with the template
