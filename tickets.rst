@@ -142,3 +142,6 @@ Add a QR code in the lobby for fun
 :bugid: 20
 :created: 2021-06-25T00:15:13
 :priority: 0
+
+
+Integrate for instance https://davidshimjs.github.io/qrcodejs/
