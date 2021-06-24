@@ -143,7 +143,7 @@ function initLocales() {
   if (locales[lang]) {
     currentLocale = lang;
   }
-  currentLocale = 'fr'; // to test a locale
+  //currentLocale = 'fr'; // to test a locale
 }
 
 function getTranslation(text) {
