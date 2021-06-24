@@ -4,7 +4,6 @@ function initApp() {
     var host = window.location.host
     try {
         var data = extractJsonFromCookie();
-        console.log(data);
     }catch {
         window.location = `http://${host/static/index.html}`;
     }
@@ -20,6 +19,17 @@ function initApp() {
             findPlayer(playerId) {
               return findPlayer(this , playerId);  
             },
+            getSortedPlayers() {
+                let data = this.playersData;
+                let result = [];
+                Object.keys(data).map(function(key){
+                    return result.push(data[key])
+                });
+                result.sort(function(a , b){
+                    return a.distance - b.distance;
+                });
+                return result;
+            }
 
         }
         
