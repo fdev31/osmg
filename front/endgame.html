@@ -11,7 +11,7 @@
             <h1>La partie est terminée
 
             <div id="podium">
-                    <div v-for="(player , index) in getSortedPlayers()" > 
+                    <div v-for="(player , index) in getWinners()" > 
                         <avatar-card :ref="'podiumavatar'+player.id"
                         noname
                         :key="player.id"
