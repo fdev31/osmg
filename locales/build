@@ -23,3 +23,15 @@ for root, dirs, files in os.walk('.'):
 output = open('../front/js/locales.js', 'w')
 output.write("const locales = ")
 json.dump(structure, output)
+
+if VERIFY:
+    ref_keys = set()
+    for trans in structure.values():
+        ref_keys.update(set(trans.keys()))
+    for lang, trans in structure.items():
+        diff = ref_keys.difference(set(trans.keys()))
+    if diff:
+        print("Keys not covered for language %s:"%lang)
+        for k in diff:
+            print("    - %s"%k)
+
