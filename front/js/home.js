@@ -1,6 +1,7 @@
 let home;
 
 function initApp() {
+  initLocales();
   let app = Vue.createApp({
     components : {'avatar-card': window['avatar-card']},
     watch: {
@@ -16,6 +17,9 @@ function initApp() {
       games: {},
     }},
     methods: {
+      T(text) {
+        return getTranslation(text);
+      },
       play_game :  async function(game) {
         var response = await fetch("/session/new", {
           method: 'POST',
