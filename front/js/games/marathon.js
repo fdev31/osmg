@@ -14,7 +14,7 @@ function isError(res) {
 }
 
 function checkLost() {
-    if (marathon.playersData[marathon.myId].distance < 0) {
+    if (marathon.distance < 0) {
         marathon.setStatus(statuses.GAME_OVER);
         return true;
     }
@@ -81,9 +81,6 @@ function initApp() {
                 status: 0,
             })
     }
-    data.svg = []; // XXX: do you need it in app data ? looks strange since it's not even done with the template
-    const NB_DICE = 4;
-
     app = Vue.createApp({
         data: function() { return data },
         components: {
@@ -98,6 +95,11 @@ function initApp() {
         },
         mounted() {
             this.$refs.playerlist.players = this.players;
+        },
+        computed: {
+            distance() {
+                return this.playersData[this.myId].distance;
+            }
         },
         methods: {
             didIWin() {
