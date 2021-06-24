@@ -12,13 +12,12 @@
 
             <div id="podium">
 
-                    <div v-for="(player , index) in getSortedPlayers()" v-bind:data-pos="index" class="finalist"> 
+                    <div v-for="(player , index) in getSortedPlayers()" v-bind:data-pos="index" :class="'finalist podium'+ (index+1)"> 
                         <avatar-card :ref="'podiumavatar'+player.id"
                         :key="player.id"
                         class="avatar-lobby"
                         
-                        :avatar-name="player.name"
-                        :avatar-id="player.id">
+                        :avatar-name="player.name">
                         </avatar-card>
                     </div>
                 <div class="podium-svg">
@@ -59,14 +58,13 @@
             </div>
         <div>
             <ul>
-                <li v-for="(player , name , index) in playersData" > 
-                        <avatar-card :ref="'avatarcard'+findPlayer(name).id"
-                        :key="findPlayer(name).id"
+                <li v-for="(player , index) in players" > 
+                        <avatar-card :ref="'avatarcard'+player"
+                        :key="player.id"
                         class="avatar-lobby"
-                        :avatar-name="findPlayer(name).name"
-                        :avatar-id="findPlayer(name).avatar">
+                        :avatar-name="player.name">
                         </avatar-card>
-                    {{ index +1 }}{{ index == 0? "er" : "ème" }} => {{ player.distance}} mètres restant</li>
+                    {{ index +1 }}{{ index == 0? "er" : "ème" }} => {{ playersData[player.id].distance}} mètres restant</li>
             </ul>
         </div>      
          </div>

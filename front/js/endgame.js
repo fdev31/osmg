@@ -11,9 +11,6 @@ function initApp() {
         data : function () {
             return data;
         },
-        mounted() {
-            setPodiumLocation("Capa_1")
-        },
         components: {"avatar-card" : window["avatar-card"] , "player-list" : window["player-list"]},
         methods : {
             findPlayer(playerId) {
@@ -31,33 +28,19 @@ function initApp() {
                     return this.findPlayer(x[0]);
                 });
                 return result;
+            },
+            getWinners() {
+                let result = this.players.filter( player => {
+                    this.playersData[player.id].distance;
+                })
+
+            },
+            getLosers() {
+
             }
 
         }
         
     });
     endgame = app.mount('#app');
-}
-
-function setPodiumLocation(svgId) {
-    let finalistsElts = document.getElementsByClassName("finalist");
-    let svgDim= document.getElementById(svgId).getBoundingClientRect();
-    for (const elt of finalistsElts) {
-        console.log(elt.dataset.pos,typeof(elt.dataset.pos));
-        switch (parseInt(elt.dataset.pos)) {
-            case 0:
-                elt.style.top = svgDim.height * (1/5);elt.style.left = svgDim.width * (1/3);
-                break;
-            case 1:
-                elt.style.top = svgDim.height/2;elt.style.left = svgDim.width * (2/3);
-                break;     
-            case 2:
-                elt.style.top = svgDim.height/2;elt.style.left = 1;
-                break;                                    
-            default:
-                elt.style.top = svgDim.height/2;elt.style.left = svgDim.width * (1/3);
-                break;
-        }
-    }
-
 }
