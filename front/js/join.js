@@ -1,4 +1,5 @@
 function initApp() {
+  initLocales();
   var url = new URL(document.URL);
   var session = url.searchParams.get("session");
   let app = Vue.createApp({
