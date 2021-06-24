@@ -9,9 +9,10 @@
   </head>
   <body onload="initApp()">
       <div id="app" v-cloak>
-          <h2>{{ gameType}} {{T("players")}}</h2>
+          <h2>{{gameType}}</h2>
+          <button type="button" onclick="copyURL('link')" :title="T('Click to copy invite link to the clipboard')">{{T("Invite")}}</button>
           <input size="40" type="text" id="link" :value="`http://${host}/r/${name}`"></input>
-          <button type="button" onclick="copyURL('link')" >{{T("Invite")}}</button>
+          <h3>{{T("players")}}</h3>
           <player-list ref="playerlist"></player-list>
           <button v-on:click="startGame" type="button">{{T("Play")}}</button>
       </div>
