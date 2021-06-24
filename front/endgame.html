@@ -12,12 +12,13 @@
 
             <div id="podium">
 
-                    <div class="finalist"> 
-                        <avatar-card ref="avatarcard"
-                        :key="players[0].id"
+                    <div v-for="(player , index) in getSortedPlayers()" v-bind:data-pos="index" class="finalist"> 
+                        <avatar-card :ref="'podiumavatar'+player.id"
+                        :key="player.id"
                         class="avatar-lobby"
-                        :avatar-name="players[0].name"
-                        :avatar-id="players[0].id">
+                        
+                        :avatar-name="player.name"
+                        :avatar-id="player.id">
                         </avatar-card>
                     </div>
                 <div class="podium-svg">
