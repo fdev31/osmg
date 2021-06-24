@@ -20,15 +20,12 @@
                 <h1>You Lose!</h1>
             </div>
             <div v-else>
-                <b>{{getPlayerAction()}}</b>
-                <div>
-                    {{ playersData[myId].distance }} meters left
-                </div>
-                <label>Dés: </label>
+                <div><b>{{getPlayerAction()}}</b></div>
+                {{ distance }} meters left
                 <button v-on:click="mainPlayButton" type="button">{{ getPlayerAction() }}</button>
-            </div>
-            <div class="diceArea">
-                <dice-array ref="mydice"></dice-array>
+                <div class="diceArea">
+                    <dice-array ref="mydice"></dice-array>
+                </div>
             </div>
         </div>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/snap.svg/0.5.1/snap.svg-min.js"></script>
