@@ -22,7 +22,7 @@
             <div v-else>
                 <b>{{getPlayerAction()}}</b>
                 <div>
-                    {{ remain }} meters left
+                    {{ playersData[myId].distance }} meters left
                 </div>
                 <label>Dés: </label>
                 <button v-on:click="mainPlayButton" type="button">{{ getPlayerAction() }}</button>
