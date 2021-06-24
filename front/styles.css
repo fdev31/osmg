@@ -171,6 +171,30 @@ select {
     display: block;
     margin: 0 auto;
 }
+.finalist {
+  width: 20%;
+  position: static;
+}
+#podium {
+  background-image: url("./img/podium.svg");
+  background-repeat: no-repeat;
+  background-size: 100%;
+  min-height: 1000px; /* TODO: COMPUTE ME !!! */
+}
+li > .avatarCard > svg  {
+  height: 64px;
+}
+.podium1 {
+  margin-left: 40%;
+}
+.podium2 {
+  margin-top: -15%;
+  margin-left: 5%;
+}
+.podium3 {
+  margin-top: -15%;
+  margin-right: 5%;
+}
 /* Avatar */
 .avatar {
     position: relative;
@@ -211,14 +235,4 @@ select {
 #toaster.visible {
     top: 5px;
     opacity: 1;
-}
-
-
-
-.finalist {
-  position:relative;
-}
-
-.podium-svg {
-  position:relative;
 }
