@@ -12,11 +12,6 @@ function initApp() {
         data : function () {
             return data;
         },
-        // watch: {
-        //     players(newVal) {
-        //         this.$refs.playerlist.players = newVal;
-        //     }
-        // },
         mounted() {
             setPodiumLocation("Capa_1")
         },
