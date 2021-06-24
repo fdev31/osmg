@@ -31,12 +31,20 @@ function initApp() {
             },
             getWinners() {
                 let result = this.players.filter( player => {
-                    this.playersData[player.id].distance;
+                    return this.playersData[player.id].distance <= 0
+                }).sort((a,b) => {
+                    return Math.abs(this.playersData[a.id].distance) + this.playersData[b.id].distance
                 })
-
+                return result;
             },
             getLosers() {
-
+                let result = this.players.filter( player => {
+                    console.log(this.playersData[player.id].distance);
+                    return this.playersData[player.id].distance > 0
+                }).sort((a,b) => {
+                    return this.playersData[a.id].distance - this.playersData[b.id].distance
+                })
+                return result;
             }
 
         }
