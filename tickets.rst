@@ -1,7 +1,7 @@
 Tickets
 =======
 
-:total-count: 18
+:total-count: 19
 
 --------------------------------------------------------------------------------
 
@@ -122,3 +122,14 @@ When one player lose , other cant play
 :priority: 0
 
 Game is still waiting for the loser to play. For end users , it block the game as ui forbid losers to throw dices. The game is then stuck at loser's turn.
+
+--------------------------------------------------------------------------------
+
+When playing with 3 players , game wont declare game won
+========================================================
+
+:bugid: 19
+:created: 2021-06-24T17:58:13
+:priority: 0
+
+the game is still pl
