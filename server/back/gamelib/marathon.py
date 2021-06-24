@@ -69,6 +69,8 @@ async def validateDice(player: PlayerIdentifier, value: str) -> None:
         await publishEvent(player.sessionName, conn, cat="varUpdate", var="distance", val=newVal, player=player.id)
         await turnLogic(newVal, player, conn)
 
+async def declareWinner(session, pid, conn):
+    await publishEvent(session, conn, cat="endOfGame", message="We have a winner!", player=pid)
 
 async def turnLogic(distance, player: PlayerIdentifier, conn=None):
     if not conn:
@@ -79,36 +81,37 @@ async def turnLogic(distance, player: PlayerIdentifier, conn=None):
     nbPlayers = int(await conn.llen(po))
     playerLost = False
 
-    if nbPlayers == 1:
+    if nbPlayers == 1: # avoid wasting time
         return
 
     if distance is not None:  # check END OF GAME
         if distance == 0:  # End of game
-            await publishEvent(player.sessionName, conn, cat="endOfGame", message="We have a winner!", player=player.id)
+            await declareWinner(player.sessionName, player.id, conn)
             return
-        if distance < 0:
+        if distance < 0: # disqualified
             playerLost = True
             nbPlayers -= 1
             await conn.lrem(po, 1, player.id)
 
-        if nbPlayers == 1:
+        if nbPlayers == 1: # only one runner left !
             curPlayerId = await conn.lindex(po, 0)
-            await publishEvent(player.sessionName, conn, cat="endOfGame", message="We have a winner!", player=curPlayerId)
+            await declareWinner(player.sessionName, curPlayerId, conn)
             return
 
-        if playerLost:
+        if playerLost: # we lost a player: no need to increment curPlayer counter
             curPlayer = int(await conn.get(g_prefix+"curPlayer"))
         else:
             curPlayer = int(await conn.incr(g_prefix+"curPlayer"))
     else:  # no distance == check at game startup
         curPlayer = 0
 
-    if curPlayer != None and curPlayer >= nbPlayers:
+    if curPlayer != None and curPlayer >= nbPlayers: # end of turn
         turn = await conn.incr(g_prefix + "turns")
         await publishEvent(player.sessionName, conn, cat="newTurn", val=turn)
         await conn.set(g_prefix + "curPlayer", 0)
         curPlayer = 0
 
+    # resolve current player id & publish it
     curPlayerId = await conn.lindex(po, curPlayer)
     await publishEvent(player.sessionName, conn, cat="curPlayer", val=curPlayerId)
 
