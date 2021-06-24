@@ -59,41 +59,59 @@ async def validateDice(player: PlayerIdentifier, value: str) -> None:
                 for c in current:
                     previous.remove(c)
             except ValueError:
-                raise HTTPException(httpstatus.HTTP_421_MISDIRECTED_REQUEST, "Dice not matching")
+                raise HTTPException(
+                    httpstatus.HTTP_421_MISDIRECTED_REQUEST, "Dice not matching")
         await conn.delete(propName)
         propName = prefix + "distance"
         newVal = await conn.decrby(propName, int(value))
-        logger.debug(f"{player} decr remaining distance by {value}, it's now {newVal}")
+        logger.debug(
+            f"{player} decr remaining distance by {value}, it's now {newVal}")
         await publishEvent(player.sessionName, conn, cat="varUpdate", var="distance", val=newVal, player=player.id)
-        curPlayer = int(await conn.incr(g_prefix+"curPlayer"))
-        await turnLogic(newVal, curPlayer, player, conn)
+        await turnLogic(newVal, player, conn)
 
-async def turnLogic(distance, curPlayer: int, player: PlayerIdentifier, conn=None):
+
+async def turnLogic(distance, player: PlayerIdentifier, conn=None):
     if not conn:
         conn = getRedis()
 
     g_prefix = getGameDataPrefix(player.sessionName)
     po = getVarName(PLAYERS_ORDER, player.sessionName)
     nbPlayers = int(await conn.llen(po))
+    playerLost = False
 
-    if distance != None: # check END OF GAME
-        if distance == 0: # End of game
+    if nbPlayers == 1:
+        return
+
+    if distance is not None:  # check END OF GAME
+        if distance == 0:  # End of game
             await publishEvent(player.sessionName, conn, cat="endOfGame", message="We have a winner!", player=player.id)
-        elif distance < 0:
-            await conn.sadd(g_prefix+"losers", player.id)
-        else: # check if it's the last player
-            nbLosers = int(await conn.scard(g_prefix+"losers"))
-            if nbLosers == nbPlayers - 1:
-                await publishEvent(player.sessionName, conn, cat="endOfGame", message="We have a winner!", player=player.id)
+            return
+        if distance < 0:
+            playerLost = True
+            nbPlayers -= 1
+            await conn.lrem(po, 1, player.id)
 
-    if curPlayer >= nbPlayers:
+        if nbPlayers == 1:
+            curPlayerId = await conn.lindex(po, 0)
+            await publishEvent(player.sessionName, conn, cat="endOfGame", message="We have a winner!", player=curPlayerId)
+            return
+
+        if playerLost:
+            curPlayer = int(await conn.get(g_prefix+"curPlayer"))
+        else:
+            curPlayer = int(await conn.incr(g_prefix+"curPlayer"))
+    else:  # no distance == check at game startup
+        curPlayer = 0
+
+    if curPlayer != None and curPlayer >= nbPlayers:
         turn = await conn.incr(g_prefix + "turns")
         await publishEvent(player.sessionName, conn, cat="newTurn", val=turn)
         await conn.set(g_prefix + "curPlayer", 0)
         curPlayer = 0
 
-    curPlayerId = await conn.lindex(g_prefix[:-2] + PLAYERS_ORDER, curPlayer)
+    curPlayerId = await conn.lindex(po, curPlayer)
     await publishEvent(player.sessionName, conn, cat="curPlayer", val=curPlayerId)
+
 
 class DiceInterface(GameInterface):
     name = "marathon"
@@ -105,7 +123,7 @@ class DiceInterface(GameInterface):
 
     @staticmethod
     async def startGame(sessionId, conn):
-        await turnLogic(None, 0, PlayerIdentifier(id=0, sessionName=sessionId), conn)
+        await turnLogic(None, PlayerIdentifier(id=0, sessionName=sessionId), conn)
 
     @staticmethod
     def getPlayerData():
