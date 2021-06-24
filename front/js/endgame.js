@@ -23,10 +23,12 @@ function initApp() {
                 let data = this.playersData;
                 let result = [];
                 Object.keys(data).map(function(key){
-                    return result.push(data[key])
+                    return result.push([key , data[key]])
                 });
-                result.sort(function(a , b){
-                    return a.distance - b.distance;
+                result = result.sort(function(a , b){
+                    return a[1].distance - b[1].distance;
+                }).map( x => {
+                    return this.findPlayer(x[0]);
                 });
                 return result;
             }
