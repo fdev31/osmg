@@ -65,7 +65,7 @@ export default {
     <dice
       :ref="'dice' + index"
       v-for="index in diceNumber"
-      :value="index"
+      value="?"
       :key="index"
     />
   </div>
