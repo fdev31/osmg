@@ -97,6 +97,9 @@ function initApp() {
             this.$refs.playerlist.players = this.players;
         },
         computed: {
+            diceVisible() {
+                return [statuses.THROW, statuses.DICE_THROWN].includes(this.status);
+            },
             distance() {
                 return this.playersData[this.myId].distance;
             }

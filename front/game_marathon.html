@@ -22,8 +22,8 @@
             <div v-else>
                 <div><b>{{getPlayerAction()}}</b></div>
                 {{ distance }} meters left
-                <button v-on:click="mainPlayButton" type="button">{{ getPlayerAction() }}</button>
-                <div class="diceArea">
+                <button v-on:click="mainPlayButton" type="button" :disabled="!diceVisible">{{ getPlayerAction() }}</button>
+                <div v-if="diceVisible" class="diceArea">
                     <dice-array ref="mydice"></dice-array>
                 </div>
             </div>
