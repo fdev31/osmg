@@ -8817,7 +8817,7 @@ if (typeof window !== 'undefined') {
 // EXTERNAL MODULE: external {"commonjs":"vue","commonjs2":"vue","root":"Vue"}
 var external_commonjs_vue_commonjs2_vue_root_Vue_ = __webpack_require__("8bbf");
 
-// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js??ref--12-0!./node_modules/thread-loader/dist/cjs.js!./node_modules/babel-loader/lib!./node_modules/vue-loader-v16/dist/templateLoader.js??ref--6!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader-v16/dist??ref--0-1!./src/dice.vue?vue&type=template&id=3a4920b3
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js??ref--12-0!./node_modules/thread-loader/dist/cjs.js!./node_modules/babel-loader/lib!./node_modules/vue-loader-v16/dist/templateLoader.js??ref--6!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader-v16/dist??ref--0-1!./src/dice.vue?vue&type=template&id=cd10fe5a
 
 var _hoisted_1 = {
   class: "dice"
@@ -8885,7 +8885,7 @@ var _hoisted_2 = /*#__PURE__*/Object(external_commonjs_vue_commonjs2_vue_root_Vu
 function render(_ctx, _cache, $props, $setup, $data, $options) {
   return Object(external_commonjs_vue_commonjs2_vue_root_Vue_["openBlock"])(), Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createBlock"])("span", _hoisted_1, [_hoisted_2]);
 }
-// CONCATENATED MODULE: ./src/dice.vue?vue&type=template&id=3a4920b3
+// CONCATENATED MODULE: ./src/dice.vue?vue&type=template&id=cd10fe5a
 
 // EXTERNAL MODULE: ./node_modules/snapsvg-cjs/dist/snap.svg-cjs.js
 var snap_svg_cjs = __webpack_require__("41cc");
@@ -8896,7 +8896,7 @@ var snap_svg_cjs_default = /*#__PURE__*/__webpack_require__.n(snap_svg_cjs);
 
 /* harmony default export */ var dicevue_type_script_lang_js = ({
   mounted: function mounted() {
-    this.$_snap = snap_svg_cjs(this.$el.querySelector('svg'));
+    this.snap = snap_svg_cjs(this.$el.querySelector('svg'));
     this.$_value = this.$attrs['value'] || '?';
     this.setValue(this.$_value);
   },
@@ -8920,7 +8920,7 @@ var snap_svg_cjs_default = /*#__PURE__*/__webpack_require__.n(snap_svg_cjs);
             setTimeout(function () {
               if (i == 1) _this.$el.querySelector('.diceText').innerHTML = '?';
 
-              _this.$_snap.animate({
+              _this.snap.animate({
                 transform: "rotate(".concat(i * 180, ")")
               }, d, snap_svg_cjs_default.a.easeinout);
 
