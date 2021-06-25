@@ -141,10 +141,12 @@ function initApp() {
                         "secret": parseInt(this.secret),
                         "sessionName":this.name
                     })
-                    this.$refs["mydice"].diceNumber = diceArray.length;
-                    this.$refs["mydice"].updateDice(diceArray);
                     this.setStatus(statuses.DICE_THROWN);
 
+                    let dice = this.$refs["mydice"];
+                    dice.diceNumber = diceArray.length;
+                    dice.updateDice(diceArray);
+                    dice.enableDrag(true)
                 } catch (e) {
                     toaster.show(e.message, {time: 10000});
                     this.setStatus ( statuses.ERROR );
