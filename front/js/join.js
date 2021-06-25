@@ -15,6 +15,9 @@ function initApp() {
       }
     } ,
     methods : {
+      T(text) {
+        return getTranslation(text);
+      },
       validate : async function () {
         var myHeaders = new Headers();
         myHeaders.append("Content-Type", "application/json");
