@@ -22,12 +22,18 @@
                 </div>
         <div>
             <ul>
-                <li v-for="(player , index) in players" > 
+                <li v-for="(player , index) in getWinners()" > 
                         <avatar-card :ref="'avatarcard'+player"
                         :key="player.id"
                         :avatar-name="player.name">
                         </avatar-card>
                     {{ index +1 }}{{ index == 0? "er" : "ème" }} => {{ playersData[player.id].distance}} mètres restant</li>
+                    <li v-for="(player , index) in getLosers()" > 
+                        <avatar-card :ref="'avatarcard'+player"
+                        :key="player.id"
+                        :avatar-name="player.name">
+                        </avatar-card>
+                    {{ getWinners().length + index +1 }}{{ getWinners().length + index == 0? "er" : "ème" }} => {{ playersData[player.id].distance}} mètres restant</li>
             </ul>
         </div>      
          </div>
