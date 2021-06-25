@@ -4,7 +4,7 @@ import mina from "snapsvg-cjs";
 
 export default {
    mounted() {
-      this.$_snap = Snap(this.$el.querySelector('svg'));
+      this.snap = Snap(this.$el.querySelector('svg'));
       this.$_value = this.$attrs['value'] || '?';
       this.setValue(this.$_value);
    },
@@ -21,7 +21,7 @@ export default {
             for (let i=1; i<=angle/90; i++) {
                setTimeout( ()=> {
                      if (i==1) this.$el.querySelector('.diceText').innerHTML = '?';
-                     this.$_snap.animate({ transform: `rotate(${i*180})`}, d, mina.easeinout);
+                     this.snap.animate({ transform: `rotate(${i*180})`}, d, mina.easeinout);
                      if (i==lastIndex) this.$el.querySelector('.diceText').innerHTML = val;
                }, (d+10)*(i-1));
             }
