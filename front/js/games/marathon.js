@@ -174,9 +174,6 @@ function initApp() {
     setupStreamEventHandler({topic :marathon.name , uid : marathon.myId}, handlers);
 }
 
-function arrayToString(array) {
-    return array.map((o) => o.toString()).join('');
-}
 async function getThrowResults() {
     var myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
