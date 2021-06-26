@@ -127,7 +127,7 @@ async def disconnectPlayer(sessionName: str, playerId: str):
     stage = getVarName(PLAYERS_CONNECTED+'stage', sessionName)
     async with getRedis().client() as conn:
         await conn.smove(pr, stage, playerId)
-        await asyncio.sleep(1)
+        await asyncio.sleep(2)
         if not await conn.sismember(pr, playerId): # it has reconnected in the meantime
             await conn.srem(stage, playerId)
             nbP = await conn.scard(pr)
