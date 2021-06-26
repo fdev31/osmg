@@ -10,12 +10,12 @@ from back.models import PlayerIdentifier
 from back.globalHandlers import getRedis, getGameDataPrefix, getVarName, publishEvent, PLAYERS_ORDER
 from back.utils import loads, dumps
 from .interfaces import GameInterface
+from back.sessionmanager.public import isPlayerValid
 
 logger = logging.getLogger('marathon')
 
 async def isPlayerTurn(conn, prefix, playerId, secret):
-    actualSecret = await conn.get(f"{prefix[:-2]}{playerId}:_secret")
-    if int(actualSecret) != int(secret):
+    if not isPlayerValid(conn, prefix[1:-2], playerId, secret):
         return False
     curPlayer = await conn.get(prefix+"curPlayer")
     curPlayerId = await conn.lindex(prefix[:-2]+PLAYERS_ORDER, int(curPlayer))

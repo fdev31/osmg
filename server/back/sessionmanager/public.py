@@ -15,6 +15,11 @@ logger = logging.getLogger("Session")
 
 GAME_DATA = 'g'
 
+async def isPlayerValid(conn, sessionId, playerId, secret):
+    actualSecret = await conn.get(getVarName("_secret", sessionId, playerId))
+    if int(actualSecret) != int(secret):
+        return False
+
 async def connectPlayer(sessionName: str, playerId: str):
     stage = getVarName(PLAYERS_CONNECTED+'stage', sessionName)
     async with getRedis().client() as conn:
