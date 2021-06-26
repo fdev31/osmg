@@ -177,6 +177,35 @@ async def addPlayer(player: newPlayer) -> Session:
     logger.debug(f"New player {pid}")
     return sess
 
+async def _startGame(uid, conn):
+    await publishEvent(uid, conn, cat="start", msg="game started")
+    await game.startGame(uid, conn)
+
+async def restartGame(player: PlayerIdentifier, tasks: BackgroundTasks) -> None:
+    """ resets a game state """
+    uid = player.sessionName
+    async with (client or getRedis().client()) as conn:
+        gameType  = await conn.get(getVarName(SESSION_GAME_TYPE, uid))
+        vn = getVarName(PLAYERS_ORDER, uid)
+        allPlayers = await conn.lrange(vn, 0, -1)
+
+        iface = games[gameType]
+        newVals = {}
+        for k, v in iface.getGameData().items():
+            newVals[getVarName(name, uid, gameData=True)] = v
+        for k, v in iface.getPlayerData().items():
+            for playername in allPlayers:
+                newVals[getVarName(name, uid, playername, gameData=True)] = v
+
+        await conn.mset(newVals)
+        await publishEvent(uid, conn, cat="restart")
+
+    async def delayedStart():
+        await asyncio.sleep(3)
+        await _startGame(uid, getRedis().client())
+
+    tasks.add_task(delayedStart)
+
 async def startGame(player: PlayerIdentifier, tasks: BackgroundTasks) -> None:
     """ Notifies that some player is ready to start the game """
     redis = getRedis()
@@ -197,8 +226,7 @@ async def startGame(player: PlayerIdentifier, tasks: BackgroundTasks) -> None:
             po = getVarName(PLAYERS_ORDER, player.sessionName)
             if nbPlayersReady == int(await conn.llen(po)) and (game.max_players or 99) >= nbPlayersReady >= (game.min_players or 1):
                 # all players are ready!
-                await publishEvent(player.sessionName, conn, cat="start", msg="game started")
-                await game.startGame(player.sessionName, conn)
+                await _startGame(player.sessionName, conn)
     tasks.add_task(checkStartOfGame)
 
 def init(app, config):
@@ -211,6 +239,8 @@ def init(app, config):
             409: {'description': "player already joined"},
         },
         response_model=Session)(addPlayer)
+
+    app.post('/session/restart', response_model=None)(restartGame)
 
     app.post('/session/start',
             response_model=None,
