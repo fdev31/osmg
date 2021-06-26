@@ -1,5 +1,6 @@
 from typing import Dict, Any
 from back.utils import dumps
+from functools import lru_cache
 
 ctx : Dict[str, Any] = {}
 
@@ -12,15 +13,20 @@ def setRedis(handler):
 def publishEvent(topic, client=None, **params):
     return (client or ctx['redis']).publish(topic, dumps(params))
 
-def getVarName(name, sessionId, playerId=None, gameData=False):
+@lru_cache(max_size=100)
+def _getVarPrefix(sessionId, playerId, gameData):
     if gameData and playerId:
-        return f"S{sessionId}:{playerId}:g:{name}"
+        return f"S{sessionId}:{playerId}:g:"
     elif playerId:
-        return f"S{sessionId}:{playerId}:{name}"
+        return f"S{sessionId}:{playerId}:"
     elif gameData:
-        return f"S{sessionId}:g:{name}"
+        return f"S{sessionId}:g:"
     else:
-        return f"S{sessionId}:{name}"
+        return f"S{sessionId}:"
+
+def getVarName(name, sessionId, playerId=None, gameData=False):
+    " get a REDIS key name from a variable + associated info "
+    return _getVarPrefix(sessionId, playerId, gameData) + name
 
 # deprecated functions:
 
