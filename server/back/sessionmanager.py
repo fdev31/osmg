@@ -26,6 +26,15 @@ async def _genUniqueSessionId():
     pid = await getRedis().incr('count_session')
     return hex(int("%d%d"%(pid, (time.time()*1000)-t0)))[2:]
 
+async def removeSession(sessionName: str, conn):
+    " Delete all traces of a session """
+    all_keys = []
+    cur = b"0"
+    while cur:
+        cur, keys = await conn.scan(cur, match=f"S{sessionName}:*")
+        all_keys.extend(keys)
+    await conn.delete(*all_keys)
+
 async def getSession(uid, client=None) -> Session:
     " fetch session info from redis "
 
@@ -123,8 +132,9 @@ async def disconnectPlayer(sessionName: str, playerId: str):
             await conn.srem(stage, playerId)
             nbP = await conn.scard(pr)
             if nbP == 0:
-                logging.warning("TODO: remove session, no player connected")
-            await publishEvent(sessionName, conn, cat='disconnectPlayer', id=playerId)
+                await removeSession(sessionName, conn)
+            else:
+                await publishEvent(sessionName, conn, cat='disconnectPlayer', id=playerId)
 
 async def addPlayer(player: newPlayer) -> Session:
     " Add a player to an existing session "
