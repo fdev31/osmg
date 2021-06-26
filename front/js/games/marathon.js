@@ -97,6 +97,9 @@ function initApp() {
             this.$refs.playerlist.players = this.players;
         },
         computed: {
+            isLastAction() {
+                return statuses.DICE_THROWN == this.status;
+            },
             diceVisible() {
                 return [statuses.THROW, statuses.DICE_THROWN].includes(this.status);
             },
@@ -124,7 +127,7 @@ function initApp() {
             getPlayerAction: function () {
                 return ["En attente des autres joueurs","Lancez les dés" , "Avancez" , "Attendez" , "Fin du Tour", "Erreur"][this.status];
             },
-            mainPlayButton: async function() {
+            async mainPlayButton() {
                 switch(this.status) {
                     case statuses.THROW:
                         await this.throw_dices();
@@ -134,7 +137,7 @@ function initApp() {
                         break;
                 }
             },
-            throw_dices: async function() {
+            async throw_dices() {
                 try {
                     let diceArray = await post(`http://${host}/game/marathon/throwDice`, {
                         "id":parseInt(this.myId),
@@ -152,15 +155,18 @@ function initApp() {
                     this.setStatus ( statuses.ERROR );
                 }
             },
-            findPlayer : function (id) {
+            async skipTurn() {
+                await this.player_advance(0);
+            },
+            findPlayer(id) {
                 for (var [key , player] of Object.entries(this.playersData)) {
                     if (key == id) {
                         return player;
                     }
                 }
             },
-            player_advance : async function () {
-                let choice = this.$refs.mydice.getDiceValues().join("");
+            async player_advance(value) {
+                let choice = value === undefined ? this.$refs.mydice.getDiceValues().join("") : value;
 
                 let action = await post(`http://${host}/game/marathon/validateDice?value=${choice}`, {
                     "id":parseInt(this.myId),
