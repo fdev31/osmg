@@ -4,8 +4,7 @@ import asyncio
 from fastapi import Request
 from sse_starlette.sse import EventSourceResponse
 
-from back.models import PlayerIdentifier
-from back.sessionmanager import connectPlayer, disconnectPlayer
+from back.sessionmanager.public import connectPlayer, disconnectPlayer
 from back.globalHandlers import getRedis
 
 logger = logging.getLogger("Stream")
