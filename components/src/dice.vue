@@ -3,79 +3,74 @@ import * as Snap from "snapsvg-cjs";
 import mina from "snapsvg-cjs";
 
 export default {
-   mounted() {
-      this.snap = Snap(this.$el.querySelector('svg'));
-      this.$_value = this.$attrs['value'] || '?';
-      this.setValue(this.$_value);
-   },
-   methods: {
-      getValue() {
-         return this.$_value;
-      },
-      setValue(val, animate=false) {
-         this.$_value = val;
-         if (animate) {
-            let d=100;
-            let angle=720;
-            let lastIndex = Math.floor(angle/90);
-            for (let i=1; i<=angle/90; i++) {
-               setTimeout( ()=> {
-                     if (i==1) this.$el.querySelector('.diceText').innerHTML = '?';
-                     this.snap.animate({ transform: `rotate(${i*180})`}, d, mina.easeinout);
-                     if (i==lastIndex) this.$el.querySelector('.diceText').innerHTML = val;
-               }, (d+10)*(i-1));
+  mounted() {
+    this.snap = Snap(this.$el.querySelector("svg"));
+    this.$_value = this.$attrs["value"] || "?";
+    this.setValue(this.$_value);
+  },
+  methods: {
+    setDots(val) {
+        let visibles = [];
+        switch (val) {
+            case 1:
+                visibles = [7];
+                break;
+            case 2:
+                visibles = [2, 5];
+                break;
+            case 3:
+                visibles = [2, 5, 7];
+                break;
+            case 4:
+                visibles = [1, 2, 5, 6];
+                break;
+            case 5:
+                visibles = [1, 2, 5, 6, 7];
+                break;
+            case 6:
+                visibles = [1, 2, 3, 4, 5, 6];
+                break;
+        }
+        for (let i=1; i<8; i++) {
+            let elt = this.$el.querySelector(`.dot${i}`);
+            elt.style.visibility = visibles.includes(i) ? 'visible': 'hidden';
+        }
+        this.$el.querySelector(".unknown").style.visibility = val?'hidden':'visible';
+    },
+    getValue() {
+      return this.$_value;
+    },
+    setValue(val, animate = false) {
+      this.$_value = val;
+      if (animate) {
+        let d = 100;
+        let angle = 720;
+        let lastIndex = Math.floor(angle / 90);
+        this.setDots(0);
+        for (let i = 1; i <= angle / 90; i++) {
+          setTimeout(() => {
+            this.snap.animate(
+              { transform: `rotate(${i * 180})` },
+              d,
+              mina.easeinout
+            );
+            if (i == lastIndex) {
+              this.setDots(val);
             }
-         } else {
-            this.$el.querySelector('.diceText').innerHTML = val;
-         }
+          }, (d + 10) * (i - 1));
+        }
+      } else {
+        this.setDots(val);
       }
-   }
-}
+    },
+  },
+};
 </script>
 
 <style scoped lang="less"></style>
 
 <template>
-<span class="dice">
-<svg
-   viewBox="0 0 512 512"
-   version="1.1"
-   sodipodi:docname="foo.svg"
-   inkscape:version="1.1 (c4e8f9ed74, 2021-05-24)"
-   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
-   xmlns="http://www.w3.org/2000/svg"
-   xmlns:svg="http://www.w3.org/2000/svg">
-  <defs
-     id="defs12" />
-  <g
-     id="g2334">
-    <rect
-       style="fill:#e0ddc9;fill-opacity:1;stroke:#000000;stroke-width:40;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke markers fill"
-       id="rect149"
-       width="470.09824"
-       height="470.09824"
-       x="20.950882"
-       y="20.950882"
-       rx="145.03136"
-       ry="145.03136" />
-    <text
-       xml:space="preserve"
-       style="font-size:414.071px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;stroke-width:10.3518"
-       x="120.6384"
-       y="406.92969"
-       id="text632"
-       class="diceText"><tspan
-         sodipodi:role="line"
-         id="tspan630"
-         x="120.6384"
-         y="406.92969"
-         style="stroke-width:10.3518">1</tspan></text>
-  </g>
-  <g
-     inkscape:groupmode="layer"
-     id="layer1"
-     inkscape:label="Layer 1" />
-</svg>
-</span>
+  <span class="dice">
+<svg version="1.1" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><defs><radialGradient id="radialGradient7948" cx="146.29" cy="140.07" r="58.892" gradientUnits="userSpaceOnUse"><stop offset="0"/><stop offset="1"/></radialGradient></defs><rect x="20.951" y="20.951" width="470.1" height="470.1" rx="145.03" ry="145.03" fill="#ff5749" stroke="#000" stroke-width="40" style="paint-order:stroke markers fill"/><g transform="translate(-3.5471 -14.109)" stroke-width="7.5591"><circle class="dot1" cx="146.29" cy="140.07" r="58.892" fill="url(#radialGradient7948)" style="paint-order:stroke markers fill"/><g><circle class="dot2" cx="372.81" cy="140.07" r="58.892" style="paint-order:stroke markers fill"/><circle class="dot3" cx="146.29" cy="270.33" r="58.892" style="paint-order:stroke markers fill"/><circle class="dot4" cx="372.81" cy="270.33" r="58.892" style="paint-order:stroke markers fill"/><circle class="dot5" cx="146.29" cy="400.15" r="58.892" style="paint-order:stroke markers fill"/><circle class="dot6" cx="372.81" cy="400.15" r="58.892" style="paint-order:stroke markers fill"/><circle class="dot7" cx="259.55" cy="270.11" r="58.892" style="paint-order:stroke markers fill"/></g><path class="unknown" transform="matrix(.19484 -.72716 .72716 .19484 49.372 405.63)" d="m400.44 490.32-154.29-115.57-154.29 115.57 22.944-191.41-177.24-75.834 177.24-75.834-22.944-191.41 154.29 115.57 154.29-115.57-22.944 191.41 177.24 75.834-177.24 75.834z" fill="#ff0" style="paint-order:stroke markers fill"/></g></svg>
+  </span>
 </template>
