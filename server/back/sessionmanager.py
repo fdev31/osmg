@@ -215,5 +215,5 @@ def init(app, config):
     app.post('/session/start',
             response_model=None,
             responses={
-                409: {"description": "player already exists"},
+                409: {"description": "player already started"},
             })(startGame)
