@@ -179,17 +179,17 @@ async def startGame(player: PlayerIdentifier, tasks: BackgroundTasks) -> None:
         await conn.sadd(pr, player.id)
         await conn.set(f'S{player.sessionName}:'+SESSION_S_TIME, int(time.time()))
 
-        async def checkStartOfGame():
-            await asyncio.sleep(1)
-            async with redis.client() as conn:
-                nbPlayersReady = await conn.scard(pr)
-                po = getVarName(PLAYERS_ORDER, player.sessionName)
-                if int(nbPlayersReady) == int(await conn.llen(po)):
-                    # all players are ready!
-                    await publishEvent(player.sessionName, conn, cat="start", msg="game started")
-                    gameType  = await getRedis().get(getVarName(SESSION_GAME_TYPE, player.sessionName))
-                    await games[gameType].startGame(player.sessionName, conn)
-        tasks.add_task(checkStartOfGame)
+    async def checkStartOfGame():
+        await asyncio.sleep(1)
+        async with redis.client() as conn:
+            game =  games[await conn.get(getVarName(SESSION_GAME_TYPE, player.sessionName))]
+            nbPlayersReady = int(await conn.scard(pr))
+            po = getVarName(PLAYERS_ORDER, player.sessionName)
+            if nbPlayersReady == int(await conn.llen(po)) and (game.max_players or 99) >= nbPlayersReady >= (game.min_players or 1):
+                # all players are ready!
+                await publishEvent(player.sessionName, conn, cat="start", msg="game started")
+                await game.startGame(player.sessionName, conn)
+    tasks.add_task(checkStartOfGame)
 
 def init(app, config):
     setRedis(aioredis.from_url('redis://'+config.redis_server,  decode_responses=True))

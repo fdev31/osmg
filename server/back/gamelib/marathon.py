@@ -81,9 +81,6 @@ async def turnLogic(distance, player: PlayerIdentifier, conn=None):
     nbPlayers = int(await conn.llen(po))
     playerLost = False
 
-    if nbPlayers == 1: # avoid wasting time
-        return
-
     if distance is not None:  # check END OF GAME
         if distance == 0:  # End of game
             await declareWinner(player.sessionName, player.id, conn)
