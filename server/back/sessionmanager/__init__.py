@@ -9,7 +9,7 @@ from starlette import status as httpstatus
 from back.models import PlayerIdentifier, newPlayer, Session
 from back.models import SESSION_PLAYERS_DATA, SESSION_S_TIME, SESSION_GAME_TYPE
 from back.models import SESSION_C_TIME, SESSION_NAME, SESSION_PLAYERS
-from back.globalHandlers import getGameDataPrefix, getRedis, setRedis, publishEvent, getVarName
+from back.globalHandlers import getRedis, setRedis, publishEvent, getVarName
 from back.globalHandlers import PLAYERS_READY, PLAYERS_ORDER
 
 from .base import genUniqueSessionId, getUniquePlayerId
@@ -108,9 +108,8 @@ async def restartGame(player: PlayerIdentifier, tasks: BackgroundTasks) -> None:
 async def startGame(player: PlayerIdentifier, tasks: BackgroundTasks) -> None:
     """ Notifies that some player is ready to start the game """
     redis = getRedis()
-    g_prefix = getGameDataPrefix(player.sessionName)
     async with redis.client() as conn:
-        pr = g_prefix + PLAYERS_READY
+        pr = getVarName(PLAYERS_READY, player.sessionName, gameData=True)
         if await conn.sismember(pr, player.id):
             raise HTTPException(httpstatus.HTTP_409_CONFLICT, "Action already done")
         await publishEvent(player.sessionName, conn, cat="ready", player=player.id)
