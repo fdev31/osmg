@@ -34,7 +34,7 @@ config = ODict(
 
 # Load submodules
 
-MODULES = 'staticfiles index sessionmanager stream games'.split()
+MODULES = 'staticfiles sessionmanager stream games'.split()
 
 if not debug:
     MODULES.pop(0)
