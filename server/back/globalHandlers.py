@@ -13,7 +13,7 @@ def setRedis(handler):
 def publishEvent(topic, client=None, **params):
     return (client or ctx['redis']).publish(topic, dumps(params))
 
-@lru_cache(max_size=100)
+@lru_cache
 def _getVarPrefix(sessionId, playerId, gameData):
     if gameData and playerId:
         return f"S{sessionId}:{playerId}:g:"
