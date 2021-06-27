@@ -130,18 +130,18 @@ async def startGame(player: PlayerIdentifier, tasks: BackgroundTasks) -> None:
 def init(app, config):
     setRedis(aioredis.from_url('redis://'+config.redis_server,  decode_responses=True))
 
-    app.post('/session/new',
+    app.post('/c/session/new',
         response_model=Session)(makeSession)
 
-    app.post('/session/join',
+    app.post('/c/session/join',
         responses={
             409: {'description': "player already joined"},
         },
         response_model=Session)(addPlayer)
 
-    app.post('/session/restart', response_model=None)(restartGame)
+    app.post('/c/session/restart', response_model=None)(restartGame)
 
-    app.post('/session/start',
+    app.post('/c/session/start',
             response_model=None,
             responses={
                 409: {"description": "player already started"},

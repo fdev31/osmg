@@ -24,7 +24,7 @@ function initApp() {
         var raw = JSON.stringify({"name": this.nickname,
                                   "avatar": this.avatar,
                                   "sessionName": this.session});
-        var response = await fetch("/session/join", {
+        var response = await fetch("/c/session/join", {
           method: 'POST',
           redirect: 'follow',
           headers: myHeaders,

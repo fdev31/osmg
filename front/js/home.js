@@ -21,7 +21,7 @@ function initApp() {
         return getTranslation(text);
       },
       play_game :  async function(game) {
-        var response = await fetch("/session/new", {
+        var response = await fetch("/c/session/new", {
           method: 'POST',
           redirect: 'follow'
         });
@@ -34,7 +34,7 @@ function initApp() {
         var raw = JSON.stringify({"name": this.nickname,
                                   "avatar": this.avatar,
                                   "sessionName": result.name});
-        var response_player = await fetch("/session/join", {
+        var response_player = await fetch("/c/session/join", {
           method: 'POST',
           redirect: 'follow',
           headers: myHeaders,
@@ -51,7 +51,7 @@ function initApp() {
     }
   });
     home = app.mount("#app");
-    getJson("/gamelist").then( (data)=>{
+    getJson("/c/gamelist").then( (data)=>{
         home.games = data;
     });
 }

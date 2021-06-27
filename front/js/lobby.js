@@ -30,7 +30,7 @@ function initApp() {
               return getTranslation(text)
           },
           startGame : async function () {
-            start = await post(`http://${this.host}/session/start`, {
+            start = await post(`http://${this.host}/c/session/start`, {
               "id": this.myId,
               "sessionName": this.name
             });

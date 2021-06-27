@@ -32,4 +32,4 @@ async def gameEventStream(request: Request, topic: str, uid: str) -> EventSource
     return EventSourceResponse(sessionStreamSource(request, topic, uid))
 
 def init(app, config):
-    app.get('/stream')(gameEventStream)
+    app.get('/c/stream')(gameEventStream)

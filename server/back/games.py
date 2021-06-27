@@ -13,10 +13,10 @@ gameDB : Dict[str, Dict] = {}
 
 def listGames() -> dict:
     " list all games by name "
-    return gameDB 
+    return gameDB
 
 def init(app, config):
-    app.get('/gamelist', response_model=Dict)(listGames)
+    app.get('/c/gamelist', response_model=Dict)(listGames)
 
     for game in GAMES:
         logger.info(f"Game {game}")
@@ -32,5 +32,5 @@ def init(app, config):
                     handler = properties.pop('handler')
                 else:
                     properties = {}
-                app.post(f'/game/{gameName}/{actionName}', **properties)(handler)
+                app.post(f'/g/{gameName}/{actionName}', **properties)(handler)
 

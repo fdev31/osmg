@@ -139,7 +139,7 @@ function initApp() {
             },
             async throw_dices() {
                 try {
-                    let diceArray = await post(`http://${host}/game/marathon/throwDice`, {
+                    let diceArray = await post(`http://${host}/g/marathon/throwDice`, {
                         "id":parseInt(this.myId),
                         "secret": parseInt(this.secret),
                         "sessionName":this.name
@@ -168,7 +168,7 @@ function initApp() {
             async player_advance(value) {
                 let choice = value === undefined ? this.$refs.mydice.getDiceValues().join("") : value;
 
-                let action = await post(`http://${host}/game/marathon/validateDice?value=${choice}`, {
+                let action = await post(`http://${host}/g/marathon/validateDice?value=${choice}`, {
                     "id":parseInt(this.myId),
                     "secret": parseInt(this.secret),
                     "sessionName":this.name
@@ -185,20 +185,3 @@ function initApp() {
     setupStreamEventHandler({topic :marathon.name , uid : marathon.myId}, handlers);
 }
 
-async function getThrowResults() {
-    var myHeaders = new Headers();
-    myHeaders.append("Content-Type", "application/json");
-
-    var raw = JSON.stringify({"id":this.myId,"sessionName":throws});
-
-    var requestOptions = {
-        method: 'POST',
-        headers: myHeaders,
-        body: raw,
-        redirect: 'follow'
-    };
-
-    var response = await fetch(`http://${document.location.host}/api/getDiceResults`, requestOptions);
-    const result = await response.json();
-    return result;
-}

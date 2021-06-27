@@ -18,7 +18,7 @@ function setCookie(data) {
 
 function setEventStreamHandler(handler , query ) {
   if (typeof query.topic == "undefined" || typeof query.uid == "undefined") throw "paramater missing"
-  const evtSource = new EventSource(`/stream?topic=${query.topic}&uid=${query.uid}`);
+  const evtSource = new EventSource(`/c/stream?topic=${query.topic}&uid=${query.uid}`);
   evtSource.addEventListener("update", (event) => handler(JSON.parse(event.data)) );
 }
 function runOnEnter(code) {
