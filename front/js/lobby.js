@@ -34,7 +34,7 @@ function initApp() {
               "id": this.myId,
               "sessionName": this.name
             });
-            window.location = `/static/game_${this.gameType}.html`;
+            window.location = `/game_${this.gameType}.html`;
           }
         }
     });

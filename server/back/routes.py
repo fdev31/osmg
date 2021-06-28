@@ -34,10 +34,10 @@ config = ODict(
 
 # Load submodules
 
-MODULES = 'staticfiles sessionmanager stream games'.split()
+MODULES = 'sessionmanager stream games'.split()
 
-if not debug:
-    MODULES.pop(0)
+if debug:
+    MODULES.append('staticfiles')
 
 for name in MODULES:
     logging.info("Loading %s ..." % name)

@@ -66,11 +66,11 @@ function initApp() {
     try {
         var data = extractJsonFromCookie();
     } catch (e) {
-        window.location = `http://${host}/static/index.html`;
+        window.location = `http://${host}/index.html`;
     }
 
     if (typeof data.name == "undefined" || data.name == null) {
-        window.location = `http://${host}/static/lobby.html`;
+        window.location = `http://${host}/lobby.html`;
     }
 
     if (data.status == undefined) { // please do not remove this check, it was a huge bug...

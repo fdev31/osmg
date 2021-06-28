@@ -22,4 +22,6 @@ async def removeSession(sessionName: str, conn):
     while cur:
         cur, keys = await conn.scan(cur, match=f"S{sessionName}:*")
         all_keys.extend(keys)
-    await conn.unlink(*all_keys)
+    if keys:
+        logger.info("Unlinking %s", keys)
+        await conn.unlink(*all_keys)
