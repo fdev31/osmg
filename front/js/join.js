@@ -1,7 +1,12 @@
 function initApp() {
   initLocales();
   var url = new URL(document.URL);
+  var data = extractJsonFromCookie();
   var session = url.searchParams.get("session");
+  var host = window.location.host;
+  if (data != undefined && data.name == session) {
+    window.location = `http://${host}/lobby.html`;
+  }
   let app = Vue.createApp({
     components: { 'avatar-card': window['avatar-card'] },
     data() { return {
