@@ -30,6 +30,9 @@ handlers = {
             }
         }
     },
+    connectPlayer:(data) => {
+        console.log(data);
+    },
     varUpdate: (data) => {
         if (data.player) {
             let pd = marathon.playersData[data.player];
@@ -87,6 +90,7 @@ function initApp() {
             'player-list': window['player-list'],
             'dice-single': window['dice'],
             'dice-array': window['dicearray'],
+            "avatar-card" : window["avatar-card"] ,
         },
         watch: {
             players(newVal) {
@@ -126,6 +130,19 @@ function initApp() {
             },
             getPlayerAction: function () {
                 return ["En attente des autres joueurs","Lancez les dés" , "Avancez" , "Attendez" , "Fin du Tour", "Erreur"][this.status];
+            },
+            sortPlayers() {
+                let data = this.playersData;
+                let result = []
+                Object.keys(data).map(function(key){
+                    return result.push([key , data[key]])
+                });
+                result = result.sort(function(a , b){
+                    return a[1].distance - b[1].distance;
+                }).map(x => {
+                    return Object.assign(findPlayer(this , x[0]), x[1]);
+                });
+                return result;
             },
             async mainPlayButton() {
                 switch(this.status) {
