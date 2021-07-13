@@ -23,6 +23,7 @@ function initApp() {
         },
         data() { return data},
         mounted() {
+            document.title = this.T("lobby_title");
             this.$refs.playerlist.players = this.players;
         },
         methods : {
