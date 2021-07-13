@@ -2,28 +2,28 @@
 <html lang="en" dir="ltr">
     <head>
         <meta charset="utf-8">
-        <title>Le Jeu de dés</title>
+        <title>A game of dices</title>
         <link rel="preconnect" href="https://fonts.gstatic.com">
         <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
         <link rel="stylesheet" href="styles.css">
     </head>
     <body onload="initApp()">
         <div id="toaster"></div>
-        <h1>Le Jeu de dés Marathon</h1>
         <div id="app" v-cloak>
+            <h1>{{ T("Marathon , the dice game") }}</h1>
             <player-list ref="playerlist"></player-list>
-            <h2>Welcome {{playerName()}}, it's turn {{parseInt(gameData.turns)+1}}</h2>
+            <h2>{{ T("Welcome") }} {{playerName()}}, it's turn {{parseInt(gameData.turns)+1}}</h2>
             <div v-if="didIWin()">
-                <h1>You Win!</h1>
+                <h1>{{ T("You Win") }}!</h1>
             </div>
             <div v-else-if="didILose()">
-                <h1>You Lose!</h1>
+                <h1>{{ T("You Lose") }}!</h1>
             </div>
             <div v-else>
                 <div><b>{{getPlayerAction()}}</b></div>
-                {{ distance }} meters left
+                {{ distance }} {{ T("meters left") }} 
                 <button v-on:click="mainPlayButton" type="button" v-if="diceVisible">{{ getPlayerAction() }}</button>
-                <button v-on:click="skipTurn" type="button" v-if="isLastAction"> Pass </button>
+                <button v-on:click="skipTurn" type="button" v-if="isLastAction"> {{ T("Pass") }} </button>
                 <div v-if="diceVisible" class="diceArea">
                     <dice-array ref="mydice"></dice-array>
                 </div>
@@ -41,7 +41,7 @@
                       />
     
                     </div>
-                <span> {{item.distance}} mètres ; id {{item.id}}</span>
+                <span> {{item.distance}} {{ T("meters") }}  ; id {{item.id}}</span>
                 </div>
               </div>
         </div>

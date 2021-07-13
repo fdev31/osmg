@@ -134,7 +134,7 @@ function initApp() {
                 setCookie(Vue2Obj(this));
             },
             getPlayerAction: function () {
-                return ["En attente des autres joueurs","Lancez les dés" , "Avancez" , "Attendez" , "Fin du Tour", "Erreur"][this.status];
+                return [this.T("Waiting for other players"),this.T("Move forward") , this.T("Wait") , this.T("End of Turn"), this.T("Error")][this.status];
             },
             sortPlayers() {
                 let data = this.playersData;
