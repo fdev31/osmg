@@ -147,6 +147,10 @@ function initLocales() {
 }
 
 function getTranslation(text) {
+
+  console.log(text);
+
+  console.log(currentLocale);
   if (currentLocale === null) return text;
   let r = locales[currentLocale][text];
   if (r) return r;

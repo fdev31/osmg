@@ -64,6 +64,7 @@ handlers = {
 };
 
 function initApp() {
+    initLocales();
     toaster = new Toaster();
     let host = document.location.host;
     try {
@@ -98,6 +99,7 @@ function initApp() {
             }
         },
         mounted() {
+            document.title = this.T("marathon_title");
             this.$refs.playerlist.players = this.players;
         },
         computed: {
@@ -112,6 +114,9 @@ function initApp() {
             }
         },
         methods: {
+            T(text) {
+                return getTranslation(text);
+            },
             didIWin() {
                 return this.status == statuses.GAME_WON;
             },
