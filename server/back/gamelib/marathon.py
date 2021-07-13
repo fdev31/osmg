@@ -15,7 +15,7 @@ from back.sessionmanager.public import isPlayerValid
 logger = logging.getLogger('marathon')
 
 async def isPlayerTurn(conn, prefix, playerId, secret):
-    if not isPlayerValid(conn, prefix[1:-2], playerId, secret):
+    if not await isPlayerValid(conn, prefix[1:-2], playerId, secret):
         return False
     curPlayer = await conn.get(prefix+"curPlayer")
     curPlayerId = await conn.lindex(prefix[:-2]+PLAYERS_ORDER, int(curPlayer))
