@@ -12,5 +12,5 @@ async def roomsAccess(sessionId) -> RedirectResponse:
 
 def init(app, config):
     app.get("/r/{sessionId}")(roomsAccess)
-    app.get("/")(index_html)
+    app.get("/", include_in_schema=False)(index_html)
     app.mount("/", StaticFiles(directory=config.static_dir), name="static")
