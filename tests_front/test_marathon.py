@@ -38,7 +38,20 @@ class MarathonTest(unittest.TestCase):
         # start game
         self.driver.find_elements_by_tag_name("button")[1].click()
         self.driver2.find_elements_by_tag_name("button")[1].click()
-        time.sleep(5)
+
+        time.sleep(1)
+        for n in range(20):
+            try:
+                self.driver.find_elements_by_tag_name("button")[0].click()
+                time.sleep(0.1)
+                self.driver.find_elements_by_tag_name("button")[0].click()
+                time.sleep(0.5)
+                self.driver2.find_elements_by_tag_name("button")[0].click()
+                time.sleep(0.1)
+                self.driver2.find_elements_by_tag_name("button")[0].click()
+                time.sleep(0.5)
+            except IndexError:
+                break
 
     def tearDown(self):
         input("Press some key to exit")
