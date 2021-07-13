@@ -17,8 +17,7 @@ GAME_DATA = 'g'
 
 async def isPlayerValid(conn, sessionId, playerId, secret):
     actualSecret = await conn.get(getVarName("_secret", sessionId, playerId))
-    if int(actualSecret) != int(secret):
-        return False
+    return int(actualSecret) == int(secret)
 
 async def connectPlayer(sessionName: str, playerId: str):
     stage = getVarName(PLAYERS_CONNECTED+'stage', sessionName)
