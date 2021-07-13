@@ -1,4 +1,7 @@
+import os
 from setuptools import setup, find_packages
+
+deps = [l.strip() for l in open('required.txt', encoding='utf-8').readlines()]
 
 def getdesc():
     try:
@@ -13,17 +16,7 @@ setup(
     license="proprietary",
     description="Our awesome game",
     long_description=getdesc(),
-    install_requires=[
-        'aiofiles>=0.7.0',
-        'aiojobs>=0.3.0',
-        'arq >= 0.20.0',
-        'orjson>=3.5.3',
-        'sse-starlette>=0.7.2',
-        'hiredis==2.0.*',
-        'aioredis>=2.0.0a1',
-        'fastapi==0.65.*',
-        'uvicorn>=0.13.0',
-        ],
+    install_requires=deps,
     scripts=['back-start'],
     packages=find_packages(),
     url='https://github.com/jomenoube60/our-awesome-game',
