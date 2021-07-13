@@ -5,6 +5,9 @@ if [ ! -d venv ]; then
     $PY -m venv venv
 fi
 source venv/bin/activate
+pip install -U pip 
+pip install -U wheel 
+pip install -r server/required.txt 
 (cd server && $PY setup.py develop)
 export PREFIX=$(pwd)
 if [ -z "$DEBUG" ]; then
