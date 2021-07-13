@@ -5,3 +5,4 @@ aioredis>=2.0.0a1
 sse-starlette
 hiredis
 aiojobs
+aiofiles
