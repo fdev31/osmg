@@ -8,7 +8,7 @@ import requests
 NAME="Toto"
 
 print("New session")
-r = requests.post(HOST+'/session/new')
+r = requests.post(HOST+'/c/session/new')
 sessionData = r.json()
 
 pprint(sessionData)
@@ -20,7 +20,7 @@ userData = {
   "avatar": "monster",
   "sessionName": sessionData['name']
 }
-r = requests.post(HOST+'/session/join', json=userData)
+r = requests.post(HOST+'/c/session/join', json=userData)
 session = r.json()
 myId = None
 for player in session['players']:
@@ -35,10 +35,10 @@ playerIdentifier = {
         'secret': session['secret']
         }
 pprint(session)
-r = requests.post(HOST+'/session/start', json=playerIdentifier)
+r = requests.post(HOST+'/c/session/start', json=playerIdentifier)
 print("STARTED", r.json())
 
-r = requests.post(HOST+'/game/marathon/throwDice?value=4', json=playerIdentifier)
+r = requests.post(HOST+'/g/marathon/throwDice?value=4', json=playerIdentifier)
 values = r.json()
 print("GOT", values)
 
@@ -47,7 +47,7 @@ print("SEND", values)
 
 newVal = ''.join(str(x) for x in values)
 
-r = requests.post(HOST+'/game/marathon/validateDice?value='+newVal, json=playerIdentifier)
+r = requests.post(HOST+'/g/marathon/validateDice?value='+newVal, json=playerIdentifier)
 print(r.json())
 
 
