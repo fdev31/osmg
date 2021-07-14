@@ -3983,25 +3983,29 @@ var es_function_name = __webpack_require__("b0c0");
 // EXTERNAL MODULE: external {"commonjs":"vue","commonjs2":"vue","root":"Vue"}
 var external_commonjs_vue_commonjs2_vue_root_Vue_ = __webpack_require__("8bbf");
 
-// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js??ref--12-0!./node_modules/thread-loader/dist/cjs.js!./node_modules/babel-loader/lib!./node_modules/vue-loader-v16/dist/templateLoader.js??ref--6!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader-v16/dist??ref--0-1!./src/player-list.vue?vue&type=template&id=5856857a
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js??ref--12-0!./node_modules/thread-loader/dist/cjs.js!./node_modules/babel-loader/lib!./node_modules/vue-loader-v16/dist/templateLoader.js??ref--6!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader-v16/dist??ref--0-1!./src/player-list.vue?vue&type=template&id=46913afa
 
 
-var _hoisted_1 = {
-  class: "players"
-};
 function render(_ctx, _cache, $props, $setup, $data, $options) {
   var _component_avatar_card = Object(external_commonjs_vue_commonjs2_vue_root_Vue_["resolveComponent"])("avatar-card");
 
-  return Object(external_commonjs_vue_commonjs2_vue_root_Vue_["openBlock"])(), Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createBlock"])("div", _hoisted_1, [(Object(external_commonjs_vue_commonjs2_vue_root_Vue_["openBlock"])(true), Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createBlock"])(external_commonjs_vue_commonjs2_vue_root_Vue_["Fragment"], null, Object(external_commonjs_vue_commonjs2_vue_root_Vue_["renderList"])($data.players, function (item) {
-    return Object(external_commonjs_vue_commonjs2_vue_root_Vue_["openBlock"])(), Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createBlock"])(_component_avatar_card, {
+  return Object(external_commonjs_vue_commonjs2_vue_root_Vue_["openBlock"])(true), Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createBlock"])(external_commonjs_vue_commonjs2_vue_root_Vue_["Fragment"], null, Object(external_commonjs_vue_commonjs2_vue_root_Vue_["renderList"])($data.players, function (item) {
+    return Object(external_commonjs_vue_commonjs2_vue_root_Vue_["openBlock"])(), Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createBlock"])("div", {
       key: item.id,
+      class: "players"
+    }, [Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createVNode"])(_component_avatar_card, {
       class: "avatar-lobby",
       "avatar-name": item.name,
       "avatar-id": item.id
-    }, null, 8, ["avatar-name", "avatar-id"]);
-  }), 128))]);
+    }, null, 8, ["avatar-name", "avatar-id"]), $data.options.kick_player ? (Object(external_commonjs_vue_commonjs2_vue_root_Vue_["openBlock"])(), Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createBlock"])("button", {
+      key: 0,
+      onClick: function onClick($event) {
+        return _ctx.$emit('kick', item);
+      }
+    }, "Kick player", 8, ["onClick"])) : Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createCommentVNode"])("", true)]);
+  }), 128);
 }
-// CONCATENATED MODULE: ./src/player-list.vue?vue&type=template&id=5856857a
+// CONCATENATED MODULE: ./src/player-list.vue?vue&type=template&id=46913afa
 
 // CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js??ref--12-0!./node_modules/thread-loader/dist/cjs.js!./node_modules/babel-loader/lib!./node_modules/vue-loader-v16/dist/templateLoader.js??ref--6!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader-v16/dist??ref--0-1!./src/avatar-card.vue?vue&type=template&id=4c4b0553&scoped=true
 
@@ -4011,7 +4015,7 @@ var _withId = /*#__PURE__*/Object(external_commonjs_vue_commonjs2_vue_root_Vue_[
 
 Object(external_commonjs_vue_commonjs2_vue_root_Vue_["pushScopeId"])("data-v-4c4b0553");
 
-var avatar_cardvue_type_template_id_4c4b0553_scoped_true_hoisted_1 = {
+var _hoisted_1 = {
   class: "avatarCard"
 };
 
@@ -5312,7 +5316,7 @@ var _hoisted_3 = {
 Object(external_commonjs_vue_commonjs2_vue_root_Vue_["popScopeId"])();
 
 var avatar_cardvue_type_template_id_4c4b0553_scoped_true_render = /*#__PURE__*/_withId(function (_ctx, _cache, $props, $setup, $data, $options) {
-  return Object(external_commonjs_vue_commonjs2_vue_root_Vue_["openBlock"])(), Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createBlock"])("div", avatar_cardvue_type_template_id_4c4b0553_scoped_true_hoisted_1, [_hoisted_2, $options.showName ? (Object(external_commonjs_vue_commonjs2_vue_root_Vue_["openBlock"])(), Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createBlock"])("span", _hoisted_3, Object(external_commonjs_vue_commonjs2_vue_root_Vue_["toDisplayString"])(_ctx.name), 1)) : Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createCommentVNode"])("", true)]);
+  return Object(external_commonjs_vue_commonjs2_vue_root_Vue_["openBlock"])(), Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createBlock"])("div", _hoisted_1, [_hoisted_2, $options.showName ? (Object(external_commonjs_vue_commonjs2_vue_root_Vue_["openBlock"])(), Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createBlock"])("span", _hoisted_3, Object(external_commonjs_vue_commonjs2_vue_root_Vue_["toDisplayString"])(_ctx.name), 1)) : Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createCommentVNode"])("", true)]);
 });
 // CONCATENATED MODULE: ./src/avatar-card.vue?vue&type=template&id=4c4b0553&scoped=true
 
@@ -5379,7 +5383,10 @@ avatar_cardvue_type_script_lang_js.__scopeId = "data-v-4c4b0553"
   },
   data: function data() {
     return {
-      players: []
+      players: [],
+      options: {
+        kick_player: true
+      }
     };
   }
 });
