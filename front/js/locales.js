@@ -7,6 +7,7 @@ const locales = {
         "Play": "Jouer",
         "Join": "Rejoindre",
         "Welcome" : "Bienvenue",
+        "Change game" : "Changez de jeu",
         "It's turn" : "C'est le tour",
         "You Win" : "Vous avez gagné",
         "You Lose" : "Vous avez perdu",
