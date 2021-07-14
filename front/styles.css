@@ -238,3 +238,11 @@ li > .avatarCard > svg  {
     top: 5px;
     opacity: 1;
 }
+
+.playing {
+  background-color: rgb(138, 172, 16);
+}
+
+.disconnected {
+  background-color: brown;
+}

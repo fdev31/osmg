@@ -136,6 +136,11 @@ function initApp() {
             getPlayerAction: function () {
                 return [this.T("Waiting for other players"),this.T("Move forward") , this.T("Wait") , this.T("End of Turn"), this.T("Error")][this.status];
             },
+            showPlayerStatus: function(player) {
+                if (parseInt(this.gameData.curPlayer )=== parseInt(player.id)) {
+                    return "playing";
+                }
+            },
             sortPlayers() {
                 let data = this.playersData;
                 let result = []
