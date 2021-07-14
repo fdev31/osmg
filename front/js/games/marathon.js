@@ -181,7 +181,7 @@ function initApp() {
                 await this.player_advance(0);
             },
             getProgress(id) {
-                return 42195 *  ((42195 - this.playersData[`${id}`].distance) / 100)
+                return 100 *  ((42195 - this.playersData[`${id}`].distance) / 42195)
             },
             findPlayer(id) {
                 for (var [key , player] of Object.entries(this.playersData)) {
