@@ -172,8 +172,11 @@ select {
     margin: 0 auto;
 }
 .finalist {
-  width: 20%;
   position: static;
+}
+.finalist > svg {
+    display: block;
+    margin: auto;
 }
 #podium {
   background-image: url("./img/podium.svg");
@@ -184,10 +187,6 @@ select {
 }
 li > .avatarCard > svg  {
   height: 64px;
-}
-.podium1 {
-  margin-left: 40%;
-  margin-top: -7%;
 }
 .podium2 {
   margin-top: -10.5%;
@@ -204,6 +203,7 @@ li > .avatarCard > svg  {
 .avatar svg {
     width: 180px;
     height:230px;
+    display: block;
 }
 .avatar-lobby {
     position: relative;
