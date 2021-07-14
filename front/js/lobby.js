@@ -25,6 +25,7 @@ function initApp() {
         mounted() {
             document.title = this.T("lobby_title");
             this.$refs.playerlist.players = this.players;
+            this.$refs.playerlist.options.kick_players = true;
         },
         methods : {
           T(text) {
@@ -36,6 +37,10 @@ function initApp() {
               "sessionName": this.name
             });
             window.location = `/game_${this.gameType}.html`;
+          },
+          kickPlayer : function (player) {
+              console.log(player);
+              alert("byebye " + player.name);
           }
         }
     });
