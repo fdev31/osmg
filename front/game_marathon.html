@@ -41,7 +41,7 @@
                       />
     
                     </div>
-                <span> {{item.distance}} {{ T("meters") }}  ; id {{item.id}}</span>
+                <span> <progress max="100" :value="getProgress(item.id)"></progress> </span><span> {{item.distance}} {{ T("meters") }}</span>
                 </div>
               </div>
         </div>

@@ -180,6 +180,9 @@ function initApp() {
             async skipTurn() {
                 await this.player_advance(0);
             },
+            getProgress(id) {
+                return 42195 *  ((42195 - this.playersData[`${id}`].distance) / 100)
+            },
             findPlayer(id) {
                 for (var [key , player] of Object.entries(this.playersData)) {
                     if (key == id) {
