@@ -7,7 +7,7 @@ export default {
     return {
       players: [],
       options : {
-        kick_player : false,
+        kick_player : true,
       },
 
     };
@@ -19,14 +19,13 @@ export default {
 
 <template>
   
-  <div class="players">
+  <div v-for="item in players" :key="item.id" class="players">
     <avatar-card
-      v-for="item in players"
-      :key="item.id"
+      
       class="avatar-lobby"
       :avatar-name="item.name"
       :avatar-id="item.id"
     />
-    <button v-if="options.kick_player">Kick player</button>
+    <button v-if="options.kick_player" v-on:click="$emit('kick', item)" >Kick player</button>
   </div>
 </template>
