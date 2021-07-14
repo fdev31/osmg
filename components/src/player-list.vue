@@ -6,6 +6,10 @@ export default {
   data() {
     return {
       players: [],
+      options : {
+        kick_player : false,
+      },
+
     };
   },
 };
@@ -14,6 +18,7 @@ export default {
 <style scoped lang="less"></style>
 
 <template>
+  
   <div class="players">
     <avatar-card
       v-for="item in players"
@@ -22,5 +27,6 @@ export default {
       :avatar-name="item.name"
       :avatar-id="item.id"
     />
+    <button v-if="options.kick_player">Kick player</button>
   </div>
 </template>
