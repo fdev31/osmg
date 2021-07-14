@@ -31,24 +31,27 @@ class MarathonTest(unittest.TestCase):
     def test_game(self):
         create_game(self.driver, HOME_INDEX)
         lobby_url = self.driver.find_element_by_id('link').get_attribute('value')
+        time.sleep(1)
         # other player join game
         self.driver2.get(lobby_url)
         setInputText(self.driver2.find_element_by_tag_name("input"), "pif paf")
-        self.driver2.find_element_by_tag_name("button").click()
+        self.driver2.find_elements_by_tag_name("button")[0].click()
+        time.sleep(1)
         # start game
-        self.driver.find_elements_by_tag_name("button")[1].click()
-        self.driver2.find_elements_by_tag_name("button")[1].click()
+        self.driver.find_elements_by_tag_name("button")[3].click()
+        self.driver2.find_elements_by_tag_name("button")[3].click()
 
         time.sleep(1)
+        but_idx = 2
         for n in range(20):
             try:
-                self.driver.find_elements_by_tag_name("button")[0].click()
+                self.driver.find_elements_by_tag_name("button")[but_idx].click()
                 time.sleep(0.1)
-                self.driver.find_elements_by_tag_name("button")[0].click()
+                self.driver.find_elements_by_tag_name("button")[but_idx].click()
                 time.sleep(0.5)
-                self.driver2.find_elements_by_tag_name("button")[0].click()
+                self.driver2.find_elements_by_tag_name("button")[but_idx].click()
                 time.sleep(0.1)
-                self.driver2.find_elements_by_tag_name("button")[0].click()
+                self.driver2.find_elements_by_tag_name("button")[but_idx].click()
                 time.sleep(0.5)
             except IndexError:
                 break
