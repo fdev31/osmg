@@ -10,7 +10,7 @@ export default {
     };
   },
   props : {
-    enableKick : Boolean
+    enableKick : Boolean,
   }
 };
 </script>
@@ -26,8 +26,8 @@ export default {
       :avatar-name="item.name"
       :avatar-id="item.id"
     />
-    <div v-if="enableKick"> 
-      <button  v-on:click="$emit('kick', item)" >Kick player</button>
+    <div> 
+      <button v-if="enableKick">Kick player</button>
     </div>
   </div>
 </template>
