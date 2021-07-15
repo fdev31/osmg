@@ -11,7 +11,7 @@
         <div id="toaster"></div>
         <div id="app" v-cloak>
             <h1>{{ T("Marathon , the dice game") }}</h1>
-            <player-list ref="playerlist"></player-list>
+            <player-list ref="playerlist" :current-player="gameData.curPlayer"></player-list>
             <h2>{{ T("Welcome") }} {{playerName()}}, it's turn {{parseInt(gameData.turns)+1}}</h2>
             <div v-if="didIWin()">
                 <h1>{{ T("You Win") }}!</h1>
@@ -31,7 +31,6 @@
 
             <div class="players">
                 <div v-for="item in sortPlayers()">
-                <span>{{item.name}}</span>
                 <span> <progress max="100" :value="getProgress(item.id)"></progress> </span><span> {{item.distance}} {{ T("meters") }}</span>
                 </div>
               </div>
