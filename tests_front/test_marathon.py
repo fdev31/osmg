@@ -58,7 +58,7 @@ class MarathonTest(unittest.TestCase):
         time.sleep(1)
         shot(self.driver, "ff_game")
         shot(self.driver2, "ch_game")
-        but_idx = 2
+        but_idx = 1
         for n in range(20):
             try:
                 self.driver.find_elements_by_tag_name("button")[but_idx].click()
