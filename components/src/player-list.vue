@@ -29,8 +29,6 @@ export default {
 <template>
   
   <div v-for="item in players" :key="item.id" :class="`players${getStatusClass(item,currentPlayer)}`">
-    {{ currentPlayer}}
-    test {{enableKick}}
     <avatar-card
       
       class="avatar-lobby"
