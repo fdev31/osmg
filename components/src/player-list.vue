@@ -6,12 +6,12 @@ export default {
   data() {
     return {
       players: [],
-      options : {
-        kick_player : true,
-      },
 
     };
   },
+  props : {
+    enableKick : Boolean
+  }
 };
 </script>
 
@@ -26,6 +26,8 @@ export default {
       :avatar-name="item.name"
       :avatar-id="item.id"
     />
-    <button v-if="options.kick_player" v-on:click="$emit('kick', item)" >Kick player</button>
+    <div v-if="enableKick"> 
+      <button  v-on:click="$emit('kick', item)" >Kick player</button>
+    </div>
   </div>
 </template>
