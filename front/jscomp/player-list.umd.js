@@ -3983,7 +3983,7 @@ var es_function_name = __webpack_require__("b0c0");
 // EXTERNAL MODULE: external {"commonjs":"vue","commonjs2":"vue","root":"Vue"}
 var external_commonjs_vue_commonjs2_vue_root_Vue_ = __webpack_require__("8bbf");
 
-// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js??ref--12-0!./node_modules/thread-loader/dist/cjs.js!./node_modules/babel-loader/lib!./node_modules/vue-loader-v16/dist/templateLoader.js??ref--6!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader-v16/dist??ref--0-1!./src/player-list.vue?vue&type=template&id=332dff28
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js??ref--12-0!./node_modules/thread-loader/dist/cjs.js!./node_modules/babel-loader/lib!./node_modules/vue-loader-v16/dist/templateLoader.js??ref--6!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader-v16/dist??ref--0-1!./src/player-list.vue?vue&type=template&id=d35c5464
 
 
 var _hoisted_1 = {
@@ -4000,14 +4000,10 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
       class: "avatar-lobby",
       "avatar-name": item.name,
       "avatar-id": item.id
-    }, null, 8, ["avatar-name", "avatar-id"]), $props.enableKick ? (Object(external_commonjs_vue_commonjs2_vue_root_Vue_["openBlock"])(), Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createBlock"])("div", _hoisted_1, [Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createVNode"])("button", {
-      onClick: function onClick($event) {
-        return _ctx.$emit('kick', item);
-      }
-    }, "Kick player", 8, ["onClick"])])) : Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createCommentVNode"])("", true)]);
+    }, null, 8, ["avatar-name", "avatar-id"]), Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createVNode"])("div", null, [$props.enableKick ? (Object(external_commonjs_vue_commonjs2_vue_root_Vue_["openBlock"])(), Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createBlock"])("button", _hoisted_1, "Kick player")) : Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createCommentVNode"])("", true)])]);
   }), 128);
 }
-// CONCATENATED MODULE: ./src/player-list.vue?vue&type=template&id=332dff28
+// CONCATENATED MODULE: ./src/player-list.vue?vue&type=template&id=d35c5464
 
 // CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js??ref--12-0!./node_modules/thread-loader/dist/cjs.js!./node_modules/babel-loader/lib!./node_modules/vue-loader-v16/dist/templateLoader.js??ref--6!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader-v16/dist??ref--0-1!./src/avatar-card.vue?vue&type=template&id=4c4b0553&scoped=true
 
