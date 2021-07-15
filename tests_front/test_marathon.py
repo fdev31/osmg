@@ -41,9 +41,8 @@ class MarathonTest(unittest.TestCase):
 
     def test_game(self):
         create_game(self.driver, HOME_INDEX)
-        shot(self.driver, "login1")
         lobby_url = self.driver.find_element_by_id('link').get_attribute('value')
-        time.sleep(1)
+        shot(self.driver, "login1")
         # other player join game
         self.driver2.get(lobby_url)
         time.sleep(0.5)
