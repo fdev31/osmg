@@ -11,7 +11,8 @@ export default {
   },
   props : {
     enableKick : Boolean,
-    currentPlayer : Number
+    currentPlayer : Number,
+    myId : Number
   }
   ,methods : {
     getStatusClass : function(player , id) {
@@ -37,7 +38,7 @@ export default {
       :avatar-id="item.id"
     />
     <div> 
-      <button v-if="enableKick">Kick player</button>
+      <button v-if="enableKick && item.id != parseInt(myId)">Kick player</button>
     </div>
   </div>
 </template>
