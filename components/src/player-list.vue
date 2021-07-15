@@ -11,6 +11,14 @@ export default {
   },
   props : {
     enableKick : Boolean,
+    currentPlayer : Number
+  }
+  ,methods : {
+    getStatusClass : function(player , id) {
+      if ( parseInt(player.id) === parseInt(id)) return " playing";
+      return '';
+    }
+    
   }
 };
 </script>
@@ -19,7 +27,9 @@ export default {
 
 <template>
   
-  <div v-for="item in players" :key="item.id" class="players">
+  <div v-for="item in players" :key="item.id" :class="`players${getStatusClass(item,currentPlayer)}`">
+    {{ currentPlayer}}
+    test {{enableKick}}
     <avatar-card
       
       class="avatar-lobby"
