@@ -1,5 +1,8 @@
 let avatarCode;
-
+let statuses = {
+    "NOT_READY" : 0,
+    "READY" : 1
+}
 handlers = {
     'newPlayer': (data) => {
         delete data['cat'];
@@ -15,7 +18,7 @@ function initApp() {
     initLocales();
     let data = extractJsonFromCookie();
     data.host = document.location.host;
-    data.ready = false;
+    data.status = 0;
     let app = Vue.createApp({
         components: {
             'player-list': window['player-list'],
@@ -39,7 +42,26 @@ function initApp() {
               "id": this.myId,
               "sessionName": this.name
             });
-            this.ready = true;
+            this.status = 1;
+          },
+          playerNotReady : function () {
+            // this.status = 0;   
+          },
+          mainAction : function () {
+            switch (this.status) {
+                case statuses.NOT_READY:
+                    this.playerIsReady();
+                    break;
+                case statuses.READY:
+                    this.playerNotReady();
+                    break;            
+                default:
+                    this.playerNotReady();
+                    break;
+            }
+          },
+          getMainActionText : function () {
+              return [this.T("Ready") , this.T("I'm not ready")][this.status]
           },
           kickPlayer : function (player) {
               console.log(player);
