@@ -26,7 +26,7 @@ handlers = {
             marathon.gameData.curPlayer = data.val.toString();
             if (data.val.toString() === marathon.myId.toString()) {
                 marathon.setStatus (statuses.THROW);
-                toaster.show("A toi de jouer!", {time: 3500});
+                toaster.show("A toi de jouer!", 3500);
             }
         }
     },
@@ -178,7 +178,7 @@ function initApp() {
                     dice.updateDice(diceArray);
                     dice.enableDrag(true)
                 } catch (e) {
-                    toaster.show(e.message, {time: 10000});
+                    toaster.show(e.message, 10000);
                     this.setStatus ( statuses.ERROR );
                 }
             },

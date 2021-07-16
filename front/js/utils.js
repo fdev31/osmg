@@ -115,7 +115,7 @@ class Toaster {
     this.displayed = false;
   }
 
-  show(message , {time=1000, type=""}){
+  show(message , time=1000, type=""){
     if (this.displayed) {
         this.pending.push({message, time, type});
     } else {
