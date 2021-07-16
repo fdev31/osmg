@@ -3,6 +3,23 @@ let statuses = {
     "NOT_READY" : 0,
     "READY" : 1
 }
+
+
+function counter(index ,time=1000) {
+    return new Promise((res)=> {
+        setTimeout(()=>{
+            toast.show(index);
+            res()
+        }, time)
+    })
+}
+async function countDown(count=4) {
+    toast = new Toaster();
+    for (let index = 0; index < count; index++) {
+        let display =  count - (index + 1) == 0 ? "Go !" : count - (index + 1)
+        await counter(display , 1500).then(console.log("ready"));
+    }
+}
 handlers = {
     'newPlayer': (data) => {
         delete data['cat'];

@@ -8,6 +8,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
   </head>
   <body onload="initApp()">
+       <div id="toaster"></div>
       <div id="app" v-cloak>
           <h2>{{gameType}}</h2>
           <button type="button" onclick="copyURL('link')" :title="T('Click to copy invite link to the clipboard')">{{T("Invite")}}</button>
