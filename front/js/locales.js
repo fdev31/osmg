@@ -18,6 +18,8 @@ const locales = {
         "Move forward" : "Avancez" ,
         "Wait" : "Attendez" ,
         "Pass" : "Passez" ,
+        "Game won" : "Jeu gagné" ,
+        "Game lost" : "Jeu perdu" ,
         "End of turn" : "Fin du Tour",
         "Error " : " Erreur",
         "meters left" : "mètres restants",
