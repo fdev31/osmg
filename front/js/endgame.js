@@ -50,7 +50,14 @@ function initApp() {
                     return this.playersData[a.id].distance - this.playersData[b.id].distance
                 })
                 return result;
-            }
+            },
+            async restartGame(){
+                let restart = await post(`http://${host}/c/session/restart`, {
+                    "id":parseInt(this.myId),
+                    "secret": parseInt(this.secret),
+                    "sessionName":this.name
+                })
+            },
 
         }
         
