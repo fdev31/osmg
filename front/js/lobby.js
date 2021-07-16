@@ -25,20 +25,22 @@ async function countDown(count=4) {
 
 }
 handlers = {
+    'curPlayer' : (data) =>{
+        lobby.gameData.curPlayer = data.val;
+        setCookie(Vue2Obj(lobby));
+    },
     'newPlayer': (data) => {
         delete data['cat'];
         lobby.players.push(data);
         setCookie(Vue2Obj(lobby));
     },
-    'startGame':async (data) => {
-        countDown().then(async ()=> {
-            start = await post(`http://${lobby.host}/c/session/start`, {
-                "id": this.myId,
-                "sessionName": this.name
-              });
+    'start':async (data) => {
+        countDown().then(()=> {
             window.location = `/game_${lobby.gameType}.html`;
         });
-
+    },
+    'log': (data) =>{
+        console.log(data);
     }
 };
 
