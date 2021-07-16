@@ -7,7 +7,7 @@ function initApp() {
     try {
         var data = extractJsonFromCookie();
     }catch {
-        window.location = `http://${host/static/index.html}`;
+        window.location = `http://${host}/static/index.html`;
     }
     app = Vue.createApp({
         data : function () {
