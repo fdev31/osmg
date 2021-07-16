@@ -5,6 +5,7 @@ const locales = {
         "players": "joueurs",
         "Invite": "Inviter",
         "Play": "Jouer",
+        "Ready": "Prêt",
         "Join": "Rejoindre",
         "Welcome" : "Bienvenue",
         "Change game" : "Changez de jeu",
