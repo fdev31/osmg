@@ -14,11 +14,15 @@ function counter(index ,time=1000) {
     })
 }
 async function countDown(count=4) {
-    toast = new Toaster();
-    for (let index = 0; index < count; index++) {
-        let display =  count - (index + 1) == 0 ? "Go !" : count - (index + 1)
-        await counter(display , 1500).then(console.log("ready"));
-    }
+    return new Promise(async (resolve)=>{
+        toast = new Toaster();
+        for (let index = 0; index < count; index++) {
+            let display =  count - (index + 1) == 0 ? "Go !" : count - (index + 1)
+            await counter(display , 1500).then(console.log("ready"));
+        }
+        resolve();
+    })
+
 }
 handlers = {
     'newPlayer': (data) => {
@@ -26,9 +30,15 @@ handlers = {
         lobby.players.push(data);
         setCookie(Vue2Obj(lobby));
     },
-    'startGame':(data) => {
-        countDown();
-        window.location = `/game_${lobby.gameType}.html`;
+    'startGame':async (data) => {
+        countDown().then(async ()=> {
+            start = await post(`http://${lobby.host}/c/session/start`, {
+                "id": this.myId,
+                "sessionName": this.name
+              });
+            window.location = `/game_${lobby.gameType}.html`;
+        });
+
     }
 };
 
