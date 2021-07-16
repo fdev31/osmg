@@ -35,12 +35,16 @@
                         </avatar-card>
                     {{ getWinners().length + index +1 }}{{ getWinners().length + index == 0? "er" : "ème" }} => {{ playersData[player.id].distance}} mètres restant</li>
             </ul>
-        </div>      
-         </div>
+        </div>     
+        
+        <div><a href="index.html">{{T("Restart Game")}}</a></div>
+        <div><button v-on:click="restartGame">{{T("Restart Game")}}</button></div>
+        </div>
 
 
-        <div><a href="index.html">Quitter</a></div>
 
+
+        <script src="js/locales.js" charset="utf-8"></script>
         <script src="https://unpkg.com/vue@next"></script>
         <script src="js/utils.js" charset="utf-8"></script>
         <script src="jscomp/avatar-card.umd.js" charset="utf-8"></script>

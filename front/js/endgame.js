@@ -1,6 +1,8 @@
 
 
 function initApp() {
+
+    initLocales();
     var host = window.location.host
     try {
         var data = extractJsonFromCookie();
@@ -13,6 +15,9 @@ function initApp() {
         },
         components: {"avatar-card" : window["avatar-card"] , "player-list" : window["player-list"]},
         methods : {
+            T(text) {
+                return getTranslation(text);
+            },
             findPlayer(playerId) {
               return findPlayer(this , playerId);  
             },
