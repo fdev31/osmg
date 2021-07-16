@@ -212,6 +212,8 @@ function initApp() {
         }
     });
     marathon = app.mount('#app');
+    console.log(marathon.$data);
+    parseInt(marathon.gameData.curPlayer) === parseInt(marathon.myId) ? marathon.setStatus(statuses.THROW): marathon.setStatus(statuses.WAITING);
     setupStreamEventHandler({topic :marathon.name , uid : marathon.myId}, handlers);
 }
 
