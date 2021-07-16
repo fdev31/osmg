@@ -27,7 +27,8 @@ handlers = {
         setCookie(Vue2Obj(lobby));
     },
     'startGame':(data) => {
-        window.location = `/game_${this.gameType}.html`;
+        countDown();
+        window.location = `/game_${lobby.gameType}.html`;
     }
 };
 
