@@ -52,6 +52,7 @@ function initApp() {
                 return result;
             },
             async restartGame(){
+                console.log(this.name);
                 let restart = await post(`http://${host}/c/session/restart`, {
                     "id":parseInt(this.myId),
                     "secret": parseInt(this.secret),

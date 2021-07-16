@@ -94,7 +94,6 @@ function initApp() {
               return [this.T("Ready") , this.T("I'm not ready")][this.status]
           },
           kickPlayer : function (player) {
-              console.log(player);
               alert("byebye " + player.name);
           }
         }
