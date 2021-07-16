@@ -6,12 +6,16 @@ handlers = {
         lobby.players.push(data);
         setCookie(Vue2Obj(lobby));
     },
+    'startGame':(data) => {
+        window.location = `/game_${this.gameType}.html`;
+    }
 };
 
 function initApp() {
     initLocales();
     let data = extractJsonFromCookie();
     data.host = document.location.host;
+    data.ready = false;
     let app = Vue.createApp({
         components: {
             'player-list': window['player-list'],
@@ -30,12 +34,12 @@ function initApp() {
           T(text) {
               return getTranslation(text)
           },
-          startGame : async function () {
+          playerIsReady : async function () {
             start = await post(`http://${this.host}/c/session/start`, {
               "id": this.myId,
               "sessionName": this.name
             });
-            window.location = `/game_${this.gameType}.html`;
+            this.ready = true;
           },
           kickPlayer : function (player) {
               console.log(player);
