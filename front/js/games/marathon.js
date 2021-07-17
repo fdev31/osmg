@@ -121,6 +121,9 @@ function initApp() {
             },
             distance() {
                 return this.playersData[this.myId].distance;
+            },
+            playersStates() {
+                return {"curPlayer" : this.gameData.curPlayer , "disconnected" : this.disconnected}
             }
         },
         methods: {
