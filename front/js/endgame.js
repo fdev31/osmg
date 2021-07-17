@@ -44,7 +44,6 @@ function initApp() {
             },
             getLosers() {
                 let result = this.players.filter( player => {
-                    console.log(this.playersData[player.id].distance);
                     return this.playersData[player.id].distance > 0
                 }).sort((a,b) => {
                     return this.playersData[a.id].distance - this.playersData[b.id].distance
@@ -52,7 +51,6 @@ function initApp() {
                 return result;
             },
             async restartGame(){
-                console.log(this.name);
                 let restart = await post(`http://${host}/c/session/restart`, {
                     "id":parseInt(this.myId),
                     "secret": parseInt(this.secret),

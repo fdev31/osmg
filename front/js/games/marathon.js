@@ -31,6 +31,17 @@ handlers = {
         }
     },
     connectPlayer:(data) => {
+        if (marathon.disconnected != undefined && marathon.disconnected.includes(data.id)) {
+            removeValueFromArray(data.id , marathon.disconnected);
+        }
+        console.log(data);
+    },
+    disconnectPlayer:(data)=>{
+        if (marathon.disconnected == undefined) {
+            marathon.disconnected = [data.id]
+        } else {
+            marathon.disconnected.push(data.id);
+        }
         console.log(data);
     },
     varUpdate: (data) => {
@@ -76,7 +87,6 @@ function initApp() {
     if (typeof data.name == "undefined" || data.name == null) {
         window.location = `http://${host}/lobby.html`;
     }
-
     if (data.status == undefined) { // please do not remove this check, it was a huge bug...
         // if you do so for some reason, we need to discuss solutions
         // Do not remove code which has been added if you don't know what it's doing ;)
