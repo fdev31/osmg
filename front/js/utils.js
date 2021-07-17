@@ -154,3 +154,13 @@ function getTranslation(text) {
   return text;
   //return "/!\\ E: " + text; // to debug english
 }
+
+function removeValueFromArray(value, myarray) {
+  if (myarray == undefined ) throw "array is not defined. Provide a proper arguments"
+  for (let index = 0; index < myarray.length; index++) {
+    if (myarray[index] === value) {      
+    myarray.splice(index,1)
+    index--;
+    }   
+  }
+}
