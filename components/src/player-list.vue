@@ -11,12 +11,15 @@ export default {
   },
   props : {
     enableKick : Boolean,
-    currentPlayer : Number,
+    states : Object,
     myId : Number
   }
   ,methods : {
-    getStatusClass : function(player , id) {
-      if ( parseInt(player.id) === parseInt(id)) return " playing";
+    getStatusClass : function(player , states) {
+      if (states != undefined && states != null) {
+        if ( parseInt(player.id) === parseInt(states.curPlayer)) return " playing";
+        else if (states.disconnected != undefined &&states.disconnected.includes(player.id)) return "disconnected"        
+      }
       return '';
     }
     
@@ -28,7 +31,7 @@ export default {
 
 <template>
   
-  <div v-for="item in players" :key="item.id" :class="`players${getStatusClass(item,currentPlayer)}`">
+  <div v-for="item in players" :key="item.id" :class="`players${getStatusClass(item,states)}`">
     <avatar-card
       
       class="avatar-lobby"
