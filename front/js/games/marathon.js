@@ -31,17 +31,18 @@ handlers = {
         }
     },
     connectPlayer:(data) => {
-        if (marathon.disconnected != undefined && marathon.disconnected.includes(data.id)) {
-            removeValueFromArray(data.id , marathon.disconnected);
+        if (marathon.gameData.disconnected != undefined && marathon.gameData.disconnected.includes(data.id)) {
+            removeValueFromArray(data.id , marathon.gameData.disconnected);
         }
         console.log(data);
     },
     disconnectPlayer:(data)=>{
-        if (marathon.disconnected == undefined) {
-            marathon.disconnected = [data.id]
+        if (marathon.gameData.disconnected == undefined) {
+            marathon.gameData.disconnected = [data.id]
         } else {
-            marathon.disconnected.push(data.id);
+            marathon.gameData.disconnected.push(data.id);
         }
+        console.log(marathon.gameData.disconnected);
         console.log(data);
     },
     varUpdate: (data) => {
@@ -122,9 +123,6 @@ function initApp() {
             distance() {
                 return this.playersData[this.myId].distance;
             },
-            playersStates() {
-                return {"curPlayer" : this.gameData.curPlayer , "disconnected" : this.disconnected}
-            }
         },
         methods: {
             T(text) {
