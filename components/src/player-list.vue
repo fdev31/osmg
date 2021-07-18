@@ -16,11 +16,11 @@ export default {
   },
   methods : {
     isPlaying : function(player) {
-      if ( parseInt(player.id) === parseInt(this.states.curPlayer)) return true;
+      if (this.states.curPlayer != undefined &&parseInt(player.id) === parseInt(this.states.curPlayer)) return true;
     },
     isDisconnected: function(player) {
       if (this.states.disconnected != undefined &&this.states.disconnected.includes(player.id)) return true;
-    },  
+    },
   }
 };
 </script>
