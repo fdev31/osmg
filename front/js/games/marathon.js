@@ -33,6 +33,7 @@ handlers = {
     },
     connectPlayer:(data) => {
         marathon.playersData[data.id].disconnected = false;
+        toaster.show(`${findPlayer(marathon,data.id).name} enters the game` , 2500)
         console.log(data);
     },
     disconnectPlayer:(data)=>{
