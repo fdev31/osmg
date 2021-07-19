@@ -5,6 +5,7 @@ let statuses = {
 }
 
 
+toaster = new Toaster();
 function counter(index ,time=1000) {
     return new Promise((res)=> {
         setTimeout(()=>{
@@ -15,7 +16,6 @@ function counter(index ,time=1000) {
 }
 async function countDown(count=4) {
     return new Promise(async (resolve)=>{
-        toast = new Toaster();
         for (let index = 0; index < count; index++) {
             let display =  count - (index + 1) == 0 ? "Go !" : count - (index + 1)
             await counter(display , 1500).then(console.log("ready"));
@@ -25,6 +25,14 @@ async function countDown(count=4) {
 
 }
 handlers = {
+    connectPlayer:(data) => {
+        toaster.show({message: `${findPlayer(lobby,data.id).name} enters the game` ,time: 2500})
+        console.log(data);
+    },
+    disconnectPlayer:(data)=>{
+        toaster.show({message : `${findPlayer(lobby,data.id).name} is disconnected` , time : 2500})
+        console.log(data);
+    },
     'curPlayer' : (data) =>{
         lobby.gameData.curPlayer = data.val;
         setCookie(Vue2Obj(lobby));
