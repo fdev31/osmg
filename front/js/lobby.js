@@ -9,7 +9,7 @@ toaster = new Toaster();
 function counter(index ,time=1000) {
     return new Promise((res)=> {
         setTimeout(()=>{
-            toast.show({message:index});
+            toaster.show({message:index});
             res()
         }, time)
     })
