@@ -32,11 +32,12 @@ handlers = {
         }
     },
     connectPlayer:(data) => {
-        marathon.playersData[data.id].disconnected = false
+        marathon.playersData[data.id].disconnected = false;
         console.log(data);
     },
     disconnectPlayer:(data)=>{
-        marathon.playersData[data.id].disconnected = true
+        marathon.playersData[data.id].disconnected = true;
+        toaster.show(`${findPlayer(marathon,data.id).name} is disconnected` , 2500)
         console.log(data);
     },
     varUpdate: (data) => {
