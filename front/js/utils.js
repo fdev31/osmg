@@ -113,23 +113,55 @@ class Toaster {
     this.frame = document.getElementById(frameId);
     this.pending = [];
     this.displayed = false;
+    this.defaultOptions = {
+      message:"",
+      time:1000,
+      type:"",
+      expanded:false
+    }
   }
+  setOptions(options) {
+    let res = this.defaultOptions;
+    Object.keys(options).map((k) => {
+      res[k] = options[k];
+    });
+    return res;
+  }
+  createToaster(options) {
+    let frame = `<div class="${options.type}">`;
+    frame +=`<div >${options.message}</div>`;
+    if (options.expanded) {
+      frame += `<div><button onclick="document.getElementById('toaster').classList.remove('visible')">close</button></div>`
+    }
+    frame += "</div>";
+    return frame;
+  }
+  display(){
+    this.displayed = false;
+    if (this.pending.length) {
+        let val = this.pending.pop();
+        return this.show(val.message, val);
+    } else {
+        this.frame.classList.remove('visible');
+    }    
+  }
+  show(options){
+    options = this.setOptions(options);
 
-  show(message , time=1000, type=""){
+    console.log();
     if (this.displayed) {
-        this.pending.push({message, time, type});
+        this.pending.push({message : options.message, time :  options.time, type : options.expanded});
     } else {
         this.displayed = true;
-        this.frame.innerHTML = `<div class="${type}">${message}</div>`; 
-        setTimeout(() => {
-            this.displayed = false;
-            if (this.pending.length) {
-                let val = this.pending.pop();
-                return this.show(val.message, val);
-            } else {
-                this.frame.classList.remove('visible');
-            }
-        },time)
+        this.frame.innerHTML = this.createToaster(options);
+        if (options.expanded) {
+          this.display();
+        } 
+        else {
+          setTimeout(() => {
+            this.display()
+          },options.time)
+        }
         this.frame.classList.add('visible');
     }
   }
