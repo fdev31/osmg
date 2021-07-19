@@ -8,7 +8,7 @@ let statuses = {
 function counter(index ,time=1000) {
     return new Promise((res)=> {
         setTimeout(()=>{
-            toast.show(index);
+            toast.show({message:index});
             res()
         }, time)
     })

@@ -27,18 +27,18 @@ handlers = {
             marathon.gameData.curPlayer = data.val.toString();
             if (data.val.toString() === marathon.myId.toString()) {
                 marathon.setStatus (statuses.THROW);
-                toaster.show("A toi de jouer!", 3500);
+                toaster.show({message:"A toi de jouer!", time: 3500});
             }
         }
     },
     connectPlayer:(data) => {
         marathon.playersData[data.id].disconnected = false;
-        toaster.show(`${findPlayer(marathon,data.id).name} enters the game` , 2500)
+        toaster.show({message: `${findPlayer(marathon,data.id).name} enters the game` ,time: 2500})
         console.log(data);
     },
     disconnectPlayer:(data)=>{
         marathon.playersData[data.id].disconnected = true;
-        toaster.show(`${findPlayer(marathon,data.id).name} is disconnected` , 2500)
+        toaster.show({message : `${findPlayer(marathon,data.id).name} is disconnected` , time : 2500})
         console.log(data);
     },
     varUpdate: (data) => {
@@ -185,7 +185,7 @@ function initApp() {
                     dice.updateDice(diceArray);
                     dice.enableDrag(true)
                 } catch (e) {
-                    toaster.show(e.message, 10000);
+                    toaster.show({message: e.message, time: 10000});
                     this.setStatus ( statuses.ERROR );
                 }
             },
