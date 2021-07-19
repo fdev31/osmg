@@ -11,12 +11,12 @@ export default {
   },
   props : {
     enableKick : Boolean,
-    gameData : Object,
+    curPlayer : String,
     myId : Number
   },
   methods : {
     isPlaying : function(player) {
-      if (this.gameData != undefined && parseInt(player.id) === parseInt(this.gameData.curPlayer)) return true
+      if (this.curPlayer != undefined && parseInt(player.id) === parseInt(this.curPlayer)) return true
       else return false;
     },
   }
