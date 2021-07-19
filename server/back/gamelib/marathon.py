@@ -12,13 +12,15 @@ from back.utils import loads, dumps
 from .interfaces import GameInterface
 from back.sessionmanager.public import isPlayerValid
 
+ACTIVE_PLAYERS = 'curOrder'
+
 logger = logging.getLogger('marathon')
 
 async def isPlayerTurn(conn, prefix, playerId, secret):
     if not await isPlayerValid(conn, prefix.split(':')[0][1:], playerId, secret):
         return False
     curPlayer = await conn.get(prefix+"curPlayer")
-    curPlayerId = await conn.lindex(prefix[:-2]+PLAYERS_ORDER, int(curPlayer))
+    curPlayerId = await conn.lindex(prefix[:-2]+ACTIVE_PLAYERS, int(curPlayer))
     return int(curPlayerId) == int(playerId)
 
 async def throwDice(player: PlayerIdentifier) -> List[int]:
@@ -77,7 +79,7 @@ async def turnLogic(distance, player: PlayerIdentifier, conn=None):
         conn = getRedis()
 
     g_prefix = getGameDataPrefix(player.sessionName)
-    po = getVarName(PLAYERS_ORDER, player.sessionName)
+    po = getVarName(ACTIVE_PLAYERS, player.sessionName)
     nbPlayers = int(await conn.llen(po))
     playerLost = False
 
@@ -123,6 +125,8 @@ class DiceInterface(GameInterface):
 
     @staticmethod
     async def startGame(sessionId, conn):
+        dump = await conn.lrange(getVarName(PLAYERS_ORDER, sessionId), 0, -1)
+        await conn.rpush(getVarName(ACTIVE_PLAYERS, sessionId), *dump)
         await turnLogic(None, PlayerIdentifier(id=0, sessionName=sessionId), conn)
 
     @staticmethod
