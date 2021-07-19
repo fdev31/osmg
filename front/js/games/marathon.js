@@ -8,6 +8,7 @@ const statuses = {
     "GAME_WON": 6,
     "ERROR": 7
 }
+toaster = new Toaster();
 
 function isError(res) {
     return res && res.detail != undefined;
@@ -70,7 +71,7 @@ handlers = {
 
 function initApp() {
     initLocales();
-    toaster = new Toaster();
+
     let host = document.location.host;
     try {
         var data = extractJsonFromCookie();
