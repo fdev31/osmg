@@ -54,7 +54,7 @@ class MarathonTest(unittest.TestCase):
         self.driver.find_elements_by_tag_name("button")[3].click()
         self.driver2.find_elements_by_tag_name("button")[3].click()
 
-        time.sleep(5)
+        time.sleep(8)
         shot(self.driver, "ff_game")
         shot(self.driver2, "ch_game")
         but_idx = 1
