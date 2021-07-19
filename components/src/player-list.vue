@@ -11,15 +11,13 @@ export default {
   },
   props : {
     enableKick : Boolean,
-    states : Object,
+    gameData : Object,
     myId : Number
   },
   methods : {
     isPlaying : function(player) {
-      if (this.states.curPlayer != undefined &&parseInt(player.id) === parseInt(this.states.curPlayer)) return true;
-    },
-    isDisconnected: function(player) {
-      if (this.states.disconnected != undefined &&this.states.disconnected.includes(player.id)) return true;
+      if (this.gameData != undefined && parseInt(player.id) === parseInt(this.gameData.curPlayer)) return true
+      else return false;
     },
   }
 };
@@ -29,7 +27,7 @@ export default {
 
 <template>
   
-  <div v-for="item in players" :key="item.id" :class="{players : true , playing : isPlaying(item) , disconnected : isDisconnected(item)}">
+  <div v-for="item in players" :key="item.id" :class="{players : true , playing : isPlaying(item) ,disconnected : item.disconnected}">
     <avatar-card
       
       class="avatar-lobby"
