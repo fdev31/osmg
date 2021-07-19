@@ -85,6 +85,7 @@ async def turnLogic(distance, player: PlayerIdentifier, conn=None):
 
     if distance is not None:  # check END OF GAME
         if distance == 0:  # End of game
+            await conn.lrem(po, 1, player.id)
             await declareWinner(player.sessionName, player.id, conn)
             return
         if distance < 0: # disqualified
@@ -94,6 +95,7 @@ async def turnLogic(distance, player: PlayerIdentifier, conn=None):
 
         if nbPlayers == 1: # only one runner left !
             curPlayerId = await conn.lindex(po, 0)
+            await conn.lrem(po, 1, curPlayerId)
             await declareWinner(player.sessionName, curPlayerId, conn)
             return
 
