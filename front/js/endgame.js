@@ -1,7 +1,10 @@
 
-
+handlers = {
+    restart:(data)=>{
+        console.log(data);
+    },
+}
 function initApp() {
-
     initLocales();
     var host = window.location.host
     try {
@@ -57,9 +60,8 @@ function initApp() {
                     "sessionName":this.name
                 })
             },
-
         }
-        
     });
     endgame = app.mount('#app');
+    setupStreamEventHandler({topic: endgame.name, uid: endgame.myId}, handlers);
 }
