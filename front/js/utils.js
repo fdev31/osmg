@@ -147,8 +147,6 @@ class Toaster {
   }
   show(options){
     options = this.setOptions(options);
-
-    console.log();
     if (this.displayed) {
         this.pending.push({message : options.message, time :  options.time, type : options.expanded});
     } else {
