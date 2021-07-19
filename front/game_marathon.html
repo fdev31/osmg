@@ -11,7 +11,7 @@
         <div id="toaster"></div>
         <div id="app" v-cloak>
             <h1>{{ T("Marathon , the dice game") }}</h1>
-            <player-list ref="playerlist" :enable-kick="true" :states="gameData" :my-id="myId"></player-list>
+            <player-list ref="playerlist" :enable-kick="true" :game-data="gameData" :my-id="myId"></player-list>
             <h2>{{ T("Welcome") }} {{playerName()}}, it's turn {{parseInt(gameData.turns)+1}}</h2>
             <div v-if="didIWin()">
                 <h1>{{ T("You Win") }}!</h1>

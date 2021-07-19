@@ -31,18 +31,11 @@ handlers = {
         }
     },
     connectPlayer:(data) => {
-        if (marathon.gameData.disconnected != undefined && marathon.gameData.disconnected.includes(data.id)) {
-            removeValueFromArray(data.id , marathon.gameData.disconnected);
-        }
+        marathon.playersData[data.id].disconnected = false
         console.log(data);
     },
     disconnectPlayer:(data)=>{
-        if (marathon.gameData.disconnected == undefined) {
-            marathon.gameData.disconnected = [data.id]
-        } else {
-            marathon.gameData.disconnected.push(data.id);
-        }
-        console.log(marathon.gameData.disconnected);
+        marathon.playersData[data.id].disconnected = true
         console.log(data);
     },
     varUpdate: (data) => {
