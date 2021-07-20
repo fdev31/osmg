@@ -126,7 +126,9 @@ class DiceInterface(GameInterface):
     @staticmethod
     async def startGame(sessionId, conn):
         dump = await conn.lrange(getVarName(PLAYERS_ORDER, sessionId), 0, -1)
-        await conn.rpush(getVarName(ACTIVE_PLAYERS, sessionId), *dump)
+        cp = getVarName(ACTIVE_PLAYERS, sessionId)
+        await conn.unlink(cp)
+        await conn.rpush(cp, *dump)
         await turnLogic(None, PlayerIdentifier(id=0, sessionName=sessionId), conn)
 
     @staticmethod
