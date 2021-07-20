@@ -23,7 +23,7 @@ votesHandlers = {
     re.compile('kick_(.*)'): kickPlayer,
 }
 
-def findHandler(name: str) -> tuple([re.Match, Callable[[str, str, list]]]):
+def findHandler(name: str) -> tuple[re.Match, Callable[[str, str, list]]]:
     for handler in votesHandlers:
         m = handler.match(name)
         if m:
