@@ -34,8 +34,6 @@ async def vote(player: PlayerIdentifier, name: str, validate: bool = True, descr
     """ Vote for a topic "name", you can unvote if validate is false.
     The first player to vote must provide a description """
 
-    # TODO: keep track of who voted, to dismiss the vote when everybody voted
-
     m, h = findHandler(name)
     VOTE_IN_PROGRESS = "_voteInProgress"
 
@@ -49,23 +47,28 @@ async def vote(player: PlayerIdentifier, name: str, validate: bool = True, descr
             raise HTTPException(httpstatus.HTTP_403_FORBIDDEN, "Invalid request")
 
         vip = getVarName(VOTE_IN_PROGRESS, uid)
-        if await conn.exists(vip):
-            raise HTTPException(httpstatus.HTTP_403_FORBIDDEN, "A vote is already in progress")
-        conn.set(vip, "yes")
         if not await conn.exists(curVote):
+            if await conn.exists(vip):
+                raise HTTPException(httpstatus.HTTP_403_FORBIDDEN, "A vote is already in progress")
             await publishEvent(uid, conn, cat="voteStart", name=name, description=description)
+
+        conn.sadd(vip, player.id)
+
         if validate:
             await conn.sadd(curVote, player.id)
         else:
             await conn.srem(curVote, player.id)
 
-        votants = await conn.scard(curVote)
+        votants = await conn.scard(vip)
         totPlayers = await conn.llen(getVarName(PLAYERS_ORDER, uid))
-        if votants > (totPlayers/2):
-            await publishEvent(uid, conn, cat="voteEnd", name=name)
-            await conn.delete(curVote)
 
-            await h(conn, uid, m)
-            conn.unlink(vip)
-            game = await getGameBySessionId(uid, conn)
-            await game.votePassed(uid, name, conn)
+        if votants == totPlayers:
+            accepted = await conn.scard(curVote)
+            if accepted > (totPlayers/2):
+                await publishEvent(uid, conn, cat="voteEnd", name=name)
+                await conn.delete(curVote)
+
+                await h(conn, uid, m)
+                conn.unlink(vip)
+                game = await getGameBySessionId(uid, conn)
+                await game.votePassed(uid, name, conn)
