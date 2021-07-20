@@ -7,11 +7,11 @@ logger = logging.getLogger("Session")
 
 t0 = time.time()*1000
 
-async def getUniquePlayerId():
+async def getUniquePlayerId() -> int:
     pid = await getRedis().incr('count_players')
     return pid
 
-async def genUniqueSessionId():
+async def genUniqueSessionId() -> str:
     pid = await getRedis().incr('count_session')
     return hex(int("%d%d"%(pid, (time.time()*1000)-t0)))[2:]
 

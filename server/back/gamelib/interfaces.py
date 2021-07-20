@@ -29,7 +29,7 @@ class GameInterface:
     # the following should not be overloaded:
 
     @classmethod
-    def info(kls):
+    def info(kls) -> dict[str, str]:
         if not hasattr(kls, '_info'):
             return {
                 "name": kls.name,
@@ -42,7 +42,7 @@ class GameInterface:
         return kls._info
 
     @staticmethod
-    def getPlayerIdentifiers():
+    def getPlayerIdentifiers() -> list[str]:
         return ['id', 'name', 'avatar']
 
     @classmethod
