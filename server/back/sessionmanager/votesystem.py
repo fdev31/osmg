@@ -34,7 +34,10 @@ async def vote(player: PlayerIdentifier, name: str, validate: bool = True, descr
     """ Vote for a topic "name", you can unvote if validate is false.
     The first player to vote must provide a description """
 
+    # TODO: keep track of who voted, to dismiss the vote when everybody voted
+
     m, h = findHandler(name)
+    VOTE_IN_PROGRESS = "_voteInProgress"
 
     if m is None:
         raise HTTPException(httpstatus.HTTP_403_FORBIDDEN, "Invalid vote type")
@@ -45,6 +48,10 @@ async def vote(player: PlayerIdentifier, name: str, validate: bool = True, descr
         if not await isPlayerValid(conn, player.sessionName, player.id, player.secret):
             raise HTTPException(httpstatus.HTTP_403_FORBIDDEN, "Invalid request")
 
+        vip = getVarName(VOTE_IN_PROGRESS, uid)
+        if await conn.exists(vip):
+            raise HTTPException(httpstatus.HTTP_403_FORBIDDEN, "A vote is already in progress")
+        conn.set(vip, "yes")
         if not await conn.exists(curVote):
             await publishEvent(uid, conn, cat="voteStart", name=name, description=description)
         if validate:
@@ -59,5 +66,6 @@ async def vote(player: PlayerIdentifier, name: str, validate: bool = True, descr
             await conn.delete(curVote)
 
             await h(conn, uid, m)
+            conn.unlink(vip)
             game = await getGameBySessionId(uid, conn)
             await game.votePassed(uid, name, conn)
