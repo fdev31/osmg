@@ -5,23 +5,17 @@ class GameInterface:
     description : str = "No description yet"
     long_description : str = "No long description yet"
     card : str = "quiz"
-    min_players : Optional[int] = None
-    max_players : Optional[int] = None
+    min_players : Optional[int] = 1
+    max_players : Optional[int] = 99
 
     @staticmethod
-    async def votePassed(sessionId: str, name: str, conn):
-        return
-
-    @staticmethod
-    async def startGame(sessionId, conn):
-        return
-
-    @staticmethod
-    def getPlayerData():
+    def getPlayerData() -> dict:
+        """ Returns initial data for a player """
         return {}
 
     @staticmethod
-    def getGameData():
+    def getGameData() -> dict:
+        """ Returns initial data for a game """
         return {}
 
     actions: Dict[str, Any]  = {}
@@ -46,5 +40,15 @@ class GameInterface:
         return ['id', 'name', 'avatar']
 
     @classmethod
-    def definition(kls):
+    def definition(kls) -> dict[str, Any]:
         return {kls.name: kls}
+
+    # notification handlers
+
+    @staticmethod
+    async def votePassed(sessionId: str, name: str, conn):
+        return
+
+    @staticmethod
+    async def startGame(sessionId, conn):
+        return
