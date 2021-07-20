@@ -6,11 +6,12 @@ import aioredis
 from fastapi import HTTPException, BackgroundTasks
 from starlette import status as httpstatus
 
-from back.models import PlayerIdentifier, newPlayer, Session
-from back.models import SESSION_PLAYERS_DATA, SESSION_S_TIME, SESSION_GAME_TYPE
-from back.models import SESSION_C_TIME, SESSION_NAME, SESSION_PLAYERS
-from back.globalHandlers import getRedis, setRedis, publishEvent, getVarName
-from back.globalHandlers import PLAYERS_READY, PLAYERS_ORDER
+from ..models import PlayerIdentifier, newPlayer, Session
+from ..models import SESSION_PLAYERS_DATA, SESSION_S_TIME, SESSION_GAME_TYPE
+from ..models import SESSION_C_TIME, SESSION_NAME, SESSION_PLAYERS
+
+from ..globalHandlers import getRedis, setRedis, publishEvent, getVarName
+from ..globalHandlers import PLAYERS_READY, PLAYERS_ORDER
 
 from .base import genUniqueSessionId, getUniquePlayerId
 from .library import games, getGameInitialData, getPlayerInitialData
