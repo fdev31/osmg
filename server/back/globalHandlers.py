@@ -1,13 +1,14 @@
+import aioredis
 from typing import Dict, Any
 from back.utils import dumps
 from functools import lru_cache
 
 ctx : Dict[str, Any] = {}
 
-def getRedis():
+def getRedis() -> aioredis.Redis:
     return ctx['redis']
 
-def setRedis(handler):
+def setRedis(handler: aioredis.Redis):
     ctx['redis'] = handler
 
 def publishEvent(topic, client=None, **params):
