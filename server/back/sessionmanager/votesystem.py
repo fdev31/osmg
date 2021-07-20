@@ -13,8 +13,8 @@ from .public import getGameBySessionId, isPlayerValid
 
 logger = logging.getLogger("SessionVote")
 
-async def kickPlayer(conn, sessionId: str, groups: tuple[str]):
-    whom = groups[0]
+async def kickPlayer(conn, sessionId: str, match: re.Match):
+    whom = match.groups()[0]
     await conn.lrem(getVarName(PLAYERS_ORDER, sessionId), 1, whom)
     await conn.srem(getVarName(PLAYERS_CONNECTED, sessionId), whom)
     await conn.srem(getVarName(PLAYERS_READY, sessionId), whom)
@@ -58,6 +58,6 @@ async def vote(player: PlayerIdentifier, name: str, validate: bool = True, descr
             await publishEvent(uid, conn, cat="voteEnd", name=name)
             await conn.delete(curVote)
 
-            await h(conn, uid, m.groups())
+            await h(conn, uid, m)
             game = await getGameBySessionId(uid, conn)
             await game.votePassed(uid, name, conn)
