@@ -9,6 +9,10 @@ class GameInterface:
     max_players : Optional[int] = None
 
     @staticmethod
+    async def votePassed(sessionId: str, name: str, conn):
+        return
+
+    @staticmethod
     async def startGame(sessionId, conn):
         return
 

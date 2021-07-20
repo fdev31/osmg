@@ -15,6 +15,7 @@ from back.globalHandlers import PLAYERS_READY, PLAYERS_ORDER
 from .base import genUniqueSessionId, getUniquePlayerId
 from .library import games, getGameInitialData, getPlayerInitialData
 from .public import getSession
+from .votesystem import vote
 
 logger = logging.getLogger("Session")
 
@@ -131,6 +132,8 @@ async def startGame(player: PlayerIdentifier, tasks: BackgroundTasks) -> None:
 
 def init(app, config):
     setRedis(aioredis.from_url('redis://'+config.redis_server,  decode_responses=True))
+
+    app.post('/c/session/vote')(vote)
 
     app.post('/c/session/new',
         response_model=Session)(makeSession)

@@ -10,10 +10,15 @@ from back.globalHandlers import PLAYERS_ORDER, PLAYERS_CONNECTED
 from back.globalHandlers import getRedis, publishEvent, getVarName
 from .base import removeSession
 from .library import games
+from ..gamelib.interfaces import GameInterface
 
 logger = logging.getLogger("Session")
 
 GAME_DATA = 'g'
+
+async def getGameBySessionId(uid: str, conn) -> GameInterface:
+    gameType = await conn.get(getVarName(SESSION_GAME_TYPE, uid))
+    return games[gameType]
 
 async def isPlayerValid(conn, sessionId, playerId, secret):
     actualSecret = await conn.get(getVarName("_secret", sessionId, playerId))

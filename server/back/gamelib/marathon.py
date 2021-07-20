@@ -124,7 +124,14 @@ class DiceInterface(GameInterface):
     max_players = None
 
     @staticmethod
-    async def startGame(sessionId, conn):
+    async def votePassed(sessionId: str, name: str, conn):
+        topic, data = name.split('_', 1)
+        cp = getVarName(ACTIVE_PLAYERS, sessionId)
+        if topic == 'kick':
+            await conn.lrem(cp, 1, data)
+
+    @staticmethod
+    async def startGame(sessionId: str, conn):
         dump = await conn.lrange(getVarName(PLAYERS_ORDER, sessionId), 0, -1)
         cp = getVarName(ACTIVE_PLAYERS, sessionId)
         await conn.unlink(cp)
