@@ -85,8 +85,7 @@ async def restartGame(player: PlayerIdentifier, tasks: BackgroundTasks) -> None:
     uid = player.sessionName
     async with getRedis().client() as conn:
         gameType  = await conn.get(getVarName(SESSION_GAME_TYPE, uid))
-        pr = getVarName(PLAYERS_READY, uid)
-        allPlayers = await conn.smembers(pr)
+        allPlayers = await conn.lrange(getVarName(PLAYERS_ORDER, uid), 0, -1)
 
         iface = games[gameType]
         newVals = {}
