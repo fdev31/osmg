@@ -1,12 +1,13 @@
 
+var host = window.location.host
 handlers = {
     restart:(data)=>{
+        window.location = `http://${host}/lobby.html`;
         console.log(data);
     },
 }
 function initApp() {
     initLocales();
-    var host = window.location.host
     try {
         var data = extractJsonFromCookie();
     }catch {
