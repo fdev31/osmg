@@ -47,6 +47,12 @@ handlers = {
             window.location = `/game_${lobby.gameType}.html`;
         });
     },
+    'voteStart':(data)=> {
+        console.log(data);
+    },
+    'voteEnd':(data)=> {
+        console.log(data);
+    },
     'log': (data) =>{
         console.log(data);
     }
@@ -101,8 +107,18 @@ function initApp() {
           getMainActionText : function () {
               return [this.T("Ready") , this.T("I'm not ready")][this.status]
           },
-          kickPlayer : function (player) {
-              alert("byebye " + player.name);
+          kickPlayer : async function (player) {
+            let appliant;
+                this.players.map((p)=> {
+                    if (parseInt(p.id) === parseInt(this.myId)) appliant = p;
+                })
+                let description = `${appliant.name}%20veut%20d%C3%A9gager%20${player.name}`
+                let url = `http://${document.location.host}/c/session/vote?name=kick_${player.id}&validate=true&description=${description}`;
+                let action = await post(url, {
+                    "id":parseInt(this.myId),
+                    "secret": parseInt(this.secret),
+                    "sessionName":this.name
+                });
           }
         }
     });
