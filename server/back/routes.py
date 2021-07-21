@@ -42,5 +42,5 @@ if debug:
 
 for name in MODULES:
     logging.info("Loading %s ..." % name)
-    mod = importlib.import_module('.'+name)
+    mod = importlib.import_module('.'+name, package='back')
     mod.init(app, config)

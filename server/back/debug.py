@@ -3,7 +3,7 @@ from typing import Dict, Any
 
 from .globalHandlers import getRedis
 
-async def getAllData() -> Dict[Any]:
+async def getAllData() -> Dict[str, Dict]:
     """ Returns a database dump (SLOW! DO NOT USE IN PRODUCTION) """
     sessions = {}
     async with getRedis().client() as conn:
@@ -41,7 +41,13 @@ async def getAllData() -> Dict[Any]:
                         o['players_data'][splitk[1]][splitk[3]] = val
                     else:
                         o['players'][splitk[1]][splitk[2]] = val
-    return sessions
+    return {
+        "sessions": sessions,
+        "_info": {
+            "tot_sessions": await conn.get("count_session"),
+            "tot_players": await conn.get("count_players"),
+        }
+    }
 
 def init(app, config):
     app.get("/debug/getAll")(getAllData)

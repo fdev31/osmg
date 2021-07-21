@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+    <script src="https://unpkg.com/vue@next"></script>
+    <head><title>Debug page</title></head>
+    <body onload="appInit()">
+        <h1>Debug page</h1>
+        <div id="app" v-cloak>
+            <ul>
+                <li> Total players joined: {{tot_players}} </li>
+                <li> Total sessions played: {{tot_sessions}} </li>
+                <div v-for="(session, name) in sessions" :key="session">
+                    <debug-session :name="name" :data="session"></debug-session>
+                </div>
+            </ul>
+
+        </div>
+    </body>
+    <script src="jscomp/debug-session.umd.js" charset="utf-8"></script>
+    <script src="js/debug.js" charset="utf-8"></script>
+</html>
