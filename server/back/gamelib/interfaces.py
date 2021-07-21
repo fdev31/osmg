@@ -1,4 +1,4 @@
-from typing import Dict, Callable, Optional, Any
+from typing import Dict, Optional, Any, List
 
 class GameInterface:
     name : str = "Unknown game"
@@ -23,7 +23,7 @@ class GameInterface:
     # the following should not be overloaded:
 
     @classmethod
-    def info(kls) -> dict[str, str]:
+    def info(kls) -> Dict[str, str]:
         if not hasattr(kls, '_info'):
             return {
                 "name": kls.name,
@@ -36,11 +36,11 @@ class GameInterface:
         return kls._info
 
     @staticmethod
-    def getPlayerIdentifiers() -> list[str]:
+    def getPlayerIdentifiers() -> List[str]:
         return ['id', 'name', 'avatar']
 
     @classmethod
-    def definition(kls) -> dict[str, Any]:
+    def definition(kls) -> Dict[str, Any]:
         return {kls.name: kls}
 
     # notification handlers

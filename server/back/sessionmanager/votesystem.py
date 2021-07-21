@@ -1,6 +1,6 @@
 import re
 import logging
-from collections.abc import Callable
+from typing import Callable, Tuple
 
 from fastapi import HTTPException
 from starlette import status as httpstatus
@@ -23,7 +23,7 @@ votesHandlers = {
     re.compile('kick_(.*)'): kickPlayer,
 }
 
-def findHandler(name: str) -> tuple[re.Match, Callable[[str, str, list]]]:
+def findHandler(name: str) -> Tuple[re.Match, Callable[[str, str, list], None]]:
     for handler in votesHandlers:
         m = handler.match(name)
         if m:
