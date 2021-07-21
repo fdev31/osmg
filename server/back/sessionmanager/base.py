@@ -1,7 +1,7 @@
 import time
 import logging
 
-from back.globalHandlers import getRedis
+from ..globalHandlers import getRedis
 
 logger = logging.getLogger("Session")
 

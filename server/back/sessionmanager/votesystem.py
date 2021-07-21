@@ -5,9 +5,9 @@ from typing import Callable, Tuple
 from fastapi import HTTPException
 from starlette import status as httpstatus
 
-from back.models import PlayerIdentifier
-from back.globalHandlers import getRedis, publishEvent, getVarName
-from back.globalHandlers import PLAYERS_ORDER, PLAYERS_CONNECTED, PLAYERS_READY
+from ..models import PlayerIdentifier
+from ..globalHandlers import getRedis, publishEvent, getVarName
+from ..globalHandlers import PLAYERS_ORDER, PLAYERS_CONNECTED, PLAYERS_READY
 
 from .public import getGameBySessionId, isPlayerValid
 

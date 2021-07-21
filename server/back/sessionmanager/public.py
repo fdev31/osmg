@@ -2,12 +2,13 @@ import logging
 import asyncio
 from typing import Dict, Any
 
-from back.models import Session, RedisSession, getPropertieList
-from back.models import SESSION_PLAYERS_DATA, SESSION_S_TIME, SESSION_GAME_TYPE
-from back.models import SESSION_GAME_DATA, SESSION_NAME, SESSION_PLAYERS
-from back.globalHandlers import getRedis, getVarName
-from back.globalHandlers import PLAYERS_ORDER, PLAYERS_CONNECTED
-from back.globalHandlers import getRedis, publishEvent, getVarName
+from ..models import Session, RedisSession, getPropertieList
+from ..models import SESSION_PLAYERS_DATA, SESSION_S_TIME, SESSION_GAME_TYPE
+from ..models import SESSION_GAME_DATA, SESSION_NAME, SESSION_PLAYERS
+from ..globalHandlers import getRedis, getVarName
+from ..globalHandlers import PLAYERS_ORDER, PLAYERS_CONNECTED
+from ..globalHandlers import getRedis, publishEvent, getVarName
+
 from .base import removeSession
 from .library import games
 from ..gamelib.interfaces import GameInterface

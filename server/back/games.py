@@ -3,7 +3,7 @@ import logging
 
 from typing import Dict
 
-from back.sessionmanager.library import registerGame
+from .sessionmanager.library import registerGame
 
 logger = logging.getLogger()
 

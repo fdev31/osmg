@@ -5,11 +5,12 @@ from typing import List
 from fastapi import HTTPException
 from starlette import status as httpstatus
 
-from back.models import PlayerIdentifier
-from back.globalHandlers import getRedis, getGameDataPrefix, getVarName, publishEvent, PLAYERS_ORDER
-from back.utils import loads, dumps
+from ..globalHandlers import getRedis, getGameDataPrefix, getVarName, publishEvent, PLAYERS_ORDER
+from ..sessionmanager.public import isPlayerValid
+from ..models import PlayerIdentifier
+from ..utils import loads, dumps
+
 from .interfaces import GameInterface
-from back.sessionmanager.public import isPlayerValid
 
 ACTIVE_PLAYERS = 'curOrder'
 

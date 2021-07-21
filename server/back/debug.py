@@ -1,18 +1,16 @@
-import asyncio
 import aioredis
+from typing import Dict, Any
 
 from .globalHandlers import getRedis
 
-async def getAllData():
+async def getAllData() -> Dict[Any]:
+    """ Returns a database dump (SLOW! DO NOT USE IN PRODUCTION) """
     sessions = {}
-    name = '*'
-    if name[0] == 'S':
-        name = name[1:]
     async with getRedis().client() as conn:
         cur = b"0"
         # collect data
         while cur:
-            cur, keys = await conn.scan(cur, match=f"S{name}:*")
+            cur, keys = await conn.scan(cur, match=f"S*")
             for key in keys:
                 try:
                     val = await conn.get(key)
@@ -44,13 +42,6 @@ async def getAllData():
                     else:
                         o['players'][splitk[1]][splitk[2]] = val
     return sessions
-
-def showPlayersInfo(title, pi):
-    if title:
-        print(title)
-    for name, info in sorted(pi.items()):
-        print(f'     - {name:14} : {info}')
-
 
 def init(app, config):
     app.get("/debug/getAll")(getAllData)

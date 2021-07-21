@@ -1,6 +1,6 @@
 import aioredis
 from typing import Dict, Any
-from back.utils import dumps
+from .utils import dumps
 from functools import lru_cache
 
 ctx : Dict[str, Any] = {}
