@@ -37,6 +37,7 @@ config = ODict(
 MODULES = 'sessionmanager stream games'.split()
 
 if debug:
+    MODULES.append('debug')
     MODULES.append('staticfiles')
 
 for name in MODULES:
