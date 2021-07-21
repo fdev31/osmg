@@ -35,7 +35,7 @@ export default {
       :avatar-id="item.id"
     />
     <div> 
-      <button v-if="enableKick && item.id != parseInt(myId)">Kick player</button>
+      <button v-on:click="$emit('kick', item)" v-if="enableKick && item.id != parseInt(myId)">Kick player</button>
     </div>
   </div>
 </template>
