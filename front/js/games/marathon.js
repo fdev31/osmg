@@ -67,6 +67,8 @@ handlers = {
             }
         }
         marathon.setStatus(myStatus);
+        marathon.gameData.turn = 0;
+        setCookie(Vue2Obj(marathon));
         window.location = "endgame.html";
     }
 };
@@ -221,5 +223,12 @@ function initApp() {
     marathon = app.mount('#app');
     parseInt(marathon.gameData.curPlayer) === parseInt(marathon.myId) ? marathon.setStatus(statuses.THROW): marathon.setStatus(statuses.WAITING);
     setupStreamEventHandler({topic :marathon.name , uid : marathon.myId}, handlers);
+    if (marathon.gameData.turn == 0) {
+        for (const key in marathon.playersData) {
+            if (Object.hasOwnProperty.call(marathon.playersData, key)) {
+                marathon.playersData[key].distance = 42195;             
+            }
+        }
+    }
 }
 
