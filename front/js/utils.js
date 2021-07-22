@@ -119,6 +119,7 @@ class Toaster {
       type:"",
       expanded:false,
       vote:false,
+      votequery: null,
       app : null,
     }
   }
@@ -148,13 +149,18 @@ class Toaster {
     }
     if (options.vote) {
       let buttongroup = document.createElement("div");
-      let button1 = document.createElement("button");
-      let button2 = document.createElement("button");
-      button1.innerHTML = "Yes";
-      button2.innerHTML = "No";
-      button1.onclick = function(){options.app.voteYes();document.getElementById('toaster').classList.remove('visible');}
-      button2.onclick = function(){options.app.voteNo();document.getElementById('toaster').classList.remove('visible');}
-      buttongroup.appendChild(button1).appendChild(button2);
+      let buttonyes = document.createElement("button");
+      let buttonno = document.createElement("button");
+      buttonyes.innerHTML = "Yes";
+      buttonno.innerHTML = "No";
+      console.log(options);
+      buttonyes.onclick = function(){
+        options.app.kickPlayerVote(options.votequery.kicked, "true");
+        document.getElementById('toaster').classList.remove('visible');}
+      buttonno.onclick = function(){
+        options.app.kickPlayerVote(options.votequery.kicked, "true");
+        document.getElementById('toaster').classList.remove('visible');}
+      buttongroup.appendChild(buttonyes).appendChild(buttonno);
       frame.appendChild(buttongroup);
       
     }
