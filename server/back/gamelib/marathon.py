@@ -2,6 +2,7 @@ import random
 import logging
 from typing import List
 
+import aioredis
 from fastapi import HTTPException
 from starlette import status as httpstatus
 
@@ -124,14 +125,20 @@ class DiceInterface(GameInterface):
     max_players = None
 
     @staticmethod
-    async def votePassed(sessionId: str, name: str, conn):
+    async def votePassed(sessionId: str, name: str, conn: aioredis.Redis):
         topic, data = name.split('_', 1)
-        cp = getVarName(ACTIVE_PLAYERS, sessionId)
         if topic == 'kick':
-            await conn.lrem(cp, 1, data)
+            whom = data
+            ap = getVarName(ACTIVE_PLAYERS, sessionId)
+            cp = getVarName("curPlayer", sessionId, gameData=True)
+            cu = int(await conn.get(cp))
+            pindex = await conn.lpos(ap, whom)
+            if pindex is not None and pindex < cu:
+                await conn.decr(cp)
+                await conn.lrem(ap, 1, whom)
 
     @staticmethod
-    async def startGame(sessionId: str, conn):
+    async def startGame(sessionId: str, conn: aioredis.Redis):
         dump = await conn.lrange(getVarName(PLAYERS_ORDER, sessionId), 0, -1)
         cp = getVarName(ACTIVE_PLAYERS, sessionId)
         await conn.unlink(cp)

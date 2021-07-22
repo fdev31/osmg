@@ -68,8 +68,8 @@ async def vote(player: PlayerIdentifier, name: str, validate: bool = True, descr
             majority = accepted > (totPlayers/2)
             if majority:
                 await conn.delete(curVote)
-                await h(conn, uid, m)
-                await conn.unlink(vip)
                 game = await getGameBySessionId(uid, conn)
                 await game.votePassed(uid, name, conn)
+                await h(conn, uid, m)
+                await conn.unlink(vip)
             await publishEvent(uid, conn, cat="voteEnd", name=name, result=majority)
