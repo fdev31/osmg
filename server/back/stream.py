@@ -29,6 +29,7 @@ async def sessionStreamSource(request, topic, playerId):
 
 async def gameEventStream(request: Request, topic: str, uid: str) -> EventSourceResponse:
     " Returns an event source for the provided topic & user "
+    logger.debug("New stream for %s @ %s", topic, uid)
     return EventSourceResponse(sessionStreamSource(request, topic, uid))
 
 def init(app, config):

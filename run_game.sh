@@ -13,10 +13,10 @@ export PREFIX=$(pwd)
 if [ -z "$DEBUG" ]; then
     export WEB_CONCURRENCY=10
     echo "Running standard mode"
-    exec $VIRTUAL_ENV/bin/uvicorn back.routes:app --port 5000
+    exec $VIRTUAL_ENV/bin/uvicorn back.routes:app --port 5000 --log-level=warning
 else
     echo "Running debug mode"
     export DEBUG
-    exec $VIRTUAL_ENV/bin/uvicorn back.routes:app --reload --port 5000
+    exec $VIRTUAL_ENV/bin/uvicorn back.routes:app --reload --port 5000 --log-level=debug
 fi
 #exec back-start front
