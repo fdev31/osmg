@@ -182,6 +182,7 @@ class Toaster {
     } else {
         this.displayed = true;
         let toaster = this.createToaster(options);
+        this.frame.innerHTML = "";
         this.frame.appendChild(toaster);
         if (options.expanded || options.vote) {
           this.display();

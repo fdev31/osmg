@@ -53,6 +53,7 @@ handlers = {
             if (parseInt(p.id) === parseInt(data.name.split('_')[1])) player_kicked = p;
         });
         let options = {
+            message : `Voulez vous exclure ${player_kicked.name} du jeu`,
             vote:true,
             votequery: {
                 kicked : player_kicked,
@@ -125,12 +126,9 @@ function initApp() {
                 this.players.map((p)=> {
                     if (parseInt(p.id) === parseInt(this.myId)) appliant = p;
                 })
-                console.log(appliant , typeof appliant);
-                console.log(player);
-                console.log(appliant.name);
                 let description = `${appliant.name}%20veut%20d%C3%A9gager%20${player.name}`
                 vote({
-                    kicker : appliant ,
+                    kicker : appliant,
                     kicked : player,
                     validate : validate,
                     description : description,
