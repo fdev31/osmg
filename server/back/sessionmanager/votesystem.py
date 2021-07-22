@@ -52,7 +52,7 @@ async def vote(player: PlayerIdentifier, name: str, validate: bool = True, descr
                 raise HTTPException(httpstatus.HTTP_403_FORBIDDEN, "A vote is already in progress")
             await publishEvent(uid, conn, cat="voteStart", name=name, description=description)
 
-        conn.sadd(vip, player.id)
+        await conn.sadd(vip, player.id)
 
         if validate:
             await conn.sadd(curVote, player.id)
@@ -69,6 +69,6 @@ async def vote(player: PlayerIdentifier, name: str, validate: bool = True, descr
                 await conn.delete(curVote)
 
                 await h(conn, uid, m)
-                conn.unlink(vip)
+                await conn.unlink(vip)
                 game = await getGameBySessionId(uid, conn)
                 await game.votePassed(uid, name, conn)
