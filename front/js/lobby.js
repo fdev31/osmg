@@ -119,7 +119,14 @@ function initApp() {
                     "secret": parseInt(this.secret),
                     "sessionName":this.name
                 });
-          }
+          },
+          voteYes: function(){
+              console.log("yes");
+          },
+          voteNo: function(){
+            console.log("no");
+        }
+
         }
     });
     lobby = app.mount('#app')

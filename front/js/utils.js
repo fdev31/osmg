@@ -146,6 +146,18 @@ class Toaster {
       button.onclick = function() {document.getElementById('toaster').classList.remove('visible');}
       frame.appendChild(button);
     }
+    if (options.vote) {
+      let buttongroup = document.createElement("div");
+      let button1 = document.createElement("button");
+      let button2 = document.createElement("button");
+      button1.innerHTML = "Yes";
+      button2.innerHTML = "No";
+      button1.onclick = function(){options.app.voteYes();document.getElementById('toaster').classList.remove('visible');}
+      button2.onclick = function(){options.app.voteNo();document.getElementById('toaster').classList.remove('visible');}
+      buttongroup.appendChild(button1).appendChild(button2);
+      frame.appendChild(buttongroup);
+      
+    }
     return frame;
   }
   display(){
@@ -166,7 +178,7 @@ class Toaster {
         let toaster = this.createToaster(options);
         console.log(toaster);
         this.frame.appendChild(toaster);
-        if (options.expanded) {
+        if (options.expanded || options.vote) {
           this.display();
         } 
         else {
