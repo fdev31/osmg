@@ -21,26 +21,6 @@ config = ODict(
     debug=debug,
 )
 
-# Logging
-
-@app.on_event("startup")
-async def startup_routine():
-    logLevel = logging.DEBUG if debug else logging.WARNING
-
-    uviLog = logging.getLogger('uvicorn')
-    uviLog.propagate = False
-    stdLogHandler = uviLog.handlers[0]
-
-    logger.setLevel(logLevel)
-    logger.addHandler(stdLogHandler)
-
-    for name in logging.root.manager.loggerDict:
-        log = logging.getLogger(name)
-        if not name.startswith('uvicorn'):
-            log.handlers = []
-        log.setLevel(logLevel)
-
-
 # Load submodules
 
 MODULES = 'sessionmanager stream games'.split()
