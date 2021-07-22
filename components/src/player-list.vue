@@ -3,6 +3,7 @@ import avatarCard from "./avatar-card";
 
 export default {
   components: { avatarCard },
+  emits : ['kick'],
   data() {
     return {
       players: [],

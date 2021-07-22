@@ -4151,7 +4151,7 @@ var es_function_name = __webpack_require__("b0c0");
 // EXTERNAL MODULE: external {"commonjs":"vue","commonjs2":"vue","root":"Vue"}
 var external_commonjs_vue_commonjs2_vue_root_Vue_ = __webpack_require__("8bbf");
 
-// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js??ref--12-0!./node_modules/thread-loader/dist/cjs.js!./node_modules/babel-loader/lib!./node_modules/vue-loader-v16/dist/templateLoader.js??ref--6!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader-v16/dist??ref--0-1!./src/player-list.vue?vue&type=template&id=6ac99723
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js??ref--12-0!./node_modules/thread-loader/dist/cjs.js!./node_modules/babel-loader/lib!./node_modules/vue-loader-v16/dist/templateLoader.js??ref--6!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader-v16/dist??ref--0-1!./src/player-list.vue?vue&type=template&id=954fb812
 
 
 function render(_ctx, _cache, $props, $setup, $data, $options) {
@@ -4177,7 +4177,7 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
     }, "Kick player", 8, ["onClick"])) : Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createCommentVNode"])("", true)])], 2);
   }), 128);
 }
-// CONCATENATED MODULE: ./src/player-list.vue?vue&type=template&id=6ac99723
+// CONCATENATED MODULE: ./src/player-list.vue?vue&type=template&id=954fb812
 
 // EXTERNAL MODULE: ./node_modules/core-js/modules/es.number.constructor.js
 var es_number_constructor = __webpack_require__("a9e3");
@@ -5557,6 +5557,7 @@ avatar_cardvue_type_script_lang_js.__scopeId = "data-v-4c4b0553"
   components: {
     avatarCard: avatar_card
   },
+  emits: ['kick'],
   data: function data() {
     return {
       players: []
