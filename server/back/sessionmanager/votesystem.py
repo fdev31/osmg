@@ -64,6 +64,7 @@ async def vote(player: PlayerIdentifier, name: str, validate: bool = True, descr
         totPlayers = await conn.llen(getVarName(PLAYERS_ORDER, uid))
 
         if votants == totPlayers:
+            await conn.unlink(vip)
             accepted = await conn.scard(curVote)
             majority = accepted > (totPlayers/2)
             if majority:
@@ -71,5 +72,4 @@ async def vote(player: PlayerIdentifier, name: str, validate: bool = True, descr
                 game = await getGameBySessionId(uid, conn)
                 await game.votePassed(uid, name, conn)
                 await h(conn, uid, m)
-                await conn.unlink(vip)
             await publishEvent(uid, conn, cat="voteEnd", name=name, result=majority)
