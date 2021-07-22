@@ -17,7 +17,7 @@ ACTIVE_PLAYERS = 'curOrder'
 
 logger = logging.getLogger('marathon')
 
-async def isPlayerTurn(conn, prefix, playerId, secret):
+async def isPlayerTurn(conn: aioredis.Redis, prefix: str, playerId: str, secret: str):
     if not await isPlayerValid(conn, prefix.split(':')[0][1:], playerId, secret):
         return False
     curPlayer = await conn.get(prefix+"curPlayer")
@@ -72,10 +72,10 @@ async def validateDice(player: PlayerIdentifier, value: str) -> None:
         await publishEvent(player.sessionName, conn, cat="varUpdate", var="distance", val=newVal, player=player.id)
         await turnLogic(newVal, player, conn)
 
-async def declareWinner(session, pid, conn):
+async def declareWinner(session: str, pid: str, conn: aioredis.Redis):
     await publishEvent(session, conn, cat="endOfGame", message="We have a winner!", player=pid)
 
-async def turnLogic(distance, player: PlayerIdentifier, conn=None):
+async def turnLogic(distance: int, player: PlayerIdentifier, conn: aioredis.Redis =None):
     if not conn:
         conn = getRedis()
 
