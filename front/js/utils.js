@@ -117,7 +117,9 @@ class Toaster {
       message:"",
       time:1000,
       type:"",
-      expanded:false
+      expanded:false,
+      vote:false,
+      app : null,
     }
   }
   setOptions(options) {
@@ -128,12 +130,22 @@ class Toaster {
     return res;
   }
   createToaster(options) {
-    let frame = `<div class="${options.type}">`;
-    frame +=`<div >${options.message}</div>`;
-    if (options.expanded) {
-      frame += `<div><button onclick="document.getElementById('toaster').classList.remove('visible')">close</button></div>`
+    let frame = document.createElement("div");
+    if (options.type != "" && !options.type) {
+      options.type.split(' ').map((x)=> {
+        frame.classList.add(x)});      
     }
-    frame += "</div>";
+    frame.id = "toast-frame";
+    let message = document.createElement("div");
+    message.innerHTML = options.message;
+    frame.appendChild(message);
+    if (options.expanded) {
+      let buttongroup = document.createElement("div");
+      let button = document.createElement("button");
+      button.innerHTML = "Close";
+      button.onclick = function() {document.getElementById('toaster').classList.remove('visible');}
+      frame.appendChild(button);
+    }
     return frame;
   }
   display(){
@@ -151,7 +163,9 @@ class Toaster {
         this.pending.push({message : options.message, time :  options.time, type : options.expanded});
     } else {
         this.displayed = true;
-        this.frame.innerHTML = this.createToaster(options);
+        let toaster = this.createToaster(options);
+        console.log(toaster);
+        this.frame.appendChild(toaster);
         if (options.expanded) {
           this.display();
         } 
