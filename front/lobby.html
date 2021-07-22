@@ -16,7 +16,7 @@
           <h3>{{T("players")}}</h3>
           <player-list ref="playerlist" 
             :enable-kick="true"
-            v-on:kick="kickPlayer"
+            v-on:kick="kickPlayerVote"
           >
           </player-list>
           <button v-on:click="mainAction" type="button">{{getMainActionText()}}</button>

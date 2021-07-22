@@ -107,26 +107,20 @@ function initApp() {
           getMainActionText : function () {
               return [this.T("Ready") , this.T("I'm not ready")][this.status]
           },
-          kickPlayer : async function (player) {
+          kickPlayerVote : async function (player,validate) {
             let appliant;
                 this.players.map((p)=> {
                     if (parseInt(p.id) === parseInt(this.myId)) appliant = p;
                 })
                 let description = `${appliant.name}%20veut%20d%C3%A9gager%20${player.name}`
-                let url = `http://${document.location.host}/c/session/vote?name=kick_${player.id}&validate=true&description=${description}`;
-                let action = await post(url, {
-                    "id":parseInt(this.myId),
-                    "secret": parseInt(this.secret),
-                    "sessionName":this.name
+                vote({
+                    kicker : appliant ,
+                    kicked : player,
+                    validate : validate,
+                    description : description,
+                    app : this,
                 });
           },
-          voteYes: function(){
-              console.log("yes");
-          },
-          voteNo: function(){
-            console.log("no");
-        }
-
         }
     });
     lobby = app.mount('#app')
