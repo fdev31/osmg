@@ -176,7 +176,6 @@ class Toaster {
     } else {
         this.displayed = true;
         let toaster = this.createToaster(options);
-        console.log(toaster);
         this.frame.appendChild(toaster);
         if (options.expanded || options.vote) {
           this.display();
@@ -191,6 +190,23 @@ class Toaster {
   }
 }
 
+/**
+ * Trigger a vote between players toward server
+ *
+ * @param {Object} query.kicker The player kicking.
+ * @param {Object} query.kicked The player to kick.
+ * @param {boolean} query.validate A binary choice , where true = yes and false = no.
+ * @param {string} query.description The text describing the action.
+ * @param {Object} query.app The vue app calling the function, must contain secret and sessionName values.
+ */
+async function vote (query) {
+  let url = `http://${document.location.host}/c/session/vote?name=kick_${query.kicked.id}&validate=${query.validate}&description=${query.description}`;
+  let action = await post(url, {
+      "id":parseInt(query.kicker.id),
+      "secret": parseInt(query.app.secret),
+      "sessionName":query.app.name
+  });
+}
 let currentLocale = null;
 
 function initLocales() {
