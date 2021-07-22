@@ -18,6 +18,7 @@ async def kickPlayer(conn, sessionId: str, match: re.Match):
     await conn.lrem(getVarName(PLAYERS_ORDER, sessionId), 1, whom)
     await conn.srem(getVarName(PLAYERS_CONNECTED, sessionId), whom)
     await conn.srem(getVarName(PLAYERS_READY, sessionId), whom)
+    await publishEvent(sessionId, conn, cat='kickPlayer', id=whom)
 
 votesHandlers = {
     re.compile('kick_(.*)'): kickPlayer,
