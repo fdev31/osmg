@@ -1,7 +1,11 @@
+import logging
 import aioredis
 from typing import Dict, Any
-from .utils import dumps
 from functools import lru_cache
+
+from .utils import dumps
+
+logger = logging.getLogger("redis")
 
 ctx : Dict[str, Any] = {}
 
@@ -12,6 +16,7 @@ def setRedis(handler: aioredis.Redis):
     ctx['redis'] = handler
 
 def publishEvent(topic, client=None, **params):
+    logger.debug("PUBLISH %s %s", topic, params)
     return (client or ctx['redis']).publish(topic, dumps(params))
 
 @lru_cache(128)
