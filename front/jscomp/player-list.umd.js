@@ -4151,12 +4151,9 @@ var es_function_name = __webpack_require__("b0c0");
 // EXTERNAL MODULE: external {"commonjs":"vue","commonjs2":"vue","root":"Vue"}
 var external_commonjs_vue_commonjs2_vue_root_Vue_ = __webpack_require__("8bbf");
 
-// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js??ref--12-0!./node_modules/thread-loader/dist/cjs.js!./node_modules/babel-loader/lib!./node_modules/vue-loader-v16/dist/templateLoader.js??ref--6!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader-v16/dist??ref--0-1!./src/player-list.vue?vue&type=template&id=467dd807
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js??ref--12-0!./node_modules/thread-loader/dist/cjs.js!./node_modules/babel-loader/lib!./node_modules/vue-loader-v16/dist/templateLoader.js??ref--6!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader-v16/dist??ref--0-1!./src/player-list.vue?vue&type=template&id=6ac99723
 
 
-var _hoisted_1 = {
-  key: 0
-};
 function render(_ctx, _cache, $props, $setup, $data, $options) {
   var _component_avatar_card = Object(external_commonjs_vue_commonjs2_vue_root_Vue_["resolveComponent"])("avatar-card");
 
@@ -4172,10 +4169,15 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
       class: "avatar-lobby",
       "avatar-name": item.name,
       "avatar-id": item.id
-    }, null, 8, ["avatar-name", "avatar-id"]), Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createVNode"])("div", null, [$props.enableKick && item.id != parseInt($props.myId) ? (Object(external_commonjs_vue_commonjs2_vue_root_Vue_["openBlock"])(), Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createBlock"])("button", _hoisted_1, "Kick player")) : Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createCommentVNode"])("", true)])], 2);
+    }, null, 8, ["avatar-name", "avatar-id"]), Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createVNode"])("div", null, [$props.enableKick && item.id != parseInt($props.myId) ? (Object(external_commonjs_vue_commonjs2_vue_root_Vue_["openBlock"])(), Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createBlock"])("button", {
+      key: 0,
+      onClick: function onClick($event) {
+        return _ctx.$emit('kick', item, 'true');
+      }
+    }, "Kick player", 8, ["onClick"])) : Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createCommentVNode"])("", true)])], 2);
   }), 128);
 }
-// CONCATENATED MODULE: ./src/player-list.vue?vue&type=template&id=467dd807
+// CONCATENATED MODULE: ./src/player-list.vue?vue&type=template&id=6ac99723
 
 // EXTERNAL MODULE: ./node_modules/core-js/modules/es.number.constructor.js
 var es_number_constructor = __webpack_require__("a9e3");
@@ -4188,7 +4190,7 @@ var _withId = /*#__PURE__*/Object(external_commonjs_vue_commonjs2_vue_root_Vue_[
 
 Object(external_commonjs_vue_commonjs2_vue_root_Vue_["pushScopeId"])("data-v-4c4b0553");
 
-var avatar_cardvue_type_template_id_4c4b0553_scoped_true_hoisted_1 = {
+var _hoisted_1 = {
   class: "avatarCard"
 };
 
@@ -5489,7 +5491,7 @@ var _hoisted_3 = {
 Object(external_commonjs_vue_commonjs2_vue_root_Vue_["popScopeId"])();
 
 var avatar_cardvue_type_template_id_4c4b0553_scoped_true_render = /*#__PURE__*/_withId(function (_ctx, _cache, $props, $setup, $data, $options) {
-  return Object(external_commonjs_vue_commonjs2_vue_root_Vue_["openBlock"])(), Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createBlock"])("div", avatar_cardvue_type_template_id_4c4b0553_scoped_true_hoisted_1, [_hoisted_2, $options.showName ? (Object(external_commonjs_vue_commonjs2_vue_root_Vue_["openBlock"])(), Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createBlock"])("span", _hoisted_3, Object(external_commonjs_vue_commonjs2_vue_root_Vue_["toDisplayString"])(_ctx.name), 1)) : Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createCommentVNode"])("", true)]);
+  return Object(external_commonjs_vue_commonjs2_vue_root_Vue_["openBlock"])(), Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createBlock"])("div", _hoisted_1, [_hoisted_2, $options.showName ? (Object(external_commonjs_vue_commonjs2_vue_root_Vue_["openBlock"])(), Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createBlock"])("span", _hoisted_3, Object(external_commonjs_vue_commonjs2_vue_root_Vue_["toDisplayString"])(_ctx.name), 1)) : Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createCommentVNode"])("", true)]);
 });
 // CONCATENATED MODULE: ./src/avatar-card.vue?vue&type=template&id=4c4b0553&scoped=true
 
