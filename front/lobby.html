@@ -16,6 +16,7 @@
           <h3>{{T("players")}}</h3>
           <player-list ref="playerlist" 
             :enable-kick="true"
+            :my-id="myId"
             v-on:kick="kickPlayerVote"
           >
           </player-list>
