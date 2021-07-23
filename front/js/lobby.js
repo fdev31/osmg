@@ -62,9 +62,15 @@ handlers = {
             
         }
         toaster.show(options)
+        lobby.gameData.enableKick = false;
         console.log(data);
     },
     'voteEnd':(data)=> {
+        let options = {
+            message : `Fin du vote`
+        }
+        toaster.show(options);
+        lobby.gameData.enableKick = true;
         console.log(data);
     },
     'log': (data) =>{
@@ -77,6 +83,7 @@ function initApp() {
     let data = extractJsonFromCookie();
     data.host = document.location.host;
     data.status = 0;
+    data.gameData.enableKick = true;
     let app = Vue.createApp({
         components: {
             'player-list': window['player-list'],

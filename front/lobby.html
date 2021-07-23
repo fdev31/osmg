@@ -15,7 +15,7 @@
           <input size="40" type="text" id="link" :value="`http://${host}/r/${name}`"></input>
           <h3>{{T("players")}}</h3>
           <player-list ref="playerlist" 
-            :enable-kick="true"
+            :enable-kick="gameData.enableKick"
             :my-id="myId"
             v-on:kick="kickPlayerVote"
           >
