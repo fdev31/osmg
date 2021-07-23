@@ -67,7 +67,7 @@ handlers = {
     },
     'voteEnd':(data)=> {
         let options = {
-            message : `Fin du vote`
+            message : `Fin du vote`,
         }
         toaster.show(options);
         lobby.gameData.enableKick = true;

@@ -124,8 +124,8 @@ class Toaster {
     }
   }
   setOptions(options) {
-    let res = this.defaultOptions;
-    Object.keys(options).map((k) => {
+    let res = Object.create(this.defaultOptions);
+    Object.keys(options).map((k) => {http://localhost:5000/r/da718f1c
       res[k] = options[k];
     });
     return res;
@@ -153,7 +153,6 @@ class Toaster {
       let buttonno = document.createElement("button");
       buttonyes.innerHTML = "Yes";
       buttonno.innerHTML = "No";
-      console.log(options);
       buttonyes.onclick = function(){
         options.app.kickPlayerVote(options.votequery.kicked, "true");
         document.getElementById('toaster').classList.remove('visible');}
@@ -161,8 +160,7 @@ class Toaster {
         options.app.kickPlayerVote(options.votequery.kicked, "true");
         document.getElementById('toaster').classList.remove('visible');}
       buttongroup.appendChild(buttonyes).appendChild(buttonno);
-      frame.appendChild(buttongroup);
-      
+      frame.appendChild(buttongroup);  
     }
     return frame;
   }
@@ -176,13 +174,15 @@ class Toaster {
     }    
   }
   show(options){
+    console.log(this.options);
     options = this.setOptions(options);
+    console.log(this.options);
     if (this.displayed) {
         this.pending.push({message : options.message, time :  options.time, type : options.expanded});
     } else {
         this.displayed = true;
+        removeAllChildNodes(this.frame)
         let toaster = this.createToaster(options);
-        this.frame.innerHTML = "";
         this.frame.appendChild(toaster);
         if (options.expanded || options.vote) {
           this.display();
@@ -242,4 +242,8 @@ function removeValueFromArray(value, myarray) {
     index--;
     }   
   }
+}
+
+function removeAllChildNodes(parent) {
+  while (parent.firstChild) parent.removeChild(parent.firstChild);
 }
