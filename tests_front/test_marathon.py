@@ -51,8 +51,8 @@ class MarathonTest(unittest.TestCase):
         self.driver2.find_elements_by_tag_name("button")[0].click()
         time.sleep(1)
         # start game
-        self.driver.find_elements_by_tag_name("button")[3].click()
-        self.driver2.find_elements_by_tag_name("button")[3].click()
+        self.driver.find_elements_by_class_name("mainAction")[0].click()
+        self.driver2.find_elements_by_class_name("mainAction")[0].click()
 
         time.sleep(8)
         shot(self.driver, "ff_game")
@@ -60,13 +60,13 @@ class MarathonTest(unittest.TestCase):
         but_idx = 1
         for n in range(20):
             try:
-                self.driver.find_elements_by_tag_name("button")[but_idx].click()
+                self.driver.find_elements_by_class_name("mainAction")[0].click()
                 time.sleep(0.1)
-                self.driver.find_elements_by_tag_name("button")[but_idx].click()
+                self.driver.find_elements_by_class_name("mainAction")[0].click()
                 time.sleep(0.5)
-                self.driver2.find_elements_by_tag_name("button")[but_idx].click()
+                self.driver2.find_elements_by_class_name("mainAction")[0].click()
                 time.sleep(0.1)
-                self.driver2.find_elements_by_tag_name("button")[but_idx].click()
+                self.driver2.find_elements_by_class_name("mainAction")[0].click()
                 time.sleep(0.5)
             except IndexError:
                 shot(self.driver, "ff_end_game")

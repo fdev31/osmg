@@ -11,7 +11,7 @@
     <div id="app" v-cloak>
       <h1>{{T("Your info")}}:</h1>
       <input v-model="nickname" type="text"  placeholder="nickname"></input>
-      <button @click="validate" type="button" name="button">{{T("Join")}}</button>
+      <button @click="validate" type="button" name="button" class="mainAction">{{T("Join")}}</button>
       <avatar-card ref="myavatar" noname v-bind:avatar-name="nickname" ></avatar-card>
     </div>
 

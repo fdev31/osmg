@@ -22,7 +22,7 @@
             <div v-else>
                 <div><b>{{getPlayerAction()}}</b></div>
                 {{ distance }} {{ T("meters left") }} 
-                <button v-on:click="mainPlayButton" type="button" v-if="diceVisible">{{ getPlayerAction() }}</button>
+                <button v-on:click="mainPlayButton" type="button" v-if="diceVisible" class="mainAction">{{ getPlayerAction() }}</button>
                 <button v-on:click="skipTurn" type="button" v-if="isLastAction"> {{ T("Pass") }} </button>
                 <div v-if="diceVisible" class="diceArea">
                     <dice-array ref="mydice"></dice-array>

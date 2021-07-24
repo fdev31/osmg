@@ -20,7 +20,7 @@
             v-on:kick="kickPlayerVote"
           >
           </player-list>
-          <button v-on:click="mainAction" type="button">{{getMainActionText()}}</button>
+          <button v-on:click="mainAction" type="button" class="mainAction">{{getMainActionText()}}</button>
           <button type="button">{{T("Change game")}}</button>
       </div>
       <script src="https://unpkg.com/vue@next"></script>
