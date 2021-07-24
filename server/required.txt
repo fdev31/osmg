@@ -6,3 +6,4 @@ sse-starlette
 hiredis
 aiojobs
 aiofiles
+pyyaml
