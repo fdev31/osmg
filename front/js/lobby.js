@@ -27,6 +27,8 @@ async function countDown(count=4) {
 handlers = {
     connectPlayer:(data) => {
         toaster.show({message: `${findPlayer(lobby,data.id).name} enters the game` ,time: 2500})
+        lobby.playersData[data.id] = {};
+        setCookie(Vue2Obj(lobby));
         console.log(data);
     },
     disconnectPlayer:(data)=>{
