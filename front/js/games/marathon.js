@@ -121,6 +121,19 @@ function initApp() {
             distance() {
                 return this.playersData[this.myId].distance;
             },
+            sortPlayers() {
+                let data = this.playersData;
+                let result = []
+                Object.keys(data).map(function(key){
+                    return result.push([key , data[key]])
+                });
+                result = result.sort(function(a , b){
+                    return a[1].distance - b[1].distance;
+                }).map(x => {
+                    return Object.assign(findPlayer(this , x[0]), x[1]);
+                });
+                return result;
+            },
         },
         methods: {
             T(text) {
@@ -149,19 +162,6 @@ function initApp() {
                 if (parseInt(this.gameData.curPlayer )=== parseInt(player.id)) {
                     return "playing";
                 }
-            },
-            sortPlayers() {
-                let data = this.playersData;
-                let result = []
-                Object.keys(data).map(function(key){
-                    return result.push([key , data[key]])
-                });
-                result = result.sort(function(a , b){
-                    return a[1].distance - b[1].distance;
-                }).map(x => {
-                    return Object.assign(findPlayer(this , x[0]), x[1]);
-                });
-                return result;
             },
             async mainPlayButton() {
                 switch(this.status) {
@@ -223,7 +223,7 @@ function initApp() {
     marathon = app.mount('#app');
     parseInt(marathon.gameData.curPlayer) === parseInt(marathon.myId) ? marathon.setStatus(statuses.THROW): marathon.setStatus(statuses.WAITING);
     setupStreamEventHandler({topic :marathon.name , uid : marathon.myId}, handlers);
-    if (marathon.gameData.turn == 0) {
+    if (parseInt(marathon.gameData.turns) == 0) {
         for (const key in marathon.playersData) {
             if (Object.hasOwnProperty.call(marathon.playersData, key)) {
                 marathon.playersData[key].distance = 42195;             

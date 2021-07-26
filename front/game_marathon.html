@@ -30,7 +30,7 @@
             </div>
 
             <div class="players">
-                <div v-for="item in sortPlayers()">
+                <div v-for="item in sortPlayers">
                 <span>{{item.name}}</span>
                 <span> <progress max="100" :value="getProgress(item.id)"></progress> </span><span> {{item.distance}} {{ T("meters") }}</span>
                 </div>
