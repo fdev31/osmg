@@ -120,7 +120,6 @@ class Toaster {
       expanded:false,
       vote:false,
       votequery: null,
-      app : null,
     }
   }
   setOptions(options) {
@@ -132,37 +131,43 @@ class Toaster {
   }
   createToaster(options) {
     let frame = document.createElement("div");
-    if (options.type != "" && !options.type) {
-      options.type.split(' ').map((x)=> {
-        frame.classList.add(x)});      
-    }
-    frame.id = "toast-frame";
-    let message = document.createElement("div");
-    message.innerHTML = options.message;
+    let message = createElement("div" , options.message);
+    console.log(message);
     frame.appendChild(message);
+    if (options.type != "" && !options.type) {
+      this.addClass(frame,options.type);      
+    }
+    frame.id = "toast-frame";  
     if (options.expanded) {
-      let buttongroup = document.createElement("div");
-      let button = document.createElement("button");
-      button.innerHTML = "Close";
-      button.onclick = function() {document.getElementById('toaster').classList.remove('visible');}
-      frame.appendChild(button);
+      frame.appendChild(this.createCloseButton());
     }
     if (options.vote) {
-      let buttongroup = document.createElement("div");
-      let buttonyes = document.createElement("button");
-      let buttonno = document.createElement("button");
-      buttonyes.innerHTML = "Yes";
-      buttonno.innerHTML = "No";
-      buttonyes.onclick = function(){
-        options.app.kickPlayerVote(options.votequery.kicked, "true");
-        document.getElementById('toaster').classList.remove('visible');}
-      buttonno.onclick = function(){
-        options.app.kickPlayerVote(options.votequery.kicked, "true");
-        document.getElementById('toaster').classList.remove('visible');}
-      buttongroup.appendChild(buttonyes).appendChild(buttonno);
-      frame.appendChild(buttongroup);  
+      frame.appendChild(this.createButtonBinary(options));  
     }
     return frame;
+  }
+
+  addClass(element , classString) {
+    classString.split(' ').map((x)=> {
+      element.classList.add(x)})
+  }
+  createCloseButton() {
+    let buttongroup = document.createElement("div");
+    let button = createElement("button" , "Close")
+    button.onclick = function() {document.getElementById('toaster').classList.remove('visible');}
+    buttongroup.appendChild(button);
+    return button
+  }
+
+  createButtonBinary(options) {
+    let buttongroup = document.createElement("div");
+    let buttonyes = createElement("button" , "Yes")
+    let buttonno = createElement("button" , "No")
+    buttonyes.onclick = options.votequery.onYes
+    buttonno.onclick = options.votequery.onNo
+    buttongroup.appendChild(buttonyes);
+    buttongroup.appendChild(buttonno);
+    return buttongroup;
   }
   display(){
     this.displayed = false;
@@ -246,4 +251,10 @@ function removeValueFromArray(value, myarray) {
 
 function removeAllChildNodes(parent) {
   while (parent.firstChild) parent.removeChild(parent.firstChild);
+}
+
+function createElement(type , innerHTML) {
+  let newElem = document.createElement(type);
+  newElem.innerHTML = innerHTML;
+  return newElem;
 }
