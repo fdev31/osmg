@@ -17,7 +17,6 @@ setup(
     description="Our awesome game",
     long_description=getdesc(),
     install_requires=deps,
-    scripts=['back-start'],
     packages=find_packages(),
     url='https://github.com/jomenoube60/our-awesome-game',
     zip_safe=True,

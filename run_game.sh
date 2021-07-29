@@ -21,4 +21,3 @@ else
     export DEBUG
     exec $VIRTUAL_ENV/bin/uvicorn back.routes:app --reload --port $HTTP_PORT --log-level=debug --log-config logging.yaml
 fi
-#exec back-start front
