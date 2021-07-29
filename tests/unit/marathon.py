@@ -1,12 +1,12 @@
-from fastapi import FastAPI
-from fastapi.testclient import TestClient
-from httpx import AsyncClient
+from threading import Thread
 from json import loads
+import time
+
+from fastapi.testclient import TestClient
 import requests
-import pytest
 
 from back.routes import app
-from threading import Thread
+from back.utils import ODict
 
 client = TestClient(app)
 
@@ -24,19 +24,26 @@ class EventStream(Thread):
         return oldQ
 
     def run(self):
-        response = client.get("/c/stream?topic=%s&uid=%s" % (self._topic, self._uid))
-        for chunk in response.iter_lines():
-            self.q.append(chunk)
+        url = "http://localhost:5000/c/stream?topic=%s&uid=%s" % (
+            self._topic,
+            self._uid,
+        )
+        mclient = requests.get(url, stream=True)
+        for chunk in mclient.iter_lines(decode_unicode=True):
+            if chunk.startswith("data:"):
+                self.q.append(ODict(loads(chunk[6:])))
 
 
 stream = None
 
 
-def getStream(topic="", uid=""):
+def getStream(topic: str = None, uid: str = None):
     global stream
     if stream is None:
+        assert topic is not None and uid is not None
         stream = EventStream(topic, uid)
         stream.start()
+        time.sleep(0.5)
         return []
     else:
         return stream.getLatest()
@@ -60,6 +67,8 @@ def test_c_session():
     )
     session = response.json()
     session["id"] = [p["id"] for p in session["players"] if p["name"] == "toto"][0]
+    # start the stream
+    getStream(session["name"], session["id"])
     response2 = client.post(
         "/c/session/join",
         json={"name": "tatie", "avatar": "0", "sessionName": session["name"]},
@@ -86,7 +95,17 @@ def test_c_session():
     )
     assert response.status_code == 200, response.text
     assert response2.status_code == 200, response.text
+    events = getStream()
+    np = [e for e in events if e["cat"] == "newPlayer"][0]
+    assert np["name"] == "tatie", "Unexpected player name"
+    assert (
+        len([e for e in events if e["cat"] == "ready"]) == 2
+    ), "2 players should be ready"
+    assert (
+        len([e for e in events if e["cat"] == "start"]) == 1
+    ), "Game should have started"
 
+    # check incorrect double request
     response = client.post(
         "/c/session/start",
         json={
@@ -96,3 +115,5 @@ def test_c_session():
         },
     )
     assert response.status_code == 409  # operation already done
+
+    # Game started
