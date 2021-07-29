@@ -4,11 +4,11 @@ let statuses = {
   READY: 1,
 };
 
-toaster = new Toaster();
+toaster = new Toaster({id:"toaster"});
 function counter(index, time = 1000) {
   return new Promise((res) => {
     setTimeout(() => {
-      toaster.show({ message: index });
+      toaster.show({ message: index , closeTimeOut : time});
       res();
     }, time);
   });
@@ -26,7 +26,7 @@ handlers = {
   connectPlayer: (data) => {
     toaster.show({
       message: `${findPlayer(lobby, data.id).name} enters the game`,
-      time: 2500,
+      closeTimeOut: 2500,
     });
     lobby.playersData[data.id] = {};
     setCookie(Vue2Obj(lobby));
@@ -35,7 +35,7 @@ handlers = {
   disconnectPlayer: (data) => {
     toaster.show({
       message: `${findPlayer(lobby, data.id).name} is disconnected`,
-      time: 2500,
+      closeTimeOut: 2500,
     });
     console.log(data);
   },
@@ -54,29 +54,40 @@ handlers = {
     });
   },
   voteStart: (data) => {
-    let player_kicked;
-    lobby.players.map((p) => {
-      if (parseInt(p.id) === parseInt(data.name.split("_")[1]))
-        player_kicked = p;
-    });
-    let options = {
-      message: `Voulez vous exclure ${player_kicked.name} du jeu`,
-      vote: true,
-      votequery: {
-        kicked: player_kicked,
-      },
-      app: lobby,
-    };
-    toaster.show(options);
-    lobby.gameData.enableKick = false;
+    console.log(lobby.gameData.enableKick);
+    console.log(!lobby.gameData.enableKick);
+    if (!lobby.gameData.hasVoted) {
+      console.log("show toast");
+      let player_kicked;
+      lobby.players.map((p) => {
+        if (parseInt(p.id) === parseInt(data.name.split("_")[1]))
+          player_kicked = p;
+      });
+      let options = {
+        message: `Voulez vous exclure ${player_kicked.name} du jeu`,
+        binaryQuestion : {
+          yes : {
+            action : (x) => lobby.kickPlayerVote(player_kicked,"true"),
+            hideOnClick : true
+          },
+          no : {
+            action : (x) => lobby.kickPlayerVote(player_kicked,"false"),
+            hideOnClick : true
+          }
+        },
+      };
+      toaster.show(options);      
+    }
+    lobby.gameData.isVoting = false;
     console.log(data);
   },
   voteEnd: (data) => {
     let options = {
       message: `Fin du vote`,
+      closeTimeOut : 2500
     };
     toaster.show(options);
-    lobby.gameData.enableKick = true;
+    lobby.gameData.hasVoted = true;
     console.log(data);
   },
   log: (data) => {
@@ -137,11 +148,14 @@ function initApp() {
         return [this.T("Ready"), this.T("I'm not ready")][this.status];
       },
       kickPlayerVote: async function (player, validate) {
+        console.log(player);
         let appliant;
         this.players.map((p) => {
           if (parseInt(p.id) === parseInt(this.myId)) appliant = p;
         });
+        console.log(appliant);
         let description = `${appliant.name}%20veut%20d%C3%A9gager%20${player.name}`;
+        console.log(description);
         vote({
           kicker: appliant,
           kicked: player,
@@ -149,6 +163,7 @@ function initApp() {
           description: description,
           app: this,
         });
+        this.gameData.hasVoted = true
       },
     },
   });

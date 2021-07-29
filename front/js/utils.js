@@ -113,102 +113,106 @@ function findPlayer(data, pid) {
   }
 }
 class Toaster {
-  constructor(frameId = "toaster") {
-    this.frame = document.getElementById(frameId);
-    this.pending = [];
-    this.displayed = false;
-    this.defaultOptions = {
-      message: "",
-      time: 1000,
-      type: "",
-      expanded: false,
-      vote: false,
-      votequery: null,
-    };
-  }
-  setOptions(options) {
-    let res = Object.create(this.defaultOptions);
-    Object.keys(options).map((k) => {
-      res[k] = options[k];
-    });
-    return res;
-  }
-  createToaster(options) {
-    let frame = document.createElement("div");
-    let message = createElement("div", options.message);
-    console.log(message);
-    frame.appendChild(message);
-    if (options.type != "" && !options.type) {
-      this.addClass(frame, options.type);
-    }
-    frame.id = "toast-frame";
-    if (options.expanded) {
-      frame.appendChild(this.createCloseButton());
-    }
-    if (options.vote) {
-      frame.appendChild(this.createButtonBinary(options));
-    }
-    return frame;
-  }
-
-  addClass(element, classString) {
-    classString.split(" ").map((x) => {
-      element.classList.add(x);
-    });
-  }
-  createCloseButton() {
-    let buttongroup = document.createElement("div");
-    let button = createElement("button", "Close");
-    button.onclick = function () {
-      document.getElementById("toaster").classList.remove("visible");
-    };
-    buttongroup.appendChild(button);
-    return button;
-  }
-
-  createButtonBinary(options) {
-    let buttongroup = document.createElement("div");
-    let buttonyes = createElement("button", "Yes");
-    let buttonno = createElement("button", "No");
-    buttonyes.onclick = options.votequery.onYes;
-    buttonno.onclick = options.votequery.onNo;
-    buttongroup.appendChild(buttonyes);
-    buttongroup.appendChild(buttonno);
-    return buttongroup;
-  }
-  display() {
-    this.displayed = false;
-    if (this.pending.length) {
-      let val = this.pending.pop();
-      return this.show(val.message, val);
-    } else {
-      this.frame.classList.remove("visible");
-    }
-  }
-  show(options) {
-    console.log(this.options);
-    options = this.setOptions(options);
-    console.log(this.options);
-    if (this.displayed) {
-      this.pending.push({
-        message: options.message,
-        time: options.time,
-        type: options.expanded,
-      });
-    } else {
-      this.displayed = true;
-      removeAllChildNodes(this.frame);
-      let toaster = this.createToaster(options);
-      this.frame.appendChild(toaster);
-      if (options.expanded || options.vote) {
-        this.display();
-      } else {
-        setTimeout(() => {
-          this.display();
-        }, options.time);
+  // # Initialiser
+  // # function pour créer toast
+  // # function pour définir les options    
+  constructor(options) {
+      this.anchor = document.getElementById(options.id);
+      this._options = {
+          default : {
+              position :"top"
+          },
+          show_default : {
+              message : "Hello",
+              closeTimeOut : 1000,
+              closeButton : null,
+              binaryQuestion : null,
+              customButtons : null
+          },
       }
-      this.frame.classList.add("visible");
-    }
+  }
+  findAnchor(){
+      if(this.anchor == undefined) throw "No tag to work with. Be sure that you provide an id" ;
+      return this.anchor;
+  }
+  createMainFrame(classList = []) {
+      this.findAnchor().classList.add("jom-toaster");
+      let mainFrame = document.createElement("div");
+      mainFrame.classList.add("jom-frame");
+      classList.map( (c) =>{ mainFrame.classList.add(c)} ) ;
+      
+      let message = createElement("div" , "" , ["jom-message"]);
+      mainFrame.appendChild(message);
+      this.findAnchor().appendChild(mainFrame);
+  }
+  addMessage(message) {
+      let collection = this.findAnchor().getElementsByClassName("jom-message");
+      let action = function(elm) {elm.innerHTML = message}
+      forEachElementDo(collection , (x) => {x.innerHTML = message});
+  }
+  /**
+   * Create a new button with its own logic
+   *
+   * @param {string} options.caption The text in the button.
+   * @param {Object} options.action The function defining what will happen on click.
+   * @param {boolean} options.hideOnClick Whether or not the Toaster will hide on click.
+   */
+  createButton (options) {
+      let btn = createElement("button" , options.caption);
+      btn.addEventListener("click" , options.action);
+      if(options.hideOnClick) btn.addEventListener("click",(x)=> this.disableVisibility());
+      return btn;
+  }
+  addCloseButton(options = {caption : "Close" , action:(x)=> console.log("close")}) {
+      let closeGroup = createElement("div" , "" , ["jom-closebtn"]);     
+      closeGroup.appendChild(this.createButton({
+          caption : options.caption,
+          action : (x)=>{options.action()},
+          hideOnClick : true
+      }));
+      forEachElementDo(this.findAnchor().getElementsByClassName("jom-frame") , (x)=> {x.appendChild(closeGroup)})
+  }
+  createCustomButtonGroup (options) {
+      let btnGroup = createElement("div" , "" , ["jom-custombtn"]);
+      for (const [key, value] of Object.entries(options)) {
+          btnGroup.appendChild(this.createButton({
+              caption : key,
+              action : (x) => value.action(),
+              hideOnClick : value.hideOnClick
+          }));
+      this.findAnchor().appendChild(btnGroup)        
+       }
+  }
+  addYesNoButtons(options) {
+      let btnGroup = createElement("div" , "" , ["jom-yesno"]);
+      console.log(options);
+      for (const [key, value] of Object.entries(options)) {
+          btnGroup.appendChild(this.createButton({
+              caption : key,
+              action : (x) => value.action(),
+              hideOnClick : value.hideOnClick
+          }));
+      this.findAnchor().appendChild(btnGroup)
+      }
+  }
+  enableVisibility() {
+      this.findAnchor().classList.add("visible");
+  }
+  disableVisibility() {
+      this.findAnchor().classList.remove("visible");
+  }
+  cleanToaster() {
+      removeAllChildElement(this.findAnchor());
+  }
+  show(options = this._options.show_default) {
+      this.cleanToaster();
+      this.createMainFrame();
+      this.addMessage(options.message);
+      this.enableVisibility();
+      if (options.binaryQuestion) this.addYesNoButtons(options.binaryQuestion);
+      if (options.closeButton) this.addCloseButton(options.closeButton);
+      if (options.closeTimeOut > 0) setTimeout((x) => this.disableVisibility() , options.closeTimeOut);
+      
   }
 }
 
@@ -259,13 +263,19 @@ function removeValueFromArray(value, myarray) {
     }
   }
 }
-
-function removeAllChildNodes(parent) {
-  while (parent.firstChild) parent.removeChild(parent.firstChild);
+function removeAllChildElement(elm) {
+  while (elm.lastChild) {
+      elm.removeChild(elm.lastChild);
+  }
 }
-
-function createElement(type, innerHTML) {
-  let newElem = document.createElement(type);
-  newElem.innerHTML = innerHTML;
-  return newElem;
+function createElement(type = "div",innerHtml = null , classList = [] ) {
+  let elm = document.createElement(type);
+  elm.innerHTML = innerHtml;
+  classList.map((x)=> elm.classList.add(x));
+  return elm;
+}
+function forEachElementDo(collection , action) {
+  for (let i = 0; i < collection.length; i++) {
+      action(collection[i]);         
+  }
 }
