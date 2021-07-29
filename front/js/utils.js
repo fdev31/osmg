@@ -124,7 +124,7 @@ class Toaster {
   }
   setOptions(options) {
     let res = Object.create(this.defaultOptions);
-    Object.keys(options).map((k) => {http://localhost:5000/r/da718f1c
+    Object.keys(options).map((k) => {
       res[k] = options[k];
     });
     return res;
