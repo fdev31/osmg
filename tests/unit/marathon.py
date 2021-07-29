@@ -1,6 +1,7 @@
 from threading import Thread
 from json import loads
 import time
+import os
 
 from fastapi.testclient import TestClient
 import requests
@@ -24,7 +25,8 @@ class EventStream(Thread):
         return oldQ
 
     def run(self):
-        url = "http://localhost:5000/c/stream?topic=%s&uid=%s" % (
+        url = "http://127.0.0.1:%s/c/stream?topic=%s&uid=%s" % (
+            os.environ['HTTP_PORT'],
             self._topic,
             self._uid,
         )
@@ -74,7 +76,6 @@ def test_c_session():
         json={"name": "tatie", "avatar": "0", "sessionName": session["name"]},
     )
     session2 = response2.json()
-    print(session2)
     session2["id"] = [p["id"] for p in session2["players"] if p["name"] == "tatie"][0]
 
     response = client.post(

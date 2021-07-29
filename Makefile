@@ -1,5 +1,7 @@
 .PHONY: test
 
+HTTP_PORT=`cat HTTP_PORT`
+
 all:
 	(cd locales && ./build)
 	(cd components && ./build)
@@ -9,4 +11,4 @@ test:
 
 unit:
 	./venv/bin/pip install requests pytest pytest-asyncio httpx
-	./venv/bin/pytest tests/unit/*.py
+	HTTP_PORT=${HTTP_PORT} ./venv/bin/pytest tests/unit/*.py
