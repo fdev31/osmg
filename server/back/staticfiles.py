@@ -3,12 +3,15 @@
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import RedirectResponse
 
+
 def index_html():
-    return RedirectResponse('/index.html')
+    return RedirectResponse("/index.html")
+
 
 async def roomsAccess(sessionId) -> RedirectResponse:
-    " Redirects a nice /r/<session>/ url into the real one "
-    return RedirectResponse('/join.html?session='+sessionId)
+    "Redirects a nice /r/<session>/ url into the real one"
+    return RedirectResponse("/join.html?session=" + sessionId)
+
 
 def init(app, config):
     app.get("/r/{sessionId}")(roomsAccess)

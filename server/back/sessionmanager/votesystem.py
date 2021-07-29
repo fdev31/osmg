@@ -13,16 +13,19 @@ from .public import getGameBySessionId, isPlayerValid
 
 logger = logging.getLogger("SessionVote")
 
+
 async def kickPlayer(conn, sessionId: str, match: re.Match):
     whom = match.groups()[0]
     await conn.lrem(getVarName(PLAYERS_ORDER, sessionId), 1, whom)
     await conn.srem(getVarName(PLAYERS_CONNECTED, sessionId), whom)
     await conn.srem(getVarName(PLAYERS_READY, sessionId), whom)
-    await publishEvent(sessionId, conn, cat='kickPlayer', id=whom)
+    await publishEvent(sessionId, conn, cat="kickPlayer", id=whom)
+
 
 votesHandlers = {
-    re.compile('kick_(.*)'): kickPlayer,
+    re.compile("kick_(.*)"): kickPlayer,
 }
+
 
 def findHandler(name: str) -> Tuple[re.Match, Callable[[str, str, list], None]]:
     for handler in votesHandlers:
@@ -31,9 +34,12 @@ def findHandler(name: str) -> Tuple[re.Match, Callable[[str, str, list], None]]:
             return (m, votesHandlers[handler])
     return (None, None)
 
-async def vote(player: PlayerIdentifier, name: str, validate: bool = True, description: str = ''):
-    """ Vote for a topic "name", you can unvote if validate is false.
-    The first player to vote must provide a description """
+
+async def vote(
+    player: PlayerIdentifier, name: str, validate: bool = True, description: str = ""
+):
+    """Vote for a topic "name", you can unvote if validate is false.
+    The first player to vote must provide a description"""
 
     m, h = findHandler(name)
     VOTE_IN_PROGRESS = "_voteInProgress"
@@ -50,8 +56,12 @@ async def vote(player: PlayerIdentifier, name: str, validate: bool = True, descr
         vip = getVarName(VOTE_IN_PROGRESS, uid)
         if not await conn.exists(curVote):
             if await conn.exists(vip):
-                raise HTTPException(httpstatus.HTTP_403_FORBIDDEN, "A vote is already in progress")
-            await publishEvent(uid, conn, cat="voteStart", name=name, description=description)
+                raise HTTPException(
+                    httpstatus.HTTP_403_FORBIDDEN, "A vote is already in progress"
+                )
+            await publishEvent(
+                uid, conn, cat="voteStart", name=name, description=description
+            )
 
         await conn.sadd(vip, player.id)
 
@@ -66,7 +76,7 @@ async def vote(player: PlayerIdentifier, name: str, validate: bool = True, descr
         if votants == totPlayers:
             await conn.unlink(vip)
             accepted = await conn.scard(curVote)
-            majority = accepted > (totPlayers/2)
+            majority = accepted > (totPlayers / 2)
             if majority:
                 await conn.delete(curVote)
                 game = await getGameBySessionId(uid, conn)

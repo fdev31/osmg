@@ -1,30 +1,31 @@
 from typing import Dict, Optional, Any, List
 
+
 class GameInterface:
-    name : str = "Unknown game"
-    description : str = "No description yet"
-    long_description : str = "No long description yet"
-    card : str = "quiz"
-    min_players : Optional[int] = 1
-    max_players : Optional[int] = 99
+    name: str = "Unknown game"
+    description: str = "No description yet"
+    long_description: str = "No long description yet"
+    card: str = "quiz"
+    min_players: Optional[int] = 1
+    max_players: Optional[int] = 99
 
     @staticmethod
     def getPlayerData() -> dict:
-        """ Returns initial data for a player """
+        """Returns initial data for a player"""
         return {}
 
     @staticmethod
     def getGameData() -> dict:
-        """ Returns initial data for a game """
+        """Returns initial data for a game"""
         return {}
 
-    actions: Dict[str, Any]  = {}
+    actions: Dict[str, Any] = {}
 
     # the following should not be overloaded:
 
     @classmethod
     def info(kls) -> Dict[str, str]:
-        if not hasattr(kls, '_info'):
+        if not hasattr(kls, "_info"):
             return {
                 "name": kls.name,
                 "description": kls.description,
@@ -37,7 +38,7 @@ class GameInterface:
 
     @staticmethod
     def getPlayerIdentifiers() -> List[str]:
-        return ['id', 'name', 'avatar']
+        return ["id", "name", "avatar"]
 
     @classmethod
     def definition(kls) -> Dict[str, Any]:

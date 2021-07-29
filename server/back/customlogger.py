@@ -6,6 +6,7 @@ TRACE_LOG_LEVEL = 5
 
 debug = False
 
+
 class ColourizedFormatter(logging.Formatter):
     """
     A custom log formatter class that:
@@ -15,11 +16,11 @@ class ColourizedFormatter(logging.Formatter):
     """
 
     headers = {
-        'DEBUG': click.style("DEBUG", fg="blue"),
-        'INFO': click.style("INFO", fg="green"),
-        'WARNING': click.style("WARNING", fg="yellow"),
-        'ERROR': click.style("ERROR", fg="red"),
-        'CRITICAL': click.style("CRITICAL", fg="bright_red"),
+        "DEBUG": click.style("DEBUG", fg="blue"),
+        "INFO": click.style("INFO", fg="green"),
+        "WARNING": click.style("WARNING", fg="yellow"),
+        "ERROR": click.style("ERROR", fg="red"),
+        "CRITICAL": click.style("CRITICAL", fg="bright_red"),
     }
 
     def __init__(self, fmt=None, datefmt=None, style="%", use_colors=None):
@@ -31,7 +32,7 @@ class ColourizedFormatter(logging.Formatter):
             print("")
             print(record)
             for k in dir(record):
-                if k[0] != '_':
+                if k[0] != "_":
                     print(k, getattr(record, k))
         recordcopy = copy(record)
         levelname = recordcopy.levelname

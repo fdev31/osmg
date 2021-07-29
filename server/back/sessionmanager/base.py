@@ -5,18 +5,21 @@ from ..globalHandlers import getRedis
 
 logger = logging.getLogger("Session")
 
-t0 = time.time()*1000
+t0 = time.time() * 1000
+
 
 async def getUniquePlayerId() -> int:
-    pid = await getRedis().incr('count_players')
+    pid = await getRedis().incr("count_players")
     return pid
 
+
 async def genUniqueSessionId() -> str:
-    pid = await getRedis().incr('count_session')
-    return hex(int("%d%d"%(pid, (time.time()*1000)-t0)))[2:]
+    pid = await getRedis().incr("count_session")
+    return hex(int("%d%d" % (pid, (time.time() * 1000) - t0)))[2:]
+
 
 async def removeSession(sessionName: str, conn):
-    " Delete all traces of a session """
+    " Delete all traces of a session " ""
     all_keys = []
     cur = b"0"
     while cur:

@@ -1,5 +1,6 @@
 from .interfaces import GameInterface
 
+
 class Game(GameInterface):
     name = "Super dummy game v2"
     card = "arcade"
@@ -17,5 +18,6 @@ class Game(GameInterface):
         return {}
 
     actions = {}
+
 
 definition = Game.definition()

@@ -6,26 +6,34 @@ import aioredis
 from fastapi import HTTPException
 from starlette import status as httpstatus
 
-from ..globalHandlers import getRedis, getGameDataPrefix, getVarName, publishEvent, PLAYERS_ORDER
+from ..globalHandlers import (
+    getRedis,
+    getGameDataPrefix,
+    getVarName,
+    publishEvent,
+    PLAYERS_ORDER,
+)
 from ..sessionmanager.public import isPlayerValid
 from ..models import PlayerIdentifier
 from ..utils import loads, dumps
 
 from .interfaces import GameInterface
 
-ACTIVE_PLAYERS = 'curOrder'
+ACTIVE_PLAYERS = "curOrder"
 
-logger = logging.getLogger('marathon')
+logger = logging.getLogger("marathon")
+
 
 async def isPlayerTurn(conn: aioredis.Redis, prefix: str, playerId: str, secret: str):
-    if not await isPlayerValid(conn, prefix.split(':')[0][1:], playerId, secret):
+    if not await isPlayerValid(conn, prefix.split(":")[0][1:], playerId, secret):
         return False
-    curPlayer = await conn.get(prefix+"curPlayer")
-    curPlayerId = await conn.lindex(prefix[:-2]+ACTIVE_PLAYERS, int(curPlayer))
+    curPlayer = await conn.get(prefix + "curPlayer")
+    curPlayerId = await conn.lindex(prefix[:-2] + ACTIVE_PLAYERS, int(curPlayer))
     return int(curPlayerId) == int(playerId)
 
+
 async def throwDice(player: PlayerIdentifier) -> List[int]:
-    """ Throw a number of dices (defined by the current player score) """
+    """Throw a number of dices (defined by the current player score)"""
     redis = getRedis()
     gprefix = getGameDataPrefix(player.sessionName)
     prefix = getGameDataPrefix(player.sessionName, player.id)
@@ -36,17 +44,20 @@ async def throwDice(player: PlayerIdentifier) -> List[int]:
             raise HTTPException(httpstatus.HTTP_403_FORBIDDEN, "Not your turn!")
         tmpDice = await conn.get(propName)
         if tmpDice:
-            raise HTTPException(httpstatus.HTTP_421_MISDIRECTED_REQUEST, "Dice already thrown")
-        remainingDistance = await conn.get(prefix+'distance')
+            raise HTTPException(
+                httpstatus.HTTP_421_MISDIRECTED_REQUEST, "Dice already thrown"
+            )
+        remainingDistance = await conn.get(prefix + "distance")
 
         dices = [random.randint(1, 6) for x in range(min(4, len(remainingDistance)))]
         await conn.set(propName, dumps(dices))
     return dices
 
+
 async def validateDice(player: PlayerIdentifier, value: str) -> None:
-    """ Validate a previously thrown dice with a new order
+    """Validate a previously thrown dice with a new order
     set value=0 to skip the turn
-     """
+    """
     redis = getRedis()
     prefix = getGameDataPrefix(player.sessionName, player.id)
     g_prefix = getGameDataPrefix(player.sessionName)
@@ -55,7 +66,7 @@ async def validateDice(player: PlayerIdentifier, value: str) -> None:
     async with redis.client() as conn:
         if not await isPlayerTurn(conn, g_prefix, player.id, player.secret):
             raise HTTPException(httpstatus.HTTP_403_FORBIDDEN, "Not your turn!")
-        if value != '0':
+        if value != "0":
             previous = loads(await conn.get(propName))
             current = [int(x) for x in value]
             try:
@@ -63,19 +74,32 @@ async def validateDice(player: PlayerIdentifier, value: str) -> None:
                     previous.remove(c)
             except ValueError:
                 raise HTTPException(
-                    httpstatus.HTTP_421_MISDIRECTED_REQUEST, "Dice not matching")
+                    httpstatus.HTTP_421_MISDIRECTED_REQUEST, "Dice not matching"
+                )
         await conn.delete(propName)
         propName = prefix + "distance"
         newVal = await conn.decrby(propName, int(value))
-        logger.debug(
-            f"{player} decr remaining distance by {value}, it's now {newVal}")
-        await publishEvent(player.sessionName, conn, cat="varUpdate", var="distance", val=newVal, player=player.id)
+        logger.debug(f"{player} decr remaining distance by {value}, it's now {newVal}")
+        await publishEvent(
+            player.sessionName,
+            conn,
+            cat="varUpdate",
+            var="distance",
+            val=newVal,
+            player=player.id,
+        )
         await turnLogic(newVal, player, conn)
 
-async def declareWinner(session: str, pid: str, conn: aioredis.Redis):
-    await publishEvent(session, conn, cat="endOfGame", message="We have a winner!", player=pid)
 
-async def turnLogic(distance: int, player: PlayerIdentifier, conn: aioredis.Redis =None):
+async def declareWinner(session: str, pid: str, conn: aioredis.Redis):
+    await publishEvent(
+        session, conn, cat="endOfGame", message="We have a winner!", player=pid
+    )
+
+
+async def turnLogic(
+    distance: int, player: PlayerIdentifier, conn: aioredis.Redis = None
+):
     if not conn:
         conn = getRedis()
 
@@ -88,24 +112,24 @@ async def turnLogic(distance: int, player: PlayerIdentifier, conn: aioredis.Redi
         if distance == 0:  # End of game
             await declareWinner(player.sessionName, player.id, conn)
             return
-        if distance < 0: # disqualified
+        if distance < 0:  # disqualified
             playerLost = True
             nbPlayers -= 1
             await conn.lrem(po, 1, player.id)
 
-        if nbPlayers == 1: # only one runner left !
+        if nbPlayers == 1:  # only one runner left !
             curPlayerId = await conn.lindex(po, 0)
             await declareWinner(player.sessionName, curPlayerId, conn)
             return
 
-        if playerLost: # we lost a player: no need to increment curPlayer counter
-            curPlayer = int(await conn.get(g_prefix+"curPlayer"))
+        if playerLost:  # we lost a player: no need to increment curPlayer counter
+            curPlayer = int(await conn.get(g_prefix + "curPlayer"))
         else:
-            curPlayer = int(await conn.incr(g_prefix+"curPlayer"))
+            curPlayer = int(await conn.incr(g_prefix + "curPlayer"))
     else:  # no distance == check at game startup
         curPlayer = 0
 
-    if curPlayer != None and curPlayer >= nbPlayers: # end of turn
+    if curPlayer != None and curPlayer >= nbPlayers:  # end of turn
         turn = await conn.incr(g_prefix + "turns")
         await publishEvent(player.sessionName, conn, cat="newTurn", val=turn)
         await conn.set(g_prefix + "curPlayer", 0)
@@ -126,8 +150,8 @@ class DiceInterface(GameInterface):
 
     @staticmethod
     async def votePassed(sessionId: str, name: str, conn: aioredis.Redis):
-        topic, data = name.split('_', 1)
-        if topic == 'kick':
+        topic, data = name.split("_", 1)
+        if topic == "kick":
             whom = data
             ap = getVarName(ACTIVE_PLAYERS, sessionId)
             cp = getVarName("curPlayer", sessionId, gameData=True)
@@ -157,27 +181,30 @@ class DiceInterface(GameInterface):
         }
 
     actions = {
-        'throwDice': dict(handler=throwDice,
-            response_model = List[int],
-            responses = {
-                403: {'description': "not your turn"},
-                421: {'description': "you already did this action"},
+        "throwDice": dict(
+            handler=throwDice,
+            response_model=List[int],
+            responses={
+                403: {"description": "not your turn"},
+                421: {"description": "you already did this action"},
                 200: {
-                    'description': "returns dices value",
-                    'content': {
-                        'application/json': {
-                            'example': '[4, 6, 2, 1]'
-                        }
-                    }
-                }}),
-        'validateDice': dict(handler=validateDice,
-            response_model = None,
-            responses = {
-                403: {'description': "you tried to played but it's another player's turn"},
-                421: {'description': "cheating attempt detected (wrong dice!)"}
-            }
-        )
+                    "description": "returns dices value",
+                    "content": {"application/json": {"example": "[4, 6, 2, 1]"}},
+                },
+            },
+        ),
+        "validateDice": dict(
+            handler=validateDice,
+            response_model=None,
+            responses={
+                403: {
+                    "description": "you tried to played but it's another player's turn"
+                },
+                421: {"description": "cheating attempt detected (wrong dice!)"},
+            },
+        ),
     }
+
 
 logger = logging.getLogger(DiceInterface.name)
 
