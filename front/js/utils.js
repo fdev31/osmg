@@ -4,7 +4,7 @@ async function getJson(url) {
   return data;
 }
 function extractJsonFromCookie() {
-  for (let chunk of document.cookie.split('; ')) {
+  for (let chunk of document.cookie.split("; ")) {
     if (chunk.startsWith("JS=")) {
       return JSON.parse(chunk.substr(3));
     }
@@ -12,17 +12,22 @@ function extractJsonFromCookie() {
 }
 
 function setCookie(data) {
-  document.cookie = "JS=" + JSON.stringify(data) + '; SameSite=Strict';
+  document.cookie = "JS=" + JSON.stringify(data) + "; SameSite=Strict";
   return document.cookie;
 }
 
-function setEventStreamHandler(handler , query ) {
-  if (typeof query.topic == "undefined" || typeof query.uid == "undefined") throw "paramater missing"
-  const evtSource = new EventSource(`/c/stream?topic=${query.topic}&uid=${query.uid}`);
-  evtSource.addEventListener("update", (event) => handler(JSON.parse(event.data)) );
+function setEventStreamHandler(handler, query) {
+  if (typeof query.topic == "undefined" || typeof query.uid == "undefined")
+    throw "paramater missing";
+  const evtSource = new EventSource(
+    `/c/stream?topic=${query.topic}&uid=${query.uid}`
+  );
+  evtSource.addEventListener("update", (event) =>
+    handler(JSON.parse(event.data))
+  );
 }
 function runOnEnter(code) {
-    if (event.key == "Enter") eval(code);
+  if (event.key == "Enter") eval(code);
 }
 function copyURL(inputId) {
   let w = document.getElementById(inputId);
@@ -38,41 +43,39 @@ function Vue2Obj(vueApp) {
   return r;
 }
 function extractObj(o) {
-    if (o.charAt || typeof o == "number") return o; // Plain
-    if (o.length) return extractList(o); // list
-    return Object.fromEntries(Object.keys(o).map( (x) => [x, extractObj(o[x])] ));
+  if (o.charAt || typeof o == "number") return o; // Plain
+  if (o.length) return extractList(o); // list
+  return Object.fromEntries(Object.keys(o).map((x) => [x, extractObj(o[x])]));
 }
 function extractList(l) {
-    let r = [];
-    for (let i=0; i<l.length; i++)
-        r.push(extractObj(l[i]));
-    return r;
+  let r = [];
+  for (let i = 0; i < l.length; i++) r.push(extractObj(l[i]));
+  return r;
 }
 
 function setupStreamEventHandler(query, handlers) {
-    setEventStreamHandler((data) => {
-        if(handlers[data.cat]) {
-            handlers[data.cat](data)
-        } else {
-            console.warn("No handler for "+data.cat);
-            console.log(data);
-        }
-    }, query);
+  setEventStreamHandler((data) => {
+    if (handlers[data.cat]) {
+      handlers[data.cat](data);
+    } else {
+      console.warn("No handler for " + data.cat);
+      console.log(data);
+    }
+  }, query);
 }
 
-async function post(url , body) {
+async function post(url, body) {
   var myHeaders = new Headers();
   myHeaders.append("Content-Type", "application/json");
 
   var raw = JSON.stringify(body);
 
   var requestOptions = {
-    method: 'POST',
+    method: "POST",
     headers: myHeaders,
     body: raw,
-    redirect: 'follow'
+    redirect: "follow",
   };
-
 
   var response = await fetch(url, requestOptions);
   const result = await response.json();
@@ -80,28 +83,29 @@ async function post(url , body) {
 }
 
 function setAttr(e, name, val) {
-    e.forEach( x => x.setAttribute(name, val) );
+  e.forEach((x) => x.setAttribute(name, val));
 }
 function show(e) {
-    e.forEach( x => x.style.visibility = "visible" );
+  e.forEach((x) => (x.style.visibility = "visible"));
 }
 function hide(e) {
-    e.forEach( x => x.style.visibility = "hidden" );
+  e.forEach((x) => (x.style.visibility = "hidden"));
 }
 
-function arrayEquals(arr1 , arr2) {
-    if (!Array.isArray(arr1) || !Array.isArray(arr2)) throw `arguments must be Array objects , ${typeof arr1} and ${typeof arr2} given`;
-    if (arr1.length != arr2.length) return false;
-    arr1.sort();
-    arr2.sort();
-    isEquals = true;
-    arr1.every(function(element, index) {
-        if (element !== arr2[index]) isEquals = false
-    })
-    return isEquals
+function arrayEquals(arr1, arr2) {
+  if (!Array.isArray(arr1) || !Array.isArray(arr2))
+    throw `arguments must be Array objects , ${typeof arr1} and ${typeof arr2} given`;
+  if (arr1.length != arr2.length) return false;
+  arr1.sort();
+  arr2.sort();
+  isEquals = true;
+  arr1.every(function (element, index) {
+    if (element !== arr2[index]) isEquals = false;
+  });
+  return isEquals;
 }
 
-function findPlayer(data , pid) {
+function findPlayer(data, pid) {
   for (const player of data.players) {
     if (player.id == pid) {
       return player;
@@ -109,18 +113,18 @@ function findPlayer(data , pid) {
   }
 }
 class Toaster {
-  constructor(frameId = "toaster"){
+  constructor(frameId = "toaster") {
     this.frame = document.getElementById(frameId);
     this.pending = [];
     this.displayed = false;
     this.defaultOptions = {
-      message:"",
-      time:1000,
-      type:"",
-      expanded:false,
-      vote:false,
+      message: "",
+      time: 1000,
+      type: "",
+      expanded: false,
+      vote: false,
       votequery: null,
-    }
+    };
   }
   setOptions(options) {
     let res = Object.create(this.defaultOptions);
@@ -131,73 +135,79 @@ class Toaster {
   }
   createToaster(options) {
     let frame = document.createElement("div");
-    let message = createElement("div" , options.message);
+    let message = createElement("div", options.message);
     console.log(message);
     frame.appendChild(message);
     if (options.type != "" && !options.type) {
-      this.addClass(frame,options.type);      
+      this.addClass(frame, options.type);
     }
-    frame.id = "toast-frame";  
+    frame.id = "toast-frame";
     if (options.expanded) {
       frame.appendChild(this.createCloseButton());
     }
     if (options.vote) {
-      frame.appendChild(this.createButtonBinary(options));  
+      frame.appendChild(this.createButtonBinary(options));
     }
     return frame;
   }
 
-  addClass(element , classString) {
-    classString.split(' ').map((x)=> {
-      element.classList.add(x)})
+  addClass(element, classString) {
+    classString.split(" ").map((x) => {
+      element.classList.add(x);
+    });
   }
   createCloseButton() {
     let buttongroup = document.createElement("div");
-    let button = createElement("button" , "Close")
-    button.onclick = function() {document.getElementById('toaster').classList.remove('visible');}
+    let button = createElement("button", "Close");
+    button.onclick = function () {
+      document.getElementById("toaster").classList.remove("visible");
+    };
     buttongroup.appendChild(button);
-    return button
+    return button;
   }
 
   createButtonBinary(options) {
     let buttongroup = document.createElement("div");
-    let buttonyes = createElement("button" , "Yes")
-    let buttonno = createElement("button" , "No")
-    buttonyes.onclick = options.votequery.onYes
-    buttonno.onclick = options.votequery.onNo
+    let buttonyes = createElement("button", "Yes");
+    let buttonno = createElement("button", "No");
+    buttonyes.onclick = options.votequery.onYes;
+    buttonno.onclick = options.votequery.onNo;
     buttongroup.appendChild(buttonyes);
     buttongroup.appendChild(buttonno);
     return buttongroup;
   }
-  display(){
+  display() {
     this.displayed = false;
     if (this.pending.length) {
-        let val = this.pending.pop();
-        return this.show(val.message, val);
+      let val = this.pending.pop();
+      return this.show(val.message, val);
     } else {
-        this.frame.classList.remove('visible');
-    }    
+      this.frame.classList.remove("visible");
+    }
   }
-  show(options){
+  show(options) {
     console.log(this.options);
     options = this.setOptions(options);
     console.log(this.options);
     if (this.displayed) {
-        this.pending.push({message : options.message, time :  options.time, type : options.expanded});
+      this.pending.push({
+        message: options.message,
+        time: options.time,
+        type: options.expanded,
+      });
     } else {
-        this.displayed = true;
-        removeAllChildNodes(this.frame)
-        let toaster = this.createToaster(options);
-        this.frame.appendChild(toaster);
-        if (options.expanded || options.vote) {
+      this.displayed = true;
+      removeAllChildNodes(this.frame);
+      let toaster = this.createToaster(options);
+      this.frame.appendChild(toaster);
+      if (options.expanded || options.vote) {
+        this.display();
+      } else {
+        setTimeout(() => {
           this.display();
-        } 
-        else {
-          setTimeout(() => {
-            this.display()
-          },options.time)
-        }
-        this.frame.classList.add('visible');
+        }, options.time);
+      }
+      this.frame.classList.add("visible");
     }
   }
 }
@@ -211,19 +221,19 @@ class Toaster {
  * @param {string} query.description The text describing the action.
  * @param {Object} query.app The vue app calling the function, must contain secret and sessionName values.
  */
-async function vote (query) {
+async function vote(query) {
   let url = `http://${document.location.host}/c/session/vote?name=kick_${query.kicked.id}&validate=${query.validate}&description=${query.description}`;
   let action = await post(url, {
-      "id":parseInt(query.kicker.id),
-      "secret": parseInt(query.app.secret),
-      "sessionName":query.app.name
+    id: parseInt(query.kicker.id),
+    secret: parseInt(query.app.secret),
+    sessionName: query.app.name,
   });
 }
 let currentLocale = null;
 
 function initLocales() {
   let langs = navigator.languages;
-  let lang = langs[langs.length-1];
+  let lang = langs[langs.length - 1];
   if (locales[lang]) {
     currentLocale = lang;
   }
@@ -240,12 +250,13 @@ function getTranslation(text) {
 }
 
 function removeValueFromArray(value, myarray) {
-  if (myarray == undefined ) throw "array is not defined. Provide a proper arguments"
+  if (myarray == undefined)
+    throw "array is not defined. Provide a proper arguments";
   for (let index = 0; index < myarray.length; index++) {
-    if (myarray[index] === value) {      
-    myarray.splice(index,1)
-    index--;
-    }   
+    if (myarray[index] === value) {
+      myarray.splice(index, 1);
+      index--;
+    }
   }
 }
 
@@ -253,7 +264,7 @@ function removeAllChildNodes(parent) {
   while (parent.firstChild) parent.removeChild(parent.firstChild);
 }
 
-function createElement(type , innerHTML) {
+function createElement(type, innerHTML) {
   let newElem = document.createElement(type);
   newElem.innerHTML = innerHTML;
   return newElem;

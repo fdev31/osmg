@@ -8,30 +8,34 @@ function initApp() {
     window.location = `http://${host}/lobby.html`;
   }
   let app = Vue.createApp({
-    components: { 'avatar-card': window['avatar-card'] },
-    data() { return {
-      session : session,
-      nickname : "Joe",
-      avatar : 1,
-    }} ,
-    watch:{
+    components: { "avatar-card": window["avatar-card"] },
+    data() {
+      return {
+        session: session,
+        nickname: "Joe",
+        avatar: 1,
+      };
+    },
+    watch: {
       nickname(newVal) {
         this.$refs.myavatar.name = newVal;
-      }
-    } ,
-    methods : {
+      },
+    },
+    methods: {
       T(text) {
         return getTranslation(text);
       },
-      validate : async function () {
+      validate: async function () {
         var myHeaders = new Headers();
         myHeaders.append("Content-Type", "application/json");
-        var raw = JSON.stringify({"name": this.nickname,
-                                  "avatar": this.avatar,
-                                  "sessionName": this.session});
+        var raw = JSON.stringify({
+          name: this.nickname,
+          avatar: this.avatar,
+          sessionName: this.session,
+        });
         var response = await fetch("/c/session/join", {
-          method: 'POST',
-          redirect: 'follow',
+          method: "POST",
+          redirect: "follow",
           headers: myHeaders,
           body: raw,
         });
@@ -39,10 +43,10 @@ function initApp() {
         for (let player of data.players) {
           if (player.name == this.nickname) data.myId = player.id;
         }
-        document.cookie = "JS=" + JSON.stringify(data) + '; SameSite=Strict';
+        document.cookie = "JS=" + JSON.stringify(data) + "; SameSite=Strict";
         window.location = "lobby.html";
-      }
-    }
+      },
+    },
   });
-  lobby = app.mount('#app');
+  lobby = app.mount("#app");
 }
