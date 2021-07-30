@@ -10,6 +10,19 @@ from back.routes import app
 from back.utils import ODict
 
 client = TestClient(app)
+stream = None
+
+
+def getStream(topic: str = None, uid: str = None):
+    global stream
+    if stream is None:
+        assert topic is not None and uid is not None
+        stream = EventStream(topic, uid)
+        stream.start()
+        time.sleep(0.5)
+        return []
+    else:
+        return stream.getLatest()
 
 
 class EventStream(Thread):
@@ -34,21 +47,6 @@ class EventStream(Thread):
         for chunk in mclient.iter_lines(decode_unicode=True):
             if chunk.startswith("data:"):
                 self.q.append(ODict(loads(chunk[6:])))
-
-
-stream = None
-
-
-def getStream(topic: str = None, uid: str = None):
-    global stream
-    if stream is None:
-        assert topic is not None and uid is not None
-        stream = EventStream(topic, uid)
-        stream.start()
-        time.sleep(0.5)
-        return []
-    else:
-        return stream.getLatest()
 
 
 def test_c_gamelist():
