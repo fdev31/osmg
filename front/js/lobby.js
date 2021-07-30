@@ -88,6 +88,7 @@ handlers = {
       }
       if (lobby.playersData[player_kicked.id] != undefined) delete lobby.playersData[player_kicked.id];
     }
+    setCookie(Vue2Obj(lobby));
   },
   voteEnd: (data) => {
     let message;
@@ -99,6 +100,7 @@ handlers = {
     toaster.show(options);
     lobby.gameData.hasVoted = false;
     console.log(data);
+    setCookie(Vue2Obj(lobby));
   },
   log: (data) => {
     console.log(data);
