@@ -54,10 +54,7 @@ handlers = {
     });
   },
   voteStart: (data) => {
-    console.log(lobby.gameData.enableKick);
-    console.log(!lobby.gameData.enableKick);
     if (!lobby.gameData.hasVoted) {
-      console.log("show toast");
       let player_kicked;
       lobby.players.map((p) => {
         if (parseInt(p.id) === parseInt(data.name.split("_")[1]))
@@ -81,9 +78,22 @@ handlers = {
     lobby.gameData.isVoting = false;
     console.log(data);
   },
+  kickPlayer:(data) => {
+    let player_kicked = findPlayer(lobby, data.id);
+    if (data.result = true) {
+      for (let index = 0; index < lobby.players.length; index++) {
+        if (parseInt(lobby.players[index].id) == parseInt(player_kicked.id)) {
+          lobby.players.splice(index);
+        }      
+      }
+      if (lobby.playersData[player_kicked.id] != undefined) delete lobby.playersData[player_kicked.id];
+    }
+  },
   voteEnd: (data) => {
+    let message;
+    data.result ? message = `Fin du vote. Le joueur a été renvoyé du jeu!` : `Fin du vote. Le joueur reste en jeu` 
     let options = {
-      message: `Fin du vote`,
+      message: message,
       closeTimeOut : 2500
     };
     toaster.show(options);
@@ -148,14 +158,11 @@ function initApp() {
         return [this.T("Ready"), this.T("I'm not ready")][this.status];
       },
       kickPlayerVote: async function (player, validate) {
-        console.log(player);
         let appliant;
         this.players.map((p) => {
           if (parseInt(p.id) === parseInt(this.myId)) appliant = p;
         });
-        console.log(appliant);
         let description = `${appliant.name}%20veut%20d%C3%A9gager%20${player.name}`;
-        console.log(description);
         vote({
           kicker: appliant,
           kicked: player,

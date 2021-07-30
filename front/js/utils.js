@@ -167,7 +167,7 @@ class Toaster {
       let closeGroup = createElement("div" , "" , ["jom-closebtn"]);     
       closeGroup.appendChild(this.createButton({
           caption : options.caption,
-          action : (x)=>{options.action()},
+          action : options.action,
           hideOnClick : true
       }));
       forEachElementDo(this.findAnchor().getElementsByClassName("jom-frame") , (x)=> {x.appendChild(closeGroup)})
@@ -177,7 +177,7 @@ class Toaster {
       for (const [key, value] of Object.entries(options)) {
           btnGroup.appendChild(this.createButton({
               caption : key,
-              action : (x) => value.action(),
+              action : value.action,
               hideOnClick : value.hideOnClick
           }));
       this.findAnchor().appendChild(btnGroup)        
