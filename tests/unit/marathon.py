@@ -26,7 +26,7 @@ class EventStream(Thread):
 
     def run(self):
         url = "http://127.0.0.1:%s/c/stream?topic=%s&uid=%s" % (
-            os.environ['HTTP_PORT'],
+            os.environ["HTTP_PORT"],
             self._topic,
             self._uid,
         )
@@ -94,6 +94,10 @@ def test_c_session():
             "sessionName": session2["name"],
         },
     )
+
+    time.sleep(0.1)
+
+    # checks
     assert response.status_code == 200, response.text
     assert response2.status_code == 200, response.text
     events = getStream()
@@ -118,3 +122,36 @@ def test_c_session():
     assert response.status_code == 409  # operation already done
 
     # Game started
+
+    for n in range(3):
+
+        # test some vote
+        client.post(
+            "/c/session/vote?name=kick_my_ass&description=AssKicker",
+            json={
+                "id": session["id"],
+                "secret": session["secret"],
+                "sessionName": session["name"],
+            },
+        )
+
+        client.post(
+            "/c/session/vote?name=kick_my_ass",
+            json={
+                "id": session2["id"],
+                "secret": session2["secret"],
+                "sessionName": session2["name"],
+            },
+        )
+
+        time.sleep(0.1)
+        events = getStream()
+        assert (
+            len([e for e in events if e["cat"] == "voteStart"]) == 1
+        ), "Vote didn't start !"
+        assert (
+            len([e for e in events if e["cat"] == "kickPlayer"]) == 1
+        ), "Player wasn't kicked!"
+        assert (
+            len([e for e in events if e["cat"] == "voteEnd"]) == 1
+        ), "Vote didn't end!"
