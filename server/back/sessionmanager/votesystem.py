@@ -77,8 +77,8 @@ async def vote(
             await conn.unlink(vip)
             accepted = await conn.scard(curVote)
             majority = accepted > (totPlayers / 2)
+            await conn.delete(curVote)
             if majority:
-                await conn.delete(curVote)
                 game = await getGameBySessionId(uid, conn)
                 await game.votePassed(uid, name, conn)
                 await h(conn, uid, m)

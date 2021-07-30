@@ -121,7 +121,7 @@ def test_c_session():
 
     # Game started
 
-    for n in range(3):
+    for n in [True, False, True]:
 
         # test some vote
         client.post(
@@ -134,7 +134,7 @@ def test_c_session():
         )
 
         client.post(
-            "/c/session/vote?name=kick_my_ass",
+            "/c/session/vote?name=kick_my_ass&validate=%s" % n,
             json={
                 "id": session2["id"],
                 "secret": session2["secret"],
@@ -146,10 +146,11 @@ def test_c_session():
         events = getStream()
         assert (
             len([e for e in events if e["cat"] == "voteStart"]) == 1
-        ), "Vote didn't start !"
-        assert (
-            len([e for e in events if e["cat"] == "kickPlayer"]) == 1
-        ), "Player wasn't kicked!"
+        ), "Vote didn't start!"
+        if n:
+            assert (
+                len([e for e in events if e["cat"] == "kickPlayer"]) == 1
+            ), "Player wasn't kicked!"
         assert (
             len([e for e in events if e["cat"] == "voteEnd"]) == 1
         ), "Vote didn't end!"
@@ -162,4 +163,4 @@ def test_c_session():
             "sessionName": session["name"],
         },
     )
-    assert response.http_status != 200
+    assert response.status_code != 200
