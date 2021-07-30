@@ -8,7 +8,7 @@ const statuses = {
   GAME_WON: 6,
   ERROR: 7,
 };
-toaster = new Toaster();
+toaster = new Toaster({ id: "toaster" });
 
 function isError(res) {
   return res && res.detail != undefined;
@@ -214,7 +214,9 @@ function initApp() {
         await this.player_advance(0);
       },
       getProgress(id) {
-        return 100 * ((42195 - this.playersData[`${id}`].distance) / 42195);
+        return (
+          100 * ((42195 - this.playersData[`${id}`].distance) / 42195) || 0
+        );
       },
       findPlayer(id) {
         for (var [key, player] of Object.entries(this.playersData)) {
