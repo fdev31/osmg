@@ -155,3 +155,13 @@ def test_c_session():
         assert (
             len([e for e in events if e["cat"] == "voteEnd"]) == 1
         ), "Vote didn't end!"
+
+    response = client.post(
+        "/c/session/vote?name=random&description=Unsupported",
+        json={
+            "id": session["id"],
+            "secret": session["secret"],
+            "sessionName": session["name"],
+        },
+    )
+    assert response.http_status != 200
