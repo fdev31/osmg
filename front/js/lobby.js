@@ -75,7 +75,7 @@ handlers = {
       };
       toaster.show(options);      
     }
-    lobby.gameData.isVoting = false;
+    lobby.gameData.hasVoted = true;
     console.log(data);
   },
   kickPlayer:(data) => {
@@ -97,7 +97,7 @@ handlers = {
       closeTimeOut : 2500
     };
     toaster.show(options);
-    lobby.gameData.hasVoted = true;
+    lobby.gameData.hasVoted = false;
     console.log(data);
   },
   log: (data) => {
@@ -110,7 +110,7 @@ function initApp() {
   let data = extractJsonFromCookie();
   data.host = document.location.host;
   data.status = 0;
-  data.gameData.enableKick = true;
+  data.gameData.hasVoted = false;
   let app = Vue.createApp({
     components: {
       "player-list": window["player-list"],
