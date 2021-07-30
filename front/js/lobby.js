@@ -4,11 +4,11 @@ let statuses = {
   READY: 1,
 };
 
-toaster = new Toaster({id:"toaster"});
+toaster = new Toaster({ id: "toaster" });
 function counter(index, time = 1000) {
   return new Promise((res) => {
     setTimeout(() => {
-      toaster.show({ message: index , closeTimeOut : time});
+      toaster.show({ message: index, closeTimeOut: time });
       res();
     }, time);
   });
@@ -62,40 +62,43 @@ handlers = {
       });
       let options = {
         message: `Voulez vous exclure ${player_kicked.name} du jeu`,
-        binaryQuestion : {
-          yes : {
-            action : (x) => lobby.kickPlayerVote(player_kicked,"true"),
-            hideOnClick : true
+        binaryQuestion: {
+          yes: {
+            action: (x) => lobby.kickPlayerVote(player_kicked, "true"),
+            hideOnClick: true,
           },
-          no : {
-            action : (x) => lobby.kickPlayerVote(player_kicked,"false"),
-            hideOnClick : true
-          }
+          no: {
+            action: (x) => lobby.kickPlayerVote(player_kicked, "false"),
+            hideOnClick: true,
+          },
         },
       };
-      toaster.show(options);      
+      toaster.show(options);
     }
     lobby.gameData.hasVoted = true;
     console.log(data);
   },
-  kickPlayer:(data) => {
+  kickPlayer: (data) => {
     let player_kicked = findPlayer(lobby, data.id);
-    if (data.result = true) {
+    if ((data.result = true)) {
       for (let index = 0; index < lobby.players.length; index++) {
         if (parseInt(lobby.players[index].id) == parseInt(player_kicked.id)) {
           lobby.players.splice(index);
-        }      
+        }
       }
-      if (lobby.playersData[player_kicked.id] != undefined) delete lobby.playersData[player_kicked.id];
+      if (lobby.playersData[player_kicked.id] != undefined)
+        delete lobby.playersData[player_kicked.id];
     }
     setCookie(Vue2Obj(lobby));
   },
   voteEnd: (data) => {
     let message;
-    data.result ? message = `Fin du vote. Le joueur a été renvoyé du jeu!` : message = `Fin du vote. Le joueur reste en jeu` 
+    data.result
+      ? (message = `Fin du vote. Le joueur a été renvoyé du jeu!`)
+      : (message = `Fin du vote. Le joueur reste en jeu`);
     let options = {
       message: message,
-      closeTimeOut : 2500
+      closeTimeOut: 2500,
     };
     toaster.show(options);
     lobby.gameData.hasVoted = false;
@@ -172,7 +175,7 @@ function initApp() {
           description: description,
           app: this,
         });
-        this.gameData.hasVoted = true
+        this.gameData.hasVoted = true;
       },
     },
   });

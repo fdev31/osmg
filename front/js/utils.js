@@ -115,40 +115,47 @@ function findPlayer(data, pid) {
 class Toaster {
   // # Initialiser
   // # function pour créer toast
-  // # function pour définir les options    
+  // # function pour définir les options
   constructor(options) {
-      this.anchor = document.getElementById(options.id);
-      this._options = {
-          default : {
-              position :"top"
-          },
-          show_default : {
-              message : "Hello",
-              closeTimeOut : 1000,
-              closeButton : null,
-              binaryQuestion : null,
-              customButtons : null
-          },
-      }
+    this.anchor = document.getElementById(options.id);
+    this._options = {
+      default: {
+        position: "top",
+      },
+      show_default: {
+        message: "Hello",
+        closeTimeOut: 1000,
+        closeButton: null,
+        binaryQuestion: null,
+        customButtons: null,
+      },
+    };
   }
-  findAnchor(){
-      if(this.anchor == undefined) throw "No tag to work with. Be sure that you provide an id" ;
-      return this.anchor;
+  findAnchor() {
+    if (this.anchor == undefined)
+      throw "No tag to work with. Be sure that you provide an id";
+    return this.anchor;
   }
   createMainFrame(classList = []) {
-      this.findAnchor().classList.add("jom-toaster");
-      let mainFrame = document.createElement("div");
-      mainFrame.classList.add("jom-frame");
-      classList.map( (c) =>{ mainFrame.classList.add(c)} ) ;
-      
-      let message = createElement("div" , "" , ["jom-message"]);
-      mainFrame.appendChild(message);
-      this.findAnchor().appendChild(mainFrame);
+    this.findAnchor().classList.add("jom-toaster");
+    let mainFrame = document.createElement("div");
+    mainFrame.classList.add("jom-frame");
+    classList.map((c) => {
+      mainFrame.classList.add(c);
+    });
+
+    let message = createElement("div", "", ["jom-message"]);
+    mainFrame.appendChild(message);
+    this.findAnchor().appendChild(mainFrame);
   }
   addMessage(message) {
-      let collection = this.findAnchor().getElementsByClassName("jom-message");
-      let action = function(elm) {elm.innerHTML = message}
-      forEachElementDo(collection , (x) => {x.innerHTML = message});
+    let collection = this.findAnchor().getElementsByClassName("jom-message");
+    let action = function (elm) {
+      elm.innerHTML = message;
+    };
+    forEachElementDo(collection, (x) => {
+      x.innerHTML = message;
+    });
   }
   /**
    * Create a new button with its own logic
@@ -157,62 +164,76 @@ class Toaster {
    * @param {Object} options.action The function defining what will happen on click.
    * @param {boolean} options.hideOnClick Whether or not the Toaster will hide on click.
    */
-  createButton (options) {
-      let btn = createElement("button" , options.caption);
-      btn.addEventListener("click" , options.action);
-      if(options.hideOnClick) btn.addEventListener("click",(x)=> this.disableVisibility());
-      return btn;
+  createButton(options) {
+    let btn = createElement("button", options.caption);
+    btn.addEventListener("click", options.action);
+    if (options.hideOnClick)
+      btn.addEventListener("click", (x) => this.disableVisibility());
+    return btn;
   }
-  addCloseButton(options = {caption : "Close" , action:(x)=> console.log("close")}) {
-      let closeGroup = createElement("div" , "" , ["jom-closebtn"]);     
-      closeGroup.appendChild(this.createButton({
-          caption : options.caption,
-          action : options.action,
-          hideOnClick : true
-      }));
-      forEachElementDo(this.findAnchor().getElementsByClassName("jom-frame") , (x)=> {x.appendChild(closeGroup)})
+  addCloseButton(
+    options = { caption: "Close", action: (x) => console.log("close") }
+  ) {
+    let closeGroup = createElement("div", "", ["jom-closebtn"]);
+    closeGroup.appendChild(
+      this.createButton({
+        caption: options.caption,
+        action: options.action,
+        hideOnClick: true,
+      })
+    );
+    forEachElementDo(
+      this.findAnchor().getElementsByClassName("jom-frame"),
+      (x) => {
+        x.appendChild(closeGroup);
+      }
+    );
   }
-  createCustomButtonGroup (options) {
-      let btnGroup = createElement("div" , "" , ["jom-custombtn"]);
-      for (const [key, value] of Object.entries(options)) {
-          btnGroup.appendChild(this.createButton({
-              caption : key,
-              action : value.action,
-              hideOnClick : value.hideOnClick
-          }));
-      this.findAnchor().appendChild(btnGroup)        
-       }
+  createCustomButtonGroup(options) {
+    let btnGroup = createElement("div", "", ["jom-custombtn"]);
+    for (const [key, value] of Object.entries(options)) {
+      btnGroup.appendChild(
+        this.createButton({
+          caption: key,
+          action: value.action,
+          hideOnClick: value.hideOnClick,
+        })
+      );
+      this.findAnchor().appendChild(btnGroup);
+    }
   }
   addYesNoButtons(options) {
-      let btnGroup = createElement("div" , "" , ["jom-yesno"]);
-      console.log(options);
-      for (const [key, value] of Object.entries(options)) {
-          btnGroup.appendChild(this.createButton({
-              caption : key,
-              action : (x) => value.action(),
-              hideOnClick : value.hideOnClick
-          }));
-      this.findAnchor().appendChild(btnGroup)
-      }
+    let btnGroup = createElement("div", "", ["jom-yesno"]);
+    console.log(options);
+    for (const [key, value] of Object.entries(options)) {
+      btnGroup.appendChild(
+        this.createButton({
+          caption: key,
+          action: (x) => value.action(),
+          hideOnClick: value.hideOnClick,
+        })
+      );
+      this.findAnchor().appendChild(btnGroup);
+    }
   }
   enableVisibility() {
-      this.findAnchor().classList.add("visible");
+    this.findAnchor().classList.add("visible");
   }
   disableVisibility() {
-      this.findAnchor().classList.remove("visible");
+    this.findAnchor().classList.remove("visible");
   }
   cleanToaster() {
-      removeAllChildElement(this.findAnchor());
+    removeAllChildElement(this.findAnchor());
   }
   show(options = this._options.show_default) {
-      this.cleanToaster();
-      this.createMainFrame();
-      this.addMessage(options.message);
-      this.enableVisibility();
-      if (options.binaryQuestion) this.addYesNoButtons(options.binaryQuestion);
-      if (options.closeButton) this.addCloseButton(options.closeButton);
-      if (options.closeTimeOut > 0) setTimeout((x) => this.disableVisibility() , options.closeTimeOut);
-      
+    this.cleanToaster();
+    this.createMainFrame();
+    this.addMessage(options.message);
+    this.enableVisibility();
+    if (options.binaryQuestion) this.addYesNoButtons(options.binaryQuestion);
+    if (options.closeButton) this.addCloseButton(options.closeButton);
+    if (options.closeTimeOut > 0)
+      setTimeout((x) => this.disableVisibility(), options.closeTimeOut);
   }
 }
 
@@ -265,17 +286,17 @@ function removeValueFromArray(value, myarray) {
 }
 function removeAllChildElement(elm) {
   while (elm.lastChild) {
-      elm.removeChild(elm.lastChild);
+    elm.removeChild(elm.lastChild);
   }
 }
-function createElement(type = "div",innerHtml = null , classList = [] ) {
+function createElement(type = "div", innerHtml = null, classList = []) {
   let elm = document.createElement(type);
   elm.innerHTML = innerHtml;
-  classList.map((x)=> elm.classList.add(x));
+  classList.map((x) => elm.classList.add(x));
   return elm;
 }
-function forEachElementDo(collection , action) {
+function forEachElementDo(collection, action) {
   for (let i = 0; i < collection.length; i++) {
-      action(collection[i]);         
+    action(collection[i]);
   }
 }
