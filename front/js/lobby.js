@@ -91,7 +91,7 @@ handlers = {
   },
   voteEnd: (data) => {
     let message;
-    data.result ? message = `Fin du vote. Le joueur a été renvoyé du jeu!` : `Fin du vote. Le joueur reste en jeu` 
+    data.result ? message = `Fin du vote. Le joueur a été renvoyé du jeu!` : message = `Fin du vote. Le joueur reste en jeu` 
     let options = {
       message: message,
       closeTimeOut : 2500
