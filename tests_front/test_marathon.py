@@ -7,7 +7,7 @@ from selenium.webdriver.common.keys import Keys
 from config import HOST
 
 HOME_INDEX = 0
-NB_PLAYERS = 6
+NB_PLAYERS = 4
 
 if not os.path.exists("screenshots"):
     os.mkdir("screenshots")
@@ -91,7 +91,7 @@ class MarathonTest(unittest.TestCase):
             drv.find_elements_by_class_name("mainAction")[0].click()
             sleep(0.5)
 
-        for n in range(20):
+        for n in range(50):
             try:
                 for drv in self.drv:
                     playerTurn(drv)
