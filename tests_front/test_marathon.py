@@ -41,9 +41,9 @@ def shot(driver, name):
 
 
 def makeShots(drivers, suffix):
-    shot(drivers[0], "ff_end_screen")
+    shot(drivers[0], suffix + "_ff")
     for i, drv in enumerate(drivers[1:]):
-        shot(drv, "ch%d_%s" % (i + 2, suffix))
+        shot(drv, "%s_ch%d" % (suffix, i + 2))
 
 
 def setInputText(inp, value, delete=None):
@@ -86,7 +86,7 @@ class MarathonTest(unittest.TestCase):
         lobby_url = self.driver.find_element_by_id("link").get_attribute("value")
         lobby_name = lobby_url.rsplit("/", 1)[1]
         getStream(lobby_name)
-        shot(self.driver, "login1")
+        shot(self.driver, "lobby")
         # other player join game
         for drv in self.drv[1:]:
             drv.get(lobby_url)
@@ -102,6 +102,7 @@ class MarathonTest(unittest.TestCase):
 
         print("About to start")
         sleep(1)
+        shot(self.driver, "lobby_full")
 
         # start game
         for drv in self.drv:
@@ -129,7 +130,7 @@ class MarathonTest(unittest.TestCase):
                 makeShots(self.drv, "end_game")
                 break
             else:
-                if n == 10:
+                if n == 6:
                     makeShots(self.drv, "mid_game")
 
         for elt in getStream():
