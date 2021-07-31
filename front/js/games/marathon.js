@@ -27,6 +27,13 @@ handlers = {
       marathon.gameData.curPlayer = data.val.toString();
       if (data.val.toString() === marathon.myId.toString()) {
         marathon.setStatus(statuses.THROW);
+        setTimeout(() => {
+          marathon.$refs.mydice.updateDice([0, 0, 0, 0], false);
+          marathon.$refs.mydice.diceNumber = Math.max(
+            4,
+            ("" + marathon.gameData[marathon.myId].distance).length
+          );
+        }, 10);
         toaster.show({ message: "A toi de jouer!", closeTimeOut: 3500 });
       }
     }
@@ -79,7 +86,11 @@ handlers = {
   },
 };
 
+let _initialized = false;
 function initApp() {
+  if (_initialized) return;
+  _initialized = true;
+
   initLocales();
 
   let host = document.location.host;
