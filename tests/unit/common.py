@@ -22,13 +22,13 @@ class DbDict(ODict):
 
 
 stream = None
-redis = redis.from_url("redis://" + config.redis_server, decode_responses=True)
 
 
 def getStream(topic: str = None, uid: str = None):
     global stream
     if stream is None:
         assert topic is not None and uid is not None
+        redis = redis.from_url("redis://" + config.redis_server, decode_responses=True)
         stream = EventStream(topic, uid)
         stream.start()
         time.sleep(0.5)

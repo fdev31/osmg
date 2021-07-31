@@ -3,8 +3,8 @@ from time import sleep
 import unittest
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
-
 from config import HOST
+from common import getStream
 
 HOME_INDEX = 0
 NB_PLAYERS = 4
