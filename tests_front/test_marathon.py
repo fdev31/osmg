@@ -3,11 +3,34 @@ from time import sleep
 import unittest
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
+from selenium.common.exceptions import JavascriptException
 from config import HOST
-from common import getStream
+from common import getStream, pretty
 
 HOME_INDEX = 0
-NB_PLAYERS = 4
+NB_PLAYERS = 3
+
+
+def getId(driver):
+    return driver.execute_script("return window.lobby.myId")
+
+
+def getPlayerData(driver, attr):
+    return driver.execute_script("return marathon.playersData[marathon.myId].%s" % attr)
+
+
+def waitEvent(names):
+    print("Waiting for %s" % (" or ".join(names)))
+    while True:
+        events = getStream()
+        for e in events:
+            print(" got %s" % pretty(e))
+        for evt in events:
+            if any(evt.isA(name) for name in names):
+                sleep(0.2)
+                return evt
+        sleep(0.150)
+
 
 if not os.path.exists("screenshots"):
     os.mkdir("screenshots")
@@ -49,25 +72,27 @@ def create_game(driver, gameIndex):
 class MarathonTest(unittest.TestCase):
     def setUp(self):
         self.drv = [webdriver.Firefox()]
-        sleep(1)
         for n in range(1, NB_PLAYERS):
             self.drv.append(webdriver.Chrome())
-            sleep(1)
-        sleep(0.5)
+            sleep(0.5)
 
     @property
-    def driver(self):
+    def driver(self) -> webdriver.Chrome:
         return self.drv[0]
 
     def test_game(self):
         create_game(self.driver, HOME_INDEX)
         sleep(1)
         lobby_url = self.driver.find_element_by_id("link").get_attribute("value")
+        lobby_name = lobby_url.rsplit("/", 1)[1]
+        getStream(lobby_name)
         shot(self.driver, "login1")
         # other player join game
         for drv in self.drv[1:]:
             drv.get(lobby_url)
         sleep(0.5)
+        print("everybody in lobby", getStream())
+        self.pids = [getId(drv) for drv in self.drv]
         for i, drv in enumerate(self.drv[1:]):
             setInputText(
                 drv.find_element_by_tag_name("input"), "Player %d" % i, delete=10
@@ -86,26 +111,29 @@ class MarathonTest(unittest.TestCase):
         print("Start")
 
         def playerTurn(drv):
-            drv.find_elements_by_class_name("mainAction")[0].click()
-            sleep(0.5)
-            drv.find_elements_by_class_name("mainAction")[0].click()
-            sleep(0.5)
+            if getPlayerData(drv, "distance") > 0:
+                drv.find_elements_by_class_name("mainAction")[0].click()
+                sleep(0.1)
+                drv.find_elements_by_class_name("mainAction")[0].click()
+                waitEvent(["varUpdate"])
+                sleep(0.1)
 
-        for n in range(50):
+        waitEvent(["start"])
+        for n in range(100):
             try:
                 for drv in self.drv:
                     playerTurn(drv)
-                sleep(0.5)
-            except IndexError as e:
-                print("game end detected", e)
+            except JavascriptException:
+                print("game end detected")
+                sleep(1)
                 makeShots(self.drv, "end_game")
                 break
             else:
                 if n == 10:
                     makeShots(self.drv, "mid_game")
-            sleep(0.1 * NB_PLAYERS)
 
-        makeShots(self.drv, "end_screen")
+        for elt in getStream():
+            print(pretty(elt))
 
     def tearDown(self):
         if "WAIT" in os.environ:

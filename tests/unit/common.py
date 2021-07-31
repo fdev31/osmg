@@ -1,4 +1,4 @@
-__all__ = ["getStream"]
+__all__ = ["getStream", "pretty"]
 
 from threading import Thread
 from json import loads
@@ -8,6 +8,12 @@ import redis
 
 from back.routes import config
 from back.utils import ODict
+
+
+def pretty(evt):
+    e = evt.copy()
+    cat = e.pop("cat")
+    return cat + " -> " + " ".join(f"{k}:{v}" for k, v in e.items())
 
 
 class DbDict(ODict):
@@ -27,8 +33,7 @@ stream = None
 def getStream(topic: str = None, uid: str = None):
     global stream
     if stream is None:
-        assert topic is not None and uid is not None
-        redis = redis.from_url("redis://" + config.redis_server, decode_responses=True)
+        assert topic is not None
         stream = EventStream(topic, uid)
         stream.start()
         time.sleep(0.5)
@@ -39,7 +44,8 @@ def getStream(topic: str = None, uid: str = None):
 
 class EventStream(Thread):
     def __init__(self, topic: str, uid: str):
-        self.channel = redis.pubsub()
+        r = redis.from_url("redis://" + config.redis_server, decode_responses=True)
+        self.channel = r.pubsub()
         self.channel.subscribe(topic)
         self._topic = topic
         self._uid = uid
