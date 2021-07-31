@@ -13,7 +13,12 @@
   <body onload="initApp()">
     <div id="app" v-cloak>
       <h1>{{T("Your info")}}:</h1>
-      <input v-model="nickname" type="text" placeholder="nickname" />
+      <input
+        v-model="nickname"
+        type="text"
+        placeholder="nickname"
+        maxlength="20"
+      />
       <button @click="validate" type="button" name="button" class="mainAction">
         {{T("Join")}}
       </button>

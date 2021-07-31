@@ -15,7 +15,12 @@
       <h1>{{T("Your info")}}:</h1>
       <div class="container">
         <div class="avatarframe">
-          <input v-model="nickname" type="text" placeholder="Nickname" />
+          <input
+            v-model="nickname"
+            type="text"
+            placeholder="Nickname"
+            maxlength="20"
+          />
           <avatar-card
             noname
             ref="myavatar"
