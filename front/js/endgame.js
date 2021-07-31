@@ -43,22 +43,20 @@ function initApp() {
         return result;
       },
       getWinners() {
-        let result = this.players
-          .filter((player) => {
-            return this.playersData[player.id].distance <= 0;
-          })
-          .sort((a, b) => {
-            return (
-              Math.abs(this.playersData[a.id].distance) +
-              this.playersData[b.id].distance
-            );
-          });
+        let result = this.players.filter((player) => {
+          return this.playersData[player.id].distance >= 0;
+        });
+        result = result.sort(function (a, b) {
+          if (a.distance < b.distance) return -1;
+          if (a.distance > b.distance) return 1;
+          return 0;
+        });
         return result;
       },
       getLosers() {
         let result = this.players
           .filter((player) => {
-            return this.playersData[player.id].distance > 0;
+            return this.playersData[player.id].distance < 0;
           })
           .sort((a, b) => {
             return (
