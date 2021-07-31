@@ -6,8 +6,9 @@ all:
 	(cd locales && ./build)
 	(cd components && ./build)
 test: 
+	rm -fr screenshots
 	./venv/bin/pip install -r test_requires.txt
-	./venv/bin/python tests_front/test_marathon.py
+	PYTHON_PATH=./tests/unit/ ./venv/bin/python tests_front/test_*.py
 
 unit:
 	./venv/bin/pip install requests pytest pytest-asyncio httpx redis
