@@ -14,7 +14,7 @@
       <h1>La partie est terminée</h1>
 
       <div id="podium">
-        <div v-for="(player , index) in getWinners()">
+        <div v-for="(player , index) in getPodium(0,3)">
           <avatar-card
             :ref="'podiumavatar'+player.id"
             noname
