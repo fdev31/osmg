@@ -42,6 +42,9 @@ function initApp() {
           });
         return result;
       },
+      getPodium(start, end) {
+        return this.getWinners().slice(start, end);
+      },
       getWinners() {
         let result = this.players
           .filter((player) => {
