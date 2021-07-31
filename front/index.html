@@ -1,42 +1,54 @@
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
-    <head>
-        <meta charset="utf-8">
-        <title>Notre jeu génial</title>
-        <link rel="preconnect" href="https://fonts.gstatic.com">
-        <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
-        <link rel="stylesheet" href="styles.css">
-    </head>
-    <body onload="initApp()" >
-        <div id="app" v-cloak>
-            <h1>{{T("Your info")}}:</h1>
-            <div class="container">
-                <div class="avatarframe">
-                    <input v-model="nickname" type="text" placeholder="Nickname"></input>
-                    <avatar-card noname ref="myavatar" v-bind:avatar-name="nickname" style="margin: -36px 0 0 220px;" class="avatar"></avatar-card>
-                </div>
-            </div>
-            <h1>{{T("Pick a game")}}:</h1>
-            <div class="wrap">
-                <div v-for="(info, game) in games" class="gamebutton">
-                    <div class=tile>
-                        <span @click="play_game('{{game}}')">
-                            <img :src="`./img/${info.card}.jpg`"/>
-                            <div class="text">
-                                <h1>{{T(game)}}</h1>
-                                <h2 class="animate-text">{{T(game + "_description")}}</h2>
-                                <p class="animate-text" v-html="T(game + '_long_description')"></p>
-                            </div>
-                        </span>
-                    </div>
-                </div>
-            </div>
+  <head>
+    <meta charset="utf-8" />
+    <title>Notre jeu génial</title>
+    <link rel="preconnect" href="https://fonts.gstatic.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body onload="initApp()">
+    <div id="app" v-cloak>
+      <h1>{{T("Your info")}}:</h1>
+      <div class="container">
+        <div class="avatarframe">
+          <input v-model="nickname" type="text" placeholder="Nickname" />
+          <avatar-card
+            noname
+            ref="myavatar"
+            v-bind:avatar-name="nickname"
+            style="margin: -36px 0 0 220px"
+            class="avatar"
+          ></avatar-card>
         </div>
+      </div>
+      <h1>{{T("Pick a game")}}:</h1>
+      <div class="wrap">
+        <div v-for="(info, game) in games" class="gamebutton">
+          <div class="tile">
+            <span @click="play_game('{{game}}')">
+              <img :src="`./img/${info.card}.jpg`" />
+              <div class="text">
+                <h1>{{T(game)}}</h1>
+                <h2 class="animate-text">{{T(game + "_description")}}</h2>
+                <p
+                  class="animate-text"
+                  v-html="T(game + '_long_description')"
+                ></p>
+              </div>
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
 
-        <script src="https://unpkg.com/vue@next"></script>
-        <script src="js/locales.js" charset="utf-8"></script>
-        <script src="js/utils.js" charset="utf-8"></script>
-        <script src="jscomp/avatar-card.umd.js" charset="utf-8"></script>
-        <script src="js/home.js" charset="utf-8"></script>
-    </body>
+    <script src="https://unpkg.com/vue@next"></script>
+    <script src="js/locales.js" charset="utf-8"></script>
+    <script src="js/utils.js" charset="utf-8"></script>
+    <script src="jscomp/avatar-card.umd.js" charset="utf-8"></script>
+    <script src="js/home.js" charset="utf-8"></script>
+  </body>
 </html>

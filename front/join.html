@@ -1,18 +1,27 @@
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
   <head>
-    <meta charset="utf-8">
+    <meta charset="utf-8" />
     <title></title>
-    <link rel="preconnect" href="https://fonts.gstatic.com">
-    <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.gstatic.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
   </head>
   <body onload="initApp()">
     <div id="app" v-cloak>
       <h1>{{T("Your info")}}:</h1>
-      <input v-model="nickname" type="text"  placeholder="nickname"></input>
-      <button @click="validate" type="button" name="button" class="mainAction">{{T("Join")}}</button>
-      <avatar-card ref="myavatar" noname v-bind:avatar-name="nickname" ></avatar-card>
+      <input v-model="nickname" type="text" placeholder="nickname" />
+      <button @click="validate" type="button" name="button" class="mainAction">
+        {{T("Join")}}
+      </button>
+      <avatar-card
+        ref="myavatar"
+        noname
+        v-bind:avatar-name="nickname"
+      ></avatar-card>
     </div>
 
     <script src="https://unpkg.com/vue@next"></script>
