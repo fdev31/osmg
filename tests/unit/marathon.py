@@ -1,52 +1,13 @@
-from threading import Thread
-from json import loads
 import time
-import os
 
 from fastapi.testclient import TestClient
-import requests
 
 from back.routes import app
-from back.utils import ODict
+
+from .common import getStream
 
 client = TestClient(app)
 stream = None
-
-
-def getStream(topic: str = None, uid: str = None):
-    global stream
-    if stream is None:
-        assert topic is not None and uid is not None
-        stream = EventStream(topic, uid)
-        stream.start()
-        time.sleep(0.5)
-        return []
-    else:
-        return stream.getLatest()
-
-
-class EventStream(Thread):
-    def __init__(self, topic: str, uid: str):
-        self._topic = topic
-        self._uid = uid
-        self.q = []
-        super().__init__(daemon=True)
-
-    def getLatest(self):
-        oldQ = self.q
-        self.q = []
-        return oldQ
-
-    def run(self):
-        url = "http://127.0.0.1:%s/c/stream?topic=%s&uid=%s" % (
-            os.environ["HTTP_PORT"],
-            self._topic,
-            self._uid,
-        )
-        mclient = requests.get(url, stream=True)
-        for chunk in mclient.iter_lines(decode_unicode=True):
-            if chunk.startswith("data:"):
-                self.q.append(ODict(loads(chunk[6:])))
 
 
 def test_c_gamelist():
@@ -99,14 +60,10 @@ def test_c_session():
     assert response.status_code == 200, response.text
     assert response2.status_code == 200, response.text
     events = getStream()
-    np = [e for e in events if e["cat"] == "newPlayer"][0]
+    np = [e for e in events if e.isA("newPlaye")][0]
     assert np["name"] == "tatie", "Unexpected player name"
-    assert (
-        len([e for e in events if e["cat"] == "ready"]) == 2
-    ), "2 players should be ready"
-    assert (
-        len([e for e in events if e["cat"] == "start"]) == 1
-    ), "Game should have started"
+    assert len([e for e in events if e.isA("ready")]) == 2, "2 players should be ready"
+    assert len([e for e in events if e.isA("start")]) == 1, "Game should have started"
 
     # check incorrect double request
     response = client.post(
@@ -144,16 +101,12 @@ def test_c_session():
 
         time.sleep(0.1)
         events = getStream()
-        assert (
-            len([e for e in events if e["cat"] == "voteStart"]) == 1
-        ), "Vote didn't start!"
+        assert len([e for e in events if e.isA("voteStart")]) == 1, "Vote didn't start!"
         if n:
             assert (
-                len([e for e in events if e["cat"] == "kickPlayer"]) == 1
+                len([e for e in events if e.isA("kickPlayer")]) == 1
             ), "Player wasn't kicked!"
-        assert (
-            len([e for e in events if e["cat"] == "voteEnd"]) == 1
-        ), "Vote didn't end!"
+        assert len([e for e in events if e.isA("voteEnd")]) == 1, "Vote didn't end!"
 
     response = client.post(
         "/c/session/vote?name=random&description=Unsupported",
@@ -163,4 +116,4 @@ def test_c_session():
             "sessionName": session["name"],
         },
     )
-    assert response.status_code != 200
+    assert (response.status_code != 200, "Should forbid unsupported votes")
