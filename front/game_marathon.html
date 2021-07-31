@@ -1,48 +1,70 @@
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
-    <head>
-        <meta charset="utf-8">
-        <title>A game of dices</title>
-        <link rel="preconnect" href="https://fonts.gstatic.com">
-        <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
-        <link rel="stylesheet" href="styles.css">
-    </head>
-    <body onload="initApp()">
-        <div id="toaster"></div>
-        <div id="app" v-cloak>
-            <h1>{{ T("Marathon , the dice game") }}</h1>
-            <player-list ref="playerlist" :enable-kick="true" :cur-player="gameData.curPlayer" :my-id="myId"></player-list>
-            <h2>{{ T("Welcome") }} {{playerName()}}, it's turn {{parseInt(gameData.turns)+1}}</h2>
-            <div v-if="didIWin()">
-                <h1>{{ T("You Win") }}!</h1>
-            </div>
-            <div v-else-if="didILose()">
-                <h1>{{ T("You Lose") }}!</h1>
-            </div>
-            <div v-else>
-                <div><b>{{getPlayerAction()}}</b></div>
-                {{ distance }} {{ T("meters left") }} 
-                <button v-on:click="mainPlayButton" type="button" v-if="diceVisible" class="mainAction">{{ getPlayerAction() }}</button>
-                <button v-on:click="skipTurn" type="button" v-if="isLastAction"> {{ T("Pass") }} </button>
-                <div v-if="diceVisible" class="diceArea">
-                    <dice-array ref="mydice"></dice-array>
-                </div>
-            </div>
-
-            <div class="players">
-                <div v-for="item in sortPlayers">
-                <span>{{item.name}}</span>
-                <span> <progress max="100" :value="getProgress(item.id)"></progress> </span><span> {{item.distance}} {{ T("meters") }}</span>
-                </div>
-              </div>
+  <head>
+    <meta charset="utf-8" />
+    <title>A game of dices</title>
+    <link rel="preconnect" href="https://fonts.gstatic.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body onload="initApp()">
+    <div id="toaster"></div>
+    <div id="app" v-cloak>
+      <h1>{{ T("Marathon , the dice game") }}</h1>
+      <player-list
+        ref="playerlist"
+        :enable-kick="true"
+        :cur-player="gameData.curPlayer"
+        :my-id="myId"
+      ></player-list>
+      <h2>
+        {{ T("Welcome") }} {{playerName()}}, it's turn
+        {{parseInt(gameData.turns)+1}}
+      </h2>
+      <div v-if="didIWin()">
+        <h1>{{ T("You Win") }}!</h1>
+      </div>
+      <div v-else-if="didILose()">
+        <h1>{{ T("You Lose") }}!</h1>
+      </div>
+      <div v-else>
+        <div><b>{{getPlayerAction()}}</b></div>
+        {{ distance }} {{ T("meters left") }}
+        <button
+          v-on:click="mainPlayButton"
+          type="button"
+          v-if="diceVisible"
+          class="mainAction"
+        >
+          {{ getPlayerAction() }}
+        </button>
+        <button v-on:click="skipTurn" type="button" v-if="isLastAction">
+          {{ T("Pass") }}
+        </button>
+        <div v-if="diceVisible" class="diceArea">
+          <dice-array ref="mydice"></dice-array>
         </div>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/snap.svg/0.5.1/snap.svg-min.js"></script>
-        <script src="https://unpkg.com/vue@next"></script>
-        <script src="js/locales.js" charset="utf-8"></script>
-        <script src="js/utils.js" charset="utf-8"></script>
-        <script src="/jscomp/player-list.umd.js" charset="utf-8"></script>
-        <script src="/jscomp/dicearray.umd.js" charset="utf-8"></script>
-        <script src="/jscomp/avatar-card.umd.js" charset="utf-8"></script>
-        <script src="js/games/marathon.js" charset="utf-8"></script>
-    </body>
+      </div>
+
+      <div class="marathon-rank">
+        <div v-for="item in sortPlayers" class="player">
+          <span class="name">{{item.name}}</span>
+          <span>
+            <progress max="100" :value="getProgress(item.id)"></progress> </span
+          ><span> {{item.distance}} {{ T("meters") }}</span>
+        </div>
+      </div>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/snap.svg/0.5.1/snap.svg-min.js"></script>
+    <script src="https://unpkg.com/vue@next"></script>
+    <script src="js/locales.js" charset="utf-8"></script>
+    <script src="js/utils.js" charset="utf-8"></script>
+    <script src="/jscomp/player-list.umd.js" charset="utf-8"></script>
+    <script src="/jscomp/dicearray.umd.js" charset="utf-8"></script>
+    <script src="/jscomp/avatar-card.umd.js" charset="utf-8"></script>
+    <script src="js/games/marathon.js" charset="utf-8"></script>
+  </body>
 </html>

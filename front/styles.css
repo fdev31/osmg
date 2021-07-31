@@ -1,182 +1,172 @@
-[v-cloak] { display: none; }
+[v-cloak] {
+  display: none;
+}
 .dice {
-    z-index: 0;
-    position: relative;
+  z-index: 0;
+  position: relative;
 }
 .dice > svg {
-    width: 40px;
-    height: auto;
+  width: 40px;
+  height: auto;
 }
 .grabbed {
-    z-index: 10;
-    opacity: 0.5;
+  z-index: 10;
+  opacity: 0.5;
 }
 html {
-    font-family: 'Roboto', sans-serif;
-    background-image: url("./img/bg_light.svg");
-    background-color: #e4ebf5;
+  font-family: "Roboto", sans-serif;
+  background-image: url("./img/bg_light.svg");
+  background-color: #e4ebf5;
 }
 .playerlist {
-    float: right;
+  float: right;
 }
 
 .draggable {
-    cursor: move;
+  cursor: move;
 }
 
 text {
-    pointer-events: none;
+  pointer-events: none;
 }
 
-.wrap
-{
-  margin:50px auto 0 auto;
-  width:100%;
-  display:flex;
-  align-items:space-around;
-  max-width:1200px;
+.wrap {
+  margin: 50px auto 0 auto;
+  width: 100%;
+  display: flex;
+  align-items: space-around;
+  max-width: 1200px;
 }
-.tile
-{
-  width:380px;
-  height:380px;
-  margin:10px;
+.tile {
+  width: 380px;
+  height: 380px;
+  margin: 10px;
   background-color: #7d54fb;
-  display:inline-block;
-  background-size:cover;
-  position:relative;
-  cursor:pointer;
+  display: inline-block;
+  background-size: cover;
+  position: relative;
+  cursor: pointer;
   border-radius: 10px;
   transition: all 0.4s ease-out;
-  box-shadow: 0px 35px 77px -17px rgba(0,0,0,0.44);
-  overflow:hidden;
-  color:white;
-  font-family:'Roboto';
+  box-shadow: 0px 35px 77px -17px rgba(0, 0, 0, 0.44);
+  overflow: hidden;
+  color: white;
+  font-family: "Roboto";
 }
-.tile img
-{
-  height:100%;
-  width:100%;
-  position:absolute;
-  top:0;
-  left:0;
-  z-index:0;
+.tile img {
+  height: 100%;
+  width: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 0;
   transition: all 0.4s ease-out;
 }
-.tile .text
-{
-/*   z-index:99; */
-  position:absolute;
-  padding:30px;
-  height:calc(100% - 60px);
+.tile .text {
+  /*   z-index:99; */
+  position: absolute;
+  padding: 30px;
+  height: calc(100% - 60px);
 }
-.tile h1
-{
-
-  font-weight:300;
-  margin:0;
-  text-shadow: 2px 2px 10px rgba(0,0,0,0.3);
+.tile h1 {
+  font-weight: 300;
+  margin: 0;
+  text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.3);
 }
-.tile h2
-{
-  font-weight:100;
-  margin:20px 0 0 0;
-  font-style:italic;
-   transform: translateX(200px);
+.tile h2 {
+  font-weight: 100;
+  margin: 20px 0 0 0;
+  font-style: italic;
+  transform: translateX(200px);
 }
-.tile p
-{
-  font-weight:300;
-  margin:20px 0 0 0;
+.tile p {
+  font-weight: 300;
+  margin: 20px 0 0 0;
   line-height: 25px;
-/*   opacity:0; */
+  /*   opacity:0; */
   transform: translateX(-200px);
   transition-delay: 0.2s;
 }
-.animate-text
-{
-  opacity:0;
+.animate-text {
+  opacity: 0;
   transition: all 0.6s ease-in-out;
 }
-.tile:hover
-{
-/*   background-color:#99aeff; */
-box-shadow: 0px 35px 77px -17px rgba(0,0,0,0.64);
-  transform:scale(1.05);
+.tile:hover {
+  /*   background-color:#99aeff; */
+  box-shadow: 0px 35px 77px -17px rgba(0, 0, 0, 0.64);
+  transform: scale(1.05);
 }
-.tile:hover img
-{
+.tile:hover img {
   opacity: 0.2;
 }
-.tile:hover .animate-text
-{
-  transform:translateX(0);
-  opacity:1;
+.tile:hover .animate-text {
+  transform: translateX(0);
+  opacity: 1;
 }
 
-.tile:hover span
-{
-  opacity:1;
-  transform:translateY(0px);
+.tile:hover span {
+  opacity: 1;
+  transform: translateY(0px);
 }
 
 @media (max-width: 1000px) {
   .wrap {
-   flex-direction: column;
-    width:400px;
+    flex-direction: column;
+    width: 400px;
   }
 }
 
 .container {
-            background-color: #e4ebf5;
-            width: 334px;
-            height: 204px;
-            padding: 12px;
-            margin-left: auto;
-            margin-right: auto;
-            border-radius: 8px;
-            box-shadow: 9px 9px 16px rgb(163,177,198,0.6), -9px -9px 16px    rgba(255,255,255, 0.7);
+  background-color: #e4ebf5;
+  width: 334px;
+  height: 204px;
+  padding: 12px;
+  margin-left: auto;
+  margin-right: auto;
+  border-radius: 8px;
+  box-shadow: 9px 9px 16px rgb(163, 177, 198, 0.6),
+    -9px -9px 16px rgba(255, 255, 255, 0.7);
 }
 
 .container:hover {
-
-              box-shadow: inset 9px 9px 16px rgb(163,177,198,0.6), inset -9px -9px 16px    rgba(255,255,255, 0.7);
+  box-shadow: inset 9px 9px 16px rgb(163, 177, 198, 0.6),
+    inset -9px -9px 16px rgba(255, 255, 255, 0.7);
 }
 
 input {
-       width: 300px;
-       height: 33px;
-       margin-left: 8px;
-       margin-top: 8px;
-       padding: 3px;
-       border-radius: 5px;
-       border: 0px;
-       transition: 0.4s ease-in-out;
+  width: 300px;
+  height: 33px;
+  margin-left: 8px;
+  margin-top: 8px;
+  padding: 3px;
+  border-radius: 5px;
+  border: 0px;
+  transition: 0.4s ease-in-out;
 }
 
 input:hover {
-             transform: scale(1.05,1.05);
+  transform: scale(1.05, 1.05);
 }
 
 input:focus {
-              color: #151515;
-              font-family: 'Josefin Sans', sans-serif;
-              font-size: 18px;
-              outline: none;
-              padding-left: 10px;
-              border-left: 5px solid #00A4FF;
+  color: #151515;
+  font-family: "Josefin Sans", sans-serif;
+  font-size: 18px;
+  outline: none;
+  padding-left: 10px;
+  border-left: 5px solid #00a4ff;
 }
 
 select {
-    display: block;
-    margin: 0 auto;
+  display: block;
+  margin: 0 auto;
 }
 .finalist {
   position: static;
 }
 .finalist > svg {
-    display: block;
-    margin: auto;
+  display: block;
+  margin: auto;
 }
 #podium {
   background-image: url("./img/podium.svg");
@@ -185,7 +175,7 @@ select {
   min-height: 1000px; /* TODO: COMPUTE ME !!! */
   background-position-y: 10%;
 }
-li > .avatarCard > svg  {
+li > .avatarCard > svg {
   height: 64px;
 }
 .podium2 {
@@ -198,24 +188,24 @@ li > .avatarCard > svg  {
 }
 /* Avatar */
 .avatar {
-    position: relative;
+  position: relative;
 }
 .avatar svg {
-    width: 180px;
-    height:230px;
-    display: block;
+  width: 180px;
+  height: 230px;
+  display: block;
 }
 .avatar-lobby {
-    position: relative;
-    display: inline-block;
-    vertical-align: bottom;
+  position: relative;
+  display: inline-block;
+  vertical-align: bottom;
 }
 .avatar-lobby svg {
-    width:36px;
-    height:46px;
+  width: 36px;
+  height: 46px;
 }
 .myavatar {
-    background-color: rgba(255, 255, 0, 0.3);
+  background-color: rgba(255, 255, 0, 0.3);
 }
 
 #toaster {
@@ -226,7 +216,7 @@ li > .avatarCard > svg  {
   right: 10px;
   top: -50px;
   opacity: 0;
-  border : 4px ridge rgba(26, 61, 126, 0.6);
+  border: 4px ridge rgba(26, 61, 126, 0.6);
   border-radius: 999px;
   padding: 2em;
   background-color: darkviolet;
@@ -235,8 +225,8 @@ li > .avatarCard > svg  {
 }
 
 #toaster.visible {
-    top: 5px;
-    opacity: 1;
+  top: 5px;
+  opacity: 1;
 }
 
 .playing {
@@ -245,4 +235,17 @@ li > .avatarCard > svg  {
 
 .disconnected {
   background-color: brown;
+}
+
+.marathon-rank .player {
+  margin: 10px;
+}
+
+.marathon-rank .name {
+  width: 10em;
+  margin-right: 0.5em;
+  float: left;
+}
+.marathon-rank progress {
+  margin-right: 0.5em;
 }
