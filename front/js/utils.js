@@ -270,7 +270,7 @@ function getTranslation(text) {
   if (currentLocale === null) return text;
   let r = locales[currentLocale][text];
   if (r) return r;
-  console.warn(`No translation found for "${text}" using ${currentLocale}`);
+  console.debug(`No translation found for "${text}" using ${currentLocale}`);
   return text;
   //return "/!\\ E: " + text; // to debug english
 }
