@@ -10,5 +10,5 @@ test:
 	./venv/bin/python tests_front/test_marathon.py
 
 unit:
-	./venv/bin/pip install requests pytest pytest-asyncio httpx
+	./venv/bin/pip install requests pytest pytest-asyncio httpx redis
 	HTTP_PORT=${HTTP_PORT} ./venv/bin/pytest tests/unit/*.py
