@@ -29,11 +29,11 @@ handlers = {
         marathon.setStatus(statuses.THROW);
         setTimeout(() => {
           marathon.$refs.mydice.updateDice([0, 0, 0, 0], false);
-          marathon.$refs.mydice.diceNumber = Math.max(
+          marathon.$refs.mydice.diceNumber = Math.min(
             4,
-            ("" + marathon.gameData[marathon.myId].distance).length
+            ("" + marathon.playersData[marathon.myId].distance).length
           );
-        }, 10);
+        }, 1);
         toaster.show({ message: "A toi de jouer!", closeTimeOut: 3500 });
       }
     }
