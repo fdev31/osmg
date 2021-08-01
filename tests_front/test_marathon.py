@@ -1,14 +1,19 @@
 import os
 from time import sleep
 import unittest
+import random
+
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from selenium.common.exceptions import JavascriptException
+
 from config import HOST
 from common import getStream, pretty
 
 HOME_INDEX = 0
 NB_PLAYERS = 3
+
+endOfGame = False
 
 
 def getId(driver):
@@ -19,12 +24,23 @@ def getPlayerData(driver, attr):
     return driver.execute_script("return marathon.playersData[marathon.myId].%s" % attr)
 
 
+def diceValue(driver, value=None):
+    if value is None:
+        return driver.execute_script("return marathon.$refs.mydice.getDiceValues()")
+    driver.execute_script(
+        "marathon.player_advance('%s')" % ("".join(str(x) for x in value))
+    )
+
+
 def waitEvent(names):
+    global endOfGame
     print("Waiting for %s" % (" or ".join(names)))
     while True:
         events = getStream()
         for e in events:
             print(" got %s" % pretty(e))
+            if e.isA("endOfGame"):
+                endOfGame = True
         for evt in events:
             if any(evt.isA(name) for name in names):
                 sleep(0.2)
@@ -111,11 +127,26 @@ class MarathonTest(unittest.TestCase):
         sleep(8)
         print("Start")
 
+        def isThrowValid(curDice, distance):
+            val = int("".join(str(x) for x in curDice))
+            return distance - val >= 0
+
         def playerTurn(drv):
-            if getPlayerData(drv, "distance") > 0:
+            distance = getPlayerData(drv, "distance")
+            if distance > 0:
                 drv.find_elements_by_class_name("mainAction")[0].click()
                 sleep(0.1)
-                drv.find_elements_by_class_name("mainAction")[0].click()
+                dices = diceValue(drv)
+                print("Remains %d, choices: %s" % (distance, dices))
+                dices.sort(reverse=True)
+                if isThrowValid(dices, distance):
+                    diceValue(drv, dices)
+                else:
+                    dices.sort()
+                    if (isThrowValid(dices, distance)) or random.randint(0, 3) == 1:
+                        diceValue(drv, dices)
+                    else:
+                        diceValue(drv, [0])
                 waitEvent(["varUpdate"])
                 sleep(0.1)
 
@@ -135,6 +166,8 @@ class MarathonTest(unittest.TestCase):
 
         for elt in getStream():
             print(pretty(elt))
+
+        assert endOfGame is True, "Game didn't finish !!"
 
     def tearDown(self):
         if "WAIT" in os.environ:
