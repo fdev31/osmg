@@ -259,3 +259,7 @@ li > .avatarCard > svg {
 .fade-leave-to {
   opacity: 0;
 }
+
+.flip-list-move {
+  transition: transform 0.8s ease;
+}
