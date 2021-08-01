@@ -5,22 +5,18 @@ let statuses = {
 };
 
 toaster = new Toaster({ id: "toaster" });
-function counter(index, time = 1000) {
+
+function delay(duration = 1000) {
   return new Promise((res) => {
-    setTimeout(() => {
-      toaster.show({ message: index, closeTimeOut: time });
-      res();
-    }, time);
+    setTimeout(res, duration);
   });
 }
 async function countDown(count = 4) {
-  return new Promise(async (resolve) => {
-    for (let index = 0; index < count; index++) {
-      let display = count - (index + 1) == 0 ? "Go !" : count - (index + 1);
-      await counter(display, 1500).then(console.log("ready"));
-    }
-    resolve();
-  });
+  for (let index = 1; index < count; index++) {
+    let display = count - (index + 1) == 0 ? "Go !" : count - (index + 1);
+    toaster.show({ message: display, closeTimeOut: 2000 });
+    await delay(1000);
+  }
 }
 handlers = {
   connectPlayer: (data) => {

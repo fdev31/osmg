@@ -124,7 +124,7 @@ class MarathonTest(unittest.TestCase):
         for drv in self.drv:
             drv.find_elements_by_class_name("mainAction")[0].click()
 
-        sleep(8)
+        sleep(5)
         print("Start")
 
         def isThrowValid(curDice, distance):
