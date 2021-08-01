@@ -120,15 +120,17 @@ class Toaster {
   constructor(options) {
     this.anchor = document.getElementById(options.id);
     this._options = {
+      // rename to "default options" ?
       default: {
+        // remove this
         position: "top",
       },
       show_default: {
-        message: "Hello",
+        message: "Hello", // to remove
         closeTimeOut: 1000,
-        closeButton: null,
-        binaryQuestion: null,
-        customButtons: null,
+        closeButton: null, // to rmeove
+        binaryQuestion: null, // to remove
+        customButtons: null, // to remove (use in show)
       },
     };
   }
@@ -138,6 +140,7 @@ class Toaster {
     return this.anchor;
   }
   createMainFrame(classList = []) {
+    // revise naming (confusion with "frame"...)
     this.findAnchor().classList.add("jom-toaster");
     let mainFrame = document.createElement("div");
     mainFrame.classList.add("jom-frame");
@@ -151,9 +154,6 @@ class Toaster {
   }
   addMessage(message) {
     let collection = this.findAnchor().getElementsByClassName("jom-message");
-    let action = function (elm) {
-      elm.innerHTML = message;
-    };
     forEachElementDo(collection, (x) => {
       x.innerHTML = message;
     });
@@ -172,7 +172,7 @@ class Toaster {
       btn.addEventListener("click", (x) => this.disableVisibility());
     return btn;
   }
-  addCloseButton(
+  addCloseButton( // remove
     options = { caption: "Close", action: (x) => console.log("close") }
   ) {
     let closeGroup = createElement("div", "", ["jom-closebtn"]);
@@ -204,6 +204,7 @@ class Toaster {
     }
   }
   addYesNoButtons(options) {
+    // remove
     let btnGroup = createElement("div", "", ["jom-yesno"]);
     console.log(options);
     for (const [key, value] of Object.entries(options)) {
@@ -226,15 +227,22 @@ class Toaster {
   cleanToaster() {
     removeAllChildElement(this.findAnchor());
   }
-  show(options = this._options.show_default) {
+  show(message, options = {}) {
+    // update signature / calls of show()
+
+    let showOptions = { ...this._options, ...options };
+
     this.cleanToaster();
     this.createMainFrame();
-    this.addMessage(options.message);
+    this.addMessage(message.message || message);
     this.enableVisibility();
+
+    // merge 3 options in 1 (only keep the generic)
     if (options.binaryQuestion) this.addYesNoButtons(options.binaryQuestion);
     if (options.closeButton) this.addCloseButton(options.closeButton);
+
     if (options.closeTimeOut > 0)
-      setTimeout((x) => this.disableVisibility(), options.closeTimeOut);
+      setTimeout((x) => this.disableVisibility(), showOptions.closeTimeOut);
   }
 }
 
