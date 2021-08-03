@@ -13,3 +13,6 @@ test:
 unit:
 	./venv/bin/pip install requests pytest pytest-asyncio httpx redis
 	HTTP_PORT=${HTTP_PORT} ./venv/bin/pytest tests/unit/*.py
+
+events:
+	@grep -rE 'publishEvent.*cat' server |sed -E 's/.*cat *= *"([^"]+) *".*/\1/' | sort
