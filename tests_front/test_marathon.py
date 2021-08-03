@@ -151,7 +151,10 @@ class MarathonTest(unittest.TestCase):
                 waitEvent(["varUpdate"])
                 sleep(0.1)
 
-        waitEvent(["start"])
+        evt = waitEvent(["start"])
+        assert "max" in evt
+        assert "min" in evt
+
         for n in range(100):
             try:
                 for drv in self.drv:
