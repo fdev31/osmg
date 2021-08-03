@@ -119,19 +119,8 @@ class Toaster {
   // # function pour définir les options
   constructor(options) {
     this.anchor = document.getElementById(options.id);
-    this._options = {
-      // rename to "default options" ?
-      default: {
-        // remove this
-        position: "top",
-      },
-      show_default: {
-        message: "Hello", // to remove
-        closeTimeOut: 1000,
-        closeButton: null, // to rmeove
-        binaryQuestion: null, // to remove
-        customButtons: null, // to remove (use in show)
-      },
+    this.default_options = {
+      closeTimeOut: 1000,
     };
   }
   findAnchor() {
@@ -154,7 +143,7 @@ class Toaster {
   }
   addMessage(message) {
     let collection = this.findAnchor().getElementsByClassName("jom-message");
-    forEachElementDo(collection, (x) => {
+    forEachCollectionItemDo(collection, (x) => {
       x.innerHTML = message;
     });
   }
@@ -172,46 +161,13 @@ class Toaster {
       btn.addEventListener("click", (x) => this.disableVisibility());
     return btn;
   }
-  addCloseButton( // remove
-    options = { caption: "Close", action: (x) => console.log("close") }
-  ) {
-    let closeGroup = createElement("div", "", ["jom-closebtn"]);
-    closeGroup.appendChild(
-      this.createButton({
-        caption: options.caption,
-        action: options.action,
-        hideOnClick: true,
-      })
-    );
-    forEachElementDo(
-      this.findAnchor().getElementsByClassName("jom-frame"),
-      (x) => {
-        x.appendChild(closeGroup);
-      }
-    );
-  }
-  createCustomButtonGroup(options) {
+  createButtonGroup(options) {
     let btnGroup = createElement("div", "", ["jom-custombtn"]);
     for (const [key, value] of Object.entries(options)) {
       btnGroup.appendChild(
         this.createButton({
           caption: key,
           action: value.action,
-          hideOnClick: value.hideOnClick,
-        })
-      );
-      this.findAnchor().appendChild(btnGroup);
-    }
-  }
-  addYesNoButtons(options) {
-    // remove
-    let btnGroup = createElement("div", "", ["jom-yesno"]);
-    console.log(options);
-    for (const [key, value] of Object.entries(options)) {
-      btnGroup.appendChild(
-        this.createButton({
-          caption: key,
-          action: (x) => value.action(),
           hideOnClick: value.hideOnClick,
         })
       );
@@ -230,16 +186,12 @@ class Toaster {
   show(message, options = {}) {
     // update signature / calls of show()
 
-    let showOptions = { ...this._options, ...options };
-
+    let showOptions = { ...this.default_options, ...options };
     this.cleanToaster();
     this.createMainFrame();
     this.addMessage(message.message || message);
     this.enableVisibility();
-
-    // merge 3 options in 1 (only keep the generic)
-    if (options.binaryQuestion) this.addYesNoButtons(options.binaryQuestion);
-    if (options.closeButton) this.addCloseButton(options.closeButton);
+    if (options.buttonGroup) this.createButtonGroup(options.buttonGroup);
 
     if (options.closeTimeOut > 0)
       setTimeout((x) => this.disableVisibility(), showOptions.closeTimeOut);
@@ -304,7 +256,7 @@ function createElement(type = "div", innerHtml = null, classList = []) {
   classList.map((x) => elm.classList.add(x));
   return elm;
 }
-function forEachElementDo(collection, action) {
+function forEachCollectionItemDo(collection, action) {
   for (let i = 0; i < collection.length; i++) {
     action(collection[i]);
   }
