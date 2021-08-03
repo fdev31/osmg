@@ -79,6 +79,7 @@ def create_game(driver, gameIndex):
     # change login
     setInputText(driver.find_element_by_tag_name("input"), "S. Anita")
     sleep(1)
+    driver.execute_script("window.scrollTo(0, 100)")
 
     # click game tile
     but = driver.find_elements_by_class_name("gamebutton")[gameIndex]
