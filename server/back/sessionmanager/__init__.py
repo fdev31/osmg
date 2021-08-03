@@ -18,11 +18,20 @@ from .library import games, getGameInitialData, getPlayerInitialData
 from .public import getSession
 from .votesystem import vote
 
+from ..gamelib.interfaces import GameInterface
+
 logger = logging.getLogger("Session")
 
 
-async def _triggerGameStart(game, uid, conn):
-    await publishEvent(uid, conn, cat="start", msg="game started")
+async def _triggerGameStart(game: GameInterface, uid: str, conn: aioredis.Redis):
+    await publishEvent(
+        uid,
+        conn,
+        cat="start",
+        msg="game started",
+        max=game.max_players,
+        min=game.min_players,
+    )
     await game.startGame(uid, conn)
 
 
