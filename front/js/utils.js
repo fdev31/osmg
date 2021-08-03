@@ -117,8 +117,8 @@ class Toaster {
   // # Initialiser
   // # function pour créer toast
   // # function pour définir les options
-  constructor(options) {
-    this.anchor = document.getElementById(options.id);
+  constructor(id = "toaster") {
+    this.anchor = document.getElementById(id);
     this.default_options = {
       closeTimeOut: 1000,
     };
@@ -128,8 +128,7 @@ class Toaster {
       throw "No tag to work with. Be sure that you provide an id";
     return this.anchor;
   }
-  createMainFrame(classList = []) {
-    // revise naming (confusion with "frame"...)
+  createBody(classList = []) {
     this.findAnchor().classList.add("jom-toaster");
     let mainFrame = document.createElement("div");
     mainFrame.classList.add("jom-frame");
@@ -188,7 +187,7 @@ class Toaster {
 
     let showOptions = { ...this.default_options, ...options };
     this.cleanToaster();
-    this.createMainFrame();
+    this.createBody();
     this.addMessage(message.message || message);
     this.enableVisibility();
     if (options.buttonGroup) this.createButtonGroup(options.buttonGroup);
