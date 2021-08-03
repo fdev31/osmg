@@ -16,9 +16,10 @@
       <h1>{{ T("Marathon , the dice game") }}</h1>
       <player-list
         ref="playerlist"
-        :enable-kick="true"
+        :enable-kick="!gameData.hasVoted"
         :cur-player="gameData.curPlayer"
         :my-id="myId"
+        v-on:kick="kickPlayerVote"
       ></player-list>
       <h2>
         {{ T("Welcome") }} {{playerName()}}, it's turn

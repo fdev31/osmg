@@ -8,8 +8,6 @@ const statuses = {
   GAME_WON: 6,
   ERROR: 7,
 };
-toaster = new Toaster("toaster");
-
 function isError(res) {
   return res && res.detail != undefined;
 }
@@ -20,7 +18,8 @@ function checkLost() {
     return true;
   }
 }
-
+toaster = new Toaster("toaster");
+let host = document.location.host;
 handlers = {
   curPlayer: (data) => {
     if (!checkLost()) {
@@ -51,6 +50,56 @@ handlers = {
       closeTimeOut: 2500,
     });
     console.log(data);
+  },
+  voteStart: (data) => {
+    if (!marathon.gameData.hasVoted) {
+      let player_kicked;
+      marathon.players.map((p) => {
+        if (parseInt(p.id) === parseInt(data.name.split("_")[1]))
+          player_kicked = p;
+      });
+      let message = `Voulez vous exclure ${player_kicked.name} du jeu`;
+      let options = {
+        closeTimeOut: -1,
+        buttonGroup: {
+          yes: {
+            action: () => marathon.kickPlayerVote(player_kicked, "true"),
+            hideOnClick: true,
+          },
+          no: {
+            action: () => marathon.kickPlayerVote(player_kicked, "false"),
+            hideOnClick: true,
+          },
+        },
+      };
+      toaster.show(message, options);
+    }
+    marathon.gameData.hasVoted = true;
+  },
+  kickPlayer: (data) => {
+    let player_kicked = findPlayer(marathon, data.id);
+    console.log(data, player_kicked);
+    if (data.id) {
+      for (let i = 0; i < marathon.players.length; i++) {
+        console.log(marathon.players[i].id, player_kicked.id, i);
+        if (parseInt(marathon.players[i].id) == parseInt(player_kicked.id))
+          marathon.players.splice(i, 1);
+      }
+      if (marathon.playersData[player_kicked.id] != undefined)
+        delete marathon.playersData[player_kicked.id];
+    }
+    setCookie(Vue2Obj(marathon));
+    if (parseInt(marathon.myId) == parseInt(data.id))
+      window.location = `http://${host}/index.html`;
+  },
+  voteEnd: (data) => {
+    let message;
+    data.result
+      ? (message = "Fin du vote. Le joueur a été renvoyé du jeu!")
+      : (message = "Fin du vote. Le joueur reste en jeu");
+    toaster.show(message, { closeTimeOut: 2500 });
+    marathon.gameData.hasVoted = false;
+    setCookie(Vue2Obj(marathon));
   },
   varUpdate: (data) => {
     if (data.player) {
@@ -100,13 +149,13 @@ function initApp() {
 
   initLocales();
 
-  let host = document.location.host;
   try {
     var data = extractJsonFromCookie();
   } catch (e) {
     window.location = `http://${host}/index.html`;
   }
 
+  data.gameData.hasVoted = false;
   if (typeof data.name == "undefined" || data.name == null) {
     window.location = `http://${host}/lobby.html`;
   }
@@ -147,7 +196,9 @@ function initApp() {
         return [statuses.THROW, statuses.DICE_THROWN].includes(this.status);
       },
       distance() {
-        return this.playersData[this.myId].distance;
+        return this.playersData[this.myId]
+          ? this.playersData[this.myId].distance
+          : 0;
       },
       sortPlayers() {
         let data = this.playersData;
@@ -277,6 +328,22 @@ function initApp() {
           clearInterval(intervalId);
           btn.style.color = `unset`;
         }, duration);
+      },
+      async kickPlayerVote(player, validate) {
+        console.log(player, validate);
+        let appliant;
+        this.players.map((p) => {
+          if (parseInt(p.id) === parseInt(this.myId)) appliant = p;
+        });
+        let description = `${appliant.name}%20veut%20d%C3%A9gager%20${player.name}`;
+        vote({
+          kicker: appliant,
+          kicked: player,
+          validate: validate,
+          description: description,
+          app: this,
+        });
+        this.gameData.hasVoted = true;
       },
       async player_advance(value) {
         let choice =
