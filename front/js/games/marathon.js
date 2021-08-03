@@ -254,6 +254,18 @@ function initApp() {
           }
         }, Math.floor(3600 / fps));
       },
+      showRules() {
+        let closeBtn = {
+          close: {
+            hideOnClick: true,
+            action: () => {},
+          },
+        };
+        toaster.show(this.T("rules"), {
+          closeTimeOut: -1,
+          buttonGroup: closeBtn,
+        });
+      },
       animateRuleButton(fps, duration = 5000) {
         let btn = document.getElementById("rules-btn");
         let f = 0;

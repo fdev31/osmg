@@ -19,6 +19,7 @@ const locales = {
     Wait: "Attendez",
     Pass: "Passez",
     Quit: "Quitter",
+    Close: "Fermer",
     "Game won": "Jeu gagné",
     "Game lost": "Jeu perdu",
     "End of turn": "Fin du Tour",
@@ -35,6 +36,7 @@ const locales = {
     marathon_description: "Un jeu de course avec des d\u00e9s",
     marathon_long_description:
       "Affrontez vos amis pour des grands moments de d\u00e9lire!<br/>Un m\u00e9lange fun de hasard et de maths de base.",
+    rules: "Le but du jeu est de parcourir EXACTEMENT 42195 mètres.",
   },
   en: {
     lobby_title: "The lobby",
@@ -43,5 +45,7 @@ const locales = {
     marathon_description: "A racing game with dices!",
     marathon_long_description:
       "Race against your opponents for a big moment of fun <br/>A mix of chance and simple maths.",
+    rules:
+      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
   },
 };
