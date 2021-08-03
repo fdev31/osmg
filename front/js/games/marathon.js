@@ -59,6 +59,14 @@ handlers = {
         pd = marathon.playersData[data.player] = {};
       }
       console.log(pd);
+      if (data.player != marathon.myId) {
+        toaster.show(
+          `${findPlayer(marathon, data.player).name} avance de ${
+            parseInt(marathon.playersData[data.player].distance) -
+            parseInt(data.val)
+          } mètres`
+        );
+      }
       marathon.animateProgressBar(data.player, pd.distance, data.val);
     } else {
       marathon.gameData[data.var] = data.val;
