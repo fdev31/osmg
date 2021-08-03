@@ -14,14 +14,13 @@ function delay(duration = 1000) {
 async function countDown(count = 4) {
   for (let index = 1; index < count; index++) {
     let display = count - (index + 1) == 0 ? "Go !" : count - (index + 1);
-    toaster.show({ message: display, closeTimeOut: 2000 });
+    toaster.show(display, { closeTimeOut: 2000 });
     await delay(1000);
   }
 }
 handlers = {
   connectPlayer: (data) => {
-    toaster.show({
-      message: `${findPlayer(lobby, data.id).name} enters the game`,
+    toaster.show(`${findPlayer(lobby, data.id).name} enters the game`, {
       closeTimeOut: 2500,
     });
     lobby.playersData[data.id] = {};
@@ -29,8 +28,7 @@ handlers = {
     console.log(data);
   },
   disconnectPlayer: (data) => {
-    toaster.show({
-      message: `${findPlayer(lobby, data.id).name} is disconnected`,
+    toaster.show(`${findPlayer(lobby, data.id).name} is disconnected`, {
       closeTimeOut: 2500,
     });
     console.log(data);
@@ -56,9 +54,10 @@ handlers = {
         if (parseInt(p.id) === parseInt(data.name.split("_")[1]))
           player_kicked = p;
       });
+      let message = `Voulez vous exclure ${player_kicked.name} du jeu`;
       let options = {
-        message: `Voulez vous exclure ${player_kicked.name} du jeu`,
-        binaryQuestion: {
+        closeTimeOut: -1,
+        buttonGroup: {
           yes: {
             action: (x) => lobby.kickPlayerVote(player_kicked, "true"),
             hideOnClick: true,
@@ -69,7 +68,7 @@ handlers = {
           },
         },
       };
-      toaster.show(options);
+      toaster.show(message, options);
     }
     lobby.gameData.hasVoted = true;
     console.log(data);
@@ -93,10 +92,9 @@ handlers = {
       ? (message = `Fin du vote. Le joueur a été renvoyé du jeu!`)
       : (message = `Fin du vote. Le joueur reste en jeu`);
     let options = {
-      message: message,
       closeTimeOut: 2500,
     };
-    toaster.show(options);
+    toaster.show(message, options);
     lobby.gameData.hasVoted = false;
     console.log(data);
     setCookie(Vue2Obj(lobby));

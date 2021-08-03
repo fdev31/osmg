@@ -34,22 +34,20 @@ handlers = {
             ("" + marathon.playersData[marathon.myId].distance).length
           );
         }, 1);
-        toaster.show({ message: "A toi de jouer!", closeTimeOut: 3500 });
+        toaster.show("A toi de jouer!", { closeTimeOut: 3500 });
       }
     }
   },
   connectPlayer: (data) => {
     marathon.playersData[data.id].disconnected = false;
-    toaster.show({
-      message: `${findPlayer(marathon, data.id).name} enters the game`,
+    toaster.show(`${findPlayer(marathon, data.id).name} enters the game`, {
       closeTimeOut: 2500,
     });
     console.log(data);
   },
   disconnectPlayer: (data) => {
     marathon.playersData[data.id].disconnected = true;
-    toaster.show({
-      message: `${findPlayer(marathon, data.id).name} is disconnected`,
+    toaster.show(`${findPlayer(marathon, data.id).name} is disconnected`, {
       closeTimeOut: 2500,
     });
     console.log(data);
@@ -217,7 +215,7 @@ function initApp() {
           dice.updateDice(diceArray);
           dice.enableDrag(true);
         } catch (e) {
-          toaster.show({ message: e.message, closeTimeOut: 10000 });
+          toaster.show(e.message, { closeTimeOut: 10000 });
           this.setStatus(statuses.ERROR);
         }
       },
