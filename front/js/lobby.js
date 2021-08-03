@@ -4,7 +4,7 @@ let statuses = {
   READY: 1,
 };
 
-toaster = new Toaster({ id: "toaster" });
+toaster = new Toaster();
 
 function delay(duration = 1000) {
   return new Promise((res) => {
