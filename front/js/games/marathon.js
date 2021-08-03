@@ -31,7 +31,7 @@ handlers = {
           marathon.$refs.mydice.updateDice([0, 0, 0, 0], false);
           marathon.$refs.mydice.diceNumber = Math.min(
             4,
-            ("" + marathon.playersData[marathon.myId].distance).length
+            ("" + (marathon.playersData[marathon.myId].distance - 1)).length
           );
         }, 1);
         toaster.show("A toi de jouer!", { closeTimeOut: 3500 });

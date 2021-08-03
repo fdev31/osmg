@@ -49,7 +49,10 @@ async def throwDice(player: PlayerIdentifier) -> List[int]:
             )
         remainingDistance = await conn.get(prefix + "distance")
 
-        dices = [random.randint(1, 6) for x in range(min(4, len(remainingDistance)))]
+        dices = [
+            random.randint(1, 6)
+            for x in range(min(4, len(str(int(remainingDistance) - 1))))
+        ]
         await conn.set(propName, dumps(dices))
     return dices
 
