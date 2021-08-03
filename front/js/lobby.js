@@ -78,7 +78,7 @@ handlers = {
     if ((data.result = true)) {
       for (let index = 0; index < lobby.players.length; index++) {
         if (parseInt(lobby.players[index].id) == parseInt(player_kicked.id)) {
-          lobby.players.splice(index);
+          lobby.players.splice(index, 1);
         }
       }
       if (lobby.playersData[player_kicked.id] != undefined)
