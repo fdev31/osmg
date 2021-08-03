@@ -8,7 +8,7 @@ const statuses = {
   GAME_WON: 6,
   ERROR: 7,
 };
-toaster = new Toaster({ id: "toaster" });
+toaster = new Toaster("toaster");
 
 function isError(res) {
   return res && res.detail != undefined;
@@ -137,6 +137,7 @@ function initApp() {
     mounted() {
       document.title = this.T("marathon_title");
       this.$refs.playerlist.players = this.players;
+      this.animateRuleButton(12);
     },
     computed: {
       isLastAction() {
@@ -252,6 +253,18 @@ function initApp() {
             this.playersData[`${id}`].distance = stop;
           }
         }, Math.floor(3600 / fps));
+      },
+      animateRuleButton(fps, duration = 5000) {
+        let btn = document.getElementById("rules-btn");
+        let f = 0;
+        let intervalId = setInterval(() => {
+          btn.style.color = `rgb(${Math.cos(f) * 255} 100 100)`;
+          f++;
+        }, 1000 / fps);
+        setInterval(() => {
+          clearInterval(intervalId);
+          btn.style.color = `unset`;
+        }, duration);
       },
       async player_advance(value) {
         let choice =
