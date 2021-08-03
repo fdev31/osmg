@@ -99,7 +99,7 @@ class MarathonTest(unittest.TestCase):
 
     def test_game(self):
         create_game(self.driver, HOME_INDEX)
-        sleep(1)
+        sleep(0.5)
         lobby_url = self.driver.find_element_by_id("link").get_attribute("value")
         lobby_name = lobby_url.rsplit("/", 1)[1]
         getStream(lobby_name)
@@ -107,7 +107,6 @@ class MarathonTest(unittest.TestCase):
         # other player join game
         for drv in self.drv[1:]:
             drv.get(lobby_url)
-        sleep(0.5)
         print("everybody in lobby", getStream())
         self.pids = [getId(drv) for drv in self.drv]
         for i, drv in enumerate(self.drv[1:]):
@@ -118,7 +117,6 @@ class MarathonTest(unittest.TestCase):
             drv.find_elements_by_tag_name("button")[0].click()
 
         print("About to start")
-        sleep(1)
         shot(self.driver, "lobby_full")
 
         # start game
@@ -144,14 +142,16 @@ class MarathonTest(unittest.TestCase):
                     diceValue(drv, dices)
                 else:
                     dices.sort()
-                    if (isThrowValid(dices, distance)) or random.randint(0, 3) == 1:
+                    if (isThrowValid(dices, distance)) or random.randint(0, 50) == 1:
                         diceValue(drv, dices)
                     else:
                         diceValue(drv, [0])
                 waitEvent(["varUpdate"])
                 sleep(0.1)
+            sleep(0.2)
 
         evt = waitEvent(["start"])
+
         assert "max" in evt
         assert "min" in evt
 
