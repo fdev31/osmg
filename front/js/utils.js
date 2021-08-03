@@ -190,9 +190,10 @@ class Toaster {
     this.createBody();
     this.addMessage(message.message || message);
     this.enableVisibility();
-    if (options.buttonGroup) this.createButtonGroup(options.buttonGroup);
+    if (showOptions.buttonGroup)
+      this.createButtonGroup(showOptions.buttonGroup);
 
-    if (options.closeTimeOut > 0)
+    if (showOptions.closeTimeOut > 0)
       setTimeout((x) => this.disableVisibility(), showOptions.closeTimeOut);
   }
 }
