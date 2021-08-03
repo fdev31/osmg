@@ -58,7 +58,8 @@ handlers = {
       if (pd === undefined) {
         pd = marathon.playersData[data.player] = {};
       }
-      pd[data.var] = data.val;
+      console.log(pd);
+      marathon.animateProgressBar(data.player, pd.distance, data.val);
     } else {
       marathon.gameData[data.var] = data.val;
     }
@@ -233,6 +234,16 @@ function initApp() {
             return player;
           }
         }
+      },
+      animateProgressBar(id, start, stop, fps = 120) {
+        let distInterval = Math.floor((start - stop) / 20);
+        let intervalId = setInterval(() => {
+          this.playersData[`${id}`].distance -= distInterval;
+          if (this.playersData[`${id}`].distance < stop) {
+            clearInterval(intervalId);
+            this.playersData[`${id}`].distance = stop;
+          }
+        }, Math.floor(3600 / fps));
       },
       async player_advance(value) {
         let choice =
