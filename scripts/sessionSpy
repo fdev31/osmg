@@ -1,0 +1,21 @@
+#!./venv/bin/python
+import sys
+
+sys.path.append("./tests/unit")
+from common import getStream, pretty
+
+if len(sys.argv) == 1:
+    print("Syntax: %s <session name>" % sys.argv[0])
+    sys.exit(-1)
+
+
+sid = sys.argv[1]
+if sid[0] == "S":
+    sid = sid[1:]
+
+try:
+    while True:
+        for evt in getStream(sid):
+            print(pretty(evt))
+except KeyboardInterrupt:
+    print("")
