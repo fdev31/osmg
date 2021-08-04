@@ -8,7 +8,7 @@ from fastapi.responses import ORJSONResponse
 from .utils import ODict
 
 debug = bool(os.environ.get("DEBUG", False))
-logger = logging.getLogger()
+logger = logging.getLogger("routes")
 
 if debug:
     app = FastAPI(debug=True, default_response_class=ORJSONResponse)
@@ -38,3 +38,4 @@ for name in MODULES:
     logger.info("Loading %s ..." % name)
     mod = importlib.import_module("." + name, package="back")
     mod.init(app, config)
+logger.info("Routes Loaded.")

@@ -6,7 +6,7 @@ from typing import Dict
 from .sessionmanager.library import registerGame
 
 
-logger = logging.getLogger()
+logger = logging.getLogger("games")
 
 GAMES = ["marathon", "mock1", "mock2"]
 
