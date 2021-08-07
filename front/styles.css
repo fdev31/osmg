@@ -222,6 +222,7 @@ li > .avatarCard > svg {
   background-color: darkviolet;
   color: white;
   transition-duration: 0.3s;
+  z-index: 15;
 }
 
 #toaster.visible {
