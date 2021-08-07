@@ -1,0 +1,20 @@
+{
+  "rules": "Le but du jeu est de parcourir EXACTEMENT 42195 mètres. Vous perdez quand vous parcourez plus 42195mètres. Lancez les dés et choisissez combien de mètre vous décidez d'avancer.",
+  "Change game": "Changez de jeu",
+  "It's turn": "C'est le tour",
+  "You Win": "Vous avez gagné",
+  "You Lose": "Vous avez perdu",
+  "Waiting for other players": "En attente des autres joueurs",
+  "Throw dices": "Lancez les dés",
+  "Move forward": "Avancez",
+  "Wait": "Attendez",
+  "Pass": "Passez",
+  "Quit": "Quitter",
+  "Close": "Fermer",
+  "Game won": "Jeu gagné",
+  "Game lost": "Jeu perdu",
+  "End of turn": "Fin du Tour",
+  "Error ": " Erreur",
+  "meters left": "mètres restants",
+  "meters": "mètres"
+}
