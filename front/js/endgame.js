@@ -2,7 +2,6 @@ var host = window.location.host;
 handlers = {
   restart: (data) => {
     window.location = `http://${host}/lobby.html`;
-    console.log(data);
   },
 };
 function initApp() {
