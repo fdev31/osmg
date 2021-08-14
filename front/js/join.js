@@ -48,5 +48,5 @@ function initApp() {
       },
     },
   });
-  lobby = app.mount("#app");
+  application = app.mount("#app");
 }
