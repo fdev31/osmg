@@ -305,7 +305,6 @@ function initApp() {
         let closeBtn = {
           close: {
             hideOnClick: true,
-            action: () => {},
           },
         };
         toaster.show(this.T("marathon_rules"), {

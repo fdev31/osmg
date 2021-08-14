@@ -157,7 +157,7 @@ class Toaster {
    */
   createButton(options) {
     let btn = createElement("button", options.caption);
-    btn.addEventListener("click", options.action);
+    if (options.action) btn.addEventListener("click", options.action);
     if (options.hideOnClick)
       btn.addEventListener("click", (x) => this.disableVisibility());
     return btn;
@@ -168,7 +168,7 @@ class Toaster {
       btnGroup.appendChild(
         this.createButton({
           caption: key,
-          action: value.action,
+          action: value.action || null,
           hideOnClick: value.hideOnClick,
         })
       );
