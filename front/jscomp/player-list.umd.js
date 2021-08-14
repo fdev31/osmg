@@ -1688,6 +1688,7 @@
                       _i2++
                     ) {
                       var k = _Object$keys[_i2];
+                      console.log(k, this[k], this.getValue(k));
                     }
                   },
                 },
@@ -4990,9 +4991,11 @@
           var external_commonjs_vue_commonjs2_vue_root_Vue_ =
             __webpack_require__("8bbf");
 
-          // CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js??ref--12-0!./node_modules/thread-loader/dist/cjs.js!./node_modules/babel-loader/lib!./node_modules/vue-loader-v16/dist/templateLoader.js??ref--6!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader-v16/dist??ref--0-1!./src/player-list.vue?vue&type=template&id=ad12259c
+          // CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js??ref--12-0!./node_modules/thread-loader/dist/cjs.js!./node_modules/babel-loader/lib!./node_modules/vue-loader-v16/dist/templateLoader.js??ref--6!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader-v16/dist??ref--0-1!./src/player-list.vue?vue&type=template&id=4131c9b5
 
           function render(_ctx, _cache, $props, $setup, $data, $options) {
+            var _this = this;
+
             var _component_avatar_card = Object(
               external_commonjs_vue_commonjs2_vue_root_Vue_["resolveComponent"]
             )("avatar-card");
@@ -5098,8 +5101,12 @@
                                             );
                                           },
                                         },
-                                        " Kick player ",
-                                        8,
+                                        Object(
+                                          external_commonjs_vue_commonjs2_vue_root_Vue_[
+                                            "toDisplayString"
+                                          ]
+                                        )(_this.kickText || "Kick Player"),
+                                        9,
                                         ["onClick"]
                                       ))
                                     : Object(
@@ -5122,7 +5129,7 @@
               )
             );
           }
-          // CONCATENATED MODULE: ./src/player-list.vue?vue&type=template&id=ad12259c
+          // CONCATENATED MODULE: ./src/player-list.vue?vue&type=template&id=4131c9b5
 
           // EXTERNAL MODULE: ./node_modules/core-js/modules/es.number.constructor.js
           var es_number_constructor = __webpack_require__("a9e3");
@@ -8292,6 +8299,7 @@
               },
               props: {
                 enableKick: Boolean,
+                kickText: String,
                 curPlayer: String,
                 myId: Number,
               },

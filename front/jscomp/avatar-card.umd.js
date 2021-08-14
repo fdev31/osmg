@@ -1646,6 +1646,7 @@
                       _i2++
                     ) {
                       var k = _Object$keys[_i2];
+                      console.log(k, this[k], this.getValue(k));
                     }
                   },
                 },
