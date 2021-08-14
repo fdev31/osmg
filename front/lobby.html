@@ -1,32 +1,50 @@
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
   <head>
-    <meta charset="utf-8">
+    <meta charset="utf-8" />
     <title></title>
-    <link rel="stylesheet" href="styles.css">
-    <link rel="preconnect" href="https://fonts.gstatic.com">
-    <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto&display=swap"
+      rel="stylesheet"
+    />
   </head>
   <body onload="initApp()">
-       <div id="toaster"></div>
-      <div id="app" v-cloak>
-          <h2>{{gameType}}</h2>
-          <button type="button" onclick="copyURL('link')" :title="T('Click to copy invite link to the clipboard')">{{T("Invite")}}</button>
-          <input size="40" type="text" id="link" :value="`http://${host}/r/${name}`"></input>
-          <h3>{{T("players")}}</h3>
-          <player-list ref="playerlist" 
-            :enable-kick="!gameData.hasVoted"
-            :my-id="myId"
-            v-on:kick="kickPlayerVote"
-          >
-          </player-list>
-          <button v-on:click="mainAction" type="button" class="mainAction">{{getMainActionText()}}</button>
-          <button type="button">{{T("Change game")}}</button>
-      </div>
-      <script src="https://unpkg.com/vue@next"></script>
-      <script src="js/locales.js" charset="utf-8"></script>
-      <script src="/js/utils.js" charset="utf-8"></script>
-      <script src="/jscomp/player-list.umd.js" charset="utf-8"></script>
-      <script src="/js/lobby.js" charset="utf-8"></script>
+    <div id="toaster"></div>
+    <div id="app" v-cloak>
+      <h2>{{gameType}}</h2>
+      <button
+        type="button"
+        onclick="copyURL('link')"
+        :title="T('Click to copy invite link to the clipboard')"
+      >
+        {{T("Invite")}}
+      </button>
+      <input
+        size="40"
+        type="text"
+        id="link"
+        :value="`http://${host}/r/${name}`"
+      />
+      <h3>{{T("players")}}</h3>
+      <player-list
+        ref="playerlist"
+        :enable-kick="!gameData.hasVoted"
+        :kick-text="kickText"
+        :my-id="myId"
+        v-on:kick="kickPlayerVote"
+      >
+      </player-list>
+      <button v-on:click="mainAction" type="button" class="mainAction">
+        {{getMainActionText()}}
+      </button>
+      <button type="button">{{T("Change game")}}</button>
+    </div>
+    <script src="https://unpkg.com/vue@next"></script>
+    <script src="js/locales.js" charset="utf-8"></script>
+    <script src="/js/utils.js" charset="utf-8"></script>
+    <script src="/jscomp/player-list.umd.js" charset="utf-8"></script>
+    <script src="/js/lobby.js" charset="utf-8"></script>
   </body>
 </html>

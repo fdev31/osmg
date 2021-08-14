@@ -17,12 +17,13 @@
       <player-list
         ref="playerlist"
         :enable-kick="!gameData.hasVoted"
+        :kick-text="kickText"
         :cur-player="gameData.curPlayer"
         :my-id="myId"
         v-on:kick="kickPlayerVote"
       ></player-list>
       <h2>
-        {{ T("Welcome") }} {{playerName()}}, it's turn
+        {{ T("Welcome") }} {{playerName()}}, {{ T("It's turn").toLowerCase()}}
         {{parseInt(gameData.turns)+1}}
       </h2>
       <div v-if="didIWin()">
