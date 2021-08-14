@@ -20,35 +20,35 @@ async function countDown(count = 4) {
 }
 handlers = {
   connectPlayer: (data) => {
-    toaster.show(`${findPlayer(lobby, data.id).name} enters the game`, {
+    toaster.show(`${findPlayer(application, data.id).name} enters the game`, {
       closeTimeOut: 2500,
     });
-    lobby.playersData[data.id] = {};
-    setCookie(Vue2Obj(lobby));
+    application.playersData[data.id] = {};
+    setCookie(Vue2Obj(application));
   },
   disconnectPlayer: (data) => {
-    toaster.show(`${findPlayer(lobby, data.id).name} is disconnected`, {
+    toaster.show(`${findPlayer(application, data.id).name} is disconnected`, {
       closeTimeOut: 2500,
     });
   },
   curPlayer: (data) => {
-    lobby.gameData.curPlayer = data.val;
-    setCookie(Vue2Obj(lobby));
+    application.gameData.curPlayer = data.val;
+    setCookie(Vue2Obj(application));
   },
   newPlayer: (data) => {
     delete data["cat"];
-    lobby.players.push(data);
-    setCookie(Vue2Obj(lobby));
+    application.players.push(data);
+    setCookie(Vue2Obj(application));
   },
   start: async (data) => {
     countDown().then(() => {
-      window.location = `/game_${lobby.gameType}.html`;
+      window.location = `/game_${application.gameType}.html`;
     });
   },
   voteStart: (data) => {
-    if (!lobby.gameData.hasVoted) {
+    if (!application.gameData.hasVoted) {
       let player_kicked;
-      lobby.players.map((p) => {
+      application.players.map((p) => {
         if (parseInt(p.id) === parseInt(data.name.split("_")[1]))
           player_kicked = p;
       });
@@ -57,31 +57,33 @@ handlers = {
         closeTimeOut: -1,
         buttonGroup: {
           yes: {
-            action: (x) => lobby.kickPlayerVote(player_kicked, "true"),
+            action: (x) => application.kickPlayerVote(player_kicked, "true"),
             hideOnClick: true,
           },
           no: {
-            action: (x) => lobby.kickPlayerVote(player_kicked, "false"),
+            action: (x) => application.kickPlayerVote(player_kicked, "false"),
             hideOnClick: true,
           },
         },
       };
       toaster.show(message, options);
     }
-    lobby.gameData.hasVoted = true;
+    application.gameData.hasVoted = true;
   },
   kickPlayer: (data) => {
-    let player_kicked = findPlayer(lobby, data.id);
+    let player_kicked = findPlayer(application, data.id);
     if ((data.result = true)) {
-      for (let index = 0; index < lobby.players.length; index++) {
-        if (parseInt(lobby.players[index].id) == parseInt(player_kicked.id)) {
-          lobby.players.splice(index, 1);
+      for (let index = 0; index < application.players.length; index++) {
+        if (
+          parseInt(application.players[index].id) == parseInt(player_kicked.id)
+        ) {
+          application.players.splice(index, 1);
         }
       }
-      if (lobby.playersData[player_kicked.id] != undefined)
-        delete lobby.playersData[player_kicked.id];
+      if (application.playersData[player_kicked.id] != undefined)
+        delete application.playersData[player_kicked.id];
     }
-    setCookie(Vue2Obj(lobby));
+    setCookie(Vue2Obj(application));
   },
   voteEnd: (data) => {
     let message;
@@ -92,8 +94,8 @@ handlers = {
       closeTimeOut: 2500,
     };
     toaster.show(message, options);
-    lobby.gameData.hasVoted = false;
-    setCookie(Vue2Obj(lobby));
+    application.gameData.hasVoted = false;
+    setCookie(Vue2Obj(application));
   },
   log: (data) => {
     console.log(data);
@@ -169,6 +171,9 @@ function initApp() {
       },
     },
   });
-  lobby = app.mount("#app");
-  setupStreamEventHandler({ topic: lobby.name, uid: lobby.myId }, handlers);
+  application = app.mount("#app");
+  setupStreamEventHandler(
+    { topic: application.name, uid: application.myId },
+    handlers
+  );
 }

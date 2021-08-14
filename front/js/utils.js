@@ -57,6 +57,7 @@ function setupStreamEventHandler(query, handlers) {
   setEventStreamHandler((data) => {
     if (handlers[data.cat]) {
       handlers[data.cat](data);
+      console.log(data);
     } else {
       console.warn("No handler for " + data.cat);
       console.log(data);

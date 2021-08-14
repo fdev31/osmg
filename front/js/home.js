@@ -1,4 +1,4 @@
-let app;
+let application;
 
 function initApp() {
   initLocales();
@@ -54,8 +54,8 @@ function initApp() {
       },
     },
   });
-  app = app.mount("#app");
+  application = app.mount("#app");
   getJson("/c/gamelist").then((data) => {
-    app.games = data;
+    application.games = data;
   });
 }
