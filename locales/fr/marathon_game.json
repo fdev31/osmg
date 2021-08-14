@@ -2,6 +2,7 @@
   "marathon_rules": "Le but du jeu est de parcourir EXACTEMENT 42195 mètres. Vous perdez quand vous parcourez plus 42195mètres. Lancez les dés et choisissez combien de mètre vous décidez d'avancer.",
   "Change game": "Changez de jeu",
   "It's turn": "C'est le tour",
+  "It's your turn to play!": "A toi de jouer!",
   "You Win": "Vous avez gagné",
   "You Lose": "Vous avez perdu",
   "Waiting for other players": "En attente des autres joueurs",
