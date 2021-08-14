@@ -143,7 +143,6 @@ class Toaster {
   addMessage(message) {
     let collection = this.findAnchor().getElementsByClassName("jom-message");
     collection = Array.from(collection);
-    console.log(collection);
     collection.forEach((x) => {
       x.innerHTML = message;
     });
@@ -273,4 +272,13 @@ async function kickPlayerVote(app, player, validate = "true") {
     app: app,
   });
   app.gameData.hasVoted = true;
+}
+
+function createPlayersById(app) {
+  let playerById = {};
+  app.players.forEach((x) => {
+    playerById[x.id] = { ...x, ...app.playersData[x.id] };
+  });
+  app._playersById = playerById;
+  console.log(app);
 }
