@@ -142,7 +142,9 @@ class Toaster {
   }
   addMessage(message) {
     let collection = this.findAnchor().getElementsByClassName("jom-message");
-    forEachCollectionItemDo(collection, (x) => {
+    collection = Array.from(collection);
+    console.log(collection);
+    collection.forEach((x) => {
       x.innerHTML = message;
     });
   }
@@ -255,9 +257,4 @@ function createElement(type = "div", innerHtml = null, classList = []) {
   elm.innerHTML = innerHtml;
   classList.map((x) => elm.classList.add(x));
   return elm;
-}
-function forEachCollectionItemDo(collection, action) {
-  for (let i = 0; i < collection.length; i++) {
-    action(collection[i]);
-  }
 }
