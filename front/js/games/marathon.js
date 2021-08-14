@@ -13,8 +13,8 @@ function isError(res) {
 }
 
 function checkLost() {
-  if (marathon.distance < 0) {
-    marathon.setStatus(statuses.GAME_OVER);
+  if (application.distance < 0) {
+    application.setStatus(statuses.GAME_OVER);
     return true;
   }
 }
@@ -23,14 +23,15 @@ let host = document.location.host;
 handlers = {
   curPlayer: (data) => {
     if (!checkLost()) {
-      marathon.gameData.curPlayer = data.val.toString();
-      if (data.val.toString() === marathon.myId.toString()) {
-        marathon.setStatus(statuses.THROW);
+      application.gameData.curPlayer = data.val.toString();
+      if (data.val.toString() === application.myId.toString()) {
+        application.setStatus(statuses.THROW);
         setTimeout(() => {
-          marathon.$refs.mydice.updateDice([0, 0, 0, 0], false);
-          marathon.$refs.mydice.diceNumber = Math.min(
+          application.$refs.mydice.updateDice([0, 0, 0, 0], false);
+          application.$refs.mydice.diceNumber = Math.min(
             4,
-            ("" + (marathon.playersData[marathon.myId].distance - 1)).length
+            ("" + (application.playersData[application.myId].distance - 1))
+              .length
           );
         }, 1);
         toaster.show("A toi de jouer!", { closeTimeOut: 3500 });
@@ -38,21 +39,21 @@ handlers = {
     }
   },
   connectPlayer: (data) => {
-    marathon.playersData[data.id].disconnected = false;
-    toaster.show(`${findPlayer(marathon, data.id).name} enters the game`, {
+    application.playersData[data.id].disconnected = false;
+    toaster.show(`${findPlayer(application, data.id).name} enters the game`, {
       closeTimeOut: 2500,
     });
   },
   disconnectPlayer: (data) => {
-    marathon.playersData[data.id].disconnected = true;
-    toaster.show(`${findPlayer(marathon, data.id).name} is disconnected`, {
+    application.playersData[data.id].disconnected = true;
+    toaster.show(`${findPlayer(application, data.id).name} is disconnected`, {
       closeTimeOut: 2500,
     });
   },
   voteStart: (data) => {
-    if (!marathon.gameData.hasVoted) {
+    if (!application.gameData.hasVoted) {
       let player_kicked;
-      marathon.players.map((p) => {
+      application.players.map((p) => {
         if (parseInt(p.id) === parseInt(data.name.split("_")[1]))
           player_kicked = p;
       });
@@ -61,31 +62,31 @@ handlers = {
         closeTimeOut: -1,
         buttonGroup: {
           yes: {
-            action: () => marathon.kickPlayerVote(player_kicked, "true"),
+            action: () => application.kickPlayerVote(player_kicked, "true"),
             hideOnClick: true,
           },
           no: {
-            action: () => marathon.kickPlayerVote(player_kicked, "false"),
+            action: () => application.kickPlayerVote(player_kicked, "false"),
             hideOnClick: true,
           },
         },
       };
       toaster.show(message, options);
     }
-    marathon.gameData.hasVoted = true;
+    application.gameData.hasVoted = true;
   },
   kickPlayer: (data) => {
-    let player_kicked = findPlayer(marathon, data.id);
+    let player_kicked = findPlayer(application, data.id);
     if (data.id) {
-      for (let i = 0; i < marathon.players.length; i++) {
-        if (parseInt(marathon.players[i].id) == parseInt(player_kicked.id))
-          marathon.players.splice(i, 1);
+      for (let i = 0; i < application.players.length; i++) {
+        if (parseInt(application.players[i].id) == parseInt(player_kicked.id))
+          application.players.splice(i, 1);
       }
-      if (marathon.playersData[player_kicked.id] != undefined)
-        delete marathon.playersData[player_kicked.id];
+      if (application.playersData[player_kicked.id] != undefined)
+        delete application.playersData[player_kicked.id];
     }
-    setCookie(Vue2Obj(marathon));
-    if (parseInt(marathon.myId) == parseInt(data.id))
+    setCookie(Vue2Obj(application));
+    if (parseInt(application.myId) == parseInt(data.id))
       window.location = `http://${host}/index.html`;
   },
   voteEnd: (data) => {
@@ -94,45 +95,45 @@ handlers = {
       ? (message = "Fin du vote. Le joueur a été renvoyé du jeu!")
       : (message = "Fin du vote. Le joueur reste en jeu");
     toaster.show(message, { closeTimeOut: 2500 });
-    marathon.gameData.hasVoted = false;
-    setCookie(Vue2Obj(marathon));
+    application.gameData.hasVoted = false;
+    setCookie(Vue2Obj(application));
   },
   varUpdate: (data) => {
     if (data.player) {
-      let pd = marathon.playersData[data.player];
+      let pd = application.playersData[data.player];
       if (pd === undefined) {
-        pd = marathon.playersData[data.player] = {};
+        pd = application.playersData[data.player] = {};
       }
-      if (data.player != marathon.myId) {
+      if (data.player != application.myId) {
         toaster.show(
-          `${findPlayer(marathon, data.player).name} avance de ${
-            parseInt(marathon.playersData[data.player].distance) -
+          `${findPlayer(application, data.player).name} avance de ${
+            parseInt(application.playersData[data.player].distance) -
             parseInt(data.val)
           } mètres`
         );
       }
-      marathon.animateProgressBar(data.player, pd.distance, data.val);
+      application.animateProgressBar(data.player, pd.distance, data.val);
     } else {
-      marathon.gameData[data.var] = data.val;
+      application.gameData[data.var] = data.val;
     }
     checkLost();
   },
   newTurn: (data) => {
     checkLost();
-    marathon.gameData.turn = data.val;
+    application.gameData.turn = data.val;
   },
   endOfGame: (data) => {
     message = data.message;
     let myStatus = statuses.GAME_OVER;
-    for (let player of marathon.players) {
+    for (let player of application.players) {
       if (player.id == data.player) {
         message += "\nPlayer " + player.name + " wins!";
-        if (player.id == marathon.myId) myStatus = statuses.GAME_WON;
+        if (player.id == application.myId) myStatus = statuses.GAME_WON;
       }
     }
-    marathon.setStatus(myStatus);
-    marathon.gameData.turn = 0;
-    setCookie(Vue2Obj(marathon));
+    application.setStatus(myStatus);
+    application.gameData.turn = 0;
+    setCookie(Vue2Obj(application));
     window.location = "endgame.html";
   },
 };
@@ -361,18 +362,18 @@ function initApp() {
       },
     },
   });
-  marathon = app.mount("#app");
-  parseInt(marathon.gameData.curPlayer) === parseInt(marathon.myId)
-    ? marathon.setStatus(statuses.THROW)
-    : marathon.setStatus(statuses.WAITING);
+  application = app.mount("#app");
+  parseInt(application.gameData.curPlayer) === parseInt(application.myId)
+    ? application.setStatus(statuses.THROW)
+    : application.setStatus(statuses.WAITING);
   setupStreamEventHandler(
-    { topic: marathon.name, uid: marathon.myId },
+    { topic: application.name, uid: application.myId },
     handlers
   );
-  if (parseInt(marathon.gameData.turns) == 0) {
-    for (const key in marathon.playersData) {
-      if (Object.hasOwnProperty.call(marathon.playersData, key)) {
-        marathon.playersData[key].distance = 42195;
+  if (parseInt(application.gameData.turns) == 0) {
+    for (const key in application.playersData) {
+      if (Object.hasOwnProperty.call(application.playersData, key)) {
+        application.playersData[key].distance = 42195;
       }
     }
   }
