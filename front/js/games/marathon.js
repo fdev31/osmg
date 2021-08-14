@@ -62,11 +62,11 @@ handlers = {
         closeTimeOut: -1,
         buttonGroup: {
           yes: {
-            action: () => application.kickPlayerVote(player_kicked, "true"),
+            action: () => kickPlayerVote(application, player_kicked),
             hideOnClick: true,
           },
           no: {
-            action: () => application.kickPlayerVote(player_kicked, "false"),
+            action: () => kickPlayerVote(application, player_kicked, "false"),
             hideOnClick: true,
           },
         },
@@ -324,21 +324,6 @@ function initApp() {
           clearInterval(intervalId);
           btn.style.color = `unset`;
         }, duration);
-      },
-      async kickPlayerVote(player, validate) {
-        let appliant;
-        this.players.map((p) => {
-          if (parseInt(p.id) === parseInt(this.myId)) appliant = p;
-        });
-        let description = `${appliant.name}%20veut%20d%C3%A9gager%20${player.name}`;
-        vote({
-          kicker: appliant,
-          kicked: player,
-          validate: validate,
-          description: description,
-          app: this,
-        });
-        this.gameData.hasVoted = true;
       },
       async player_advance(value) {
         let choice =

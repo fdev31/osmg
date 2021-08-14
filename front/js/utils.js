@@ -258,3 +258,19 @@ function createElement(type = "div", innerHtml = null, classList = []) {
   classList.map((x) => elm.classList.add(x));
   return elm;
 }
+
+async function kickPlayerVote(app, player, validate = "true") {
+  let appliant;
+  app.players.map((p) => {
+    if (parseInt(p.id) === parseInt(app.myId)) appliant = p;
+  });
+  let description = `${appliant.name}%20veut%20d%C3%A9gager%20${player.name}`;
+  vote({
+    kicker: appliant,
+    kicked: player,
+    validate: validate,
+    description: description,
+    app: app,
+  });
+  app.gameData.hasVoted = true;
+}
