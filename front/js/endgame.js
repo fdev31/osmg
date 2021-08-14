@@ -77,6 +77,9 @@ function initApp() {
       },
     },
   });
-  endgame = app.mount("#app");
-  setupStreamEventHandler({ topic: endgame.name, uid: endgame.myId }, handlers);
+  application = app.mount("#app");
+  setupStreamEventHandler(
+    { topic: application.name, uid: application.myId },
+    handlers
+  );
 }
