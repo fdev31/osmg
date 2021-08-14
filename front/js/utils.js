@@ -280,5 +280,4 @@ function createPlayersById(app) {
     playerById[x.id] = { ...x, ...app.playersData[x.id] };
   });
   app._playersById = playerById;
-  console.log(app);
 }
