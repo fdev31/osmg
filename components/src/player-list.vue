@@ -11,6 +11,7 @@ export default {
   },
   props: {
     enableKick: Boolean,
+    kickText: String,
     curPlayer: String,
     myId: Number,
   },
@@ -50,7 +51,7 @@ export default {
           v-on:click="$emit('kick', item, 'true')"
           v-if="enableKick && parseInt(item.id) != parseInt(myId)"
         >
-          Kick player
+          {{ this.kickText || "Kick Player" }}
         </button>
       </div>
     </div>
