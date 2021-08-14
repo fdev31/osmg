@@ -4,7 +4,7 @@ const locales = {
     marathon_description: "Un jeu de course avec des d\u00e9s",
     marathon_long_description:
       "Affrontez vos amis pour des grands moments de d\u00e9lire!<br/>Un m\u00e9lange fun de hasard et de maths de base.",
-    rules:
+    marathon_rules:
       "Le but du jeu est de parcourir EXACTEMENT 42195 m\u00e8tres. Vous perdez quand vous parcourez plus 42195m\u00e8tres. Lancez les d\u00e9s et choisissez combien de m\u00e8tre vous d\u00e9cidez d'avancer.",
     "Change game": "Changez de jeu",
     "It's turn": "C'est le tour",
@@ -37,7 +37,7 @@ const locales = {
     marathon_description: "A racing game with dices!",
     marathon_long_description:
       "Race against your opponents for a big moment of fun <br/>A mix of chance and simple maths.",
-    rules:
+    marathon_rules:
       "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
   },
 };
