@@ -34,21 +34,33 @@ handlers = {
               .length
           );
         }, 1);
-        toaster.show("A toi de jouer!", { closeTimeOut: 3500 });
+        toaster.show(getTranslation("It's your turn to play!"), {
+          closeTimeOut: 3500,
+        });
       }
     }
   },
   connectPlayer: (data) => {
     application.playersData[data.id].disconnected = false;
-    toaster.show(`${findPlayer(application, data.id).name} enters the game`, {
-      closeTimeOut: 2500,
-    });
+    toaster.show(
+      `${findPlayer(application, data.id).name} ${getTranslation(
+        "enters the game"
+      )}`,
+      {
+        closeTimeOut: 2500,
+      }
+    );
   },
   disconnectPlayer: (data) => {
     application.playersData[data.id].disconnected = true;
-    toaster.show(`${findPlayer(application, data.id).name} is disconnected`, {
-      closeTimeOut: 2500,
-    });
+    toaster.show(
+      `${findPlayer(application, data.id).name} ${getTranslation(
+        "is disconnected"
+      )}`,
+      {
+        closeTimeOut: 2500,
+      }
+    );
   },
   voteStart: (data) => {
     if (!application.gameData.hasVoted) {
@@ -57,7 +69,9 @@ handlers = {
         if (parseInt(p.id) === parseInt(data.name.split("_")[1]))
           player_kicked = p;
       });
-      let message = `Voulez vous exclure ${player_kicked.name} du jeu`;
+      let message = `${getTranslation("Do you want to kick")} ${
+        player_kicked.name
+      }`;
       let options = {
         closeTimeOut: -1,
         buttonGroup: {
@@ -94,7 +108,7 @@ handlers = {
     data.result
       ? (message = "Fin du vote. Le joueur a été renvoyé du jeu!")
       : (message = "Fin du vote. Le joueur reste en jeu");
-    toaster.show(message, { closeTimeOut: 2500 });
+    toaster.show(getTranslation(message), { closeTimeOut: 2500 });
     application.gameData.hasVoted = false;
     setCookie(Vue2Obj(application));
   },
@@ -195,6 +209,9 @@ function initApp() {
         return this.playersData[this.myId]
           ? this.playersData[this.myId].distance
           : 0;
+      },
+      kickText() {
+        return this.T("Kick player");
       },
       sortPlayers() {
         let data = this.playersData;

@@ -20,16 +20,26 @@ async function countDown(count = 4) {
 }
 handlers = {
   connectPlayer: (data) => {
-    toaster.show(`${findPlayer(application, data.id).name} enters the game`, {
-      closeTimeOut: 2500,
-    });
+    toaster.show(
+      `${findPlayer(application, data.id).name} ${getTranslation(
+        "enters the game"
+      )}`,
+      {
+        closeTimeOut: 2500,
+      }
+    );
     application.playersData[data.id] = {};
     setCookie(Vue2Obj(application));
   },
   disconnectPlayer: (data) => {
-    toaster.show(`${findPlayer(application, data.id).name} is disconnected`, {
-      closeTimeOut: 2500,
-    });
+    toaster.show(
+      `${findPlayer(application, data.id).name} ${getTranslation(
+        "is disconnected"
+      )}`,
+      {
+        closeTimeOut: 2500,
+      }
+    );
   },
   curPlayer: (data) => {
     application.gameData.curPlayer = data.val;
@@ -52,7 +62,9 @@ handlers = {
         if (parseInt(p.id) === parseInt(data.name.split("_")[1]))
           player_kicked = p;
       });
-      let message = `Voulez vous exclure ${player_kicked.name} du jeu`;
+      let message = `${getTranslation("Do you want to kick")} ${
+        player_kicked.name
+      }`;
       let options = {
         closeTimeOut: -1,
         buttonGroup: {
@@ -88,12 +100,12 @@ handlers = {
   voteEnd: (data) => {
     let message;
     data.result
-      ? (message = `Fin du vote. Le joueur a été renvoyé du jeu!`)
-      : (message = `Fin du vote. Le joueur reste en jeu`);
+      ? (message = `End of vote. Player has been kicked!`)
+      : (message = `End of vote. Player stay in game`);
     let options = {
       closeTimeOut: 2500,
     };
-    toaster.show(message, options);
+    toaster.show(getTranslation(message), options);
     application.gameData.hasVoted = false;
     setCookie(Vue2Obj(application));
   },
@@ -119,6 +131,11 @@ function initApp() {
     },
     data() {
       return data;
+    },
+    computed: {
+      kickText() {
+        return this.T("Kick player");
+      },
     },
     mounted() {
       document.title = this.T("lobby_title");
@@ -152,7 +169,7 @@ function initApp() {
         }
       },
       getMainActionText: function () {
-        return [this.T("Ready"), this.T("I'm not ready")][this.status];
+        return [this.T("Ready"), this.T("Not ready")][this.status];
       },
     },
   });
