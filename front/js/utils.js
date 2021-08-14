@@ -23,7 +23,6 @@ function setEventStreamHandler(handler, query) {
     `/c/stream?topic=${query.topic}&uid=${query.uid}`
   );
   evtSource.addEventListener("update", (event) => {
-    console.log("event", event.data);
     handler(JSON.parse(event.data));
   });
 }

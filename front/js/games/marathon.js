@@ -42,14 +42,12 @@ handlers = {
     toaster.show(`${findPlayer(marathon, data.id).name} enters the game`, {
       closeTimeOut: 2500,
     });
-    console.log(data);
   },
   disconnectPlayer: (data) => {
     marathon.playersData[data.id].disconnected = true;
     toaster.show(`${findPlayer(marathon, data.id).name} is disconnected`, {
       closeTimeOut: 2500,
     });
-    console.log(data);
   },
   voteStart: (data) => {
     if (!marathon.gameData.hasVoted) {
@@ -78,10 +76,8 @@ handlers = {
   },
   kickPlayer: (data) => {
     let player_kicked = findPlayer(marathon, data.id);
-    console.log(data, player_kicked);
     if (data.id) {
       for (let i = 0; i < marathon.players.length; i++) {
-        console.log(marathon.players[i].id, player_kicked.id, i);
         if (parseInt(marathon.players[i].id) == parseInt(player_kicked.id))
           marathon.players.splice(i, 1);
       }
@@ -107,7 +103,6 @@ handlers = {
       if (pd === undefined) {
         pd = marathon.playersData[data.player] = {};
       }
-      console.log(pd);
       if (data.player != marathon.myId) {
         toaster.show(
           `${findPlayer(marathon, data.player).name} avance de ${
@@ -330,7 +325,6 @@ function initApp() {
         }, duration);
       },
       async kickPlayerVote(player, validate) {
-        console.log(player, validate);
         let appliant;
         this.players.map((p) => {
           if (parseInt(p.id) === parseInt(this.myId)) appliant = p;

@@ -25,13 +25,11 @@ handlers = {
     });
     lobby.playersData[data.id] = {};
     setCookie(Vue2Obj(lobby));
-    console.log(data);
   },
   disconnectPlayer: (data) => {
     toaster.show(`${findPlayer(lobby, data.id).name} is disconnected`, {
       closeTimeOut: 2500,
     });
-    console.log(data);
   },
   curPlayer: (data) => {
     lobby.gameData.curPlayer = data.val;
@@ -71,7 +69,6 @@ handlers = {
       toaster.show(message, options);
     }
     lobby.gameData.hasVoted = true;
-    console.log(data);
   },
   kickPlayer: (data) => {
     let player_kicked = findPlayer(lobby, data.id);
@@ -96,7 +93,6 @@ handlers = {
     };
     toaster.show(message, options);
     lobby.gameData.hasVoted = false;
-    console.log(data);
     setCookie(Vue2Obj(lobby));
   },
   log: (data) => {
