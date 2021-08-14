@@ -308,7 +308,7 @@ function initApp() {
             action: () => {},
           },
         };
-        toaster.show(this.T("rules"), {
+        toaster.show(this.T("marathon_rules"), {
           closeTimeOut: -1,
           buttonGroup: closeBtn,
         });
