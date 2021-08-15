@@ -7,6 +7,11 @@ from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from selenium.common.exceptions import JavascriptException
 
+
+class EndOfGameError(Exception):
+    pass
+
+
 from config import HOST
 from common import getStream, pretty
 
@@ -17,18 +22,20 @@ endOfGame = False
 
 
 def getId(driver):
-    return driver.execute_script("return window.lobby.myId")
+    return driver.execute_script("return application.myId")
 
 
 def getPlayerData(driver, attr):
-    return driver.execute_script("return marathon.playersData[marathon.myId].%s" % attr)
+    return driver.execute_script(
+        "return application.playersData[application.myId].%s" % attr
+    )
 
 
 def diceValue(driver, value=None):
     if value is None:
-        return driver.execute_script("return marathon.$refs.mydice.getDiceValues()")
+        return driver.execute_script("return application.$refs.mydice.getDiceValues()")
     driver.execute_script(
-        "marathon.player_advance('%s')" % ("".join(str(x) for x in value))
+        "application.player_advance('%s')" % ("".join(str(x) for x in value))
     )
 
 
@@ -133,7 +140,10 @@ class MarathonTest(unittest.TestCase):
         def playerTurn(drv):
             distance = getPlayerData(drv, "distance")
             if distance > 0:
-                drv.find_elements_by_class_name("mainAction")[0].click()
+                try:
+                    drv.find_elements_by_class_name("mainAction")[0].click()
+                except IndexError:
+                    raise EndOfGameError("No main action on this screen")
                 sleep(0.1)
                 dices = diceValue(drv)
                 print("Remains %d, choices: %s" % (distance, dices))
@@ -159,8 +169,8 @@ class MarathonTest(unittest.TestCase):
             try:
                 for drv in self.drv:
                     playerTurn(drv)
-            except JavascriptException:
-                print("game end detected")
+            except EndOfGameError as e:
+                print(f"game end detected", e)
                 sleep(1)
                 makeShots(self.drv, "end_game")
                 break
