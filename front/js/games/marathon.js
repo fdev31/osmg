@@ -76,11 +76,12 @@ handlers = {
         closeTimeOut: -1,
         buttonGroup: {
           yes: {
-            action: () => kickPlayerVote(application, player_kicked),
+            action: () => window.kickPlayerVote(application, player_kicked),
             hideOnClick: true,
           },
           no: {
-            action: () => kickPlayerVote(application, player_kicked, "false"),
+            action: () =>
+              window.kickPlayerVote(application, player_kicked, "false"),
             hideOnClick: true,
           },
         },
@@ -360,6 +361,9 @@ function initApp() {
         } else {
           this.setStatus(statuses.END_TURN);
         }
+      },
+      kickPlayerVote() {
+        window.kickPlayerVote();
       },
     },
   });
