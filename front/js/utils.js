@@ -54,13 +54,19 @@ function extractList(l) {
 }
 
 function setupStreamEventHandler(query, handlers) {
-  setEventStreamHandler((data) => {
-    if (handlers[data.cat]) {
+  _setEventStreamHandler((data) => {
+    let logO = { ...data };
+    let cat = logO.cat;
+    delete logO.cat;
+    console.debug(
+      `${
+        (handlers[cat] && "Handled") || "Unhandled"
+      } Event ${cat}: ${Object.keys(logO)
+        .map((k) => `${k} = ${logO[k]}`)
+        .join(" ")}`
+    );
+    if (handlers[cat]) {
       handlers[data.cat](data);
-      console.log(data);
-    } else {
-      console.warn("No handler for " + data.cat);
-      console.log(data);
     }
   }, query);
 }
