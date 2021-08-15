@@ -233,11 +233,16 @@ function initLocales() {
   //currentLocale = 'fr'; // to test a locale
 }
 
+_transWarnings = new Set();
+
 function getTranslation(text) {
   if (currentLocale === null) return text;
   let r = locales[currentLocale][text];
   if (r) return r;
-  console.debug(`No translation found for "${text}" using ${currentLocale}`);
+  if (!_transWarnings.has(text)) {
+    console.debug(`No translation found for "${text}" using ${currentLocale}`);
+    _transWarnings.add(text);
+  }
   return text;
   //return "/!\\ E: " + text; // to debug english
 }
