@@ -260,7 +260,7 @@ function removeAllChildElement(elm) {
 function createElement(type = "div", innerHtml = null, classList = []) {
   let elm = document.createElement(type);
   elm.innerHTML = innerHtml;
-  classList.map((x) => elm.classList.add(x));
+  classList.forEach((x) => elm.classList.add(x));
   return elm;
 }
 
