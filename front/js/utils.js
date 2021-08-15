@@ -112,6 +112,7 @@ function arrayEquals(arr1, arr2) {
   return isEquals;
 }
 
+// FIXME: remove usages of findPlayer, in favor of playersById
 function findPlayer(data, pid) {
   for (const player of data.players) {
     if (player.id == pid) {
@@ -119,6 +120,9 @@ function findPlayer(data, pid) {
     }
   }
 }
+
+// TODO: move the Toaster class to a separate file
+
 class Toaster {
   // # Initialiser
   // # function pour créer toast
@@ -269,6 +273,11 @@ function createElement(type = "div", innerHtml = null, classList = []) {
   return elm;
 }
 
+// FIXME: kickPlayerVote isn't a generic function, shouldn't be in utils
+// FIXME: passing parameters to a generic function should be done in the Vue application code
+// FIXME: kickPlayerVote uses hardcoded strings
+// FIXME: kickPlayerVote uses translated strings
+// FIXME: kickPlayerVote seems to re-implement findPlayer
 async function kickPlayerVote(app, player, validate = "true") {
   let appliant;
   app.players.map((p) => {
