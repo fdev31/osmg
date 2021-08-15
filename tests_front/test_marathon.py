@@ -39,20 +39,24 @@ def diceValue(driver, value=None):
     )
 
 
-def waitEvent(names):
+def waitEvent(names: list, maxTime=None):
     global endOfGame
     print("Waiting for %s" % (" or ".join(names)))
     while True:
         events = getStream()
         for e in events:
-            print(" got %s" % pretty(e))
             if e.isA("endOfGame"):
                 endOfGame = True
+            print(endOfGame, "got %s" % pretty(e))
         for evt in events:
             if any(evt.isA(name) for name in names):
                 sleep(0.2)
                 return evt
         sleep(0.150)
+        if maxTime is not None:
+            maxTime -= 0.15
+            if maxTime <= 0:
+                return False
 
 
 if not os.path.exists("screenshots"):
@@ -180,6 +184,9 @@ class MarathonTest(unittest.TestCase):
 
         for elt in getStream():
             print(pretty(elt))
+
+        if not endOfGame:
+            waitEvent(["endOfGame"], maxTime=5)
 
         assert endOfGame is True, "Game didn't finish !!"
 
