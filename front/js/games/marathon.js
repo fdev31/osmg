@@ -316,7 +316,7 @@ function initApp() {
         );
       },
       animateProgressBar(id, start, stop, fps = 120) {
-        let distInterval = Math.floor((start - stop) / 20);
+        let distInterval = Math.ceil((start - stop) / 20);
         let intervalId = setInterval(() => {
           this.playersData[`${id}`].distance -= distInterval;
           if (this.playersData[`${id}`].distance < stop) {
