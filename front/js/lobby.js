@@ -21,7 +21,7 @@ async function countDown(count = 4) {
 handlers = {
   connectPlayer: (data) => {
     toaster.show(
-      `${findPlayer(application, data.id).name} ${getTranslation(
+      `${application._playersById[data.id].name} ${getTranslation(
         "enters the game"
       )}`,
       {
@@ -33,7 +33,7 @@ handlers = {
   },
   disconnectPlayer: (data) => {
     toaster.show(
-      `${findPlayer(application, data.id).name} ${getTranslation(
+      `${application._playersById[data.id].name} ${getTranslation(
         "is disconnected"
       )}`,
       {
@@ -48,6 +48,7 @@ handlers = {
   newPlayer: (data) => {
     delete data["cat"];
     application.players.push(data);
+    setPlayersById(application);
     setCookie(Vue2Obj(application));
   },
   start: async (data) => {
@@ -83,7 +84,7 @@ handlers = {
     application.gameData.hasVoted = true;
   },
   kickPlayer: (data) => {
-    let player_kicked = findPlayer(application, data.id);
+    let player_kicked = application._playersById[data.id];
     if ((data.result = true)) {
       for (let index = 0; index < application.players.length; index++) {
         if (
@@ -95,6 +96,7 @@ handlers = {
       if (application.playersData[player_kicked.id] != undefined)
         delete application.playersData[player_kicked.id];
     }
+    setPlayersById(application);
     setCookie(Vue2Obj(application));
   },
   voteEnd: (data) => {
@@ -107,6 +109,7 @@ handlers = {
     };
     toaster.show(getTranslation(message), options);
     application.gameData.hasVoted = false;
+    setPlayersById(application);
     setCookie(Vue2Obj(application));
   },
   log: (data) => {
@@ -174,6 +177,7 @@ function initApp() {
     },
   });
   application = app.mount("#app");
+  setPlayersById(application);
   setupStreamEventHandler(
     { topic: application.name, uid: application.myId },
     handlers
