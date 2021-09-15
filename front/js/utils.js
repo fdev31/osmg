@@ -294,7 +294,7 @@ async function kickPlayerVote(app, player, validate = "true") {
   app.gameData.hasVoted = true;
 }
 
-function createPlayersById(app) {
+function setPlayersById(app) {
   let playerById = {};
   app.players.forEach((x) => {
     playerById[x.id] = { ...x, ...app.playersData[x.id] };
