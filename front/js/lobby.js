@@ -4,6 +4,7 @@ let statuses = {
   READY: 1,
 };
 
+const kick_player_threshold = 2;
 toaster = new Toaster();
 
 function delay(duration = 1000) {
@@ -138,6 +139,11 @@ function initApp() {
     computed: {
       kickText() {
         return this.T("Kick player");
+      },
+      enableKick() {
+        return (
+          !this.gameData.hasVoted && this.players.length > kick_player_threshold
+        );
       },
     },
     mounted() {

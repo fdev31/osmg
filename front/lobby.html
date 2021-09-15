@@ -30,7 +30,7 @@
       <h3>{{T("players")}}</h3>
       <player-list
         ref="playerlist"
-        :enable-kick="!gameData.hasVoted"
+        :enable-kick="enableKick"
         :kick-text="kickText"
         :my-id="myId"
         v-on:kick="kickPlayerVote"
