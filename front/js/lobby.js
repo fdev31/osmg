@@ -136,6 +136,9 @@ function initApp() {
     data() {
       return data;
     },
+    created() {
+      setPlayersById(this);
+    },
     computed: {
       kickText() {
         return this.T("Kick player");
@@ -183,7 +186,6 @@ function initApp() {
     },
   });
   application = app.mount("#app");
-  setPlayersById(application);
   setupStreamEventHandler(
     { topic: application.name, uid: application.myId },
     handlers

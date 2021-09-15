@@ -113,6 +113,7 @@ handlers = {
       : (message = "Fin du vote. Le joueur reste en jeu");
     toaster.show(getTranslation(message), { closeTimeOut: 2500 });
     application.gameData.hasVoted = false;
+    setPlayersById(application);
     setCookie(Vue2Obj(application));
   },
   varUpdate: (data) => {
@@ -150,6 +151,7 @@ handlers = {
     }
     application.setStatus(myStatus);
     application.gameData.turn = 0;
+    setPlayersById(application);
     setCookie(Vue2Obj(application));
     window.location = "endgame.html";
   },
@@ -258,6 +260,7 @@ function initApp() {
       },
       setStatus(status) {
         this.status = status;
+        setPlayersById(application);
         setCookie(Vue2Obj(this));
       },
       getPlayerAction: function () {
@@ -372,7 +375,6 @@ function initApp() {
     },
   });
   application = app.mount("#app");
-  setPlayersById(application);
   parseInt(application.gameData.curPlayer) === parseInt(application.myId)
     ? application.setStatus(statuses.THROW)
     : application.setStatus(statuses.WAITING);
