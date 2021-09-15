@@ -44,7 +44,7 @@ handlers = {
   connectPlayer: (data) => {
     application.playersData[data.id].disconnected = false;
     toaster.show(
-      `${findPlayer(application, data.id).name} ${getTranslation(
+      `${application._playersById[data.id].name} ${getTranslation(
         "enters the game"
       )}`,
       {
@@ -55,7 +55,7 @@ handlers = {
   disconnectPlayer: (data) => {
     application.playersData[data.id].disconnected = true;
     toaster.show(
-      `${findPlayer(application, data.id).name} ${getTranslation(
+      `${application._playersById[data.id].name} ${getTranslation(
         "is disconnected"
       )}`,
       {
@@ -92,7 +92,7 @@ handlers = {
     application.gameData.hasVoted = true;
   },
   kickPlayer: (data) => {
-    let player_kicked = findPlayer(application, data.id);
+    let player_kicked = application._playersById[data.id];
     if (data.id) {
       for (let i = 0; i < application.players.length; i++) {
         if (parseInt(application.players[i].id) == parseInt(player_kicked.id))
@@ -101,6 +101,7 @@ handlers = {
       if (application.playersData[player_kicked.id] != undefined)
         delete application.playersData[player_kicked.id];
     }
+    setPlayersById(application);
     setCookie(Vue2Obj(application));
     if (parseInt(application.myId) == parseInt(data.id))
       window.location = `http://${host}/index.html`;
@@ -122,7 +123,7 @@ handlers = {
       }
       if (data.player != application.myId) {
         toaster.show(
-          `${findPlayer(application, data.player).name} avance de ${
+          `${application._playersById[data.player].name} avance de ${
             parseInt(application.playersData[data.player].distance) -
             parseInt(data.val)
           } mètres`
@@ -195,6 +196,9 @@ function initApp() {
         this.$refs.playerlist.players = newVal;
       },
     },
+    created() {
+      setPlayersById(this);
+    },
     mounted() {
       document.title = this.T("marathon_title");
       this.$refs.playerlist.players = this.players;
@@ -218,6 +222,7 @@ function initApp() {
       sortPlayers() {
         let data = this.playersData;
         let result = [];
+        console.log(this);
         Object.keys(data).map(function (key) {
           return result.push([key, data[key]]);
         });
@@ -226,7 +231,7 @@ function initApp() {
             return a[1].distance - b[1].distance;
           })
           .map((x) => {
-            return Object.assign(findPlayer(this, x[0]), x[1]);
+            return Object.assign(this._playersById[x[0]], x[1]);
           });
         return result;
       },
@@ -308,13 +313,6 @@ function initApp() {
           100 * ((42195 - this.playersData[`${id}`].distance) / 42195) || 0
         );
       },
-      findPlayer(id) {
-        for (var [key, player] of Object.entries(this.playersData)) {
-          if (key == id) {
-            return player;
-          }
-        }
-      },
       animateProgressBar(id, start, stop, fps = 120) {
         let distInterval = Math.floor((start - stop) / 20);
         let intervalId = setInterval(() => {
@@ -374,6 +372,7 @@ function initApp() {
     },
   });
   application = app.mount("#app");
+  setPlayersById(application);
   parseInt(application.gameData.curPlayer) === parseInt(application.myId)
     ? application.setStatus(statuses.THROW)
     : application.setStatus(statuses.WAITING);
