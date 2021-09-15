@@ -8,6 +8,7 @@ const statuses = {
   GAME_WON: 6,
   ERROR: 7,
 };
+const kick_player_threshold = 2;
 function isError(res) {
   return res && res.detail != undefined;
 }
@@ -229,6 +230,11 @@ function initApp() {
           });
         return result;
       },
+    },
+    enableKick() {
+      return (
+        !this.gameData.hasVoted && this.players.length > kick_player_threshold
+      );
     },
     methods: {
       T(text) {
