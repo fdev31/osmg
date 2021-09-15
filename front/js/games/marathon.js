@@ -224,7 +224,6 @@ function initApp() {
       sortPlayers() {
         let data = this.playersData;
         let result = [];
-        console.log(this);
         Object.keys(data).map(function (key) {
           return result.push([key, data[key]]);
         });
