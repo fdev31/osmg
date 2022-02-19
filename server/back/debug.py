@@ -8,10 +8,8 @@ async def getAllData() -> Dict[str, Dict]:
     """Returns a database dump (SLOW! DO NOT USE IN PRODUCTION)"""
     sessions: Dict[str, Dict] = {}
     async with getRedis().client() as conn:
-        cur = b"0"
-        # collect data
-        while cur:
-            cur, keys = await conn.scan(cur, match=f"S*")
+        async for cur, keys in conn.scan_iter(match=f"S*"):
+            # collect data
             for key in keys:
                 try:
                     val = await conn.get(key)
