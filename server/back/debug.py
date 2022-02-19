@@ -13,7 +13,6 @@ async def getAllData() -> Dict[str, Dict]:
             try:
                 val = await conn.get(key)
             except aioredis.exceptions.ResponseError:
->>>>>>> 8486b24 (adapt to recent asyncio redis)
                 try:
                     val = await conn.smembers(key)
                 except aioredis.exceptions.ResponseError as e:
