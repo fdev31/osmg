@@ -1,6 +1,6 @@
 import random
 import logging
-from typing import List, Awaitable, Union, Optional
+from typing import List, Awaitable, Optional
 
 import aioredis
 from fastapi import HTTPException
@@ -27,8 +27,8 @@ logger = logging.getLogger("marathon")
 async def isPlayerTurn(
     conn: aioredis.Redis,
     prefix: str,
-    playerId: Union[str, int],
-    secret: Optional[Union[str, int]],
+    playerId: int,
+    secret: Optional[int],
 ) -> bool:
     if not await isPlayerValid(conn, prefix.split(":")[0][1:], playerId, secret):
         return False
