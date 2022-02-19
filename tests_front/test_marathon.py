@@ -5,6 +5,7 @@ import random
 
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.common.by import By
 from selenium.common.exceptions import JavascriptException
 
 
@@ -88,12 +89,12 @@ def create_game(driver, gameIndex):
     driver.get("http://" + HOST)
 
     # change login
-    setInputText(driver.find_element_by_tag_name("input"), "S. Anita")
+    setInputText(driver.find_element(By.TAG_NAME, "input"), "S. Anita")
     sleep(1)
     driver.execute_script("window.scrollTo(0, 100)")
 
     # click game tile
-    but = driver.find_elements_by_class_name("gamebutton")[gameIndex]
+    but = driver.find_elements(By.CLASS_NAME, "gamebutton")[gameIndex]
     but.click()
 
 
@@ -111,7 +112,7 @@ class MarathonTest(unittest.TestCase):
     def test_game(self):
         create_game(self.driver, HOME_INDEX)
         sleep(0.5)
-        lobby_url = self.driver.find_element_by_id("link").get_attribute("value")
+        lobby_url = self.driver.find_element(By.ID, "link").get_attribute("value")
         lobby_name = lobby_url.rsplit("/", 1)[1]
         getStream(lobby_name)
         shot(self.driver, "lobby")
@@ -122,17 +123,17 @@ class MarathonTest(unittest.TestCase):
         self.pids = [getId(drv) for drv in self.drv]
         for i, drv in enumerate(self.drv[1:]):
             setInputText(
-                drv.find_element_by_tag_name("input"), "Player %d" % i, delete=10
+                drv.find_element(By.TAG_NAME, "input"), "Player %d" % i, delete=10
             )
             shot(drv, "login%d" % (i + 2))
-            drv.find_elements_by_tag_name("button")[0].click()
+            drv.find_elements(By.TAG_NAME, "button")[0].click()
 
         print("About to start")
         shot(self.driver, "lobby_full")
 
         # start game
         for drv in self.drv:
-            drv.find_elements_by_class_name("mainAction")[0].click()
+            drv.find_elements(By.CLASS_NAME, "mainAction")[0].click()
 
         sleep(5)
         print("Start")
@@ -145,7 +146,7 @@ class MarathonTest(unittest.TestCase):
             distance = getPlayerData(drv, "distance")
             if distance > 0:
                 try:
-                    drv.find_elements_by_class_name("mainAction")[0].click()
+                    drv.find_elements(By.CLASS_NAME, "mainAction")[0].click()
                 except IndexError:
                     raise EndOfGameError("No main action on this screen")
                 sleep(0.1)
