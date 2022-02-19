@@ -2,6 +2,8 @@ from typing import Dict, Optional, Any, List
 
 
 class GameInterface:
+    _info: Dict[str, Any]
+
     name: str = "Unknown game"
     description: str = "No description yet"
     long_description: str = "No long description yet"
@@ -24,8 +26,8 @@ class GameInterface:
     # the following should not be overloaded:
 
     @classmethod
-    def info(kls) -> Dict[str, str]:
-        if not hasattr(kls, "_info"):
+    def info(kls) -> Dict[str, Any]:
+        if not hasattr(kls, "_info") or kls._info is None:
             return {
                 "name": kls.name,
                 "description": kls.description,

@@ -1,6 +1,6 @@
 import random
 import logging
-from typing import List
+from typing import List, Awaitable, Union, Optional
 
 import aioredis
 from fastapi import HTTPException
@@ -24,7 +24,12 @@ ACTIVE_PLAYERS = "curOrder"
 logger = logging.getLogger("marathon")
 
 
-async def isPlayerTurn(conn: aioredis.Redis, prefix: str, playerId: str, secret: str):
+async def isPlayerTurn(
+    conn: aioredis.Redis,
+    prefix: str,
+    playerId: Union[str, int],
+    secret: Optional[Union[str, int]],
+) -> bool:
     if not await isPlayerValid(conn, prefix.split(":")[0][1:], playerId, secret):
         return False
     curPlayer = await conn.get(prefix + "curPlayer")
@@ -101,7 +106,7 @@ async def declareWinner(session: str, pid: str, conn: aioredis.Redis):
 
 
 async def turnLogic(
-    distance: int, player: PlayerIdentifier, conn: aioredis.Redis = None
+    distance: Optional[int], player: PlayerIdentifier, conn: aioredis.Redis = None
 ):
     if not conn:
         conn = getRedis()
@@ -113,7 +118,7 @@ async def turnLogic(
 
     if distance is not None:  # check END OF GAME
         if distance == 0:  # End of game
-            await declareWinner(player.sessionName, player.id, conn)
+            await declareWinner(player.sessionName, str(player.id), conn)
             return
         if distance < 0:  # disqualified
             playerLost = True

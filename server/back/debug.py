@@ -6,7 +6,7 @@ from .globalHandlers import getRedis
 
 async def getAllData() -> Dict[str, Dict]:
     """Returns a database dump (SLOW! DO NOT USE IN PRODUCTION)"""
-    sessions = {}
+    sessions: Dict[str, Dict] = {}
     async with getRedis().client() as conn:
         cur = b"0"
         # collect data

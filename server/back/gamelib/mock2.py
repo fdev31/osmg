@@ -1,4 +1,5 @@
 from .interfaces import GameInterface
+from typing import Dict, Any
 
 
 class Game(GameInterface):
@@ -17,7 +18,7 @@ class Game(GameInterface):
     def getGameData():
         return {}
 
-    actions = {}
+    actions: Dict[str, Any] = {}
 
 
 definition = Game.definition()

@@ -1,6 +1,6 @@
 import re
 import logging
-from typing import Callable, Tuple
+from typing import Callable, Tuple, Any, Coroutine, Optional
 
 import aioredis
 from fastapi import HTTPException
@@ -40,7 +40,12 @@ votesHandlers = {
 # main functions
 
 
-def findHandler(name: str) -> Tuple[re.Match, Callable[[str, str, list], None]]:
+def findHandler(
+    name: str,
+) -> Tuple[
+    Optional[re.Match],
+    Optional[Callable[[aioredis.Redis, str, re.Match[Any]], Coroutine[Any, Any, Any]]],
+]:
     for handler in votesHandlers:
         m = handler.match(name)
         if m:
@@ -86,7 +91,7 @@ async def vote(
             await conn.srem(curVote, player.id)
 
         # check if everybody voted
-        await _checkVoteEnd(conn)
+        await _checkVoteEnd(conn, uid, name)
 
 
 async def _checkVoteEnd(conn: aioredis.Redis, uid: str, name: str):
@@ -104,6 +109,8 @@ async def _checkVoteEnd(conn: aioredis.Redis, uid: str, name: str):
         majority = accepted > (totPlayers / 2)
         await conn.delete(curVote)
         if majority:
+            assert h
+            assert m
             game = await getGameBySessionId(uid, conn)
             await game.votePassed(uid, name, conn)
             await h(conn, uid, m)
