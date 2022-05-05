@@ -19,5 +19,5 @@ if [ -z "$DEBUG" ]; then
 else
     echo "Running debug mode"
     export DEBUG
-    exec $VIRTUAL_ENV/bin/uvicorn back.routes:app --reload --port $HTTP_PORT --log-level=debug --log-config logging.yaml
+    exec $VIRTUAL_ENV/bin/uvicorn back.routes:app --host 0.0.0.0 --reload --port $HTTP_PORT --log-level=debug --log-config logging.yaml
 fi
