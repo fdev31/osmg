@@ -19,11 +19,11 @@ function setCookie(data) {
 function _setEventStreamHandler(handler, query) {
   if (typeof query.topic == "undefined" || typeof query.uid == "undefined")
     throw new Error("parameter missing");
-  const evtSource = new EventSource(
-    `/c/stream?topic=${query.topic}&uid=${query.uid}`
+  const evtSource = new WebSocket(
+    `ws://${document.location.host}/c/stream?topic=${query.topic}&uid=${query.uid}`
   );
-  evtSource.addEventListener("update", (event) => {
-    handler(JSON.parse(event.data));
+  evtSource.addEventListener("message", (event) => {
+      handler(JSON.parse(event.data));
   });
 }
 function runOnEnter(code) {
@@ -56,6 +56,7 @@ function extractList(l) {
 function setupStreamEventHandler(query, handlers) {
   _setEventStreamHandler((data) => {
     let logO = { ...data };
+    console.log("LOGO", logO);
     let cat = logO.cat;
     delete logO.cat;
     console.debug(
@@ -66,7 +67,7 @@ function setupStreamEventHandler(query, handlers) {
         .join(" ")}`
     );
     if (handlers[cat]) {
-      handlers[data.cat](data);
+      handlers[cat](logO);
     }
   }, query);
 }

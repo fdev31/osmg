@@ -149,7 +149,7 @@ class MarathonTest(unittest.TestCase):
                     drv.find_elements(By.CLASS_NAME, "mainAction")[0].click()
                 except IndexError:
                     raise EndOfGameError("No main action on this screen")
-                sleep(0.1)
+                sleep(1)
                 dices = diceValue(drv)
                 print("Remains %d, choices: %s" % (distance, dices))
                 dices.sort(reverse=True)

@@ -1,41 +1,46 @@
 import logging
 import asyncio
+from .utils import dumps
+from  websockets.exceptions import ConnectionClosedError, ConnectionClosedOK
 
-from fastapi import Request
-from sse_starlette.sse import EventSourceResponse
+
+from fastapi import WebSocket
+import aioredis
 
 from .sessionmanager.public import connectPlayer, disconnectPlayer
-from .globalHandlers import getRedis
+from .globalHandlers import getRedis, getConfig
+
 
 logger = logging.getLogger("Stream")
 
 
 async def sessionStreamSource(request, topic, playerId):
-    channel = getRedis().pubsub()
+
+    channel = aioredis.from_url("redis://" + getConfig().redis_server, decode_responses=True).pubsub()
     await connectPlayer(topic, playerId)
     try:
         await channel.subscribe(topic)
         async for message in channel.listen():
-            if await request.is_disconnected():
-                logger.debug("Stream disconnected")
-                await disconnectPlayer(topic, playerId)
-                break
             if message["type"] == "message":
-                yield {
-                    "event": "update",
-                    "data": message["data"],
-                }
+                yield message["data"]
     except asyncio.CancelledError as e:
         await disconnectPlayer(topic, playerId)
 
 
 async def gameEventStream(
-    request: Request, topic: str, uid: str
-) -> EventSourceResponse:
+    ws: WebSocket, topic: str, uid: str
+) -> WebSocket:
     "Returns an event source for the provided topic & user"
     logger.debug("New stream for %s @ %s", topic, uid)
-    return EventSourceResponse(sessionStreamSource(request, topic, uid))
-
+    await ws.accept()
+    try :
+        async for event in sessionStreamSource(ws , topic , uid ) :
+            await ws.send_text(event)
+    except ConnectionClosedError: 
+        logger.debug("Stream disconnected")
+        await disconnectPlayer(topic, uid)
+    except ConnectionClosedOK:
+        logger.debug("Stream disconnected OK")
 
 def init(app, config):
-    app.get("/c/stream")(gameEventStream)
+    app.websocket("/c/stream")(gameEventStream)

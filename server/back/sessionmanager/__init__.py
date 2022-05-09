@@ -10,7 +10,7 @@ from ..models import PlayerIdentifier, newPlayer, Session
 from ..models import SESSION_PLAYERS_DATA, SESSION_S_TIME, SESSION_GAME_TYPE
 from ..models import SESSION_C_TIME, SESSION_NAME, SESSION_PLAYERS
 
-from ..globalHandlers import getRedis, setRedis, publishEvent, getVarName
+from ..globalHandlers import getRedis, setRedis, setConfig, publishEvent, getVarName
 from ..globalHandlers import PLAYERS_READY, PLAYERS_ORDER
 
 from .base import genUniqueSessionId, getUniquePlayerId
@@ -165,6 +165,7 @@ async def startGame(player: PlayerIdentifier, tasks: BackgroundTasks) -> None:
 
 
 def init(app, config):
+    setConfig(config)
     setRedis(aioredis.from_url("redis://" + config.redis_server, decode_responses=True))
 
     app.post("/c/session/new", response_model=Session)(makeSession)

@@ -8,6 +8,7 @@ from starlette import status as httpstatus
 
 from ..globalHandlers import (
     getRedis,
+    getConfig,
     getGameDataPrefix,
     getVarName,
     publishEvent,
@@ -39,12 +40,14 @@ async def isPlayerTurn(
 
 async def throwDice(player: PlayerIdentifier) -> List[int]:
     """Throw a number of dices (defined by the current player score)"""
-    redis = getRedis()
+    redis = aioredis.from_url("redis://" + getConfig().redis_server, decode_responses=True)
     gprefix = getGameDataPrefix(player.sessionName)
     prefix = getGameDataPrefix(player.sessionName, player.id)
     propName = prefix + "_diceValue"
 
+    print("pif pouf")
     async with redis.client() as conn:
+        print("nO CIENT")
         if not await isPlayerTurn(conn, gprefix, player.id, player.secret):
             raise HTTPException(httpstatus.HTTP_403_FORBIDDEN, "Not your turn!")
         tmpDice = await conn.get(propName)

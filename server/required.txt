@@ -1,9 +1,9 @@
 fastapi==0.65.*
-uvicorn>=0.13.0
+uvicorn[standard]>=0.13.0
 orjson>=3.5.3
 aioredis>=2.0.0a1
-sse-starlette
 hiredis
 aiojobs
 aiofiles
+anyio
 pyyaml
