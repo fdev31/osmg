@@ -1,7 +1,7 @@
 Tickets
 =======
 
-:total-count: 20
+:total-count: 23
 
 --------------------------------------------------------------------------------
 
@@ -145,3 +145,32 @@ Add a QR code in the lobby for fun
 
 
 Integrate for instance https://davidshimjs.github.io/qrcodejs/
+
+--------------------------------------------------------------------------------
+
+Switch vue app building to wirikiki style
+=========================================
+
+:bugid: 21
+:created: 2022-06-02T19:19:05
+:priority: 0
+
+Instead of multiple .js in the .html, generate a single bundle with rollup (for each page/app)
+
+--------------------------------------------------------------------------------
+
+Add front generation in the tox conf
+====================================
+
+:bugid: 22
+:created: 2022-06-02T19:19:20
+:priority: 0
+
+--------------------------------------------------------------------------------
+
+Cleanup of the "handy" scripts (eg: devmode.sh)
+===============================================
+
+:bugid: 23
+:created: 2022-06-02T19:19:50
+:priority: 0
