@@ -1,12 +1,13 @@
 #!/bin/bash
 PY=python3
+ENVDIR=.tox/py310
 
 HTTP_PORT=$(cat HTTP_PORT)
 
-if [ ! -d venv ]; then
-    $PY -m venv venv
+if [ ! -d ${ENVDIR} ]; then
+    $PY -m venv ${ENVDIR}
 fi
-source venv/bin/activate
+source ${ENVDIR}/bin/activate
 pip install -U pip
 pip install -U wheel
 pip install -r server/required.txt
