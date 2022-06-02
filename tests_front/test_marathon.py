@@ -7,6 +7,7 @@ from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
 from selenium.common.exceptions import JavascriptException
+from selenium.webdriver.chrome.options import Options as ChromeOptions
 
 
 class EndOfGameError(Exception):
@@ -100,9 +101,18 @@ def create_game(driver, gameIndex):
 
 class MarathonTest(unittest.TestCase):
     def setUp(self):
-        self.drv = [webdriver.Firefox()]
+        opts = ChromeOptions()
+        opts.add_argument("--no-sandbox")
+        """
+        opts.add_argument("--test-type")
+        opts.add_argument("--verbose")
+        opts.add_argument("--no-sandbox")
+        opts.add_argument("--disable-dev-shm-usage")
+        """
+
+        self.drv = [webdriver.Chrome(options=opts)]
         for n in range(1, NB_PLAYERS):
-            self.drv.append(webdriver.Chrome())
+            self.drv.append(webdriver.Chrome(options=opts))
             sleep(0.5)
 
     @property
