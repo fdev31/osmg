@@ -1,6 +1,5 @@
 import logging
 import asyncio
-from .utils import dumps
 from  websockets.exceptions import ConnectionClosedError, ConnectionClosedOK
 
 
@@ -8,7 +7,7 @@ from fastapi import WebSocket
 import aioredis
 
 from .sessionmanager.public import connectPlayer, disconnectPlayer
-from .globalHandlers import getRedis, getConfig
+from .globalHandlers import getConfig
 
 
 logger = logging.getLogger("Stream")

@@ -45,9 +45,7 @@ async def throwDice(player: PlayerIdentifier) -> List[int]:
     prefix = getGameDataPrefix(player.sessionName, player.id)
     propName = prefix + "_diceValue"
 
-    print("pif pouf")
     async with redis.client() as conn:
-        print("nO CIENT")
         if not await isPlayerTurn(conn, gprefix, player.id, player.secret):
             raise HTTPException(httpstatus.HTTP_403_FORBIDDEN, "Not your turn!")
         tmpDice = await conn.get(propName)
