@@ -1,0 +1,27 @@
+[tool.poetry]
+name = "back"
+version = "0.1.0"
+description = "Our awesome game"
+authors = ["fdev31 <fdev31@gmail.com>", "jo <jomenoube@gmail.com>"]
+readme = "README.rst"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+fastapi = "0.65"
+uvicorn = {extras = ["standard"], version = ">= 0.18.2"}
+aioredis = ">= 2.0.1"
+hiredis = ">= 2.0.0"
+aiojobs = ">= 1.0.0"
+aiofiles = ">= 0.8.0"
+anyio = ">= 3.6.1"
+orjson = ">= 3.7.11"
+
+[tool.poetry.dev-dependencies]
+pytest = "^5.2"
+tox = "^3.25.1"
+procmanager = "^1.0.3"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+

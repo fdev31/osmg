@@ -8,10 +8,7 @@ if [ ! -d ${ENVDIR} ]; then
     $PY -m venv ${ENVDIR}
 fi
 source ${ENVDIR}/bin/activate
-pip install -U pip
-pip install -U wheel
-pip install -r server/required.txt
-(cd server && $PY setup.py develop)
+(cd server && pip install -e .)
 export PREFIX=$(pwd)
 if [ -z "$DEBUG" ]; then
     export WEB_CONCURRENCY=10
