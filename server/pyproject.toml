@@ -3,7 +3,6 @@ name = "back"
 version = "0.1.0"
 description = "Our awesome game"
 authors = ["fdev31 <fdev31@gmail.com>", "jo <jomenoube@gmail.com>"]
-readme = "README.rst"
 
 [tool.poetry.dependencies]
 python = "^3.10"
