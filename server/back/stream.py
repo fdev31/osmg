@@ -28,14 +28,14 @@ async def sessionStreamSource(request, topic, playerId):
 
 async def gameEventStream(
     ws: WebSocket, topic: str, uid: str
-) -> WebSocket:
+):
     "Returns an event source for the provided topic & user"
     logger.debug("New stream for %s @ %s", topic, uid)
     await ws.accept()
     try :
         async for event in sessionStreamSource(ws , topic , uid ) :
             await ws.send_text(event)
-    except ConnectionClosedError: 
+    except ConnectionClosedError:
         logger.debug("Stream disconnected")
         await disconnectPlayer(topic, uid)
     except ConnectionClosedOK:
