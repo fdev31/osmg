@@ -1,4 +1,5 @@
 #!/bin/bash
+npm i
 
 function shorten() {
     sn=${1#*/}
