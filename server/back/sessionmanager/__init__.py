@@ -13,6 +13,7 @@ from ..models import SESSION_C_TIME, SESSION_NAME, SESSION_PLAYERS
 from ..globalHandlers import getRedis, setRedis, setConfig, publishEvent, getVarName
 from ..globalHandlers import PLAYERS_READY, PLAYERS_ORDER
 
+from ..utils import dumps, isRedisSimpleType
 from .base import genUniqueSessionId, getUniquePlayerId
 from .library import games, getGameInitialData, getPlayerInitialData
 from .public import getSession
@@ -74,7 +75,11 @@ async def addPlayer(player: newPlayer) -> Session:
     secretId = int((time.time() * 1000) % 3600) + pid
     player_info["id"] = pid
     player_info["_secret"] = secretId
-    initialPlayerData = getPlayerInitialData(sess.gameType)
+    (
+        initialPlayerData,
+        initialPlayerDataSets,
+        initialPlayerDataLists,
+    ) = getPlayerInitialData(sess.gameType)
 
     redisObj = {}
     for name, value in player_info.items():
@@ -82,6 +87,9 @@ async def addPlayer(player: newPlayer) -> Session:
 
     for name, value in initialPlayerData:
         redisObj[getVarName(name, player.sessionName, pid, gameData=True)] = value
+
+    for name, value in list(redisObj.items()):
+        redisObj[name] = value
 
     async with getRedis().client() as conn:
         push = conn.rpush(getVarName(PLAYERS_ORDER, player.sessionName), pid)

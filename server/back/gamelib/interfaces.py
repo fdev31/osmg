@@ -1,5 +1,7 @@
 from typing import Dict, Optional, Any, List
 
+from functools import lru_cache
+
 
 class GameInterface:
     _info: Dict[str, Any]
@@ -41,6 +43,30 @@ class GameInterface:
     @staticmethod
     def getPlayerIdentifiers() -> List[str]:
         return ["id", "name", "avatar"]
+
+    @classmethod
+    @lru_cache(1)
+    def getPlayerDataSets(kls):
+        """Returns the sets' name in the player data"""
+        return [k for k, v in kls.getPlayerData().items() if isinstance(v, set)]
+
+    @classmethod
+    @lru_cache(1)
+    def getPlayerDataLists(kls):
+        """Returns the lists' name in the player data"""
+        return [k for k, v in kls.getPlayerData().items() if isinstance(v, list)]
+
+    @classmethod
+    @lru_cache(1)
+    def getGameDataSets(kls):
+        """Returns the sets' name in the game data"""
+        return [k for k, v in kls.getGameData().items() if isinstance(v, set)]
+
+    @staticmethod
+    @lru_cache(1)
+    def getGameDataLists():
+        """Returns the lists' name in the game data"""
+        return [k for k, v in kls.getGameData().items() if isinstance(v, list)]
 
     @classmethod
     def definition(kls) -> Dict[str, Any]:

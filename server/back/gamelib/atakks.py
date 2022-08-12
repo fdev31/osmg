@@ -18,7 +18,7 @@ class Game(GameInterface):
     @staticmethod
     def getPlayerData():
         return {
-            "pawns": [],
+            "pawns": set(),
         }
 
     @staticmethod
