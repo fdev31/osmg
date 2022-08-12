@@ -9,14 +9,18 @@ logger = logging.getLogger("redis")
 
 ctx: Dict[str, Any] = {}
 
+
 def setConfig(config: Dict):
     ctx["config"] = config
+
 
 def getConfig():
     return ctx["config"]
 
+
 def getRedis() -> aioredis.Redis:
     return ctx["redis"]
+
 
 def setRedis(handler: aioredis.Redis):
     ctx["redis"] = handler
