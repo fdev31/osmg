@@ -8,7 +8,7 @@ from .sessionmanager.library import registerGame
 
 logger = logging.getLogger("games")
 
-GAMES = ["marathon", "mock1", "mock2"]
+GAMES = ["marathon", "mock1", "atakks"]
 
 gameDB: Dict[str, Dict] = {}
 
