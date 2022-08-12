@@ -13,7 +13,6 @@ from ..models import SESSION_C_TIME, SESSION_NAME, SESSION_PLAYERS
 from ..globalHandlers import getRedis, setRedis, setConfig, publishEvent, getVarName
 from ..globalHandlers import PLAYERS_READY, PLAYERS_ORDER
 
-from ..utils import dumps, isRedisSimpleType
 from .base import genUniqueSessionId, getUniquePlayerId
 from .library import games, getGameInitialData, getPlayerInitialData
 from .public import getSession
@@ -79,7 +78,7 @@ async def addPlayer(player: newPlayer) -> Session:
         initialPlayerData,
         initialPlayerDataSets,
         initialPlayerDataLists,
-    ) = getPlayerInitialData(sess.gameType)
+    ) = getPlayerInitialData(sess)
 
     redisObj = {}
     for name, value in player_info.items():

@@ -1,4 +1,9 @@
+import logging
 from typing import Tuple, Any
+
+from ..models import Session
+
+logger = logging.getLogger("library")
 
 games = {}
 
@@ -7,16 +12,19 @@ def registerGame(name, iface):
     games[name] = iface
 
 
-def getPlayerInitialData(gameType) -> Tuple[Tuple[str, Any]]:
+def getPlayerInitialData(sess: Session) -> Tuple[Tuple[str, Any]]:
     """Returns tree list of (key, value) items:
     - simple props
     - lists
     - sets
     """
-    game = games[gameType]
-    props = game.getPlayerData()
-    lists = {li: props[li] for li in game.getPlayerDataLists()}
-    sets = {li: props[li] for li in game.getPlayerDataSets()}
+    game = games[sess.gameType]
+    props = game.getPlayerData(sess)
+
+    pdl = game.getPlayerDataLists(sess)
+    lists = {li: props[li] for li in pdl}
+    pds = game.getPlayerDataSets(sess)
+    sets = {li: props[li] for li in pds}
     for name in lists.keys():
         del props[name]
     for name in sets.keys():

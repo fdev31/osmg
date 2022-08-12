@@ -1,6 +1,7 @@
 from typing import Dict, Optional, Any, List
-
 from functools import lru_cache
+
+from ..models import Session
 
 
 class GameInterface:
@@ -14,7 +15,7 @@ class GameInterface:
     max_players: Optional[int] = 99
 
     @staticmethod
-    def getPlayerData() -> dict:
+    def getPlayerData(sess: Session = None) -> dict:
         """Returns initial data for a player"""
         return {}
 
@@ -45,26 +46,24 @@ class GameInterface:
         return ["id", "name", "avatar"]
 
     @classmethod
-    @lru_cache(1)
-    def getPlayerDataSets(kls):
+    def getPlayerDataSets(kls, sess: Session = None) -> List[str]:
         """Returns the sets' name in the player data"""
-        return [k for k, v in kls.getPlayerData().items() if isinstance(v, set)]
+        return [k for k, v in kls.getPlayerData(sess).items() if isinstance(v, set)]
 
     @classmethod
-    @lru_cache(1)
-    def getPlayerDataLists(kls):
+    def getPlayerDataLists(kls, sess: Session = None) -> List[str]:
         """Returns the lists' name in the player data"""
-        return [k for k, v in kls.getPlayerData().items() if isinstance(v, list)]
+        return [k for k, v in kls.getPlayerData(sess).items() if isinstance(v, list)]
 
     @classmethod
     @lru_cache(1)
-    def getGameDataSets(kls):
+    def getGameDataSets(kls) -> List[str]:
         """Returns the sets' name in the game data"""
         return [k for k, v in kls.getGameData().items() if isinstance(v, set)]
 
     @staticmethod
     @lru_cache(1)
-    def getGameDataLists():
+    def getGameDataLists(kls) -> List[str]:
         """Returns the lists' name in the game data"""
         return [k for k, v in kls.getGameData().items() if isinstance(v, list)]
 

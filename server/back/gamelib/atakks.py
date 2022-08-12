@@ -1,4 +1,4 @@
-from .interfaces import GameInterface
+from .interfaces import GameInterface, Session
 from typing import Dict, Any, List
 
 
@@ -16,9 +16,10 @@ class Game(GameInterface):
     max_players = 4
 
     @staticmethod
-    def getPlayerData():
+    def getPlayerData(sess: Session):
+        pval = "p%s" % len(sess.players)
         return {
-            "pawns": set(),
+            "pawns": {pval},
         }
 
     @staticmethod
