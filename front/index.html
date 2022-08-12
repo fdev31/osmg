@@ -35,7 +35,7 @@
       <div class="wrap">
         <div v-for="(info, game) in games" class="gamebutton">
           <div class="tile">
-            <span @click="play_game('{{game}}')">
+            <span @click="play_game(game)">
               <img :src="`./img/${info.card}.jpg`" />
               <div class="text">
                 <h1>{{T(game)}}</h1>
