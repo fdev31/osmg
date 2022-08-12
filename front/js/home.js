@@ -23,9 +23,17 @@ function initApp() {
         return getTranslation(text);
       },
       play_game: async function (game) {
+
+        var newHeaders = new Headers();
+        newHeaders.append("Content-type" , "application/json");
+        var body = JSON.stringify({
+          gameType : game
+        })
         var response = await fetch("/c/session/new", {
           method: "POST",
           redirect: "follow",
+          headers : newHeaders,
+          body : body
         });
         let result = await response.json();
         this.sessionName = result.name;
