@@ -23,7 +23,7 @@ function initApp() {
         return getTranslation(text);
       },
       play_game: async function (game) {
-        var response = await fetch(`/c/session/new?gameType=${game}`, {
+        var response = await fetch(`/c/session/new?gameType=${game}", {
           method: "GET",
           redirect: "follow",
         });
