@@ -40,7 +40,9 @@ async def isPlayerTurn(
 
 async def throwDice(player: PlayerIdentifier) -> List[int]:
     """Throw a number of dices (defined by the current player score)"""
-    redis = aioredis.from_url("redis://" + getConfig().redis_server, decode_responses=True)
+    redis = aioredis.from_url(
+        "redis://" + getConfig().redis_server, decode_responses=True
+    )
     gprefix = getGameDataPrefix(player.sessionName)
     prefix = getGameDataPrefix(player.sessionName, player.id)
     propName = prefix + "_diceValue"
