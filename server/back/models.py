@@ -27,7 +27,7 @@ class newPlayer(_BasePlayer):
 
 class RedisSession(BaseModel):
     "Game instance description & states as stored in Redis"
-    gameType: str = "marathon"
+    gameType: str
     creationTime: int
     startTime: int = 0
 
