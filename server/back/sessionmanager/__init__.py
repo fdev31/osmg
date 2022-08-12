@@ -35,10 +35,12 @@ async def _triggerGameStart(game: GameInterface, uid: str, conn: aioredis.Redis)
     await game.startGame(uid, conn)
 
 
-async def makeSession() -> Session:
+async def makeSession(gameType: str) -> Session:
     "Create a new emtpy session with no players"
     uid = await genUniqueSessionId()
-    sess = Session(name=uid, players=[], creationTime=int(time.time()))
+    sess = Session(
+        name=uid, players=[], creationTime=int(time.time()), gameType=gameType
+    )
     props = {}
 
     for name, value in getGameInitialData(sess.gameType):
@@ -168,7 +170,7 @@ def init(app, config):
     setConfig(config)
     setRedis(aioredis.from_url("redis://" + config.redis_server, decode_responses=True))
 
-    app.post("/c/session/new", response_model=Session)(makeSession)
+    app.get("/c/session/new", response_model=Session)(makeSession)
 
     app.post(
         "/c/session/join",
