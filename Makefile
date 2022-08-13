@@ -5,6 +5,7 @@ HTTP_PORT=`cat HTTP_PORT`
 all:
 	(cd locales && ./build)
 	(cd components && ./build)
+
 test: 
 	tox
 
