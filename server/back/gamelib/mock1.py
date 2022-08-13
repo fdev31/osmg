@@ -10,15 +10,5 @@ class Game(GameInterface):
     min_players = 2
     max_players = None
 
-    @staticmethod
-    def getPlayerData():
-        return {}
-
-    @staticmethod
-    def getGameData():
-        return {}
-
-    actions: Dict[str, Any] = {}
-
 
 definition = Game.definition()
