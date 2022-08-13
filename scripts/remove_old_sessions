@@ -1,4 +1,5 @@
 #!./cuspy
+import sys
 import time
 import asyncio
 import itertools
@@ -8,6 +9,9 @@ counter = itertools.count()
 now = int(time.time())
 MAX_TIME = 3600 # 3600=1h
 MAX_TIME *=  2 # 2h max
+
+if 'all' in sys.argv:
+    MAX_TIME = 0
 
 old_keys = []
 
