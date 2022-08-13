@@ -34,5 +34,5 @@ def getPlayerInitialData(
     return (props, lists, sets)
 
 
-def getGameInitialData(gameType):
-    return games[gameType].getGameData().items()
+def getGameInitialData(gameType) -> dict[str, Any]:
+    return games[gameType].getGameData()
