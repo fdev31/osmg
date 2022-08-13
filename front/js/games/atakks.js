@@ -25,6 +25,7 @@ function initApp() {
     components: {
       "player-list": window["player-list"],
       "avatar-card": window["avatar-card"],
+      "atakks-grid": window["atakks-grid"],
     },
     mounted() {
       this.$refs.playerlist.players = this.players;
