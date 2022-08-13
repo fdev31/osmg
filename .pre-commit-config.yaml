@@ -7,3 +7,4 @@ repos:
     rev: "v2.6.2" # Use the sha or tag you want to point at
     hooks:
       - id: prettier
+        exclude: ^front/js/locales.js
