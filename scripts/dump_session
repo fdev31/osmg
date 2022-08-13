@@ -61,9 +61,9 @@ async def main():
                 elif k == 'game_data':
                     print(f'  * {k}')
                     for k, v in sorted(v.items()):
-                        print(f"    - {k:14s} : {v}")
+                        print(f"    - {k:14s} : {v!r}")
                 else:
-                    print(f"  * {k:14s} : {v}")
+                    print(f"  * {k:14s} : {v!r}")
 
 def showPlayersInfo(title, pi):
     if title:
