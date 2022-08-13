@@ -4,7 +4,7 @@ from fastapi.testclient import TestClient
 
 from back.routes import app
 
-from .common import getStream
+from common import getStream
 
 client = TestClient(app)
 stream = None
@@ -20,7 +20,7 @@ def test_c_gamelist():
 
 
 def test_c_session():
-    response = client.post("/c/session/new")
+    response = client.get("/c/session/new?gameType=marathon")
     session = response.json()
     response = client.post(
         "/c/session/join",
@@ -60,7 +60,7 @@ def test_c_session():
     assert response.status_code == 200, response.text
     assert response2.status_code == 200, response.text
     events = getStream()
-    np = [e for e in events if e.isA("newPlaye")][0]
+    np = [e for e in events if e.isA("newPlayer")][0]
     assert np["name"] == "tatie", "Unexpected player name"
     assert len([e for e in events if e.isA("ready")]) == 2, "2 players should be ready"
     assert len([e for e in events if e.isA("start")]) == 1, "Game should have started"
@@ -116,4 +116,4 @@ def test_c_session():
             "sessionName": session["name"],
         },
     )
-    assert (response.status_code != 200, "Should forbid unsupported votes")
+    assert response.status_code != 200, "Should forbid unsupported votes"
