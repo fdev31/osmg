@@ -151,11 +151,13 @@ async def restartGame(player: PlayerIdentifier, tasks: BackgroundTasks) -> None:
         gameType = await conn.get(getVarName(SESSION_GAME_TYPE, uid))
         allPlayers = await conn.lrange(getVarName(PLAYERS_ORDER, uid), 0, -1)
 
+        emptySession = Session(name="", creationTime=0, gameType=gameType)
+
         iface = games[gameType]
         newVals = {}
         for name, val in iface.getGameData().items():
             newVals[getVarName(name, uid, gameData=True)] = val
-        for name, val in iface.getPlayerData().items():
+        for name, val in iface.getPlayerData(emptySession).items():
             for playername in allPlayers:
                 newVals[getVarName(name, uid, playername, gameData=True)] = val
 
