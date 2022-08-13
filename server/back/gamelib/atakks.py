@@ -1,10 +1,7 @@
 from .interfaces import GameInterface, Session
 from typing import Dict, Any, List
 
-
-class Pawn:
-    x: int
-    y: int
+placements = ["0-0", "6-6", "0-6", "6-0"]
 
 
 class Game(GameInterface):
@@ -17,7 +14,7 @@ class Game(GameInterface):
 
     @staticmethod
     def getPlayerData(sess: Session) -> Dict[str, Any]:
-        pval = "p%s" % len(sess.players)
+        pval = placements[len(sess.players)]
         return {
             "pawns": {pval},
         }
