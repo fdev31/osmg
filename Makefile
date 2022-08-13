@@ -8,6 +8,9 @@ all:
 test: 
 	(cd server && tox)
 
+mypy:
+	(cd server && tox -e mypy)
+
 unit:
 	HTTP_PORT=${HTTP_PORT} ./scripts/cuspy -m pytest ../tests/unit/*.py
 
