@@ -40,8 +40,6 @@ class GameInterface:
         if not hasattr(kls, "_info") or kls._info is None:
             return {
                 "name": kls.name,
-                "description": kls.description,
-                "long_description": kls.long_description,
                 "max_p": kls.max_players,
                 "min_p": kls.min_players,
                 "card": kls.card,
