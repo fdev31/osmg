@@ -157,6 +157,9 @@ function initApp() {
       T(text) {
         return getTranslation(text);
       },
+      kickPlayerVote(app, player) {
+        kickPlayerVote(app, player);
+      },
       playerIsReady: async function () {
         start = await post(`http://${this.host}/c/session/start`, {
           id: this.myId,
