@@ -142,7 +142,7 @@ async def turnLogic(
     else:  # no distance == check at game startup
         curPlayer = 0
 
-    if curPlayer != None and curPlayer >= nbPlayers:  # end of turn
+    if curPlayer is not None and curPlayer >= nbPlayers:  # end of turn
         turn = await conn.incr(g_prefix + "turns")
         await publishEvent(player.sessionName, conn, cat="newTurn", val=turn)
         await conn.set(g_prefix + "curPlayer", 0)
