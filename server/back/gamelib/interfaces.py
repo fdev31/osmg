@@ -48,24 +48,24 @@ class GameInterface:
     @classmethod
     def getPlayerDataSets(kls, sess: Session = None) -> List[str]:
         """Returns the sets' name in the player data"""
-        return [k for k, v in kls.getPlayerData(sess).items() if isinstance(v, set)]
+        return set(k for k, v in kls.getPlayerData(sess).items() if isinstance(v, set))
 
     @classmethod
     def getPlayerDataLists(kls, sess: Session = None) -> List[str]:
         """Returns the lists' name in the player data"""
-        return [k for k, v in kls.getPlayerData(sess).items() if isinstance(v, list)]
+        return set(k for k, v in kls.getPlayerData(sess).items() if isinstance(v, list))
 
     @classmethod
     @lru_cache(1)
     def getGameDataSets(kls) -> List[str]:
         """Returns the sets' name in the game data"""
-        return [k for k, v in kls.getGameData().items() if isinstance(v, set)]
+        return set(k for k, v in kls.getGameData().items() if isinstance(v, set))
 
     @staticmethod
     @lru_cache(1)
     def getGameDataLists(kls) -> List[str]:
         """Returns the lists' name in the game data"""
-        return [k for k, v in kls.getGameData().items() if isinstance(v, list)]
+        return set(k for k, v in kls.getGameData().items() if isinstance(v, list))
 
     @classmethod
     def definition(kls) -> Dict[str, Any]:
