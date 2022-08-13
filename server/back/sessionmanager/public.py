@@ -71,12 +71,15 @@ async def getSession(uid, client=None) -> Session:
         getVarName(name, uid, gameData=True) for name in iface.getGameData().keys()
     )
 
-    playerDataKeys = list(
-        iface.getPlayerData(Session(name="", creationTime=0, gameType=gameType)).keys()
-    )
+    emptySession = Session(name="", creationTime=0, gameType=gameType)
+
+    sets = iface.getPlayerDataSets(emptySession)
+    lists = iface.getPlayerDataLists(emptySession)
+    playerDataKeys = set(iface.getPlayerData(emptySession).keys())
     for playername in allPlayers:
         all_keys.extend(
-            getVarName(name, uid, playername, gameData=True) for name in playerDataKeys
+            getVarName(name, uid, playername, gameData=True)
+            for name in playerDataKeys.difference(lists).difference(sets)
         )
         all_keys.extend(
             getVarName(name, uid, playername) for name in iface.getPlayerIdentifiers()

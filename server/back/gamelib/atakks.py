@@ -16,7 +16,7 @@ class Game(GameInterface):
     max_players = 4
 
     @staticmethod
-    def getPlayerData(sess: Session):
+    def getPlayerData(sess: Session) -> Dict[str, Any]:
         pval = "p%s" % len(sess.players)
         return {
             "pawns": {pval},

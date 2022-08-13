@@ -12,7 +12,9 @@ def registerGame(name, iface):
     games[name] = iface
 
 
-def getPlayerInitialData(sess: Session) -> Tuple[Tuple[str, Any]]:
+def getPlayerInitialData(
+    sess: Session,
+) -> Tuple[dict[str, Any], dict[str, Any], dict[str, Any]]:
     """Returns tree list of (key, value) items:
     - simple props
     - lists
@@ -29,7 +31,7 @@ def getPlayerInitialData(sess: Session) -> Tuple[Tuple[str, Any]]:
         del props[name]
     for name in sets.keys():
         del props[name]
-    return (props.items(), lists.items(), sets.items())
+    return (props, lists, sets)
 
 
 def getGameInitialData(gameType):

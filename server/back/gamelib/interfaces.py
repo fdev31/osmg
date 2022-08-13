@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from typing import Dict, Optional, Any, List
 from functools import lru_cache
 
@@ -15,12 +17,12 @@ class GameInterface:
     max_players: Optional[int] = 99
 
     @staticmethod
-    def getPlayerData(sess: Session = None) -> dict:
+    def getPlayerData(sess: Session) -> Dict[str, Any]:
         """Returns initial data for a player"""
         return {}
 
     @staticmethod
-    def getGameData() -> dict:
+    def getGameData() -> Dict[str, Any]:
         """Returns initial data for a game"""
         return {}
 
@@ -46,24 +48,24 @@ class GameInterface:
         return ["id", "name", "avatar"]
 
     @classmethod
-    def getPlayerDataSets(kls, sess: Session = None) -> List[str]:
+    def getPlayerDataSets(kls, sess: Session) -> set[str]:
         """Returns the sets' name in the player data"""
         return set(k for k, v in kls.getPlayerData(sess).items() if isinstance(v, set))
 
     @classmethod
-    def getPlayerDataLists(kls, sess: Session = None) -> List[str]:
+    def getPlayerDataLists(kls, sess: Session) -> set[str]:
         """Returns the lists' name in the player data"""
         return set(k for k, v in kls.getPlayerData(sess).items() if isinstance(v, list))
 
     @classmethod
     @lru_cache(1)
-    def getGameDataSets(kls) -> List[str]:
+    def getGameDataSets(kls) -> set[str]:
         """Returns the sets' name in the game data"""
         return set(k for k, v in kls.getGameData().items() if isinstance(v, set))
 
     @staticmethod
     @lru_cache(1)
-    def getGameDataLists(kls) -> List[str]:
+    def getGameDataLists(kls) -> set[str]:
         """Returns the lists' name in the game data"""
         return set(k for k, v in kls.getGameData().items() if isinstance(v, list))
 

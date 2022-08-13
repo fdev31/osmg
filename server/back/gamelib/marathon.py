@@ -1,6 +1,6 @@
 import random
 import logging
-from typing import List, Awaitable, Optional
+from typing import List, Awaitable, Optional, Dict, Any
 
 import aioredis
 from fastapi import HTTPException
@@ -181,7 +181,7 @@ class DiceInterface(GameInterface):
         await turnLogic(None, PlayerIdentifier(id=0, sessionName=sessionId), conn)
 
     @staticmethod
-    def getPlayerData(sess: Session):
+    def getPlayerData(sess: Session) -> Dict[str, Any]:
         return dict(distance=42195)
 
     @staticmethod

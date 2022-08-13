@@ -43,7 +43,7 @@ async def makeSession(gameType: str) -> Session:
     )
     props = {}
 
-    for name, value in getGameInitialData(sess.gameType):
+    for name, value in getGameInitialData(sess.gameType).items():
         props[getVarName(name, sess.name, gameData=True)] = value
         sess.gameData[name] = value
 
@@ -80,11 +80,14 @@ async def addPlayer(player: newPlayer) -> Session:
         initialPlayerDataLists,
     ) = getPlayerInitialData(sess)
 
+    # TODO: insert existing values for sets & lists
+    # TODO: manage game data with complex values too
+
     redisObj = {}
     for name, value in player_info.items():
         redisObj[getVarName(name, player.sessionName, pid)] = value
 
-    for name, value in initialPlayerData:
+    for name, value in initialPlayerData.items():
         redisObj[getVarName(name, player.sessionName, pid, gameData=True)] = value
 
     async with getRedis().client() as conn:
@@ -99,11 +102,26 @@ async def addPlayer(player: newPlayer) -> Session:
             avatar=player.avatar,
             id=pid,
         )
+
+        for k, v in initialPlayerDataLists.items():
+            if v:
+                await conn.rpush(getVarName(k, player.sessionName, pid), *v)
+
+        for k, v in initialPlayerDataSets.items():
+            if v:
+                await conn.sadd(getVarName(k, player.sessionName, pid), *v)
+
         await push
         await mset
         await pub
 
     del player_info["_secret"]
+    initialPlayerData = dict(initialPlayerData)
+    # add sets & lists to player data
+    for k, v in initialPlayerDataLists.items():
+        initialPlayerData[k] = v
+    for k, v in initialPlayerDataSets.items():
+        initialPlayerData[k] = list(v)
     getattr(sess, SESSION_PLAYERS_DATA)[str(pid)] = initialPlayerData
     getattr(sess, SESSION_PLAYERS).append(player_info)
     sess.secret = secretId
