@@ -264,3 +264,20 @@ li > .avatarCard > svg {
 .flip-list-move {
   transition: transform 0.8s ease;
 }
+
+
+/*** ATAKKS ***/
+
+.atakks-grid {
+  
+}
+
+.atakks-row {
+  display: inline-grid;
+}
+
+.atakks-column {
+  width: 3em;
+  height: 3em;
+  border: solid 1px #151515;
+}

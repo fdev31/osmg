@@ -20,15 +20,17 @@
 </script>
 
 <template>
-    <div>
-        <div class="cd"
+    <div class="atakks-grid">
+        <span
+        class="atakks-row"
         v-for="x in createGrid()"
         :key="x"
         >
-        <div
+        <span
+        class="atakks-column"
         v-for="y in x"
         :key="y"
-        ></div>
-        </div>
+        >X</span>
+        </span>
     </div>
 </template>
