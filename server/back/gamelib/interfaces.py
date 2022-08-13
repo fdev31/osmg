@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Dict, Optional, Any, List
+from typing import Dict, Optional, Any, List, Set
 from functools import lru_cache
 
 from ..models import Session
@@ -15,6 +15,11 @@ class GameInterface:
     card: str = "quiz"
     min_players: Optional[int] = 1
     max_players: Optional[int] = 99
+
+    _pds: Set[str]  # player data set cache
+    _gds: Set[str]  # game data set cache
+    _pdl: Set[str]  # player data list cache
+    _gdl: Set[str]  # game data list cache
 
     @staticmethod
     def getPlayerData(sess: Session) -> Dict[str, Any]:

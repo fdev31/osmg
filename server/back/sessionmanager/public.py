@@ -74,9 +74,9 @@ async def getSession(uid, client=None) -> Session:
     emptySession = Session(name="", creationTime=0, gameType=gameType)
 
     sets = iface.getPlayerDataSets(emptySession)
-    sets_keys = []
+    sets_keys: list[str] = []
     lists = iface.getPlayerDataLists(emptySession)
-    lists_keys = []
+    lists_keys: list[str] = []
     playerDataKeys = set(iface.getPlayerData(emptySession).keys())
     for playername in allPlayers:
         all_keys.extend(
