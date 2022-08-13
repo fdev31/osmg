@@ -87,9 +87,6 @@ async def addPlayer(player: newPlayer) -> Session:
     for name, value in initialPlayerData:
         redisObj[getVarName(name, player.sessionName, pid, gameData=True)] = value
 
-    for name, value in list(redisObj.items()):
-        redisObj[name] = value
-
     async with getRedis().client() as conn:
         push = conn.rpush(getVarName(PLAYERS_ORDER, player.sessionName), pid)
         mset = conn.mset(redisObj)

@@ -15,7 +15,7 @@ from ..globalHandlers import (
     PLAYERS_ORDER,
 )
 from ..sessionmanager.public import isPlayerValid
-from ..models import PlayerIdentifier
+from ..models import PlayerIdentifier, Session
 from ..utils import loads, dumps
 
 from .interfaces import GameInterface
@@ -181,7 +181,7 @@ class DiceInterface(GameInterface):
         await turnLogic(None, PlayerIdentifier(id=0, sessionName=sessionId), conn)
 
     @staticmethod
-    def getPlayerData():
+    def getPlayerData(sess: Session):
         return dict(distance=42195)
 
     @staticmethod
