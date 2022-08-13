@@ -268,9 +268,6 @@ li > .avatarCard > svg {
 
 /*** ATAKKS ***/
 
-.atakks-grid {
-  
-}
 
 .atakks-row {
   display: inline-grid;
@@ -280,4 +277,17 @@ li > .avatarCard > svg {
   width: 3em;
   height: 3em;
   border: solid 1px #151515;
+}
+
+.atakks-grid .p1 {
+    color:blue;
+}
+.atakks-grid .p2 {
+    color:red;
+}
+.atakks-grid .p3 {
+    color:green;
+}
+.atakks-grid .p4 {
+    color:yellow;
 }
