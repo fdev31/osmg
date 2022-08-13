@@ -1,0 +1,3 @@
+#!/bin/sh
+export PYTHONPATH="../tests/unit/"
+exec ../server/.tox/py310-chrome/bin/python $*
