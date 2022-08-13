@@ -11,14 +11,24 @@
     />
     <link rel="stylesheet" href="styles.css" />
   </head>
-  <body>
-    <h1>Atakks , a game of balls</h1>
+  <body onload="initApp()">
+    <div id="toaster"></div>
+    <div id="app" v-cloak>
+      <h1>{{ T("Attaks, a game of mind") }}</h1>
+      <player-list
+        ref="playerlist"
+        :enable-kick="enableKick"
+        :kick-text="kickText"
+        :cur-player="gameData.curPlayer"
+        :my-id="myId"
+        v-on:kick="kickPlayerVote"
+      ></player-list>
+    </div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/snap.svg/0.5.1/snap.svg-min.js"></script>
     <script src="https://unpkg.com/vue@next"></script>
     <script src="js/locales.js" charset="utf-8"></script>
     <script src="js/utils.js" charset="utf-8"></script>
     <script src="/jscomp/player-list.umd.js" charset="utf-8"></script>
-    <script src="/jscomp/dicearray.umd.js" charset="utf-8"></script>
     <script src="/jscomp/avatar-card.umd.js" charset="utf-8"></script>
     <script src="js/games/atakks.js" charset="utf-8"></script>
   </body>
