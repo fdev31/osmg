@@ -6,10 +6,10 @@ all:
 	(cd locales && ./build)
 	(cd components && ./build)
 test: 
-	(cd server && tox)
+	tox
 
 mypy:
-	(cd server && tox -e mypy)
+	tox -e mypy
 
 unit:
 	./scripts/cuspy -m pytest --pdb '../tests/unit/test_*.py'
