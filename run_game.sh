@@ -1,6 +1,6 @@
 #!/bin/bash
 PY=python3
-ENVDIR=.tox/py310
+ENVDIR=.tox/py310-chrome
 
 HTTP_PORT=$(cat HTTP_PORT)
 
@@ -8,7 +8,6 @@ if [ ! -d ${ENVDIR} ]; then
     $PY -m venv ${ENVDIR}
 fi
 source ${ENVDIR}/bin/activate
-(cd server && pip install -e .)
 export PREFIX=$(pwd)
 if [ -z "$DEBUG" ]; then
     export WEB_CONCURRENCY=10
