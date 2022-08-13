@@ -50,24 +50,40 @@ class GameInterface:
     @classmethod
     def getPlayerDataSets(kls, sess: Session) -> set[str]:
         """Returns the sets' name in the player data"""
-        return set(k for k, v in kls.getPlayerData(sess).items() if isinstance(v, set))
+        if getattr(kls, "_pds", None) is None:
+            kls._pds = set(
+                k for k, v in kls.getPlayerData(sess).items() if isinstance(v, set)
+            )
+        return kls._pds
 
     @classmethod
     def getPlayerDataLists(kls, sess: Session) -> set[str]:
         """Returns the lists' name in the player data"""
-        return set(k for k, v in kls.getPlayerData(sess).items() if isinstance(v, list))
+        if getattr(kls, "_pdl", None) is None:
+            kls._pdl = set(
+                k for k, v in kls.getPlayerData(sess).items() if isinstance(v, list)
+            )
+        return kls._pdl
 
     @classmethod
     @lru_cache(1)
     def getGameDataSets(kls) -> set[str]:
         """Returns the sets' name in the game data"""
-        return set(k for k, v in kls.getGameData().items() if isinstance(v, set))
+        if getattr(kls, "_gds", None) is None:
+            kls._gds = set(
+                k for k, v in kls.getGameData().items() if isinstance(v, set)
+            )
+        return kls._gds
 
     @staticmethod
     @lru_cache(1)
     def getGameDataLists(kls) -> set[str]:
         """Returns the lists' name in the game data"""
-        return set(k for k, v in kls.getGameData().items() if isinstance(v, list))
+        if getattr(kls, "_gdl", None) is None:
+            kls._gdl = set(
+                k for k, v in kls.getGameData().items() if isinstance(v, list)
+            )
+        return kls._gdl
 
     @classmethod
     def definition(kls) -> Dict[str, Any]:
