@@ -4,10 +4,14 @@ from fastapi.testclient import TestClient
 
 from back.routes import app
 
-from common import getStream
+from common import getStream, resetStream
 
 client = TestClient(app)
 stream = None
+
+
+def teardown_module():
+    resetStream()
 
 
 def test_c_gamelist():

@@ -1,4 +1,4 @@
-__all__ = ["getStream", "pretty"]
+__all__ = ["getStream", "resetStream", "pretty"]
 
 from threading import Thread
 from json import loads
@@ -28,6 +28,11 @@ class DbDict(ODict):
 
 
 stream = None
+
+
+def resetStream():
+    global stream
+    stream = None
 
 
 def getStream(topic: str = None, uid: str = None):
