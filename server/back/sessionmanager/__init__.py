@@ -105,11 +105,15 @@ async def addPlayer(player: newPlayer) -> Session:
 
         for k, v in initialPlayerDataLists.items():
             if v:
-                await conn.rpush(getVarName(k, player.sessionName, pid), *v)
+                await conn.rpush(
+                    getVarName(k, player.sessionName, playerId=pid, gameData=True), *v
+                )
 
         for k, v in initialPlayerDataSets.items():
             if v:
-                await conn.sadd(getVarName(k, player.sessionName, pid), *v)
+                await conn.sadd(
+                    getVarName(k, player.sessionName, playerId=pid, gameData=True), *v
+                )
 
         await push
         await mset
