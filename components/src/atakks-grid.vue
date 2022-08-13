@@ -25,35 +25,6 @@
     }
 </script>
 
-<style>
-.atakks-grid {
-  
-}
-
-.atakks-row {
-  display: inline-grid;
-}
-
-.atakks-column {
-  width: 3em;
-  height: 3em;
-  border: solid 1px #151515;
-}
-
-.p1 {
-    color:blue;
-}
-.p2 {
-    color:red;
-}
-.p3 {
-    color:green;
-}
-.p4 {
-    color:yellow;
-}
-
-</style>
 <template>
     <div class="atakks-grid">
         <span
