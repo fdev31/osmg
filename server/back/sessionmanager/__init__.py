@@ -56,10 +56,10 @@ async def makeSession(gameType: str) -> Session:
 
     async with getRedis() as conn:
         await conn.mset(mprops)
-        for k, v in lists:
+        for k, v in lists.items():
             if v:
                 await conn.rpush(getVarName(k, uid, gameData=True), *v)
-        for k, v in sets:
+        for k, v in sets.items():
             if v:
                 await conn.sadd(getVarName(k, uid, gameData=True), *v)
 
