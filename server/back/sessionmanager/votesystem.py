@@ -27,7 +27,7 @@ async def kickPlayer(conn: aioredis.Redis, sessionId: str, match: re.Match):
     await conn.srem(getVarName(PLAYERS_READY, sessionId), whom)
     # remove vote info
     vip = getVarName(VOTE_IN_PROGRESS, whom)
-    await conn.srem(vip)
+    await conn.srem(vip, whom)
     # done
     await _checkVoteEnd(conn, sessionId, "kick_" + whom)
     await publishEvent(sessionId, conn, cat="kickPlayer", id=whom)
