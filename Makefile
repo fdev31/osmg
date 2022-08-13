@@ -6,6 +6,9 @@ all:
 	(cd locales && ./build)
 	(cd components && ./build)
 
+flake:
+	tox -e flake8
+
 test: 
 	tox
 
