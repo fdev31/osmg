@@ -7,7 +7,7 @@ from ..models import SESSION_PLAYERS_DATA, SESSION_S_TIME, SESSION_GAME_TYPE
 from ..models import SESSION_GAME_DATA, SESSION_NAME, SESSION_PLAYERS
 from ..globalHandlers import getRedis, getVarName
 from ..globalHandlers import PLAYERS_ORDER, PLAYERS_CONNECTED
-from ..globalHandlers import getRedis, publishEvent, getVarName
+from ..globalHandlers import publishEvent
 
 from .base import removeSession
 from .library import games
