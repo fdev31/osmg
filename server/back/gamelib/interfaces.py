@@ -66,7 +66,6 @@ class GameInterface:
         return kls._pdl
 
     @classmethod
-    @lru_cache(1)
     def getGameDataSets(kls) -> set[str]:
         """Returns the sets' name in the game data"""
         if getattr(kls, "_gds", None) is None:
@@ -75,8 +74,7 @@ class GameInterface:
             )
         return kls._gds
 
-    @staticmethod
-    @lru_cache(1)
+    @classmethod
     def getGameDataLists(kls) -> set[str]:
         """Returns the lists' name in the game data"""
         if getattr(kls, "_gdl", None) is None:

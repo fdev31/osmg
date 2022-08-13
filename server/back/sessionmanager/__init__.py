@@ -41,17 +41,29 @@ async def makeSession(gameType: str) -> Session:
     sess = Session(
         name=uid, players=[], creationTime=int(time.time()), gameType=gameType
     )
-    props = {}
+    mprops = {}
+    props, lists, sets = getGameInitialData(sess.gameType)
 
-    for name, value in getGameInitialData(sess.gameType).items():
-        props[getVarName(name, sess.name, gameData=True)] = value
+    for name, value in props.items():
+        mprops[getVarName(name, sess.name, gameData=True)] = value
         sess.gameData[name] = value
 
-    for field in (SESSION_C_TIME, SESSION_NAME, SESSION_GAME_TYPE):
-        props[getVarName(field, sess.name)] = getattr(sess, field)
+    sess.gameData.update(lists)
+    sess.gameData.update(sets)
 
-    await getRedis().mset(props)
-    logger.debug(f"New session {uid} {props}")
+    for field in (SESSION_C_TIME, SESSION_NAME, SESSION_GAME_TYPE):
+        mprops[getVarName(field, sess.name)] = getattr(sess, field)
+
+    async with getRedis() as conn:
+        await conn.mset(mprops)
+        for k, v in lists:
+            if v:
+                await conn.rpush(getVarName(k, uid, gameData=True), *v)
+        for k, v in sets:
+            if v:
+                await conn.sadd(getVarName(k, uid, gameData=True), *v)
+
+    logger.debug(f"New session: {uid}")
     return sess
 
 
