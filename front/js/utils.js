@@ -23,7 +23,7 @@ function _setEventStreamHandler(handler, query) {
     `ws://${document.location.host}/c/stream?topic=${query.topic}&uid=${query.uid}`
   );
   evtSource.addEventListener("message", (event) => {
-      handler(JSON.parse(event.data));
+    handler(JSON.parse(event.data));
   });
 }
 function runOnEnter(code) {
@@ -231,9 +231,11 @@ let currentLocale = null;
 
 function initLocales() {
   let langs = navigator.languages;
-  let lang = langs[langs.length - 1];
-  if (locales[lang]) {
-    currentLocale = lang;
+  for (let lang of langs) {
+    lang = lang.slice(0, 2);
+    if (locales[lang]) {
+      currentLocale = lang;
+    }
   }
   //currentLocale = 'fr'; // to test a locale
 }
