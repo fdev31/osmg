@@ -1,3 +1,4 @@
 #!/bin/sh
+cd $(dirname $0)
 export PYTHONPATH="../tests/unit/"
 exec ../server/.tox/py310-chrome/bin/python $*
