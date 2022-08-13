@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import random
 import logging
 from typing import List, Awaitable, Optional, Dict, Any
@@ -157,7 +159,7 @@ class DiceInterface(GameInterface):
     description = "A multi-player marathon-like dice game"
     long_description = "blah blah blah"
     min_players = 2
-    max_players = None
+    max_players: Optional[int] = None
 
     @staticmethod
     async def votePassed(sessionId: str, name: str, conn: aioredis.Redis):
@@ -181,7 +183,7 @@ class DiceInterface(GameInterface):
         await turnLogic(None, PlayerIdentifier(id=0, sessionName=sessionId), conn)
 
     @staticmethod
-    def getPlayerData(sess: Session) -> Dict[str, Any]:
+    def getPlayerData(sess: Session):
         return dict(distance=42195)
 
     @staticmethod

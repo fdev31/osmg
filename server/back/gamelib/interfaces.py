@@ -92,6 +92,10 @@ class GameInterface:
     def definition(kls) -> Dict[str, Any]:
         return {kls.name: kls}
 
+    @classmethod
+    async def playerAdded(kls, sess: Session):
+        pass
+
     # notification handlers
 
     @staticmethod

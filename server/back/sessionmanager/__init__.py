@@ -70,6 +70,7 @@ async def makeSession(gameType: str) -> Session:
 async def addPlayer(player: newPlayer) -> Session:
     "Add a player to an existing session"
     sess = await getSession(player.sessionName)
+    game = games[sess.gameType]
 
     for p in sess.players:
         if p["name"] == player.name:
@@ -140,6 +141,7 @@ async def addPlayer(player: newPlayer) -> Session:
     getattr(sess, SESSION_PLAYERS_DATA)[str(pid)] = initialPlayerData
     getattr(sess, SESSION_PLAYERS).append(player_info)
     sess.secret = secretId
+    await game.playerAdded(sess)
     logger.debug(f"New player {pid}")
     return sess
 
@@ -157,6 +159,7 @@ async def restartGame(player: PlayerIdentifier, tasks: BackgroundTasks) -> None:
         newVals = {}
         for name, val in iface.getGameData().items():
             newVals[getVarName(name, uid, gameData=True)] = val
+        # FIXME: only base props are handled here:
         for name, val in iface.getPlayerData(emptySession).items():
             for playername in allPlayers:
                 newVals[getVarName(name, uid, playername, gameData=True)] = val
