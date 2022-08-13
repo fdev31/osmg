@@ -4,9 +4,6 @@ ENVDIR=.tox/py310-chrome
 
 HTTP_PORT=$(cat HTTP_PORT)
 
-if [ ! -d ${ENVDIR} ]; then
-    $PY -m venv ${ENVDIR}
-fi
 source ${ENVDIR}/bin/activate
 export PREFIX=$(pwd)
 if [ -z "$DEBUG" ]; then
