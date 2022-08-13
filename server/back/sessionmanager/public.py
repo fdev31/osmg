@@ -74,13 +74,22 @@ async def getSession(uid, client=None) -> Session:
     emptySession = Session(name="", creationTime=0, gameType=gameType)
 
     sets = iface.getPlayerDataSets(emptySession)
+    sets_keys = []
     lists = iface.getPlayerDataLists(emptySession)
+    lists_keys = []
     playerDataKeys = set(iface.getPlayerData(emptySession).keys())
     for playername in allPlayers:
         all_keys.extend(
             getVarName(name, uid, playername, gameData=True)
             for name in playerDataKeys.difference(lists).difference(sets)
         )
+        sets_keys.extend(
+            getVarName(name, uid, playername, gameData=True) for name in sets
+        )
+        lists_keys.extend(
+            getVarName(name, uid, playername, gameData=True) for name in lists
+        )
+
         all_keys.extend(
             getVarName(name, uid, playername) for name in iface.getPlayerIdentifiers()
         )
@@ -92,6 +101,13 @@ async def getSession(uid, client=None) -> Session:
 
     async with (client or getRedis().client()) as conn:
         all_values = await conn.mget(all_keys)
+        for name in sets_keys:
+            all_values.append(await conn.smembers(name))
+        for name in lists_keys:
+            all_values.append(await conn.lrange(name, 0, -1))
+
+    all_keys.extend(sets_keys)
+    all_keys.extend(lists_keys)
 
     for key, val in zip(all_keys, all_values):
         splitk = key.split(":")

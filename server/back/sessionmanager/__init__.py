@@ -76,8 +76,8 @@ async def addPlayer(player: newPlayer) -> Session:
     player_info["_secret"] = secretId
     (
         initialPlayerData,
-        initialPlayerDataSets,
         initialPlayerDataLists,
+        initialPlayerDataSets,
     ) = getPlayerInitialData(sess)
 
     # TODO: insert existing values for sets & lists
@@ -103,15 +103,14 @@ async def addPlayer(player: newPlayer) -> Session:
             id=pid,
         )
 
-        for k, v in initialPlayerDataLists.items():
-            if v:
-                await conn.rpush(
-                    getVarName(k, player.sessionName, playerId=pid, gameData=True), *v
-                )
-
         for k, v in initialPlayerDataSets.items():
             if v:
                 await conn.sadd(
+                    getVarName(k, player.sessionName, playerId=pid, gameData=True), *v
+                )
+        for k, v in initialPlayerDataLists.items():
+            if v:
+                await conn.rpush(
                     getVarName(k, player.sessionName, playerId=pid, gameData=True), *v
                 )
 
