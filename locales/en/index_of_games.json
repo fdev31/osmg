@@ -1,5 +1,9 @@
 {
-    "marathon": "Marathon",
-    "marathon_description": "A racing game with dices!",
-    "marathon_long_description": "Race against your opponents for a big moment of fun <br/>A mix of chance and simple maths."
+  "marathon": "Marathon",
+  "marathon_description": "A racing game with dices!",
+  "marathon_long_description": "Race against your opponents for a big moment of fun <br/>A mix of chance and simple maths.",
+
+  "atakks": "Atakks",
+  "atakks_description": "A ball game with colors!",
+  "atakks_long_description": "Rage against the machine."
 }
