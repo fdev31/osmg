@@ -19,7 +19,7 @@ def test_c_gamelist():
     assert response.status_code == 200
     for name, info in response.json().items():
         assert len(name) > 0
-        for attr in "name description long_description max_p min_p card".split():
+        for attr in "name max_p min_p card".split():
             assert attr in info
 
 
