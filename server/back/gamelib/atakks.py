@@ -1,8 +1,15 @@
-from .interfaces import GameInterface
-from ..models import Session
+from logging import getLogger
+
+from .std_implem import def_playerAdded
+
+from .interfaces import GameInterface, Events
+from ..models import Session, Player, SESSION_PLAYERS_DATA
+from ..globalHandlers import publishEvent
 from typing import Dict, Any
 
 placements = ["0-0", "6-6", "0-6", "6-0"]
+
+logger = getLogger("atakks")
 
 
 class Game(GameInterface):
@@ -26,6 +33,10 @@ class Game(GameInterface):
             "turns": 0,
             "curPlayer": 0,
         }
+
+    @classmethod
+    async def playerAdded(kls, sess: Session, player: Player) -> None:
+        await def_playerAdded(sess, player)
 
     actions: Dict[str, Any] = {}
 

@@ -1,9 +1,19 @@
 from __future__ import annotations
 
+__all__ = ["GameInterface", "Events"]
+
 from typing import Dict, Optional, Any, List, Set
+from enum import Enum
 from aioredis import Redis
 
-from ..models import Session
+from ..models import PlayerIdentifier, Player, Session
+
+
+class Events(str, Enum):
+    newPlayer = "newPlayer"
+    connectPlayer = "connectPlayer"
+    disconnectPlayer = "disconnectPlayer"
+    ready = "ready"
 
 
 class GameInterface:
@@ -90,10 +100,6 @@ class GameInterface:
     def definition(kls) -> Dict[str, Any]:
         return {kls.name: kls}
 
-    @classmethod
-    async def playerAdded(kls, sess: Session) -> None:
-        pass
-
     # notification handlers
 
     @staticmethod
@@ -103,3 +109,8 @@ class GameInterface:
     @staticmethod
     async def startGame(sessionId: str, conn: Redis) -> None:
         return
+
+    @classmethod
+    async def playerAdded(kls, sess: Session, player: Player) -> None:
+        "MUST spawn the newPlayer event"
+        pass

@@ -11,7 +11,7 @@ from ..globalHandlers import publishEvent
 
 from .base import removeSession
 from .library import games
-from ..gamelib.interfaces import GameInterface
+from ..gamelib.interfaces import GameInterface, Events
 
 from aioredis import Redis
 
@@ -41,7 +41,9 @@ async def connectPlayer(sessionName: str, playerId: str) -> None:
             )
         else:
             await conn.sadd(getVarName(PLAYERS_CONNECTED, sessionName), playerId)
-            await publishEvent(sessionName, conn, cat="connectPlayer", id=playerId)
+            await publishEvent(
+                sessionName, conn, cat=Events.connectPlayer.name, id=playerId
+            )
 
 
 async def disconnectPlayer(sessionName: str, playerId: str) -> None:
@@ -57,7 +59,7 @@ async def disconnectPlayer(sessionName: str, playerId: str) -> None:
                 await removeSession(sessionName, conn)
             else:
                 await publishEvent(
-                    sessionName, conn, cat="disconnectPlayer", id=playerId
+                    sessionName, conn, cat=Events.disconnectPlayer.name, id=playerId
                 )
 
 

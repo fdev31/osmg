@@ -6,7 +6,7 @@ import aioredis
 from fastapi import HTTPException, BackgroundTasks, FastAPI
 from starlette import status as httpstatus
 
-from ..models import PlayerIdentifier, newPlayer, Session
+from ..models import PlayerIdentifier, newPlayer, Session, Player
 from ..models import SESSION_PLAYERS_DATA, SESSION_S_TIME, SESSION_GAME_TYPE
 from ..models import SESSION_C_TIME, SESSION_NAME, SESSION_PLAYERS
 
@@ -19,7 +19,7 @@ from .library import games, getGameInitialData, getPlayerInitialData
 from .public import getSession
 from .votesystem import vote
 
-from ..gamelib.interfaces import GameInterface
+from ..gamelib.interfaces import GameInterface, Events
 
 logger = logging.getLogger("Session")
 
@@ -112,15 +112,6 @@ async def addPlayer(player: newPlayer) -> Session:
         push = conn.rpush(getVarName(PLAYERS_ORDER, player.sessionName), spid)
         mset = conn.mset(redisObj)
 
-        pub = publishEvent(
-            player.sessionName,
-            None,
-            cat="newPlayer",
-            name=player.name,
-            avatar=player.avatar,
-            id=spid,
-        )
-
         for k, v in initialPlayerDataSets.items():
             if v:
                 await conn.sadd(
@@ -134,7 +125,6 @@ async def addPlayer(player: newPlayer) -> Session:
 
         await push
         await mset
-        await pub
 
     del player_info["_secret"]
     initialPlayerData = dict(initialPlayerData)
@@ -146,7 +136,9 @@ async def addPlayer(player: newPlayer) -> Session:
     getattr(sess, SESSION_PLAYERS_DATA)[spid] = initialPlayerData
     getattr(sess, SESSION_PLAYERS).append(player_info)
     sess.secret = secretId
-    await game.playerAdded(sess)
+    fullPlayer = player.dict()
+    fullPlayer["id"] = spid
+    await game.playerAdded(sess, Player(**fullPlayer))
     logger.debug(f"New player {pid}")
     return sess
 
@@ -186,7 +178,9 @@ async def startGame(player: PlayerIdentifier, tasks: BackgroundTasks) -> None:
         pr = getVarName(PLAYERS_READY, player.sessionName, gameData=True)
         if await conn.sismember(pr, player.id):
             raise HTTPException(httpstatus.HTTP_409_CONFLICT, "Action already done")
-        await publishEvent(player.sessionName, conn, cat="ready", player=player.id)
+        await publishEvent(
+            player.sessionName, conn, cat=Events.ready.name, player=player.id
+        )
         await conn.sadd(pr, player.id)
         await conn.set(f"S{player.sessionName}:" + SESSION_S_TIME, int(time.time()))
 

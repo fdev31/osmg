@@ -8,6 +8,8 @@ import aioredis
 from fastapi import HTTPException
 from starlette import status as httpstatus
 
+from .std_implem import def_playerAdded
+
 from ..globalHandlers import (
     getRedis,
     getConfig,
@@ -17,10 +19,10 @@ from ..globalHandlers import (
     PLAYERS_ORDER,
 )
 from ..sessionmanager.public import isPlayerValid
-from ..models import PlayerIdentifier, Session
+from ..models import PlayerIdentifier, Player, Session
 from ..utils import loads, dumps
 
-from .interfaces import GameInterface
+from .interfaces import GameInterface, Events
 
 ACTIVE_PLAYERS = "curOrder"
 
@@ -194,6 +196,10 @@ class DiceInterface(GameInterface):
             "turns": 0,
             "curPlayer": 0,
         }
+
+    @classmethod
+    async def playerAdded(kls, sess: Session, player: Player) -> None:
+        await def_playerAdded(sess, player)
 
     actions = {
         "throwDice": dict(
