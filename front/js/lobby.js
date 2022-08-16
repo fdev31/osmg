@@ -20,18 +20,7 @@ async function countDown(count = 4) {
   }
 }
 handlers = {
-  connectPlayer: (data) => {
-    toaster.show(
-      `${application._playersById[data.id].name} ${getTranslation(
-        "enters the game"
-      )}`,
-      {
-        closeTimeOut: 2500,
-      }
-    );
-    application.playersData[data.id] = {};
-    setCookie(Vue2Obj(application));
-  },
+  connectPlayer: (data) => {},
   disconnectPlayer: (data) => {
     toaster.show(
       `${application._playersById[data.id].name} ${getTranslation(
@@ -48,7 +37,19 @@ handlers = {
   },
   newPlayer: (data) => {
     delete data["cat"];
-    application.players.push(data);
+
+    toaster.show(`${data.name} ${getTranslation("enters the game")}`, {
+      closeTimeOut: 2500,
+    });
+    let pd = application.playersData;
+    if (pd[data.id] == undefined) {
+      pd[data.id] = {};
+    }
+    application.playersData[data.id] = {};
+    application.players.push({ id: data.id, name: data.name });
+    for (let newpd of Object.keys(data.playersData)) {
+      Object.assign(pd[newpd], data.playersData[newpd]);
+    }
     setPlayersById(application);
     setCookie(Vue2Obj(application));
   },
