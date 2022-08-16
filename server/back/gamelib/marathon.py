@@ -160,8 +160,6 @@ async def turnLogic(
 class DiceInterface(GameInterface):
     name = "marathon"
     card = "marathon"
-    description = "A multi-player marathon-like dice game"
-    long_description = "blah blah blah"
     min_players = 2
     max_players: Optional[int] = None
 

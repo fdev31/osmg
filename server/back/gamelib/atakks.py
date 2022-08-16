@@ -9,14 +9,10 @@ from typing import Dict, Any
 
 placements = ["0-0", "6-6", "0-6", "6-0"]
 
-logger = getLogger("atakks")
-
 
 class Game(GameInterface):
     name = "atakks"
     card = "arcade"
-    description = "A simpler Go game alternative"
-    long_description = "Play against your friends in this simple yet addictive game!"
     min_players = 2
     max_players = 4
 
@@ -41,4 +37,5 @@ class Game(GameInterface):
     actions: Dict[str, Any] = {}
 
 
+logger = getLogger(Game.name)
 definition = Game.definition()
