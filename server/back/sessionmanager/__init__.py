@@ -96,9 +96,6 @@ async def addPlayer(player: newPlayer) -> Session:
         initialPlayerDataSets,
     ) = getPlayerInitialData(sess)
 
-    # TODO: insert existing values for sets & lists
-    # TODO: manage game data with complex values too
-
     spid = str(pid)
 
     redisObj = {}
