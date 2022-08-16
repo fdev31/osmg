@@ -34,9 +34,9 @@ class RedisSession(BaseModel):
 
 class Session(RedisSession):
     "Game instance description & states"
-    gameData: dict[str,Any] = {}
-    playersData: Dict[str,Any] = {}
-    players: List[dict[str,Any]] = []
+    gameData: dict[str, Any] = {}
+    playersData: Dict[str, Any] = {}
+    players: List[dict[str, Any]] = []
     name: str
     secret: Optional[int] = None
 

@@ -36,7 +36,7 @@ def getPlayerInitialData(
 
 
 def getGameInitialData(
-        gameType: str,
+    gameType: str,
 ) -> Tuple[dict[str, Any], dict[str, Any], dict[str, Any]]:
     """Returns tree list of (key, value) items:
     - simple props

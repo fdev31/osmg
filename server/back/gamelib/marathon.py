@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import random
 import logging
-from typing import List, Awaitable, Optional, Dict, Any, Optional
+from typing import List, Awaitable, Optional, Dict, Optional, Any
 
 import aioredis
 from fastapi import HTTPException
@@ -111,7 +111,9 @@ async def declareWinner(session: str, pid: str, conn: aioredis.Redis) -> None:
 
 
 async def turnLogic(
-    distance: Optional[int], player: PlayerIdentifier, conn: Optional[aioredis.Redis] = None
+    distance: Optional[int],
+    player: PlayerIdentifier,
+    conn: Optional[aioredis.Redis] = None,
 ) -> None:
     if not conn:
         conn = getRedis()
@@ -183,11 +185,11 @@ class DiceInterface(GameInterface):
         await turnLogic(None, PlayerIdentifier(id=0, sessionName=sessionId), conn)
 
     @staticmethod
-    def getPlayerData(sess: Session):
+    def getPlayerData(sess: Session) -> dict[str, Any]:
         return dict(distance=42195)
 
     @staticmethod
-    def getGameData():
+    def getGameData() -> dict[str, Any]:
         return {
             "turns": 0,
             "curPlayer": 0,

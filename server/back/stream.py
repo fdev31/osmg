@@ -15,9 +15,11 @@ from .utils import dumps
 logger = logging.getLogger("Stream")
 
 
-async def sessionStreamSource(ws: WebSocket, topic: str, playerId: str) -> AsyncGenerator[Dict[str,Any], None]:
+async def sessionStreamSource(
+    ws: WebSocket, topic: str, playerId: str
+) -> AsyncGenerator[Dict[str, Any], None]:
 
-    channel : aioredis.client.PubSub = aioredis.from_url(
+    channel: aioredis.client.PubSub = aioredis.from_url(
         "redis://" + getConfig().redis_server, decode_responses=True
     ).pubsub()
     await connectPlayer(topic, playerId)
@@ -36,7 +38,7 @@ async def gameEventStream(ws: WebSocket, topic: str, uid: str) -> None:
     await ws.accept()
     try:
         async for event in sessionStreamSource(ws, topic, uid):
-            await ws.send_text(dumps(event).decode('ascii'))
+            await ws.send_text(dumps(event).decode("ascii"))
     except ConnectionClosedError:
         logger.debug("Stream disconnected")
         await disconnectPlayer(topic, uid)
@@ -44,5 +46,5 @@ async def gameEventStream(ws: WebSocket, topic: str, uid: str) -> None:
         logger.debug("Stream disconnected OK")
 
 
-def init(app: FastAPI, config: Dict[str,Any]) -> None:
+def init(app: FastAPI, config: Dict[str, Any]) -> None:
     app.websocket("/c/stream")(gameEventStream)

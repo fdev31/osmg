@@ -6,9 +6,9 @@ from .globalHandlers import getRedis
 from .utils import ODict
 
 
-async def getAllData() -> Dict[str, Dict[str,Any]]:
+async def getAllData() -> Dict[str, Dict[str, Any]]:
     """Returns a database dump (SLOW! DO NOT USE IN PRODUCTION)"""
-    sessions: Dict[str, Dict[str,Any]] = {}
+    sessions: Dict[str, Dict[str, Any]] = {}
     async with getRedis().client() as conn:
         async for key in conn.scan_iter(match="S*"):
             # collect data

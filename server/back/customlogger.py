@@ -25,7 +25,13 @@ class ColourizedFormatter(logging.Formatter):
         "CRITICAL": click.style("CRITICAL", fg="bright_red"),
     }
 
-    def __init__(self, fmt:Optional[str]=None, datefmt:Optional[str]=None, style:Literal['%', '{', '$']="%", use_colors: bool=False) -> None:
+    def __init__(
+        self,
+        fmt: Optional[str] = None,
+        datefmt: Optional[str] = None,
+        style: Literal["%", "{", "$"] = "%",
+        use_colors: bool = False,
+    ) -> None:
         self.use_colors = True
         super().__init__(fmt=fmt, datefmt=datefmt, style=style)
 

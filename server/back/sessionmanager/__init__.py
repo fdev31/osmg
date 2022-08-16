@@ -3,7 +3,7 @@ import logging
 import asyncio
 
 import aioredis
-from fastapi import HTTPException, BackgroundTasks
+from fastapi import HTTPException, BackgroundTasks, FastAPI
 from starlette import status as httpstatus
 
 from ..models import PlayerIdentifier, newPlayer, Session
@@ -13,6 +13,7 @@ from ..models import SESSION_C_TIME, SESSION_NAME, SESSION_PLAYERS
 from ..globalHandlers import getRedis, setRedis, setConfig, publishEvent, getVarName
 from ..globalHandlers import PLAYERS_READY, PLAYERS_ORDER
 
+from ..utils import ODict
 from .base import genUniqueSessionId, getUniquePlayerId
 from .library import games, getGameInitialData, getPlayerInitialData
 from .public import getSession
@@ -23,7 +24,9 @@ from ..gamelib.interfaces import GameInterface
 logger = logging.getLogger("Session")
 
 
-async def _triggerGameStart(game: GameInterface, uid: str, conn: aioredis.Redis):
+async def _triggerGameStart(
+    game: GameInterface, uid: str, conn: aioredis.Redis
+) -> None:
     await publishEvent(
         uid,
         conn,
@@ -169,7 +172,7 @@ async def restartGame(player: PlayerIdentifier, tasks: BackgroundTasks) -> None:
         await conn.mset(newVals)
         await publishEvent(uid, conn, cat="restart")
 
-    async def delayedStart():
+    async def delayedStart() -> None:
         await asyncio.sleep(3)
         await _triggerGameStart(iface, uid, getRedis().client())
 
@@ -192,7 +195,7 @@ async def startGame(player: PlayerIdentifier, tasks: BackgroundTasks) -> None:
 
         if nbPlayers <= await conn.scard(pr):
 
-            async def checkStartOfGame():
+            async def checkStartOfGame() -> None:
                 await asyncio.sleep(1)
                 async with redis.client() as conn:
                     game = games[
@@ -210,7 +213,7 @@ async def startGame(player: PlayerIdentifier, tasks: BackgroundTasks) -> None:
             tasks.add_task(checkStartOfGame)
 
 
-def init(app, config):
+def init(app: FastAPI, config: ODict) -> None:
     setConfig(config)
     setRedis(aioredis.from_url("redis://" + config.redis_server, decode_responses=True))
 

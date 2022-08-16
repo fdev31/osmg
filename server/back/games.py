@@ -11,15 +11,15 @@ logger = logging.getLogger("games")
 
 GAMES = ["marathon", "mock1", "atakks"]
 
-gameDB: Dict[str, Dict[str,Any]] = {}
+gameDB: Dict[str, Dict[str, Any]] = {}
 
 
-def listGames() -> dict[str,Any]:
+def listGames() -> dict[str, Any]:
     "list all games by name"
     return gameDB
 
 
-def init(app: FastAPI, config: Dict[str,Any]) -> None:
+def init(app: FastAPI, config: Dict[str, Any]) -> None:
     app.get("/c/gamelist", response_model=Dict)(listGames)
 
     for game in GAMES:

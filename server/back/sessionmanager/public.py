@@ -25,7 +25,9 @@ async def getGameBySessionId(uid: str, conn: Redis) -> GameInterface:
     return games[gameType]
 
 
-async def isPlayerValid(conn: Redis, sessionId: str, playerId: str|int, secret: int|None) -> bool:
+async def isPlayerValid(
+    conn: Redis, sessionId: str, playerId: str | int, secret: int | None
+) -> bool:
     actualSecret = await conn.get(getVarName("_secret", sessionId, str(playerId)))
     return int(actualSecret) == secret
 
@@ -59,7 +61,7 @@ async def disconnectPlayer(sessionName: str, playerId: str) -> None:
                 )
 
 
-async def getSession(uid: str, client: Optional[Redis]=None) -> Session:
+async def getSession(uid: str, client: Optional[Redis] = None) -> Session:
     "fetch session info from redis"
 
     async with (client or getRedis().client()) as conn:
@@ -97,7 +99,7 @@ async def getSession(uid: str, client: Optional[Redis]=None) -> Session:
         )
 
     o = {}
-    players: Dict[str, dict[str,Any]] = {}
+    players: Dict[str, dict[str, Any]] = {}
     players_data: Dict[str, Any] = {}
     game_data = {}
 
