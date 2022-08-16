@@ -6,11 +6,14 @@ all:
 	(cd locales && ./build)
 	(cd components && ./build)
 
-flake:
-	tox -e flake8
-
 test: 
 	tox
+
+black:
+	tox -e black
+
+flake:
+	tox -e flake8
 
 mypy:
 	tox -e mypy
