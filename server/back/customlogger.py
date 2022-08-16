@@ -2,6 +2,8 @@ import logging
 from copy import copy
 import click
 
+from typing import Literal, Optional
+
 TRACE_LOG_LEVEL = 5
 
 debug = False
@@ -23,11 +25,11 @@ class ColourizedFormatter(logging.Formatter):
         "CRITICAL": click.style("CRITICAL", fg="bright_red"),
     }
 
-    def __init__(self, fmt=None, datefmt=None, style="%", use_colors=None):
+    def __init__(self, fmt:Optional[str]=None, datefmt:Optional[str]=None, style:Literal['%', '{', '$']="%", use_colors: bool=False) -> None:
         self.use_colors = True
         super().__init__(fmt=fmt, datefmt=datefmt, style=style)
 
-    def formatMessage(self, record):
+    def formatMessage(self, record: logging.LogRecord) -> str:
         if debug:
             print("")
             print(record)

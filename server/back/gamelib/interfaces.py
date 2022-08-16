@@ -2,11 +2,13 @@ from __future__ import annotations
 
 from typing import Dict, Optional, Any, List, Set
 from functools import lru_cache
+from pydantic import BaseModel
+from aioredis import Redis
 
 from ..models import Session
 
 
-class GameInterface:
+class GameInterface(BaseModel):
     _info: Dict[str, Any]
 
     name: str = "Unknown game"
@@ -91,15 +93,15 @@ class GameInterface:
         return {kls.name: kls}
 
     @classmethod
-    async def playerAdded(kls, sess: Session):
+    async def playerAdded(kls, sess: Session) -> None:
         pass
 
     # notification handlers
 
     @staticmethod
-    async def votePassed(sessionId: str, name: str, conn):
+    async def votePassed(sessionId: str, name: str, conn: Redis) -> None:
         return
 
     @staticmethod
-    async def startGame(sessionId, conn):
+    async def startGame(sessionId: str, conn: Redis) -> None:
         return

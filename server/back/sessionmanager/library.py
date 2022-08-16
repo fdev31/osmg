@@ -2,13 +2,14 @@ import logging
 from typing import Tuple, Any
 
 from ..models import Session
+from ..gamelib.interfaces import GameInterface
 
 logger = logging.getLogger("library")
 
 games = {}
 
 
-def registerGame(name, iface):
+def registerGame(name: str, iface: GameInterface) -> None:
     games[name] = iface
 
 
@@ -35,7 +36,7 @@ def getPlayerInitialData(
 
 
 def getGameInitialData(
-    gameType,
+        gameType: str,
 ) -> Tuple[dict[str, Any], dict[str, Any], dict[str, Any]]:
     """Returns tree list of (key, value) items:
     - simple props

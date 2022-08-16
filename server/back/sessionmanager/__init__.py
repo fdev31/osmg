@@ -96,15 +96,17 @@ async def addPlayer(player: newPlayer) -> Session:
     # TODO: insert existing values for sets & lists
     # TODO: manage game data with complex values too
 
+    spid = str(pid)
+
     redisObj = {}
     for name, value in player_info.items():
-        redisObj[getVarName(name, player.sessionName, pid)] = value
+        redisObj[getVarName(name, player.sessionName, spid)] = value
 
     for name, value in initialPlayerData.items():
-        redisObj[getVarName(name, player.sessionName, pid, gameData=True)] = value
+        redisObj[getVarName(name, player.sessionName, spid, gameData=True)] = value
 
     async with getRedis().client() as conn:
-        push = conn.rpush(getVarName(PLAYERS_ORDER, player.sessionName), pid)
+        push = conn.rpush(getVarName(PLAYERS_ORDER, player.sessionName), spid)
         mset = conn.mset(redisObj)
 
         pub = publishEvent(
@@ -113,18 +115,18 @@ async def addPlayer(player: newPlayer) -> Session:
             cat="newPlayer",
             name=player.name,
             avatar=player.avatar,
-            id=pid,
+            id=spid,
         )
 
         for k, v in initialPlayerDataSets.items():
             if v:
                 await conn.sadd(
-                    getVarName(k, player.sessionName, playerId=pid, gameData=True), *v
+                    getVarName(k, player.sessionName, playerId=spid, gameData=True), *v
                 )
         for k, v in initialPlayerDataLists.items():
             if v:
                 await conn.rpush(
-                    getVarName(k, player.sessionName, playerId=pid, gameData=True), *v
+                    getVarName(k, player.sessionName, playerId=spid, gameData=True), *v
                 )
 
         await push
@@ -138,7 +140,7 @@ async def addPlayer(player: newPlayer) -> Session:
         initialPlayerData[k] = v
     for k, v in initialPlayerDataSets.items():
         initialPlayerData[k] = list(v)
-    getattr(sess, SESSION_PLAYERS_DATA)[str(pid)] = initialPlayerData
+    getattr(sess, SESSION_PLAYERS_DATA)[spid] = initialPlayerData
     getattr(sess, SESSION_PLAYERS).append(player_info)
     sess.secret = secretId
     await game.playerAdded(sess)

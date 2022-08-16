@@ -1,7 +1,10 @@
 import time
 import logging
+from typing import Awaitable
 
 from ..globalHandlers import getRedis
+
+from aioredis import Redis
 
 logger = logging.getLogger("Session")
 
@@ -9,7 +12,7 @@ t0 = time.time() * 1000
 
 
 async def getUniquePlayerId() -> int:
-    pid = await getRedis().incr("count_players")
+    pid = int(await getRedis().incr("count_players"))
     return pid
 
 
@@ -18,10 +21,10 @@ async def genUniqueSessionId() -> str:
     return hex(int("%d%d" % (pid, (time.time() * 1000) - t0)))[2:]
 
 
-async def removeSession(sessionName: str, conn):
+async def removeSession(sessionName: str, conn: Redis) -> None:
     " Delete all traces of a session " ""
     all_keys = []
-    cur = b"0"
+    cur = 0
     while cur:
         cur, keys = await conn.scan(cur, match=f"S{sessionName}:*")
         all_keys.extend(keys)

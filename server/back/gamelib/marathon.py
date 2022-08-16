@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import random
 import logging
-from typing import List, Awaitable, Optional, Dict, Any
+from typing import List, Awaitable, Optional, Dict, Any, Optional
 
 import aioredis
 from fastapi import HTTPException
@@ -104,15 +104,15 @@ async def validateDice(player: PlayerIdentifier, value: str) -> None:
         await turnLogic(newVal, player, conn)
 
 
-async def declareWinner(session: str, pid: str, conn: aioredis.Redis):
+async def declareWinner(session: str, pid: str, conn: aioredis.Redis) -> None:
     await publishEvent(
         session, conn, cat="endOfGame", message="We have a winner!", player=pid
     )
 
 
 async def turnLogic(
-    distance: Optional[int], player: PlayerIdentifier, conn: aioredis.Redis = None
-):
+    distance: Optional[int], player: PlayerIdentifier, conn: Optional[aioredis.Redis] = None
+) -> None:
     if not conn:
         conn = getRedis()
 
@@ -162,7 +162,7 @@ class DiceInterface(GameInterface):
     max_players: Optional[int] = None
 
     @staticmethod
-    async def votePassed(sessionId: str, name: str, conn: aioredis.Redis):
+    async def votePassed(sessionId: str, name: str, conn: aioredis.Redis) -> None:
         topic, data = name.split("_", 1)
         if topic == "kick":
             whom = data
@@ -175,7 +175,7 @@ class DiceInterface(GameInterface):
                 await conn.lrem(ap, 1, whom)
 
     @staticmethod
-    async def startGame(sessionId: str, conn: aioredis.Redis):
+    async def startGame(sessionId: str, conn: aioredis.Redis) -> None:
         dump = await conn.lrange(getVarName(PLAYERS_ORDER, sessionId), 0, -1)
         cp = getVarName(ACTIVE_PLAYERS, sessionId)
         await conn.unlink(cp)

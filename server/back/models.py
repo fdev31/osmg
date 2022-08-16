@@ -1,5 +1,5 @@
 from pydantic import BaseModel
-from typing import List, Dict, Optional
+from typing import List, Dict, Optional, Any, Generic
 
 __all__ = ["Player", "newPlayer", "Session"]
 
@@ -34,9 +34,9 @@ class RedisSession(BaseModel):
 
 class Session(RedisSession):
     "Game instance description & states"
-    gameData: dict = {}
-    playersData: Dict = {}
-    players: List[dict] = []
+    gameData: dict[str,Any] = {}
+    playersData: Dict[str,Any] = {}
+    players: List[dict[str,Any]] = []
     name: str
     secret: Optional[int] = None
 
@@ -44,7 +44,7 @@ class Session(RedisSession):
 _propCache = {}
 
 
-def getPropertieList(kls):
+def getPropertieList(kls: Any) -> list[str]:
     if kls not in _propCache:
         _propCache[kls] = list(kls.schema()["properties"].keys())
     return _propCache[kls]

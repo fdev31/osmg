@@ -1,7 +1,8 @@
 import importlib
 import logging
 
-from typing import Dict
+from fastapi import FastAPI
+from typing import Dict, Any
 
 from .sessionmanager.library import registerGame
 
@@ -10,15 +11,15 @@ logger = logging.getLogger("games")
 
 GAMES = ["marathon", "mock1", "atakks"]
 
-gameDB: Dict[str, Dict] = {}
+gameDB: Dict[str, Dict[str,Any]] = {}
 
 
-def listGames() -> dict:
+def listGames() -> dict[str,Any]:
     "list all games by name"
     return gameDB
 
 
-def init(app, config):
+def init(app: FastAPI, config: Dict[str,Any]) -> None:
     app.get("/c/gamelist", response_model=Dict)(listGames)
 
     for game in GAMES:

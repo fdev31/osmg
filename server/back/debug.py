@@ -1,12 +1,14 @@
 import aioredis
+from fastapi import FastAPI
 from typing import Dict, Any
 
 from .globalHandlers import getRedis
+from .utils import ODict
 
 
-async def getAllData() -> Dict[str, Dict]:
+async def getAllData() -> Dict[str, Dict[str,Any]]:
     """Returns a database dump (SLOW! DO NOT USE IN PRODUCTION)"""
-    sessions: Dict[str, Dict] = {}
+    sessions: Dict[str, Dict[str,Any]] = {}
     async with getRedis().client() as conn:
         async for key in conn.scan_iter(match="S*"):
             # collect data
@@ -48,5 +50,5 @@ async def getAllData() -> Dict[str, Dict]:
     }
 
 
-def init(app, config):
+def init(app: FastAPI, config: ODict) -> None:
     app.get("/debug/getAll")(getAllData)

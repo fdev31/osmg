@@ -2,20 +2,22 @@ import logging
 import asyncio
 from websockets.exceptions import ConnectionClosedError, ConnectionClosedOK
 
+from typing import Dict, Any, AsyncGenerator
 
-from fastapi import WebSocket
+from fastapi import WebSocket, Request, FastAPI
 import aioredis
 
 from .sessionmanager.public import connectPlayer, disconnectPlayer
 from .globalHandlers import getConfig
+from .utils import dumps
 
 
 logger = logging.getLogger("Stream")
 
 
-async def sessionStreamSource(request, topic, playerId):
+async def sessionStreamSource(ws: WebSocket, topic: str, playerId: str) -> AsyncGenerator[Dict[str,Any], None]:
 
-    channel = aioredis.from_url(
+    channel : aioredis.client.PubSub = aioredis.from_url(
         "redis://" + getConfig().redis_server, decode_responses=True
     ).pubsub()
     await connectPlayer(topic, playerId)
@@ -28,13 +30,13 @@ async def sessionStreamSource(request, topic, playerId):
         await disconnectPlayer(topic, playerId)
 
 
-async def gameEventStream(ws: WebSocket, topic: str, uid: str):
+async def gameEventStream(ws: WebSocket, topic: str, uid: str) -> None:
     "Returns an event source for the provided topic & user"
     logger.debug("New stream for %s @ %s", topic, uid)
     await ws.accept()
     try:
         async for event in sessionStreamSource(ws, topic, uid):
-            await ws.send_text(event)
+            await ws.send_text(dumps(event).decode('ascii'))
     except ConnectionClosedError:
         logger.debug("Stream disconnected")
         await disconnectPlayer(topic, uid)
@@ -42,5 +44,5 @@ async def gameEventStream(ws: WebSocket, topic: str, uid: str):
         logger.debug("Stream disconnected OK")
 
 
-def init(app, config):
+def init(app: FastAPI, config: Dict[str,Any]) -> None:
     app.websocket("/c/stream")(gameEventStream)

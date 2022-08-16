@@ -1,4 +1,5 @@
-from .interfaces import GameInterface, Session
+from .interfaces import GameInterface
+from ..models import Session
 from typing import Dict, Any, List
 
 placements = ["0-0", "6-6", "0-6", "6-0"]
@@ -20,7 +21,7 @@ class Game(GameInterface):
         }
 
     @staticmethod
-    def getGameData():
+    def getGameData() -> Dict[str, Any]:
         return {
             "turns": 0,
             "curPlayer": 0,

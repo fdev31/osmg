@@ -1,38 +1,39 @@
 import logging
 import aioredis
-from typing import Dict, Any
+from typing import Dict, Any, Optional, Awaitable
 from functools import lru_cache
 
-from .utils import dumps
+from .utils import dumps, ODict
 
 logger = logging.getLogger("redis")
 
-ctx: Dict[str, Any] = {}
+class Context:
+    config : ODict = ODict()
+    redis : aioredis.Redis
+
+def setConfig(config: ODict) -> None:
+    Context.config = config
 
 
-def setConfig(config: Dict):
-    ctx["config"] = config
-
-
-def getConfig():
-    return ctx["config"]
+def getConfig() -> ODict:
+    return Context.config
 
 
 def getRedis() -> aioredis.Redis:
-    return ctx["redis"]
+    return Context.redis
 
 
-def setRedis(handler: aioredis.Redis):
-    ctx["redis"] = handler
+def setRedis(handler: aioredis.Redis) -> None:
+    Context.redis = handler
 
 
-def publishEvent(topic, client=None, **params):
+def publishEvent(topic: str, client: Optional[aioredis.Redis]=None, **params: Any) -> Awaitable[int]:
     logger.debug("PUBLISH %s %s", topic, params)
-    return (client or ctx["redis"]).publish(topic, dumps(params))
+    return (client or Context.redis).publish(topic, dumps(params))
 
 
 @lru_cache(128)
-def _getVarPrefix(sessionId, playerId, gameData):
+def _getVarPrefix(sessionId: str, playerId: str, gameData: bool) -> str:
     if gameData and playerId:
         return f"S{sessionId}:{playerId}:g:"
     elif playerId:
@@ -43,7 +44,7 @@ def _getVarPrefix(sessionId, playerId, gameData):
         return f"S{sessionId}:"
 
 
-def getVarName(name, sessionId, playerId=None, gameData=False):
+def getVarName(name: str, sessionId: str, playerId: Optional[str]=None, gameData: Optional[bool]=False) -> str:
     "get a REDIS key name from a variable + associated info"
     return _getVarPrefix(sessionId, playerId, gameData) + name
 
@@ -51,7 +52,7 @@ def getVarName(name, sessionId, playerId=None, gameData=False):
 # deprecated functions:
 
 
-def getGameDataPrefix(uid, playerId=None):
+def getGameDataPrefix(uid:str|int, playerId:Optional[str|int]=None) -> str:
     if playerId:
         return "S%s:%s:g:" % (uid, playerId)
     return "S%s:g:" % (uid)

@@ -1,6 +1,6 @@
 import logging
 import asyncio
-from typing import Dict, Any
+from typing import Dict, Any, Optional
 
 from ..models import Session, RedisSession, getPropertieList
 from ..models import SESSION_PLAYERS_DATA, SESSION_S_TIME, SESSION_GAME_TYPE
@@ -13,22 +13,24 @@ from .base import removeSession
 from .library import games
 from ..gamelib.interfaces import GameInterface
 
+from aioredis import Redis
+
 logger = logging.getLogger("Session")
 
 GAME_DATA = "g"
 
 
-async def getGameBySessionId(uid: str, conn) -> GameInterface:
+async def getGameBySessionId(uid: str, conn: Redis) -> GameInterface:
     gameType = await conn.get(getVarName(SESSION_GAME_TYPE, uid))
     return games[gameType]
 
 
-async def isPlayerValid(conn, sessionId, playerId, secret):
-    actualSecret = await conn.get(getVarName("_secret", sessionId, playerId))
-    return int(actualSecret) == int(secret)
+async def isPlayerValid(conn: Redis, sessionId: str, playerId: str|int, secret: int|None) -> bool:
+    actualSecret = await conn.get(getVarName("_secret", sessionId, str(playerId)))
+    return int(actualSecret) == secret
 
 
-async def connectPlayer(sessionName: str, playerId: str):
+async def connectPlayer(sessionName: str, playerId: str) -> None:
     stage = getVarName(PLAYERS_CONNECTED + "stage", sessionName)
     async with getRedis().client() as conn:
         if await conn.sismember(stage, playerId):
@@ -40,7 +42,7 @@ async def connectPlayer(sessionName: str, playerId: str):
             await publishEvent(sessionName, conn, cat="connectPlayer", id=playerId)
 
 
-async def disconnectPlayer(sessionName: str, playerId: str):
+async def disconnectPlayer(sessionName: str, playerId: str) -> None:
     pr = getVarName(PLAYERS_CONNECTED, sessionName)
     stage = getVarName(PLAYERS_CONNECTED + "stage", sessionName)
     async with getRedis().client() as conn:
@@ -57,7 +59,7 @@ async def disconnectPlayer(sessionName: str, playerId: str):
                 )
 
 
-async def getSession(uid, client=None) -> Session:
+async def getSession(uid: str, client: Optional[Redis]=None) -> Session:
     "fetch session info from redis"
 
     async with (client or getRedis().client()) as conn:
@@ -95,7 +97,7 @@ async def getSession(uid, client=None) -> Session:
         )
 
     o = {}
-    players: Dict[str, dict] = {}
+    players: Dict[str, dict[str,Any]] = {}
     players_data: Dict[str, Any] = {}
     game_data = {}
 
