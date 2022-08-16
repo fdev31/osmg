@@ -6,16 +6,15 @@ import random
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
-from selenium.common.exceptions import JavascriptException
 from selenium.webdriver.chrome.options import Options as ChromeOptions
+
+from config import HOST
+from common import getStream, pretty
 
 
 class EndOfGameError(Exception):
     pass
 
-
-from config import HOST
-from common import getStream, pretty
 
 HOME_INDEX = 0
 NB_PLAYERS = 3
@@ -185,7 +184,7 @@ class MarathonTest(unittest.TestCase):
                 for drv in self.drv:
                     playerTurn(drv)
             except EndOfGameError as e:
-                print(f"game end detected", e)
+                print("game end detected", e)
                 sleep(1)
                 makeShots(self.drv, "end_game")
                 break
