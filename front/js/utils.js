@@ -56,7 +56,6 @@ function extractList(l) {
 function setupStreamEventHandler(query, handlers) {
   _setEventStreamHandler((data) => {
     let logO = { ...data };
-    console.log("LOGO", logO);
     let cat = logO.cat;
     delete logO.cat;
     console.debug(
