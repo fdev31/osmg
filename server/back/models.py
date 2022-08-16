@@ -1,5 +1,5 @@
 from pydantic import BaseModel
-from typing import List, Dict, Optional, Any, Generic
+from typing import List, Dict, Optional, Any
 
 __all__ = ["Player", "newPlayer", "Session"]
 

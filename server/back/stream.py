@@ -4,7 +4,7 @@ from websockets.exceptions import ConnectionClosedError, ConnectionClosedOK
 
 from typing import Dict, Any, AsyncGenerator
 
-from fastapi import WebSocket, Request, FastAPI
+from fastapi import WebSocket, FastAPI
 import aioredis
 
 from .sessionmanager.public import connectPlayer, disconnectPlayer
@@ -28,7 +28,7 @@ async def sessionStreamSource(
         async for message in channel.listen():
             if message["type"] == "message":
                 yield message["data"]
-    except asyncio.CancelledError as e:
+    except asyncio.CancelledError:
         await disconnectPlayer(topic, playerId)
 
 

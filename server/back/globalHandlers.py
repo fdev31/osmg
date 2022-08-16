@@ -1,6 +1,6 @@
 import logging
 import aioredis
-from typing import Dict, Any, Optional, Awaitable
+from typing import Any, Optional, Awaitable
 from functools import lru_cache
 
 from .utils import dumps, ODict

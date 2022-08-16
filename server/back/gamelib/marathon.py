@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import random
 import logging
-from typing import List, Awaitable, Optional, Dict, Optional, Any
+from typing import List, Optional, Any
 
 import aioredis
 from fastapi import HTTPException

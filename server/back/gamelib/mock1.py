@@ -1,5 +1,4 @@
 from .interfaces import GameInterface
-from typing import Dict, Any
 
 
 class Game(GameInterface):

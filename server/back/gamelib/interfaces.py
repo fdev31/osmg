@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 from typing import Dict, Optional, Any, List, Set
-from functools import lru_cache
 from aioredis import Redis
 
 from ..models import Session

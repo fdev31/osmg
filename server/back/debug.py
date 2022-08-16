@@ -17,7 +17,7 @@ async def getAllData() -> Dict[str, Dict[str, Any]]:
             except aioredis.exceptions.ResponseError:
                 try:
                     val = await conn.smembers(key)
-                except aioredis.exceptions.ResponseError as e:
+                except aioredis.exceptions.ResponseError:
                     val = await conn.lrange(key, 0, -1)
             splitk = key.split(":")
             if splitk[0] not in sessions:

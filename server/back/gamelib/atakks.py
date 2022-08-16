@@ -1,6 +1,6 @@
 from .interfaces import GameInterface
 from ..models import Session
-from typing import Dict, Any, List
+from typing import Dict, Any
 
 placements = ["0-0", "6-6", "0-6", "6-0"]
 

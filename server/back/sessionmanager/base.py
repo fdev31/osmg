@@ -1,6 +1,5 @@
 import time
 import logging
-from typing import Awaitable
 
 from ..globalHandlers import getRedis
 
