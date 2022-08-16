@@ -2,13 +2,12 @@ from __future__ import annotations
 
 from typing import Dict, Optional, Any, List, Set
 from functools import lru_cache
-from pydantic import BaseModel
 from aioredis import Redis
 
 from ..models import Session
 
 
-class GameInterface(BaseModel):
+class GameInterface:
     _info: Dict[str, Any]
 
     name: str = "Unknown game"
