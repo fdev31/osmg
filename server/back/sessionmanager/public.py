@@ -1,19 +1,30 @@
-import logging
 import asyncio
-from typing import Dict, Any, Optional
-
-from ..models import Session, RedisSession, getPropertieList
-from ..models import SESSION_PLAYERS_DATA, SESSION_S_TIME, SESSION_GAME_TYPE
-from ..models import SESSION_GAME_DATA, SESSION_NAME, SESSION_PLAYERS
-from ..globalHandlers import getRedis, getVarName
-from ..globalHandlers import PLAYERS_ORDER, PLAYERS_CONNECTED
-from ..globalHandlers import publishEvent
-
-from .base import removeSession
-from .library import games
-from ..gamelib.interfaces import GameInterface, Events
+import logging
+from typing import Any, Dict, Optional
 
 from aioredis import Redis
+
+from ..gamelib.interfaces import Events, GameInterface
+from ..globalHandlers import (
+    PLAYERS_CONNECTED,
+    PLAYERS_ORDER,
+    getRedis,
+    getVarName,
+    publishEvent,
+)
+from ..models import (
+    SESSION_GAME_DATA,
+    SESSION_GAME_TYPE,
+    SESSION_NAME,
+    SESSION_PLAYERS,
+    SESSION_PLAYERS_DATA,
+    SESSION_S_TIME,
+    RedisSession,
+    Session,
+    getPropertieList,
+)
+from .base import removeSession
+from .library import games
 
 logger = logging.getLogger("Session")
 

@@ -1,6 +1,6 @@
-from .interfaces import Events
-from ..models import SESSION_GAME_DATA, Session, Player, SESSION_PLAYERS_DATA
 from ..globalHandlers import publishEvent
+from ..models import SESSION_GAME_DATA, SESSION_PLAYERS_DATA, Player, Session
+from .interfaces import Events
 
 
 async def def_playerAdded(sess: Session, player: Player) -> None:

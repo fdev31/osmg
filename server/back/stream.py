@@ -1,15 +1,13 @@
-import logging
 import asyncio
+import logging
+from typing import Any, AsyncGenerator, Dict
+
+import aioredis
+from fastapi import FastAPI, WebSocket
 from websockets.exceptions import ConnectionClosedError, ConnectionClosedOK
 
-from typing import Dict, Any, AsyncGenerator
-
-from fastapi import WebSocket, FastAPI
-import aioredis
-
-from .sessionmanager.public import connectPlayer, disconnectPlayer
 from .globalHandlers import getConfig
-
+from .sessionmanager.public import connectPlayer, disconnectPlayer
 
 logger = logging.getLogger("Stream")
 

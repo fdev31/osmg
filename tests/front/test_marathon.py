@@ -1,15 +1,14 @@
 import os
-from time import sleep
-import unittest
 import random
+import unittest
+from time import sleep
 
-from selenium import webdriver
-from selenium.webdriver.common.keys import Keys
-from selenium.webdriver.common.by import By
-from selenium.webdriver.chrome.options import Options as ChromeOptions
-
-from config import HOST
 from common import getStream, pretty
+from config import HOST
+from selenium import webdriver
+from selenium.webdriver.chrome.options import Options as ChromeOptions
+from selenium.webdriver.common.by import By
+from selenium.webdriver.common.keys import Keys
 
 
 class EndOfGameError(Exception):

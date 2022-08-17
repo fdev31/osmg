@@ -1,11 +1,10 @@
 __all__ = ["getStream", "resetStream", "pretty"]
 
-from threading import Thread
-from json import loads
 import time
+from json import loads
+from threading import Thread
 
 import redis
-
 from back.routes import config
 from back.utils import ODict
 

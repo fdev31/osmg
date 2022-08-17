@@ -2,11 +2,12 @@ from __future__ import annotations
 
 __all__ = ["GameInterface", "Events"]
 
-from typing import Dict, Optional, Any, List, Set
 from enum import Enum
+from typing import Any, Dict, List, Optional, Set
+
 from aioredis import Redis
 
-from ..models import PlayerIdentifier, Player, Session
+from ..models import Player, PlayerIdentifier, Session
 
 
 class Events(str, Enum):

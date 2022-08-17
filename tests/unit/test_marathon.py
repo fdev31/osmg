@@ -1,10 +1,8 @@
 import time
 
-from fastapi.testclient import TestClient
-
 from back.routes import app
-
 from common import getStream, resetStream
+from fastapi.testclient import TestClient
 
 client = TestClient(app)
 stream = None

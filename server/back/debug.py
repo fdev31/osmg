@@ -1,6 +1,7 @@
+from typing import Any, Dict
+
 import aioredis
 from fastapi import FastAPI
-from typing import Dict, Any
 
 from .globalHandlers import getRedis
 from .utils import ODict

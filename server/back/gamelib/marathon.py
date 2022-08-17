@@ -1,28 +1,26 @@
 from __future__ import annotations
 
-import random
 import logging
-from typing import List, Optional, Any
+import random
+from typing import Any, List, Optional
 
 import aioredis
 from fastapi import HTTPException
 from starlette import status as httpstatus
 
-from .std_implem import def_playerAdded
-
 from ..globalHandlers import (
-    getRedis,
+    PLAYERS_ORDER,
     getConfig,
     getGameDataPrefix,
+    getRedis,
     getVarName,
     publishEvent,
-    PLAYERS_ORDER,
 )
+from ..models import Player, PlayerIdentifier, Session
 from ..sessionmanager.public import isPlayerValid
-from ..models import PlayerIdentifier, Player, Session
-from ..utils import loads, dumps
-
-from .interfaces import GameInterface, Events
+from ..utils import dumps, loads
+from .interfaces import Events, GameInterface
+from .std_implem import def_playerAdded
 
 ACTIVE_PLAYERS = "curOrder"
 

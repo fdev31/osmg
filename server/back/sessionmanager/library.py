@@ -1,8 +1,8 @@
 import logging
-from typing import Tuple, Any
+from typing import Any, Tuple
 
-from ..models import Session
 from ..gamelib.interfaces import GameInterface
+from ..models import Session
 
 logger = logging.getLogger("library")
 

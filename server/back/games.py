@@ -1,11 +1,10 @@
 import importlib
 import logging
+from typing import Any, Dict
 
 from fastapi import FastAPI
-from typing import Dict, Any
 
 from .sessionmanager.library import registerGame
-
 
 logger = logging.getLogger("games")
 
@@ -27,6 +26,7 @@ def init(app: FastAPI, config: Dict[str, Any]) -> None:
         mod = importlib.import_module(f"back.gamelib.{game}")
         for gameName, api in mod.definition.items():
             gameDB[gameName] = api.info()
+            logger.debug(f"processing {gameName}...")
             registerGame(gameName, api)
             for actionName in api.actions:
                 logger.debug(f"importing {game} action: {actionName}")

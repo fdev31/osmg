@@ -1,8 +1,9 @@
 from __future__ import annotations
 
 __all__ = ["dumps", "loads", "ODict"]
-from orjson import dumps, loads
 from typing import Any
+
+from orjson import dumps, loads
 
 
 class ODict(dict[str, Any]):

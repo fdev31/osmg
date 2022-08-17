@@ -1,5 +1,6 @@
-from .interfaces import GameInterface
 from logging import getLogger
+
+from .interfaces import GameInterface
 
 
 class Game(GameInterface):

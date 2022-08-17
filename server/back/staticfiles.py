@@ -1,8 +1,8 @@
 # Module which can be replaced by webserver configuration to be statically served
 
 from fastapi import FastAPI
-from fastapi.staticfiles import StaticFiles
 from fastapi.responses import RedirectResponse, Response
+from fastapi.staticfiles import StaticFiles
 
 from .utils import ODict
 

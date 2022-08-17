@@ -1,25 +1,38 @@
-import time
-import logging
 import asyncio
+import logging
+import time
 
 import aioredis
-from fastapi import HTTPException, BackgroundTasks, FastAPI
+from fastapi import BackgroundTasks, FastAPI, HTTPException
 from starlette import status as httpstatus
 
-from ..models import PlayerIdentifier, newPlayer, Session, Player
-from ..models import SESSION_PLAYERS_DATA, SESSION_S_TIME, SESSION_GAME_TYPE
-from ..models import SESSION_C_TIME, SESSION_NAME, SESSION_PLAYERS
-
-from ..globalHandlers import getRedis, setRedis, setConfig, publishEvent, getVarName
-from ..globalHandlers import PLAYERS_READY, PLAYERS_ORDER
-
+from ..gamelib.interfaces import Events, GameInterface
+from ..globalHandlers import (
+    PLAYERS_ORDER,
+    PLAYERS_READY,
+    getRedis,
+    getVarName,
+    publishEvent,
+    setConfig,
+    setRedis,
+)
+from ..models import (
+    SESSION_C_TIME,
+    SESSION_GAME_TYPE,
+    SESSION_NAME,
+    SESSION_PLAYERS,
+    SESSION_PLAYERS_DATA,
+    SESSION_S_TIME,
+    Player,
+    PlayerIdentifier,
+    Session,
+    newPlayer,
+)
 from ..utils import ODict
 from .base import genUniqueSessionId, getUniquePlayerId
 from .library import games, getGameInitialData, getPlayerInitialData
 from .public import getSession
 from .votesystem import vote
-
-from ..gamelib.interfaces import GameInterface, Events
 
 logger = logging.getLogger("Session")
 

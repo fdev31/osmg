@@ -1,13 +1,13 @@
 from logging import getLogger
+from typing import Any, Dict
 
-from .std_implem import def_playerAdded
-
-from .interfaces import GameInterface, Events
-from ..models import PlayerIdentifier, Session, Player, SESSION_PLAYERS_DATA
-from ..globalHandlers import getConfig, getGameDataPrefix, publishEvent
-from typing import Dict, Any
-from pydantic import BaseModel
 import aioredis
+from pydantic import BaseModel
+
+from ..globalHandlers import getConfig, getGameDataPrefix, publishEvent
+from ..models import SESSION_PLAYERS_DATA, Player, PlayerIdentifier, Session
+from .interfaces import Events, GameInterface
+from .std_implem import def_playerAdded
 
 placements = ["0-0", "6-6", "0-6", "6-0"]
 

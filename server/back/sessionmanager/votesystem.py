@@ -1,15 +1,20 @@
-import re
 import logging
-from typing import Callable, Tuple, Any, Coroutine, Optional, Match
+import re
+from typing import Any, Callable, Coroutine, Match, Optional, Tuple
 
 import aioredis
 from fastapi import HTTPException
 from starlette import status as httpstatus
 
+from ..globalHandlers import (
+    PLAYERS_CONNECTED,
+    PLAYERS_ORDER,
+    PLAYERS_READY,
+    getRedis,
+    getVarName,
+    publishEvent,
+)
 from ..models import PlayerIdentifier
-from ..globalHandlers import getRedis, publishEvent, getVarName
-from ..globalHandlers import PLAYERS_ORDER, PLAYERS_CONNECTED, PLAYERS_READY
-
 from .public import getGameBySessionId, isPlayerValid
 
 VOTE_IN_PROGRESS = "_voteInProgress"

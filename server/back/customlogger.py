@@ -1,8 +1,8 @@
 import logging
 from copy import copy
-import click
-
 from typing import Literal, Optional
+
+import click
 
 TRACE_LOG_LEVEL = 5
 

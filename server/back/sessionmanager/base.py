@@ -1,9 +1,9 @@
-import time
 import logging
-
-from ..globalHandlers import getRedis
+import time
 
 from aioredis import Redis
+
+from ..globalHandlers import getRedis
 
 logger = logging.getLogger("Session")
 

@@ -1,9 +1,10 @@
 import logging
-import aioredis
-from typing import Any, Optional, Awaitable
 from functools import lru_cache
+from typing import Any, Awaitable, Optional
 
-from .utils import dumps, ODict
+import aioredis
+
+from .utils import ODict, dumps
 
 logger = logging.getLogger("redis")
 
