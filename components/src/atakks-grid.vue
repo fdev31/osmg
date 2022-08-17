@@ -2,24 +2,30 @@
     export default {
         props : {
             x : Number,
-            y : Number
+            y : Number,
+            player : String,
+            grid : Object,
         },
         methods : {
             createGrid() {
-                let grid = []
+
                 for (let i = 0; i < this.x; i++) {
-                    grid[i]=[];
+                    this.grid[i]=[];
                     for (let j = 0; j < this.y; j++) {
-                        grid[i][j] = "void";                      
+                        this.grid[i][j] = "void";                      
                     }           
                 }
-                grid[0][0]="p1"
-                grid[6][6]="p2"
-                return grid;
+                this.grid[0][0]="p1"
+                this.grid[6][6]="p2"
+                return this.grid;
             },
 
             setCellClass(code) {
                 return "atakks-column " + code
+            },
+
+            changeCell(x , y , code) {
+                this.grid[x][y] = 
             }
         }
     }
