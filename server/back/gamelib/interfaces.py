@@ -10,10 +10,17 @@ from ..models import PlayerIdentifier, Player, Session
 
 
 class Events(str, Enum):
-    newPlayer = "newPlayer"
-    connectPlayer = "connectPlayer"
-    disconnectPlayer = "disconnectPlayer"
-    ready = "ready"
+    newPlayer = "newPlayer"  #: player joined the game
+    connectPlayer = "connectPlayer"  #: player connected
+    disconnectPlayer = "disconnectPlayer"  #: player disconnected
+    curPlayer = "curPlayer"  #: change current player
+    voteStart = "voteStart"  #: some vote started
+    voteEnd = "voteEnd"  #: some vote is not available anymore
+    kickPlayer = "kickPlayer"  #: players voted to kick someone
+    varUpdate = "varUpdate"  #: game or player data has changed
+    newTurn = "newTurn"  #: start of a new game sequence
+    endOfGame = "endOfGame"  #: the game reached a final state / is over
+    ready = "ready"  #: a player is ready to start a game
 
 
 class GameInterface:
