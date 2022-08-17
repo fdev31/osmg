@@ -30,8 +30,10 @@
             },
 
             drawPlayersPawns(grid , players) {
+                var i=1;
                 for (let key in players) {
-                    this.setPlayerPawnLocation(grid , players[key]["pawns"] , key);
+                    this.setPlayerPawnLocation(grid , players[key]["pawns"] , i);
+                    i++;
                 }
             }
         }
