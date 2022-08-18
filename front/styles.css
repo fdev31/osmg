@@ -1,6 +1,27 @@
 [v-cloak] {
   display: none;
 }
+button.mainAction {
+  background-color: #2d9b31;
+}
+button.mainAction:hover {
+  background-color: #4cbc51;
+}
+button {
+  background-color: #5a89ca;
+  margin: 1ex;
+  padding: 0.5ex 1.5ex;
+  font-size: 120%;
+  color: #fff;
+  border: none;
+  border-radius: 12px;
+  box-shadow: 0px 1px 2px 2px rgb(0, 0, 0, 0.7);
+  cursor: pointer;
+}
+button:hover {
+  background-color: #8fbeff;
+  box-shadow: 0px 0px 1px 1px rgb(0, 0, 0, 0.7);
+}
 .dice {
   z-index: 0;
   position: relative;
@@ -265,9 +286,7 @@ li > .avatarCard > svg {
   transition: transform 0.8s ease;
 }
 
-
 /*** ATAKKS ***/
-
 
 .atakks-row {
   display: inline-grid;
@@ -280,14 +299,14 @@ li > .avatarCard > svg {
 }
 
 .atakks-grid .p1 {
-    color:blue;
+  color: blue;
 }
 .atakks-grid .p2 {
-    color:red;
+  color: red;
 }
 .atakks-grid .p3 {
-    color:green;
+  color: green;
 }
 .atakks-grid .p4 {
-    color:yellow;
+  color: yellow;
 }
