@@ -109,7 +109,7 @@ class Game(GameInterface):
                 421: {"description": "invalid move"},
                 200: {
                     "description": "makes a move in atakks",
-                    "content": {"application/json": {"success": True}},
+                    "content": {"application/json": True},
                 },
             },
         ),
@@ -121,7 +121,7 @@ class Game(GameInterface):
                 421: {"description": "invalid move"},
                 200: {
                     "description": "makes a move in atakks",
-                    "content": {"application/json": {"success": True}},
+                    "content": {"application/json": True},
                 },
             },
         ),
