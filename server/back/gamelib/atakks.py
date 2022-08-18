@@ -19,12 +19,16 @@ class Coords(BaseModel):
     x: int
     y: int
 
+    @property
+    def shortText(self) -> str:
+        return "%d-%d" % (self.x, self.y)
+
 
 class AtakksAddBody(BaseModel):
     "Parameters for an add call in atakks"
     player: PlayerIdentifier
     reference: Coords
-    positition: Coords
+    position: Coords
 
 
 class AtakksMoveBody(BaseModel):
@@ -36,6 +40,13 @@ class AtakksMoveBody(BaseModel):
 
 async def addPawn(params: AtakksAddBody) -> bool:
     """`player` adds a pawn into `positition`, next to `reference`"""
+    await publishEvent(
+        params.player.sessionName,
+        cat=Events.varUpdate.name,
+        var="pawns",
+        val={params.player.id: [params.position.shortText]},
+        player=params.player.id,
+    )
     return True
 
 
@@ -44,8 +55,19 @@ async def movePawn(params: AtakksMoveBody) -> bool:
     redis = aioredis.from_url(
         "redis://" + getConfig().redis_server, decode_responses=True
     )
-    gprefix = getGameDataPrefix(params.player.sessionName)
-    prefix = getGameDataPrefix(params.player.sessionName, player.id)
+    # gprefix = getGameDataPrefix(params.player.sessionName)
+    # prefix = getGameDataPrefix(params.player.sessionName, params.player.id)
+    await publishEvent(
+        params.player.sessionName,
+        redis,
+        cat="varUpdate",
+        var="pawns",
+        val={
+            "void": [params.source.shortText],
+            params.player.id: [params.destination.shortText],
+        },
+        player=params.player.id,
+    )
     return True
 
 
