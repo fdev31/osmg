@@ -5,7 +5,7 @@ from .interfaces import GameInterface
 
 class Game(GameInterface):
     name = "DummyGame"
-    card = "quiz"
+    card = "arcade"
     min_players = 2
     max_players = None
 

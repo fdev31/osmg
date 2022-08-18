@@ -78,7 +78,7 @@ async def movePawn(params: AtakksMoveBody) -> bool:
 
 class Game(GameInterface):
     name = "atakks"
-    card = "arcade"
+    card = "quiz"
     min_players = 2
     max_players = 4
 
