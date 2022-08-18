@@ -13,26 +13,39 @@ placements = ["0-0", "6-6", "0-6", "6-0"]
 
 
 class Coords(BaseModel):
+    """Corrdinates of a pawn on the board.
+    starts with zero (0)"""
+
     x: int
     y: int
 
 
-async def addPawn(
-    player: PlayerIdentifier, reference: Coords, positition: Coords
-) -> bool:
+class AtakksAddBody(BaseModel):
+    "Parameters for an add call in atakks"
+    player: PlayerIdentifier
+    reference: Coords
+    positition: Coords
+
+
+class AtakksMoveBody(BaseModel):
+    "Parameters for a move call in atakks"
+    player: PlayerIdentifier
+    source: Coords
+    destination: Coords
+
+
+async def addPawn(params: AtakksAddBody) -> bool:
     """`player` adds a pawn into `positition`, next to `reference`"""
     return True
 
 
-async def movePawn(
-    player: PlayerIdentifier, source: Coords, destination: Coords
-) -> bool:
+async def movePawn(params: AtakksMoveBody) -> bool:
     """`player` moves a pawn from `source` to `destination`"""
     redis = aioredis.from_url(
         "redis://" + getConfig().redis_server, decode_responses=True
     )
-    gprefix = getGameDataPrefix(player.sessionName)
-    prefix = getGameDataPrefix(player.sessionName, player.id)
+    gprefix = getGameDataPrefix(params.player.sessionName)
+    prefix = getGameDataPrefix(params.player.sessionName, player.id)
     return True
 
 
