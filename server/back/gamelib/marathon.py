@@ -19,7 +19,7 @@ from ..globalHandlers import (
 from ..models import Player, PlayerIdentifier, Session
 from ..sessionmanager.public import isPlayerValid
 from ..utils import dumps, loads
-from .interfaces import Events, GameInterface
+from .interfaces import Events, GameInterface, stdVar
 from .std_implem import def_playerAdded
 
 ACTIVE_PLAYERS = "curOrder"
@@ -35,7 +35,7 @@ async def isPlayerTurn(
 ) -> bool:
     if not await isPlayerValid(conn, prefix.split(":")[0][1:], playerId, secret):
         return False
-    curPlayer = await conn.get(prefix + "curPlayer")
+    curPlayer = await conn.get(prefix + Events.curPlayer.name)
     curPlayerId = await conn.lindex(prefix[:-2] + ACTIVE_PLAYERS, int(curPlayer))
     return int(curPlayerId) == int(playerId)
 
@@ -96,7 +96,7 @@ async def validateDice(player: PlayerIdentifier, value: str) -> None:
         await publishEvent(
             player.sessionName,
             conn,
-            cat="varUpdate",
+            cat=Events.varUpdate.name,
             var="distance",
             val=newVal,
             player=player.id,
@@ -138,21 +138,23 @@ async def turnLogic(
             return
 
         if playerLost:  # we lost a player: no need to increment curPlayer counter
-            curPlayer = int(await conn.get(g_prefix + "curPlayer"))
+            curPlayer = int(await conn.get(g_prefix + Events.curPlayer.name))
         else:
-            curPlayer = int(await conn.incr(g_prefix + "curPlayer"))
+            curPlayer = int(await conn.incr(g_prefix + Events.curPlayer.name))
     else:  # no distance == check at game startup
         curPlayer = 0
 
     if curPlayer is not None and curPlayer >= nbPlayers:  # end of turn
         turn = await conn.incr(g_prefix + "turns")
-        await publishEvent(player.sessionName, conn, cat="newTurn", val=turn)
-        await conn.set(g_prefix + "curPlayer", 0)
+        await publishEvent(player.sessionName, conn, cat=Events.newTurn.name, val=turn)
+        await conn.set(g_prefix + stdVar.curPlayer.name, 0)
         curPlayer = 0
 
     # resolve current player id & publish it
     curPlayerId = await conn.lindex(po, curPlayer)
-    await publishEvent(player.sessionName, conn, cat="curPlayer", val=curPlayerId)
+    await publishEvent(
+        player.sessionName, conn, cat=Events.curPlayer.name, val=curPlayerId
+    )
 
 
 class DiceInterface(GameInterface):
@@ -167,7 +169,7 @@ class DiceInterface(GameInterface):
         if topic == "kick":
             whom = data
             ap = getVarName(ACTIVE_PLAYERS, sessionId)
-            cp = getVarName("curPlayer", sessionId, gameData=True)
+            cp = getVarName(Events.curPlayer.name, sessionId, gameData=True)
             cu = int(await conn.get(cp))
             pindex = await conn.lpos(ap, whom)
             if pindex is not None and pindex < cu:
@@ -190,7 +192,7 @@ class DiceInterface(GameInterface):
     def getGameData() -> dict[str, Any]:
         return {
             "turns": 0,
-            "curPlayer": 0,
+            Events.curPlayer.name: 0,
         }
 
     @classmethod

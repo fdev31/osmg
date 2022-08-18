@@ -10,6 +10,11 @@ from aioredis import Redis
 from ..models import Player, PlayerIdentifier, Session
 
 
+class stdVar(str, Enum):
+    curPlayer = "curPlayer"  #: currently active player
+    turns = "turns"  #: number of total turns
+
+
 class Events(str, Enum):
     newPlayer = "newPlayer"  #: player joined the game
     connectPlayer = "connectPlayer"  #: player connected

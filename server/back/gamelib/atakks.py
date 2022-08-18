@@ -1,3 +1,4 @@
+from enum import Enum
 from logging import getLogger
 from typing import Any, Dict
 
@@ -6,10 +7,14 @@ from pydantic import BaseModel
 
 from ..globalHandlers import getConfig, getGameDataPrefix, publishEvent
 from ..models import SESSION_PLAYERS_DATA, Player, PlayerIdentifier, Session
-from .interfaces import Events, GameInterface
+from .interfaces import Events, GameInterface, stdVar
 from .std_implem import def_playerAdded
 
 placements = ["0-0", "6-6", "0-6", "6-0"]
+
+
+class gameVars(str, Enum):
+    pawns = "pawns"
 
 
 class Coords(BaseModel):
@@ -43,7 +48,7 @@ async def addPawn(params: AtakksAddBody) -> bool:
     await publishEvent(
         params.player.sessionName,
         cat=Events.varUpdate.name,
-        var="pawns",
+        var=gameVars.pawns.name,
         val={params.player.id: [params.position.shortText]},
         player=params.player.id,
     )
@@ -60,8 +65,8 @@ async def movePawn(params: AtakksMoveBody) -> bool:
     await publishEvent(
         params.player.sessionName,
         redis,
-        cat="varUpdate",
-        var="pawns",
+        cat=Events.varUpdate.name,
+        var=gameVars.pawns.name,
         val={
             "void": [params.source.shortText],
             params.player.id: [params.destination.shortText],
@@ -81,14 +86,14 @@ class Game(GameInterface):
     def getPlayerData(sess: Session) -> Dict[str, Any]:
         pval = placements[len(sess.players)]
         return {
-            "pawns": {pval},
+            gameVars.pawns.name: {pval},
         }
 
     @staticmethod
     def getGameData() -> Dict[str, Any]:
         return {
-            "turns": 0,
-            "curPlayer": 0,
+            stdVar.turns.name: 0,
+            stdVar.curPlayer.name: 0,
         }
 
     @classmethod
