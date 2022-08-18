@@ -40,7 +40,9 @@
       <button v-on:click="mainAction" type="button" class="mainAction">
         {{getMainActionText()}}
       </button>
-      <button type="button">{{T("Change game")}}</button>
+      <button v-on:click="openPage('/')" type="button">
+        {{T("Change game")}}
+      </button>
     </div>
     <script src="https://unpkg.com/vue@next"></script>
     <script src="js/locales.js" charset="utf-8"></script>

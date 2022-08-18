@@ -155,6 +155,9 @@ function initApp() {
       this.$refs.playerlist.players = this.players;
     },
     methods: {
+      openPage(url) {
+        window.location.href = url;
+      },
       T(text) {
         return getTranslation(text);
       },
