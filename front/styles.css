@@ -46,6 +46,25 @@ body {
   margin: 0px;
 }
 
+.title {
+  font: 4em "Aliens Among Us", sans-serif;
+  background-image: linear-gradient(-180deg,#3f3f3f, #c8c8c8); 
+  -webkit-background-clip: text;
+  -moz-background-clip: text;
+  -webkit-text-fill-color: transparent; 
+  -moz-text-fill-color: transparent;
+}
+
+@font-face {
+  font-family: "Aliens Among Us";
+  src: url("./font/aliensamongus.ttf");
+}
+
+@font-face {
+  font-family: "Aliens Among Us Italic";
+  src: url("./font/aliensamongus-italic.ttf");
+}
+
 .bg {
     background: linear-gradient(-180deg,#000000, #18007a, #0199d0, #1ee1f7);
     background-size: 400% 400%;
