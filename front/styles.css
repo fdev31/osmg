@@ -39,9 +39,32 @@ button:hover {
 }
 html {
   font-family: "Roboto", sans-serif;
-  background-image: url("./img/bg_light.svg");
-  background-color: #e4ebf5;
+  margin: 0px;
 }
+
+body {
+  margin: 0px;
+}
+
+.bg {
+    background: linear-gradient(-180deg,#000000, #18007a, #0199d0, #1ee1f7);
+    background-size: 400% 400%;
+    animation: gradient 15s ease infinite;
+    height: 100vh;
+}
+  
+  @keyframes gradient {
+    0% {
+      background-position: 50% 0%;
+    }
+    50% {
+      background-position: 50% 100%;
+    }
+    100% {
+      background-position: 50% 0%;
+    }
+  }
+
 .playerlist {
   float: right;
 }
