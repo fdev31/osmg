@@ -1,18 +1,22 @@
 #!/bin/bash
 npm i
 
+Y="node_modules/.bin/yarn"
+
 function shorten() {
     sn=${1#*/}
     sn=${sn%.vue}
     echo $sn
 }
 
+yarn -h >/dev/null 2>&1|| npm i yarn
+
 if [ -n "$1" ]; then
-    yarn build --target lib --name $(shorten "$1") "$1" --fix
+    $Y build --target lib --name $(shorten "$1") "$1" --fix
     cp dist/*.umd.js* ../front/jscomp
 else
     for component in src/*.vue; do
-        yarn build --target lib --name $(shorten "$component") "$component" || exit
+        $Y build --target lib --name $(shorten "$component") "$component" || exit
         cp dist/*.umd.js* ../front/jscomp
     done
 fi
