@@ -4,8 +4,6 @@ from typing import Literal, Optional
 
 import click
 
-TRACE_LOG_LEVEL = 5
-
 debug = False
 
 
@@ -30,7 +28,6 @@ class ColourizedFormatter(logging.Formatter):
         fmt: Optional[str] = None,
         datefmt: Optional[str] = None,
         style: Literal["%", "{", "$"] = "%",
-        use_colors: bool = False,
     ) -> None:
         self.use_colors = True
         super().__init__(fmt=fmt, datefmt=datefmt, style=style)
