@@ -33,8 +33,8 @@ unit: fix
 front: fix
     @just test ./tests/front/
 
-events:
-	@grep -rE -A5 'publishEvent' server 2>/dev/null |grep "cat=" | sed -E 's/.*cat *= *([^,)]+).*/\1/' | sort
+list-events:
+	@grep -rE -A5 'publishEvent' server 2>/dev/null | grep "cat=" | sed -E 's/.*cat *= *([^,)]+).*/\1/' | sed -E 's#Events.(\S+).name#\1#' | sed -E 's#^"([^"]+)"$#\1#' | uniq | sort
 
 style: fix
     {{venv}}/bin/isort {{src}} tests
