@@ -34,7 +34,7 @@ front: fix
     @just test ./tests/front/
 
 events:
-	@grep -rE 'publishEvent.*cat' server |sed -E 's/.*cat *= *"([^"]+) *".*/\1/' | sort
+	@grep -rE -A5 'publishEvent' server 2>/dev/null |grep "cat=" | sed -E 's/.*cat *= *([^,)]+).*/\1/' | sort
 
 style: fix
     {{venv}}/bin/isort {{src}} tests
