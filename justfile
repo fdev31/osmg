@@ -1,6 +1,6 @@
 #!/usr/bin/env -S just --justfile
 
-venv := ".tox/py310-chrome"
+venv := ".tox/" + `grep envdir tox.ini | sed 's#.*/##' `
 pkg := "back"
 src := "./server/back"
 
