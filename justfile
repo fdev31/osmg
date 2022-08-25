@@ -46,10 +46,10 @@ coverage: fix
 types: fix
     {{venv}}/bin/mypy {{src}}
 
-run $DEBUG="1": fix
+run debug="1": fix
     export WEB_CONCURRENCY=10
-    export AIOREDIS_DEBUG={{ if DEBUG == "1" {"1"} else {"0"} }}
-    export DEBUG={{ if DEBUG == "1" {"1"} else {""} }}
-    {{venv}}/bin/uvicorn back.routes:app {{SERVER_PARAMS}} --port {{HTTP_PORT}} --log-level={{ if DEBUG == "1" {"debug --reload --host 0.0.0.0 --log-config logging.yaml"} else {"warning"} }}
+    export AIOREDIS_DEBUG={{ if debug == "1" {"1"} else {"0"} }}
+    export DEBUG={{ if debug == "1" {"1"} else {""} }}
+    {{venv}}/bin/uvicorn back.routes:app {{SERVER_PARAMS}} --port {{HTTP_PORT}} --log-level={{ if debug == "1" {"debug --reload --host 0.0.0.0 --log-config logging.yaml"} else {"warning"} }}
 
 
