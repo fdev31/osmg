@@ -12,11 +12,10 @@
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body onload="initApp()">
-    <div id="app" class="bg"v-cloak>
-
-<div id='stars'></div>
-<div id='stars2'></div>
-<div id='stars3'></div>
+    <div id="app" class="bg" v-cloak>
+      <div id="stars"></div>
+      <div id="stars2"></div>
+      <div id="stars3"></div>
       <h1 class="title">{{T("Your info")}}:</h1>
       <div class="container">
         <div class="avatarframe">
@@ -58,7 +57,7 @@
     <script src="https://unpkg.com/vue@next"></script>
     <script src="js/locales.js" charset="utf-8"></script>
     <script src="js/utils.js" charset="utf-8"></script>
-    <script src="jscomp/avatar-card.umd.js" charset="utf-8"></script>
+    <script src="jscomp/avatar-card.js" charset="utf-8"></script>
     <script src="js/home.js" charset="utf-8"></script>
   </body>
 </html>
