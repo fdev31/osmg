@@ -53,7 +53,7 @@ front: fix
 
 # list available events
 list-events:
-	@grep -rE -A5 'publishEvent' server 2>/dev/null | grep "cat=" | sed -E 's/.*cat *= *([^,)]+).*/\1/' | sed -E 's#Events.(\S+).name#\1#' | sed -E 's#^"([^"]+)"$#\1#' | uniq | sort
+	@grep -rE -A5 'publishEvent' server 2>/dev/null | grep "cat=" | sed -Ee 's/.*cat *= *([^,)]+).*/\1/' -e 's#Events.(\S+).name#\1#' -e 's#^"([^"]+)"$#\1#' | uniq | sort
 
 # run python style rules
 style: fix
