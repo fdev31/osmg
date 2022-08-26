@@ -9,6 +9,7 @@ from .utils import ODict
 
 debug = bool(os.environ.get("DEBUG", False))
 logger = logging.getLogger("routes")
+logger.info(f"DEBUG: {debug}")
 
 if debug:
     app = FastAPI(debug=True, default_response_class=ORJSONResponse)
