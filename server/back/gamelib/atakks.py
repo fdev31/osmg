@@ -52,7 +52,7 @@ async def addPawn(params: AtakksAddBody) -> bool:
         val={params.player.id: [params.position.shortText]},
         player=params.player.id,
     )
-    return True
+    return {"ok": True}
 
 
 async def movePawn(params: AtakksMoveBody) -> bool:
@@ -73,7 +73,7 @@ async def movePawn(params: AtakksMoveBody) -> bool:
         },
         player=params.player.id,
     )
-    return True
+    return {"ok": True}
 
 
 class Game(GameInterface):
@@ -109,7 +109,7 @@ class Game(GameInterface):
                 421: {"description": "invalid move"},
                 200: {
                     "description": "makes a move in atakks",
-                    "content": {"application/json": True},
+                    "content": {"application/json": {"ok": True}},
                 },
             },
         ),
@@ -121,7 +121,7 @@ class Game(GameInterface):
                 421: {"description": "invalid move"},
                 200: {
                     "description": "makes a move in atakks",
-                    "content": {"application/json": True},
+                    "content": {"application/json": {"ok": True}},
                 },
             },
         ),
