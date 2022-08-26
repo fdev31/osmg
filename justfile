@@ -8,14 +8,18 @@ SERVER_PARAMS := "--ws-ping-interval 5 --ws-ping-timeout 2"
 HTTP_PORT := `cat HTTP_PORT`
 
 
-export PYTHONPATH:="./tests/unit/"
+
+export PYTHONPATH := "./tests/unit/"
 export NODE_ENV := "dev" # or production
+export WEB_CONCURRENCY := "10"
 
 # list available commands
 default:
     @just --list
 
+# run everything python related
 py: style coverage unit types
+# run everything JS related
 js: production locales front
 # build Javascript components in production mode
 production:
@@ -35,7 +39,7 @@ component name="":
 
 # run (any kind of) tests
 test testfile='tests':
-    {{venv}}/bin/pytest --pdb {{testfile}}
+    {{venv}}/bin/pytest -v {{testfile}}
 
 # run unit tests
 unit: fix
@@ -43,10 +47,9 @@ unit: fix
 
 # run frontend tests
 front: fix
-    {{venv}}/bin/procmgr stop http
-    {{venv}}/bin/procmgr start -n http {{venv}}/bin/uvicorn back.routes:app --host 0.0.0.0 --reload --port 5000 --log-level=debug --log-config logging.yaml --env-file ./tests/front/.env
+    @just stop
+    @just run 1 &
     @just test ./tests/front/
-    {{venv}}/bin/procmgr stop http
 
 # list available events
 list-events:
@@ -67,9 +70,10 @@ types: fix
 
 # run in debug or standard mode
 run debug="1": fix
-    export WEB_CONCURRENCY=10
-    export AIOREDIS_DEBUG={{ if debug == "1" {"1"} else {"0"} }}
-    export DEBUG={{ if debug == "1" {"1"} else {""} }}
-    {{venv}}/bin/uvicorn back.routes:app {{SERVER_PARAMS}} --port {{HTTP_PORT}} --log-level={{ if debug == "1" {"debug --reload --host 0.0.0.0 --log-config logging.yaml"} else {"warning"} }}
+    {{venv}}/bin/uvicorn back.routes:app {{SERVER_PARAMS}} --port {{HTTP_PORT}} --log-level={{ if debug == "1" {"debug --host 0.0.0.0 --log-config logging.yaml --env-file tests/front/.env"} else {"warning"} }}
 
+
+# stops the http server used for testing
+stop: fix
+    {{venv}}/bin/procmgr stop http
 
