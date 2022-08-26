@@ -1,5 +1,5 @@
 <script>
-import avatarCard from "./avatar-card";
+import avatarCard from "./avatar-card.vue";
 
 export default {
   components: { avatarCard },

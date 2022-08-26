@@ -33,9 +33,9 @@ fix:
 locales:
     cd locales && ./build
 
-# build one Js component by name or all of them if none specified
-component name="":
-	cd components && ./build {{ if name == "" {""} else {"src/" + name + ".vue"} }}
+# build Js components if changed
+component:
+    ./node_modules/.bin/rollup -c rollup.config.js
 
 # run (any kind of) tests
 test testfile='tests':
@@ -76,4 +76,3 @@ run debug="1": fix
 # stops the http server used for testing
 stop: fix
     {{venv}}/bin/procmgr stop http
-

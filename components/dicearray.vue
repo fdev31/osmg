@@ -1,5 +1,5 @@
 <script>
-import dice from "./dice";
+import dice from "./dice.vue";
 
 function enableDragDrop(app, element) {
   var move = function (dx) {

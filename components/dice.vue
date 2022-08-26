@@ -1,6 +1,5 @@
 <script>
-import * as Snap from "snapsvg-cjs";
-import mina from "snapsvg-cjs";
+const { mina, Snap } = require("snapsvg-cjs");
 
 export default {
   mounted() {
