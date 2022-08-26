@@ -15,6 +15,8 @@ export NODE_ENV := "dev" # or production
 default:
     @just --list
 
+py: style coverage unit types
+js: production locales front
 # build Javascript components in production mode
 production:
     @just --set NODE_ENV production component
