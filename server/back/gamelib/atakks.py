@@ -43,7 +43,7 @@ class AtakksMoveBody(BaseModel):
     destination: Coords
 
 
-async def addPawn(params: AtakksAddBody) -> bool:
+async def addPawn(params: AtakksAddBody) -> dict[str, bool]:
     """`player` adds a pawn into `positition`, next to `reference`"""
     await publishEvent(
         params.player.sessionName,
@@ -55,7 +55,7 @@ async def addPawn(params: AtakksAddBody) -> bool:
     return {"ok": True}
 
 
-async def movePawn(params: AtakksMoveBody) -> bool:
+async def movePawn(params: AtakksMoveBody) -> dict[str, bool]:
     """`player` moves a pawn from `source` to `destination`"""
     redis = aioredis.from_url(
         "redis://" + getConfig().redis_server, decode_responses=True
