@@ -7,6 +7,8 @@ src := "./server/back"
 SERVER_PARAMS := "--ws-ping-interval 5 --ws-ping-timeout 2"
 HTTP_PORT := `cat HTTP_PORT`
 
+
+export PYTHONPATH:="./tests/unit/"
 export NODE_ENV := "dev" # or production
 
 # list available commands
@@ -39,7 +41,10 @@ unit: fix
 
 # run frontend tests
 front: fix
+    {{venv}}/bin/procmgr stop http
+    {{venv}}/bin/procmgr start -n http {{venv}}/bin/uvicorn back.routes:app --host 0.0.0.0 --reload --port 5000 --log-level=debug --log-config logging.yaml --env-file ./tests/front/.env
     @just test ./tests/front/
+    {{venv}}/bin/procmgr stop http
 
 # list available events
 list-events:
