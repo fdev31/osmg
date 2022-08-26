@@ -11,7 +11,7 @@ HTTP_PORT := `cat HTTP_PORT`
 
 export PYTHONPATH := "./tests/unit/"
 export NODE_ENV := "dev" # or production
-export WEB_CONCURRENCY := "10"
+export WEB_CONCURRENCY := "1"
 
 # list available commands
 default:
