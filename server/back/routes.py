@@ -22,7 +22,7 @@ else:
     )
 
 config = ODict(
-    static_dir=os.path.join(os.environ.get("PREFIX", os.getcwd()), "front"),
+    static_dir=os.environ.get("FRONT_FILES", os.getcwd()),
     redis_server=os.environ.get("REDIS_SERVER", "localhost"),
     debug=debug,
 )

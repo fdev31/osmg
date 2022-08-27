@@ -1,7 +1,0 @@
-#!/bin/sh
-# avoid generated files & images in the count
-git ls-files |
-    grep -Ev -e ^front/jscomp -e ^front/js/locales.js -e ^front/img -e '[.](svg|jpg|png)$' |
-    while read f; do
-        git blame -w -M -C -C --line-porcelain "$f" | grep -I '^author ';
-    done | sort -fn | uniq -ic

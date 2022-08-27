@@ -19,23 +19,26 @@ default:
 
 # run everything python related
 py: style coverage unit types
+
 # run everything JS related
-js: production locales front
+js: vue locales front
+
 # build Javascript components in production mode
-production:
-    @just --set NODE_ENV production component
+vue:
+    npm run build
+
+# build js in dev mode
+dev:
+    ./node_modules/.bin/vite build --mode dev
 
 # make python package run from the sources
 fix:
     ./scripts/install_editable {{venv}} {{pkg}}
 
+
 # build translations files
 locales:
     cd locales && ./build
-
-# build Js components if changed
-component:
-    ./node_modules/.bin/rollup -c rollup.config.js
 
 # run (any kind of) tests
 test testfile='tests':
@@ -70,7 +73,7 @@ types: fix
 
 # run in debug or standard mode
 run debug="1": fix
-    {{venv}}/bin/uvicorn back.routes:app {{SERVER_PARAMS}} --port {{HTTP_PORT}} --log-level={{ if debug == "1" {"debug --host 0.0.0.0 --log-config logging.yaml --env-file tests/front/.env"} else {"warning"} }}
+    {{venv}}/bin/uvicorn back.routes:app {{SERVER_PARAMS}} --port {{HTTP_PORT}} --log-level={{ if debug == "1" {"debug --host 0.0.0.0 --log-config logging.yaml --env-file env"} else {"warning"} }}
 
 
 # stops the http server used for testing

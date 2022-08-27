@@ -1,41 +1,35 @@
 # our-awesome-game
 
-- Vue.js UI
-- FastAPI BO
+This template should help get you started developing with Vue 3 in Vite.
 
-# MVP 1
+## Recommended IDE Setup
 
-- variable number of players
-    - synchronized (MQTT ?)
-- possible fake players (play automatically) for testing
+[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur) + [TypeScript Vue Plugin (Volar)](https://marketplace.visualstudio.com/items?itemName=Vue.vscode-typescript-vue-plugin).
 
+## Customize configuration
 
-- die game
-- first reaching 10 points
+See [Vite Configuration Reference](https://vitejs.dev/config/).
 
+## Project Setup
 
-# MVP 2
+```sh
+npm install
+```
 
-- "petit bac" block
-- UI improvements
+### Compile and Hot-Reload for Development
 
+```sh
+npm run dev
+```
 
-# MVP X
+### Compile and Minify for Production
 
-- add block X
+```sh
+npm run build
+```
 
-# Optional UI improvement releases
+### Lint with [ESLint](https://eslint.org/)
 
-# Final version
-- CNIL
-- Mentions légales / Références droits d'auteurs pour les assets
----------
-
-# Environment variables
-
-REDIS_SERVER
-    host & port of the Redis server
-DEBUG
-    run in debug mode (enables reload & traces)
-PREFIX
-    prefix to the "front" folder
+```sh
+npm run lint
+```
