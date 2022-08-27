@@ -13,14 +13,12 @@ import {
   post,
   setupStreamEventHandler,
   getPlayerInfo,
-  getTranslation,
+  getTranslation as T,
   initLocales,
   setCookie,
   delay,
   kickPlayerVote,
 } from "@/lib/utils.js";
-
-const T = getTranslation;
 
 let statuses = {
   NOT_READY: 0,
@@ -44,12 +42,9 @@ async function countDown(count = 4) {
 }
 const handlers = {
   disconnectPlayer: (data) => {
-    toaster.show(
-      `${getPlayerInfo(data.id).name} ${getTranslation("is disconnected")}`,
-      {
-        closeTimeOut: 2500,
-      }
-    );
+    toaster.show(`${getPlayerInfo(data.id).name} ${T("is disconnected")}`, {
+      closeTimeOut: 2500,
+    });
   },
   curPlayer: (data) => {
     gameSession.gameData.curPlayer = data.val;
@@ -58,7 +53,7 @@ const handlers = {
   newPlayer: (data) => {
     delete data["cat"];
 
-    toaster.show(`${data.name} ${getTranslation("enters the game")}`, {
+    toaster.show(`${data.name} ${T("enters the game")}`, {
       closeTimeOut: 2500,
     });
     let pd = gameSession.playersData;
@@ -85,9 +80,7 @@ const handlers = {
         if (parseInt(p.id) === parseInt(data.name.split("_")[1]))
           player_kicked = p;
       });
-      let message = `${getTranslation("Do you want to kick")} ${
-        player_kicked.name
-      }`;
+      let message = `${T("Do you want to kick")} ${player_kicked.name}`;
       let options = {
         closeTimeOut: -1,
         buttonGroup: {
@@ -125,7 +118,7 @@ const handlers = {
     let options = {
       closeTimeOut: 2500,
     };
-    toaster.show(getTranslation(message), options);
+    toaster.show(T(message), options);
     hasVoted = false;
     setPlayersById(application);
     setCookie(Vue2Obj(application));
