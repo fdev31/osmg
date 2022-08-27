@@ -1,3 +1,12 @@
+# REFACTOR IN PROGRESS
+
+## Todo
+
+- lobby
+- games
+- locales generation
+- review styling
+
 # our-awesome-game
 
 This template should help get you started developing with Vue 3 in Vite.
