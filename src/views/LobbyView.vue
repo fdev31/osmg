@@ -72,7 +72,7 @@ const handlers = {
     for (let newpd of Object.keys(data.playersData)) {
       Object.assign(pd[newpd], data.playersData[newpd]);
     }
-    setCookie(any(gameSession));
+    setCookie(any2Obj(gameSession));
   },
   start: async (data) => {
     countDown().then(() => {
