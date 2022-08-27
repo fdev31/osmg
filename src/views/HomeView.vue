@@ -1,7 +1,12 @@
 <script setup>
 import { onMounted, ref, watch } from "vue";
 import avatarCard from "@/components/avatarCard.vue";
-import { RouterLink } from "vue-router";
+import { RouterLink, useRouter } from "vue-router";
+import { GameSession } from "@/stores/gamesession.js";
+
+const router = useRouter();
+
+const gameSession = GameSession();
 
 import {
   getJson,
@@ -22,6 +27,7 @@ const T = getTranslation;
 
 initLocales();
 onMounted(async () => {
+  avatar.value.setName(mynickname.value);
   games.value = await getJson("/c/gamelist");
 });
 
@@ -31,14 +37,13 @@ async function play_game(game) {
     redirect: "follow",
   });
   let result = await response.json();
-  this.sessionName = result.name;
 
   // create a standard player for creator of session game
-  var myHeaders = new Headers();
+  const myHeaders = new Headers();
   myHeaders.append("Content-Type", "application/json");
   var raw = JSON.stringify({
-    name: this.mynickname,
-    avatar: this.avatar,
+    name: mynickname.value,
+    avatar: "",
     sessionName: result.name,
   });
   var response_player = await fetch("/c/session/join", {
@@ -50,10 +55,12 @@ async function play_game(game) {
 
   result = await response_player.json();
   for (let player of result.players) {
-    if (player.name == this.mynickname) result.myId = player.id;
+    if (player.name == mynickname.value) result.myId = player.id;
   }
+  gameSession.gameType = game;
+  gameSession.$patch(result);
   setCookie(result);
-  window.location = "lobby.html";
+  router.push("/lobby");
 }
 </script>
 
@@ -72,7 +79,7 @@ async function play_game(game) {
           <avatar-card
             noname
             ref="avatar"
-            :avatarName="mynickname"
+            avatarName="Nick"
             style="margin: -36px 0 0 220px"
             class="avatar"
           ></avatar-card>
@@ -81,9 +88,8 @@ async function play_game(game) {
       <h1>{{ T("Pick a game") }}:</h1>
       <div class="wrap">
         <div v-for="(info, game) in games" class="gamebutton">
-          <RouterLink :to="game">
-            <div class="tile">
-              <!----              <span @click="play_game(game)"></span> -->
+          <div class="tile">
+            <span @click="play_game(game)">
               <img :src="`./img/${info.card}.jpg`" />
               <div class="text">
                 <h1>{{ T(game) }}</h1>
@@ -93,9 +99,8 @@ async function play_game(game) {
                   v-html="T(game + '_long_description')"
                 ></p>
               </div>
-              <!--             </span> -->
-            </div>
-          </RouterLink>
+            </span>
+          </div>
         </div>
       </div>
     </div>

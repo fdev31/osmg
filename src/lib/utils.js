@@ -1,18 +1,23 @@
 import { locales } from "./locales.js";
 
+export function delay(duration = 1000) {
+  return new Promise((res) => {
+    setTimeout(res, duration);
+  });
+}
+
 export async function getJson(url) {
   const req = await fetch(url);
   const data = await req.json();
   return data;
 }
-function extractJsonFromCookie() {
+export function extractJsonFromCookie() {
   for (let chunk of document.cookie.split("; ")) {
     if (chunk.startsWith("JS=")) {
       return JSON.parse(chunk.substr(3));
     }
   }
 }
-
 export function setCookie(data) {
   document.cookie = "JS=" + JSON.stringify(data) + "; SameSite=Strict";
   return document.cookie;
@@ -37,7 +42,7 @@ function copyURL(inputId) {
   w.setSelectionRange(0, 999);
   document.execCommand("copy");
 }
-function Vue2Obj(vueApp) {
+export function any2Obj(vueApp) {
   const r = {};
   for (let k of Object.keys(vueApp.$data)) {
     r[k] = JSON.parse(JSON.stringify(vueApp[k]));
@@ -55,7 +60,7 @@ function extractList(l) {
   return r;
 }
 
-function setupStreamEventHandler(query, handlers) {
+export function setupStreamEventHandler(query, handlers) {
   _setEventStreamHandler((data) => {
     let logO = { ...data };
     let cat = logO.cat;
@@ -125,7 +130,7 @@ function findPlayer(data, pid) {
 
 // TODO: move the Toaster class to a separate file
 
-class Toaster {
+export class Toaster {
   // # Initialiser
   // # function pour créer toast
   // # function pour définir les options
@@ -282,7 +287,7 @@ function createElement(type = "div", innerHtml = null, classList = []) {
 // FIXME: kickPlayerVote uses hardcoded strings
 // FIXME: kickPlayerVote uses translated strings
 // FIXME: kickPlayerVote seems to re-implement findPlayer
-async function kickPlayerVote(app, player, validate = "true") {
+export async function kickPlayerVote(app, player, validate = "true") {
   let appliant;
   app.players.map((p) => {
     if (parseInt(p.id) === parseInt(app.myId)) appliant = p;
@@ -304,4 +309,9 @@ function setPlayersById(app) {
     playerById[x.id] = { ...x, ...app.playersData[x.id] };
   });
   app._playersById = playerById;
+}
+
+export function getPlayerInfo(playerId, sessionData) {
+  for (let player of sessionData.players)
+    if (player.id == playerId) return player;
 }
