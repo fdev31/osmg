@@ -1,14 +1,21 @@
 <script setup>
-import { RouterLink, RouterView } from "vue-router";
+import { onMounted } from "vue";
+import { RouterLink, RouterView, useRouter } from "vue-router";
 import HelloWorld from "./components/HelloWorld.vue";
-</script>
 
-<script>
-export default {
-  mounted() {
-    this.$router.push("/");
-  },
-};
+import { GameSession } from "@/stores/gamesession.js";
+const gameSession = GameSession();
+
+const router = useRouter();
+
+onMounted(async () => {
+  await router.isReady();
+  const sessId = router.currentRoute.value.params.session;
+  if (sessId) {
+    gameSession.$patch({ name: sessId });
+  }
+  router.push("/");
+});
 </script>
 
 <template>

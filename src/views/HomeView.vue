@@ -1,5 +1,5 @@
 <script setup>
-import { onMounted, ref, watch } from "vue";
+import { onMounted, onBeforeMount, ref, watch } from "vue";
 import avatarCard from "@/components/avatarCard.vue";
 import { RouterLink, useRouter } from "vue-router";
 import { GameSession } from "@/stores/gamesession.js";
@@ -27,8 +27,14 @@ const T = getTranslation;
 
 initLocales();
 onMounted(async () => {
+  const router = useRouter();
+  await router.isReady();
   avatar.value.setName(mynickname.value);
-  games.value = await getJson("/c/gamelist");
+  console.log(gameSession);
+  if (!gameSession.name) {
+    // no need if not displayed
+    games.value = await getJson("/c/gamelist");
+  }
 });
 
 async function play_game(game) {
@@ -85,23 +91,29 @@ async function play_game(game) {
           ></avatar-card>
         </div>
       </div>
-      <h1>{{ T("Pick a game") }}:</h1>
-      <div class="wrap">
-        <div v-for="(info, game) in games" class="gamebutton">
-          <div class="tile">
-            <span @click="play_game(game)">
-              <img :src="`./img/${info.card}.jpg`" />
-              <div class="text">
-                <h1>{{ T(game) }}</h1>
-                <h2 class="animate-text">{{ T(game + "_description") }}</h2>
-                <p
-                  class="animate-text"
-                  v-html="T(game + '_long_description')"
-                ></p>
-              </div>
-            </span>
+      <div v-if="gameSession.name">
+        <h1>{{ T("Pick a game") }}:</h1>
+        <div class="wrap">
+          <div v-for="(info, game) in games" class="gamebutton">
+            <div class="tile">
+              <span @click="play_game(game)">
+                <img :src="`/img/${info.card}.jpg`" />
+                <div class="text">
+                  <h1>{{ T(game) }}</h1>
+                  <h2 class="animate-text">{{ T(game + "_description") }}</h2>
+                  <p
+                    class="animate-text"
+                    v-html="T(game + '_long_description')"
+                  ></p>
+                </div>
+              </span>
+            </div>
           </div>
         </div>
+      </div>
+      <div v-else>
+        <button>Join game!</button>
+        <button>Exit</button>
       </div>
     </div>
   </main>
