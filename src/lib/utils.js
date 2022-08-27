@@ -6,11 +6,6 @@ export function delay(duration = 1000) {
   });
 }
 
-export async function getJson(url) {
-  const req = await fetch(url);
-  const data = await req.json();
-  return data;
-}
 export function extractJsonFromCookie() {
   for (let chunk of document.cookie.split("; ")) {
     if (chunk.startsWith("JS=")) {
@@ -78,7 +73,12 @@ export function setupStreamEventHandler(query, handlers) {
   }, query);
 }
 
-async function post(url, body) {
+export async function getJson(url) {
+  const req = await fetch(url);
+  const data = await req.json();
+  return data;
+}
+export async function post(url, body) {
   var myHeaders = new Headers();
   myHeaders.append("Content-Type", "application/json");
 

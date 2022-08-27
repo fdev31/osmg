@@ -12,11 +12,10 @@ import playerList from "@/components/playerList.vue";
 import {
   Toaster,
   any2Obj,
-  getJson,
+  post,
   setupStreamEventHandler,
   getPlayerInfo,
   getTranslation,
-  extractJsonFromCookie,
   initLocales,
   setCookie,
   delay,
@@ -32,7 +31,7 @@ let statuses = {
 
 const playerlist = ref();
 
-let status;
+let status = 0;
 let hasVoted = false;
 const kick_player_threshold = 2;
 const toaster = new Toaster();
@@ -151,11 +150,12 @@ function getMainActionText() {
 }
 
 async function mainAction() {
-  switch (this.status) {
+  console.log(gameSession.secret);
+  switch (status) {
     case statuses.NOT_READY:
-      start = await post(`http://${this.host}/c/gameSession/start`, {
+      await post(`http://${host}/c/session/start`, {
         id: gameSession.myId,
-        gameSessionName: gameSession.name,
+        sessionName: gameSession.name,
       });
       status = 1;
       break;
