@@ -2,12 +2,10 @@
 import { ref, onMounted } from "vue";
 import { RouterLink } from "vue-router";
 import { GameSession } from "@/stores/gamesession.js";
+import playerList from "@/components/playerList.vue";
 
 const gameSession = GameSession();
-console.log("MY NAME IS " + gameSession.getPlayerInfo(gameSession.myId).name);
-console.log(gameSession.name);
 const name = gameSession.name;
-import playerList from "@/components/playerList.vue";
 
 import {
   Toaster,
