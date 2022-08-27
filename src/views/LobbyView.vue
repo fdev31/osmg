@@ -141,7 +141,6 @@ function getMainActionText() {
 }
 
 async function mainAction() {
-  console.log(gameSession.secret);
   switch (status) {
     case statuses.NOT_READY:
       await post(`http://${host}/c/session/start`, {
