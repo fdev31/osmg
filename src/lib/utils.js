@@ -31,30 +31,12 @@ function _setEventStreamHandler(handler, query) {
 function runOnEnter(code) {
   if (event.key == "Enter") eval(code);
 }
-function copyURL(inputId) {
+export function copyURL(inputId) {
   let w = document.getElementById(inputId);
   w.select();
   w.setSelectionRange(0, 999);
   document.execCommand("copy");
 }
-export function any2Obj(vueApp) {
-  const r = {};
-  for (let k of Object.keys(vueApp.$data)) {
-    r[k] = JSON.parse(JSON.stringify(vueApp[k]));
-  }
-  return r;
-}
-function extractObj(o) {
-  if (o.charAt || typeof o == "number") return o; // Plain
-  if (o.length) return extractList(o); // list
-  return Object.fromEntries(Object.keys(o).map((x) => [x, extractObj(o[x])]));
-}
-function extractList(l) {
-  let r = [];
-  for (let i = 0; i < l.length; i++) r.push(extractObj(l[i]));
-  return r;
-}
-
 export function setupStreamEventHandler(query, handlers) {
   _setEventStreamHandler((data) => {
     let logO = { ...data };
