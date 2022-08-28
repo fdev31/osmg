@@ -43,11 +43,8 @@ export function setupStreamEventHandler(query, handlers) {
     let cat = logO.cat;
     delete logO.cat;
     console.debug(
-      `${
-        (handlers[cat] && "Handled") || "Unhandled"
-      } Event ${cat}: ${Object.keys(logO)
-        .map((k) => `${k} = ${logO[k]}`)
-        .join(" ")}`
+      `${(handlers[cat] && "Handled") || "Unhandled"} Event ${cat}: `,
+      logO
     );
     if (handlers[cat]) {
       handlers[cat](logO);
