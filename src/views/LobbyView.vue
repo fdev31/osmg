@@ -36,7 +36,7 @@ const host = document.location.host;
 async function countDown(count = 4) {
   for (let index = 1; index < count; index++) {
     let display = count - (index + 1) == 0 ? "Go !" : count - (index + 1);
-    toaster.show(display, { closeTimeOut: 2000 });
+    // FIXME: toaster.show(display, { closeTimeOut: 2000 });
     await delay(1000);
   }
 }
