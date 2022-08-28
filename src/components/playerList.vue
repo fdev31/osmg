@@ -48,9 +48,6 @@ function isPlaying(player) {
 </template>
 
 <style scoped lang="less">
-.players {
-  border-radius: 5px;
-}
 .playing {
   background-color: rgba(138, 172, 16, 0.4);
 }

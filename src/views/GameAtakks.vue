@@ -53,6 +53,8 @@ onMounted(() => {
   right: 1em;
   display: block;
   border: solid 2px grey;
+  border-radius: 10px;
+  background-color: rgba(0, 0, 0, 0.5);
 }
 @media (max-width: 1024px) {
   #players_frame {
