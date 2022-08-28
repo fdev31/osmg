@@ -36,7 +36,7 @@ const host = document.location.host;
 async function countDown(count = 4) {
   for (let index = 1; index < count; index++) {
     let display = count - (index + 1) == 0 ? "Go !" : count - (index + 1);
-    // FIXME: toaster.show(display, { closeTimeOut: 2000 });
+    toaster.show(display, { closeTimeOut: 2000 });
     await delay(1000);
   }
 }
@@ -56,12 +56,9 @@ const handlers = {
   newPlayer: (data) => {
     delete data["cat"];
 
-    /* FIXME
-
     toaster.show(`${data.name} ${T("enters the game")}`, {
       closeTimeOut: 2500,
     });
-    */
 
     Object.assign(gameSession.playersData, data.playersData);
     Object.assign(gameSession.gameData, data.gameData);

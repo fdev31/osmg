@@ -4,7 +4,7 @@ export class Toaster {
   // # function pour créer toast
   // # function pour définir les options
   constructor(id = "toaster") {
-    this.anchor = document.getElementById(id);
+    //this.anchor = document.getElementById(id);
     this.default_options = {
       closeTimeOut: 1000,
     };
@@ -70,6 +70,8 @@ export class Toaster {
     removeAllChildElement(this.findAnchor());
   }
   show(message, options = {}) {
+    console.log(message);
+    return;
     // update signature / calls of show()
 
     let showOptions = { ...this.default_options, ...options };
