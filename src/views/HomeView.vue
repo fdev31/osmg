@@ -59,6 +59,7 @@ async function join_game(sessionId) {
 async function clear_session() {
   // TODO: leave existing game first !!
   gameSession.$reset();
+  setCookie({});
   router.push("/");
 }
 
