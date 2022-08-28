@@ -11,7 +11,6 @@ import {
   Toaster,
   post,
   setupStreamEventHandler,
-  getPlayerInfo,
   getTranslation as T,
   initLocales,
   copyURL,
@@ -42,9 +41,12 @@ async function countDown(count = 4) {
 }
 const handlers = {
   disconnectPlayer: (data) => {
-    toaster.show(`${getPlayerInfo(data.id).name} ${T("is disconnected")}`, {
-      closeTimeOut: 2500,
-    });
+    toaster.show(
+      `${gameSession.getPlayerInfo(data.id).name} ${T("is disconnected")}`,
+      {
+        closeTimeOut: 2500,
+      }
+    );
   },
   curPlayer: (data) => {
     gameSession.gameData.curPlayer = data.val;
