@@ -20,6 +20,11 @@ const router = createRouter({
       component: () => import("../views/LobbyView.vue"),
     },
     {
+      path: "/game-atakks",
+      name: "atakks",
+      component: () => import("../views/GameAtakks.vue"),
+    },
+    {
       path: "/about",
       name: "about",
       // route level code-splitting
