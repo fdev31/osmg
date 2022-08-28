@@ -12,7 +12,6 @@ import {
   getTranslation as T,
   initLocales,
   copyURL,
-  setCookie,
   delay,
 } from "@/lib/utils.js";
 
@@ -51,7 +50,7 @@ const handlers = {
   },
   connectPlayer: (data) => {
     gameSession.getPlayerInfo(data.id).disconnected = false;
-    playerlist.value.players = gameSession.players;
+    playerlist.players = gameSession.players;
   },
   disconnectPlayer: (data) => {
     gameSession.getPlayerInfo(data.id).disconnected = true;
@@ -62,10 +61,6 @@ const handlers = {
         duration: 2500,
       }
     );
-  },
-  curPlayer: (data) => {
-    gameSession.gameData.curPlayer = data.val;
-    setCookie(gameSession.asObject());
   },
   newPlayer: (data) => {
     delete data["cat"];
@@ -78,11 +73,11 @@ const handlers = {
     Object.assign(gameSession.gameData, data.gameData);
     gameSession.players.push({ id: data.id, name: data.name });
     playerlist.value.players = gameSession.players;
-    setCookie(gameSession.asObject());
+    gameSession.save();
   },
   start: async () => {
     gameSession.started = true;
-    setCookie(gameSession.asObject());
+    gameSession.save();
     countDown().then(() => {
       websocket.close();
       router.push(`/game-${gameSession.gameType}`);
@@ -123,7 +118,7 @@ const handlers = {
       if (gameSession.playersData[data.id] != undefined)
         delete application.playersData[data.id];
     }
-    setCookie(gameSession.asObject());
+    gameSession.save();
   },
   voteEnd: (data) => {
     let message;
@@ -157,7 +152,7 @@ async function mainAction() {
   switch (states.status) {
     case statuses.NOT_READY:
       states.status = statuses.READY;
-      setCookie(gameSession.asObject());
+      gameSession.save();
       await post(`/c/session/start`, {
         id: gameSession.myId,
         sessionName: gameSession.name,

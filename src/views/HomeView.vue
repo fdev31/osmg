@@ -9,7 +9,7 @@ const router = useRouter();
 
 const gameSession = GameSession();
 
-import { getTranslation as T, initLocales, setCookie } from "@/lib/utils.js";
+import { getTranslation as T, initLocales } from "@/lib/utils.js";
 
 const mynickname = ref("Ninon");
 const games = ref({});
@@ -48,7 +48,7 @@ async function join_game(sessionId) {
       if (player.name == mynickname.value) result.myId = player.id;
     }
     gameSession.$patch(result);
-    setCookie(gameSession.asObject());
+    gameSession.save();
     router.push("/lobby");
   } else {
     const result = await response_player.json();
@@ -59,7 +59,7 @@ async function join_game(sessionId) {
 async function clear_session() {
   // TODO: leave existing game first !!
   gameSession.$reset();
-  setCookie({});
+  gameSession.save();
   router.push("/");
 }
 

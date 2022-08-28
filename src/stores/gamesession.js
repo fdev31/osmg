@@ -1,4 +1,5 @@
 import { defineStore } from "pinia";
+import { setCookie } from "../lib/utils";
 
 export const GameSession = defineStore({
   id: "session",
@@ -15,10 +16,14 @@ export const GameSession = defineStore({
   }),
   getters: {
     myName(state) {
-      return state.getPlayerInfo(state.myId).name;
+      let i = state.getPlayerInfo(state.myId);
+      if (i) return i.name;
     },
   },
   actions: {
+    save() {
+      setCookie(this.asObject());
+    },
     getPlayerInfo(pid) {
       for (let player of this.players) if (player.id == pid) return player;
     },
