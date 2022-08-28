@@ -10,6 +10,8 @@ export const GameSession = defineStore({
     players: [],
     playersData: [],
     secret: 0,
+    uiStates: {},
+    started: false,
   }),
   getters: {
     myName(state) {

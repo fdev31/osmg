@@ -19,21 +19,23 @@ import {
 const router = useRouter();
 const gameSession = GameSession();
 const name = gameSession.name;
+const host = document.location.host;
 
 let statuses = {
   NOT_READY: 0,
   READY: 1,
 };
 
+const states = gameSession.uiStates;
+
+if (gameSession.uiStates.status === undefined) {
+  states.status = statuses.NOT_READY;
+  states.hasVoted = false;
+}
 const playerlist = ref();
 const toaster = ref();
 
-document.T = toaster;
-
-let status = statuses.NOT_READY;
-let hasVoted = false;
 const kick_player_threshold = 2;
-const host = document.location.host;
 
 async function countDown(count = 4) {
   for (let index = 1; index < count; index++) {
@@ -78,13 +80,16 @@ const handlers = {
     playerlist.value.players = gameSession.players;
     setCookie(gameSession.asObject());
   },
-  start: async (data) => {
+  start: async () => {
+    gameSession.started = true;
+    setCookie(gameSession.asObject());
     countDown().then(() => {
+      websocket.close();
       router.push(`/game-${gameSession.gameType}`);
     });
   },
   voteStart: (data) => {
-    if (!hasVoted) {
+    if (!states.hasVoted) {
       let player_kicked;
       gameSession.players.map((p) => {
         if (parseInt(p.id) === parseInt(data.name.split("_")[1]))
@@ -106,7 +111,7 @@ const handlers = {
       };
       toaster.value.show(message, options);
     }
-    hasVoted = true;
+    states.hasVoted = true;
   },
   kickPlayer: (data) => {
     if ((data.result = true)) {
@@ -129,13 +134,13 @@ const handlers = {
       duration: 2500,
     };
     toaster.value.show(T(message), options);
-    hasVoted = false;
+    states.hasVoted = false;
   },
 };
 
 initLocales();
 
-setupStreamEventHandler(
+const websocket = setupStreamEventHandler(
   { topic: gameSession.name, uid: gameSession.myId },
   handlers
 );
@@ -145,17 +150,18 @@ onMounted(() => {
 });
 
 function getMainActionText() {
-  return [T("Ready"), T("Not ready")][status];
+  return [T("Ready"), T("Not ready")][states.status];
 }
 
 async function mainAction() {
-  switch (status) {
+  switch (states.status) {
     case statuses.NOT_READY:
-      await post(`http://${host}/c/session/start`, {
+      states.status = statuses.READY;
+      setCookie(gameSession.asObject());
+      await post(`/c/session/start`, {
         id: gameSession.myId,
         sessionName: gameSession.name,
       });
-      status = statuses.READY;
       break;
     default:
       break;
@@ -184,8 +190,7 @@ async function mainAction() {
     <playerList
       ref="playerlist"
       :enable-kick="
-        !gameSession.gameData.hasVoted &&
-        gameSession.players.length > kick_player_threshold
+        !states.hasVoted && gameSession.players.length > kick_player_threshold
       "
       :kick-text="T('Kick player')"
       :my-id="gameSession.myId"

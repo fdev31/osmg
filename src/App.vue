@@ -22,7 +22,11 @@ onMounted(async () => {
   }
   if (gameSession.gameType) {
     // We already joined a game
-    router.push(`/game-${gameSession.gameType}`);
+    if (gameSession.started) {
+      router.push(`/game-${gameSession.gameType}`);
+    } else {
+      router.push(`/lobby`);
+    }
   } else {
     router.push("/"); // load the home
   }

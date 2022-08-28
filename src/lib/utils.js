@@ -31,6 +31,7 @@ function _setEventStreamHandler(handler, query) {
   evtSource.addEventListener("message", (event) => {
     handler(JSON.parse(event.data));
   });
+  return evtSource;
 }
 export function copyURL(inputId) {
   let w = document.getElementById(inputId);
@@ -39,7 +40,7 @@ export function copyURL(inputId) {
   document.execCommand("copy");
 }
 export function setupStreamEventHandler(query, handlers) {
-  _setEventStreamHandler((data) => {
+  return _setEventStreamHandler((data) => {
     let logO = { ...data };
     let cat = logO.cat;
     delete logO.cat;
