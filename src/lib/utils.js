@@ -6,7 +6,7 @@ export function delay(duration = 1000) {
   });
 }
 
-const cookie_name = "oag";
+const cookie_name = "S";
 
 export function extractJsonFromCookie() {
   for (let chunk of document.cookie.split("; ")) {
