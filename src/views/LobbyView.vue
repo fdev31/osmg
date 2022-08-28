@@ -115,7 +115,7 @@ const handlers = {
         }
       }
       if (gameSession.playersData[data.id] != undefined)
-        delete application.playersData[data.id];
+        delete gameSession.playersData[data.id];
     }
     gameSession.save();
   },
