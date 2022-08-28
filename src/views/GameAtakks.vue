@@ -13,7 +13,7 @@ import atakksGrid from "@/components/atakksGrid.vue";
 
 const gameSession = GameSession();
 for (const player of gameSession.players) {
-  player.ready = false; // reset state
+  player.ready = false; // reset lobby state
 }
 const playerlist = ref();
 
@@ -22,8 +22,6 @@ initLocales();
 const handlers = {};
 
 onMounted(() => {
-  playerlist.value.players = gameSession.players;
-
   setupStreamEventHandler(
     { topic: gameSession.name, uid: gameSession.myId },
     handlers
@@ -40,6 +38,7 @@ onMounted(() => {
         :enable-kick="false"
         :kick-text="T('Kick player')"
         :cur-player="gameSession.gameData.curPlayer"
+        :players="gameSession.players"
         :my-id="gameSession.myId"
       />
     </div>

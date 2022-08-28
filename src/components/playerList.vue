@@ -1,37 +1,25 @@
-<script>
+<script setup>
 import avatarCard from "./avatarCard.vue";
 
-export default {
-  components: { avatarCard },
-  props: {
-    enableKick: Boolean,
-    kickText: String,
-    curPlayer: String,
-    myId: String,
-  },
-  emits: ["kick"],
-  data() {
-    return {
-      players: [],
-    };
-  },
-  methods: {
-    isPlaying: function (player) {
-      if (
-        this.curPlayer != undefined &&
-        parseInt(player.id) === parseInt(this.curPlayer)
-      )
-        return true;
-      else return false;
-    },
-  },
-};
+const props = defineProps({
+  enableKick: Boolean,
+  kickText: String,
+  curPlayer: String,
+  myId: String,
+  players: Array,
+});
+
+defineEmits(["kick"]);
+
+function isPlaying(player) {
+  return props.curPlayer && player.id === props.curPlayer;
+}
 </script>
 
 <template>
   <transition-group name="fade">
     <div
-      v-for="item in players"
+      v-for="item in props.players"
       :key="item.id"
       :class="{
         players: true,
@@ -49,10 +37,10 @@ export default {
       />
       <div>
         <button
-          v-if="enableKick && parseInt(item.id) != parseInt(myId)"
+          v-if="props.enableKick && item.id != props.myId"
           @click="$emit('kick', item, 'true')"
         >
-          {{ kickText || "Kick Player" }}
+          {{ props.kickText || "Kick Player" }}
         </button>
       </div>
     </div>

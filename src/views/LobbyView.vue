@@ -46,15 +46,15 @@ async function countDown(count = 4) {
 const handlers = {
   ready: (data) => {
     gameSession.getPlayerInfo(data.id).ready = true;
-    playerlist.value.players = gameSession.players;
+    gameSession.save();
   },
   connectPlayer: (data) => {
     gameSession.getPlayerInfo(data.id).disconnected = false;
-    playerlist.players = gameSession.players;
+    gameSession.save();
   },
   disconnectPlayer: (data) => {
     gameSession.getPlayerInfo(data.id).disconnected = true;
-    playerlist.value.players = gameSession.players;
+    gameSession.save();
     toaster.value.show(
       `${gameSession.getPlayerInfo(data.id).name} ${T("is disconnected")}`,
       {
@@ -72,7 +72,6 @@ const handlers = {
     Object.assign(gameSession.playersData, data.playersData);
     Object.assign(gameSession.gameData, data.gameData);
     gameSession.players.push({ id: data.id, name: data.name });
-    playerlist.value.players = gameSession.players;
     gameSession.save();
   },
   start: async () => {
@@ -140,10 +139,6 @@ const websocket = setupStreamEventHandler(
   handlers
 );
 
-onMounted(() => {
-  playerlist.value.players = gameSession.players;
-});
-
 function getMainActionText() {
   return [T("Ready"), T("Not ready")][states.status];
 }
@@ -184,6 +179,7 @@ async function mainAction() {
     <h3>{{ T("players") }}</h3>
     <playerList
       ref="playerlist"
+      :players="gameSession.players"
       :enable-kick="
         !states.hasVoted && gameSession.players.length > kick_player_threshold
       "
