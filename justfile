@@ -17,11 +17,19 @@ export WEB_CONCURRENCY := "1"
 default:
     @just --list
 
+# removes & re-install everything
+cleanenv:
+    rm -fr .tox
+    rm -fr node_modules
+    npm i
+    just js
+    tox -e style
+
 # run everything python related
 py: style coverage unit types
 
 # run everything JS related
-js: vue locales front
+js: gamelist vue locales front
 
 # build Javascript components in production mode
 vue:
@@ -35,6 +43,9 @@ dev:
 fix:
     ./scripts/install_editable {{venv}} {{pkg}}
 
+# builds the gamelist
+gamelist:
+   ./scripts/genGameList.py 
 
 # build translations files
 locales:
