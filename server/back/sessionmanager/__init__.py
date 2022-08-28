@@ -100,16 +100,15 @@ async def addPlayer(player: newPlayer) -> Session:
     player_info = player.dict()
     del player_info["sessionName"]
     pid = await pidP
+    spid = str(pid)
     secretId = int((time.time() * 1000) % 3600) + pid
-    player_info["id"] = pid
+    player_info["id"] = spid
     player_info["_secret"] = secretId
     (
         initialPlayerData,
         initialPlayerDataLists,
         initialPlayerDataSets,
     ) = getPlayerInitialData(sess)
-
-    spid = str(pid)
 
     redisObj = {}
     for name, value in player_info.items():
