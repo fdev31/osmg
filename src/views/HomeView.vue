@@ -88,10 +88,10 @@ async function start_game(game) {
             placeholder="Nickname"
             maxlength="20"
           />
-          <avatar-card
+          <avatarCard
             ref="avatar"
             noname
-            avatar-name="Nick"
+            avatarName="Nick"
             style="margin: -36px 0 0 220px"
             class="avatar"
           />

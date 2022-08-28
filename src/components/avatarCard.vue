@@ -1,43 +1,36 @@
 <script setup>
-import { onMounted, useAttrs, ref, watch, watchEffect } from "vue";
+import { onMounted, useAttrs, ref, watchEffect } from "vue";
 import { Avatar } from "@/assets/avatars.js";
 import { computed } from "@vue/reactivity";
 
 const avatarDom = ref();
 let avatarObj = null;
-let name = "";
-let small = useAttrs().small || false;
 
-console.log("SMALL", small);
+const props = defineProps({
+  avatarId: String,
+  avatarName: String,
+  small: Boolean,
+});
 
 const className = computed(() => {
-  return small ? "avatarCard avatar-small " : "avatarCard avatar-big ";
+  return props.small ? "avatarCard avatar-small " : "avatarCard avatar-big ";
 });
 
 function setName(n) {
-  name = n;
-  avatarObj && avatarObj.fromName(name);
+  avatarObj && avatarObj.fromName(n);
 }
-defineExpose({ name, setName });
-
-watchEffect(() => {
-  name = useAttrs().avatarName;
-  avatarObj && avatarObj.fromName(name);
-});
+defineExpose({ setName });
 
 onMounted(() => {
-  name = useAttrs().avatarName;
   let _id =
-    "av-" +
-    (useAttrs()["avatar-id"] ||
-      Math.floor(Math.random() * 999999).toString(36));
+    "av-" + (props.avatarId || Math.floor(Math.random() * 999999).toString(36));
 
   avatarDom.value.id = _id;
 
   avatarObj = new Avatar("#" + _id);
   // workaround to force update
   avatarDom.value.querySelector("svg").setAttribute("viewBox", "0 0 360 460");
-  if (name) avatarObj.fromName(name);
+  if (props.avatarName) avatarObj.fromName(props.avatarName);
 });
 </script>
 
@@ -1149,7 +1142,7 @@ onMounted(() => {
         </g>
       </svg>
       <span v-if="$attrs.showName" :class="className + ' avatarName'">{{
-        name
+        props.avatarName
       }}</span>
     </div>
   </main>
