@@ -1,6 +1,7 @@
 node_modules
 dump.rdb
 venv
+front/**
 back/build
 back/back.egg-info
 back/dist
