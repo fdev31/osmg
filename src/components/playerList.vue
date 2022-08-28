@@ -41,8 +41,9 @@ export default {
       }"
     >
       <avatarCard
-        class="avatar-lobby"
+        class="avatar-list"
         :showName="true"
+        :small="true"
         :avatarName="item.name"
         :avatar-id="item.id"
       />
@@ -62,11 +63,9 @@ export default {
 .playing {
   background-color: rgb(138, 172, 16);
 }
-
 .ready {
   background-color: rgb(227, 188, 33);
 }
-
 .disconnected {
   background-color: brown;
 }

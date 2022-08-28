@@ -54,3 +54,17 @@ button:hover {
   background-color: #8fbeff;
   box-shadow: 0px 0px 1px 1px rgb(0, 0, 0, 0.3);
 }
+
+body {
+  font: "Aliens Among Us", sans-serif;
+}
+
+@font-face {
+  font-family: "Aliens Among Us";
+  src: url("@fonts/aliensamongus.ttf");
+}
+
+@font-face {
+  font-family: "Aliens Among Us Italic";
+  src: url("@fonts/aliensamongus-italic.ttf");
+}

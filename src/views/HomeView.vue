@@ -48,6 +48,7 @@ async function join_game(sessionId) {
       if (player.name == mynickname.value) result.myId = player.id;
     }
     gameSession.$patch(result);
+    console.log(gameSession.asObject());
     gameSession.save();
     router.push("/lobby");
   } else {
@@ -130,7 +131,15 @@ async function start_game(game) {
   </main>
 </template>
 
-<style>
+<style scoped>
+.avatar {
+  position: relative;
+}
+.avatar svg {
+  width: 180px;
+  height: 230px;
+  display: block;
+}
 input {
   width: 300px;
   height: 33px;
@@ -154,38 +163,16 @@ input:focus {
   padding-left: 10px;
   border-left: 5px solid #00a4ff;
 }
-.avatar {
-  position: relative;
-}
-.avatar svg {
-  width: 180px;
-  height: 230px;
-  display: block;
-}
-.avatar-lobby {
-  position: relative;
-  display: inline-block;
-  vertical-align: bottom;
-}
-.avatar-lobby svg {
-  width: 36px;
-  height: 46px;
-}
-.myavatar {
-  background-color: rgba(255, 255, 0, 0.3);
+text {
+  pointer-events: none;
 }
 
-#app {
-  font: "Aliens Among Us", sans-serif;
-}
-
-@font-face {
-  font-family: "Aliens Among Us";
-  src: url("@fonts/aliensamongus.ttf");
-}
-
-@font-face {
-  font-family: "Aliens Among Us Italic";
-  src: url("@fonts/aliensamongus-italic.ttf");
+.wrap {
+  margin: 50px auto 0 auto;
+  width: 100%;
+  display: grid;
+  align-items: space-around;
+  max-width: 1200px;
+  cursor: pointer;
 }
 </style>
