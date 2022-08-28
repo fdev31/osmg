@@ -1,9 +1,10 @@
 <script setup>
 import { ref, onMounted, watchEffect } from "vue";
-import { RouterLink } from "vue-router";
+import { RouterLink, useRouter } from "vue-router";
 import { GameSession } from "@/stores/gamesession.js";
 import playerList from "@/components/playerList.vue";
 
+const router = useRouter();
 const gameSession = GameSession();
 const name = gameSession.name;
 
@@ -69,8 +70,7 @@ const handlers = {
   },
   start: async (data) => {
     countDown().then(() => {
-      // FIXME
-      window.location = `/game_${gameSession.gameType}.html`;
+      router.push(`/game-${gameSession.gameType}`);
     });
   },
   voteStart: (data) => {
