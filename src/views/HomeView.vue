@@ -89,9 +89,9 @@ async function start_game(game) {
 <template>
   <main v-cloak>
     <div class="bg">
-      <h1 class="title">{{ T("Chose a name") }}:</h1>
       <div class="container">
         <div class="avatarframe">
+          <h2 class="title">{{ T("Identity") }}:</h2>
           <input
             v-model="mynickname"
             type="text"
