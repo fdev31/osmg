@@ -3,11 +3,9 @@ import { ref, onMounted, watchEffect } from "vue";
 import { RouterLink, useRouter } from "vue-router";
 import { GameSession } from "@/stores/gamesession.js";
 import playerList from "@/components/playerList.vue";
+import Toast from "@/components/Toast.vue";
 
-const router = useRouter();
-const gameSession = GameSession();
-const name = gameSession.name;
-
+import { kickPlayerVote } from "@/lib/voting.js";
 import {
   post,
   setupStreamEventHandler,
@@ -18,8 +16,9 @@ import {
   delay,
 } from "@/lib/utils.js";
 
-import { kickPlayerVote } from "@/lib/voting.js";
-import { Toaster } from "@/lib/toaster.js";
+const router = useRouter();
+const gameSession = GameSession();
+const name = gameSession.name;
 
 let statuses = {
   NOT_READY: 0,
@@ -27,26 +26,28 @@ let statuses = {
 };
 
 const playerlist = ref();
+const toaster = ref();
+
+document.T = toaster;
 
 let status = statuses.NOT_READY;
 let hasVoted = false;
 const kick_player_threshold = 2;
-const toaster = new Toaster();
 const host = document.location.host;
 
 async function countDown(count = 4) {
   for (let index = 1; index < count; index++) {
     let display = count - (index + 1) == 0 ? "Go !" : count - (index + 1);
-    toaster.show(display, { closeTimeOut: 2000 });
+    toaster.value.show(display, { duration: 2000 });
     await delay(1000);
   }
 }
 const handlers = {
   disconnectPlayer: (data) => {
-    toaster.show(
+    toaster.value.show(
       `${gameSession.getPlayerInfo(data.id).name} ${T("is disconnected")}`,
       {
-        closeTimeOut: 2500,
+        duration: 2500,
       }
     );
   },
@@ -57,8 +58,8 @@ const handlers = {
   newPlayer: (data) => {
     delete data["cat"];
 
-    toaster.show(`${data.name} ${T("enters the game")}`, {
-      closeTimeOut: 2500,
+    toaster.value.show(`${data.name} ${T("enters the game")}`, {
+      duration: 2500,
     });
 
     Object.assign(gameSession.playersData, data.playersData);
@@ -82,7 +83,7 @@ const handlers = {
       });
       let message = `${T("Do you want to kick")} ${player_kicked.name}`;
       let options = {
-        closeTimeOut: -1,
+        duration: -1,
         buttonGroup: {
           yes: {
             action: (x) => kickPlayerVote(gameSession, player_kicked),
@@ -94,7 +95,7 @@ const handlers = {
           },
         },
       };
-      toaster.show(message, options);
+      toaster.value.show(message, options);
     }
     hasVoted = true;
   },
@@ -116,9 +117,9 @@ const handlers = {
       ? (message = `End of vote. Player has been kicked!`)
       : (message = `End of vote. Player stay in game`);
     let options = {
-      closeTimeOut: 2500,
+      duration: 2500,
     };
-    toaster.show(T(message), options);
+    toaster.value.show(T(message), options);
     hasVoted = false;
   },
 };
@@ -154,8 +155,8 @@ async function mainAction() {
 </script>
 
 <template>
-  <div id="toaster" />
-  <div v-cloak id="app">
+  <Toast ref="toaster" />
+  <div v-cloak>
     <h2>{{ gameSession.gameType }}</h2>
     <button
       type="button"
