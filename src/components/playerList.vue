@@ -7,7 +7,7 @@ export default {
     enableKick: Boolean,
     kickText: String,
     curPlayer: String,
-    myId: Number,
+    myId: String,
   },
   emits: ["kick"],
   data() {
