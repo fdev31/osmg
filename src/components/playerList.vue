@@ -60,13 +60,16 @@ export default {
 </template>
 
 <style scoped lang="less">
+.players {
+  border-radius: 5px;
+}
 .playing {
-  background-color: rgb(138, 172, 16);
+  background-color: rgba(138, 172, 16, 0.4);
 }
 .ready {
-  background-color: rgb(227, 188, 33);
+  background-color: rgba(227, 188, 33, 0.4);
 }
 .disconnected {
-  background-color: brown;
+  background-color: rgba(165, 42, 42, 0.4);
 }
 </style>
