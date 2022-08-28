@@ -10,6 +10,7 @@ const props = defineProps({
   avatarId: { type: String, default: "" },
   avatarName: { type: String, default: "" },
   small: { type: Boolean, default: false },
+  showName: { type: Boolean, default: false },
 });
 
 const className = computed(() => {
@@ -1141,7 +1142,7 @@ onMounted(() => {
           </g>
         </g>
       </svg>
-      <span v-if="$attrs.showName" :class="className + ' avatarName'">{{
+      <span v-if="props.showName" :class="className + ' avatarName'">{{
         props.avatarName
       }}</span>
     </div>
