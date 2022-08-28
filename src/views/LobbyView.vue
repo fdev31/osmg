@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref, onMounted, watchEffect } from "vue";
 import { RouterLink } from "vue-router";
 import { GameSession } from "@/stores/gamesession.js";
 import playerList from "@/components/playerList.vue";
@@ -9,12 +9,12 @@ const name = gameSession.name;
 
 import {
   Toaster,
-  any2Obj,
   post,
   setupStreamEventHandler,
   getPlayerInfo,
   getTranslation as T,
   initLocales,
+  copyURL,
   setCookie,
   delay,
   kickPlayerVote,
@@ -48,24 +48,24 @@ const handlers = {
   },
   curPlayer: (data) => {
     gameSession.gameData.curPlayer = data.val;
-    setCookie(any2Obj(gameSession));
+    setCookie(gameSession.asObject());
   },
   newPlayer: (data) => {
     delete data["cat"];
 
+    /* FIXME
+
     toaster.show(`${data.name} ${T("enters the game")}`, {
       closeTimeOut: 2500,
     });
-    let pd = gameSession.playersData;
-    if (pd[data.id] == undefined) {
-      pd[data.id] = {};
-    }
-    gameSession.playersData[data.id] = {};
+    */
+
+    Object.assign(gameSession.playersData, data.playersData);
+    Object.assign(gameSession.gameData, data.gameData);
     gameSession.players.push({ id: data.id, name: data.name });
-    for (let newpd of Object.keys(data.playersData)) {
-      Object.assign(pd[newpd], data.playersData[newpd]);
-    }
-    setCookie(any2Obj(gameSession));
+
+    playerlist.value.players = gameSession.players;
+    setCookie(gameSession.asObject());
   },
   start: async (data) => {
     countDown().then(() => {
@@ -108,7 +108,7 @@ const handlers = {
       if (gameSession.playersData[data.id] != undefined)
         delete application.playersData[data.id];
     }
-    setCookie(any2Obj(gameSession));
+    setCookie(gameSession.asObject());
   },
   voteEnd: (data) => {
     let message;
@@ -120,8 +120,6 @@ const handlers = {
     };
     toaster.show(T(message), options);
     hasVoted = false;
-    setPlayersById(application);
-    setCookie(Vue2Obj(application));
   },
 };
 
@@ -161,7 +159,7 @@ async function mainAction() {
     <h2>{{ gameSession.gameType }}</h2>
     <button
       type="button"
-      onclick="copyURL('link')"
+      @click="copyURL('link')"
       :title="T('Click to copy invite link to the clipboard')"
     >
       {{ T("Invite") }}
