@@ -18,9 +18,8 @@ export const GameSession = defineStore({
     },
     asObject() {
       const obj = JSON.parse(JSON.stringify(this));
-      obj["$id"] = undefined;
       for (let k of Object.keys(obj)) {
-        if (k[0] == "_") obj[k] = undefined;
+        if (k[0] == "_" || k[0] == "$") delete obj[k];
       }
       return obj;
     },
