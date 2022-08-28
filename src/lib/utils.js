@@ -5,6 +5,10 @@ export function delay(duration = 1000) {
     setTimeout(res, duration);
   });
 }
+export function randomChoice(collection) {
+  const idx = Math.ceil(Math.random() * (collection.length - 1));
+  return collection[idx];
+}
 
 const cookie_name = "S";
 

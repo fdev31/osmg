@@ -1,30 +1,40 @@
 <script setup>
-import { onMounted, onBeforeMount, ref, watch } from "vue";
+import { onMounted, onUnmounted, ref, watch } from "vue";
 import avatarCard from "@/components/avatarCard.vue";
-import { RouterLink, useRouter } from "vue-router";
+import { useRouter } from "vue-router";
 import { GameSession } from "@/stores/gamesession.js";
-
-import { gamelist } from "@/lib/gamelist.js";
-const router = useRouter();
-
-const gameSession = GameSession();
-
 import { getTranslation as T, initLocales } from "@/lib/utils.js";
+import { gamelist } from "@/lib/gamelist.js";
+import { makeName } from "@/lib/wordsMaker.js";
 
+const router = useRouter();
+const gameSession = GameSession();
 const mynickname = ref("Ninon");
 const games = ref({});
 const avatar = ref();
+
+let namesTimer = null;
+
+initLocales();
 
 watch(mynickname, (newVal) => {
   if (newVal) avatar.value.setName(newVal);
 });
 
-initLocales();
+function clearTimers() {
+  if (namesTimer) clearInterval(namesTimer);
+}
+
+onUnmounted(clearTimers);
+
 onMounted(async () => {
   const router = useRouter();
   await router.isReady();
-  avatar.value.setName(mynickname.value);
+  mynickname.value = makeName();
   games.value = gamelist;
+  namesTimer = setInterval(() => {
+    mynickname.value = makeName();
+  }, 5000);
 });
 
 async function join_game(sessionId) {
@@ -86,6 +96,7 @@ async function start_game(game) {
             v-model="mynickname"
             type="text"
             placeholder="Nickname"
+            v-on:focus="clearTimers()"
             maxlength="20"
           />
           <avatarCard
@@ -134,17 +145,32 @@ async function start_game(game) {
 <style scoped>
 .avatar {
   position: relative;
+  margin: -110px 0 0 294px;
+}
+.avatarframe {
+  background-color: rgb(0 125 152);
+  border-radius: 20px;
+  height: 395px;
+  padding-left: 10%;
 }
 .avatar svg {
   width: 180px;
   height: 230px;
   display: block;
 }
+.tile .text {
+  height: 3em;
+  transition-duration: 1s;
+  overflow: hidden;
+}
+.tile:hover .text {
+  height: 10em;
+}
 input {
   width: 300px;
   height: 33px;
-  margin-left: 8px;
-  margin-top: 8px;
+  margin-left: -5%;
+  margin-top: 5%;
   padding: 3px;
   border-radius: 5px;
   border: 0px;
@@ -165,6 +191,7 @@ input:focus {
 }
 text {
   pointer-events: none;
+  overflow: hidden;
 }
 
 .wrap {
@@ -174,5 +201,16 @@ text {
   align-items: space-around;
   max-width: 1200px;
   cursor: pointer;
+}
+.gamebutton {
+  background-color: #3e434b;
+  width: 64%;
+  margin-left: 18%;
+  border-radius: 10px;
+  padding: 1em;
+  margin-bottom: 2em;
+}
+div.tile > span > img {
+  width: 100%;
 }
 </style>
