@@ -1162,7 +1162,6 @@ onMounted(() => {
   object-fit: cover;
 }
 .avatar-small {
-  width: 200px;
   height: 96px;
 }
 .avatar-small svg {

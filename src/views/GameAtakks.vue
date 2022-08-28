@@ -48,18 +48,24 @@ onMounted(() => {
 
 <style scoped>
 #players_frame {
-  width: 200px;
   position: fixed;
+  padding: 1ex 2ex;
   right: 1em;
   display: block;
   border: solid 2px grey;
   border-radius: 10px;
   background-color: rgba(0, 0, 0, 0.5);
+  display: block;
+  inline-size: fit-content;
 }
 @media (max-width: 1024px) {
   #players_frame {
     scale: 0.5;
-    top: -46px;
+    left: 1em;
+    clear: both;
+    display: block;
+    position: relative;
+    margin: 0;
   }
 }
 </style>
