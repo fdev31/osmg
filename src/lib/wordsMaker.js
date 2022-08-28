@@ -2,6 +2,7 @@ import { randomChoice } from "./utils";
 
 const adj = [
   "Red",
+  "Smashed",
   "Flying",
   "Strange",
   "Epic",
@@ -13,14 +14,31 @@ const adj = [
   "Funky",
   "Rocking",
   "Melting",
+  "Hot",
+  "Warm",
+  "Cold",
   "Frozen",
   "Burning",
   "Black",
+  "Smocky",
   "Blue",
   "Swimming",
+  "Flaming",
 ];
 const names = [
   "Squirrel",
+  "Plant",
+  "Cookie",
+  "Cake",
+  "Necklace",
+  "Moutains",
+  "Snow",
+  "Rock",
+  "Water",
+  "Pencil",
+  "Cup",
+  "Fire",
+  "Glasses",
   "Panda",
   "Banana",
   "Suit",
@@ -46,6 +64,10 @@ const names = [
   "Shirt",
   "Pants",
   "Bubble-gum",
+  "String",
+  "Beard",
+  "Hair",
+  "Lips",
 ];
 
 export function makeName() {

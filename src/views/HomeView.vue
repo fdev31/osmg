@@ -34,7 +34,7 @@ onMounted(async () => {
   games.value = gamelist;
   namesTimer = setInterval(() => {
     mynickname.value = makeName();
-  }, 7000);
+  }, 5000);
 });
 
 async function join_game(sessionId) {

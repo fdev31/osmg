@@ -6,7 +6,7 @@ export function delay(duration = 1000) {
   });
 }
 export function randomChoice(collection) {
-  const idx = Math.ceil(Math.random() * (collection.length - 1));
+  const idx = Math.floor(Math.random() * collection.length);
   return collection[idx];
 }
 
