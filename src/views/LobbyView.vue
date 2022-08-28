@@ -27,7 +27,7 @@ let statuses = {
 
 const playerlist = ref();
 
-let status = 0;
+let status = statuses.NOT_READY;
 let hasVoted = false;
 const kick_player_threshold = 2;
 const toaster = new Toaster();
@@ -148,7 +148,7 @@ async function mainAction() {
         id: gameSession.myId,
         sessionName: gameSession.name,
       });
-      status = 1;
+      status = statuses.READY;
       break;
     default:
       break;
