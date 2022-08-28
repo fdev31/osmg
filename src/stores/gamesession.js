@@ -4,7 +4,6 @@ export const GameSession = defineStore({
   id: "session",
   state: () => ({
     myId: "",
-    myName: "",
     gameType: "",
     name: "",
     gameData: {},
@@ -12,6 +11,11 @@ export const GameSession = defineStore({
     playersData: [],
     secret: 0,
   }),
+  getters: {
+    myName(state) {
+      return state.getPlayerInfo(state.myId).name;
+    },
+  },
   actions: {
     getPlayerInfo(pid) {
       for (let player of this.players) if (player.id == pid) return player;
