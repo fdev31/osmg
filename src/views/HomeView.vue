@@ -9,22 +9,15 @@ const router = useRouter();
 
 const gameSession = GameSession();
 
-import {
-  getJson,
-  getTranslation,
-  initLocales,
-  setCookie,
-} from "@/lib/utils.js";
+import { getTranslation as T, initLocales, setCookie } from "@/lib/utils.js";
 
 const mynickname = ref("Ninon");
 const games = ref({});
 const avatar = ref();
 
 watch(mynickname, (newVal) => {
-  avatar.value.setName(newVal);
+  if (newVal) avatar.value.setName(newVal);
 });
-
-const T = getTranslation;
 
 initLocales();
 onMounted(async () => {
@@ -55,7 +48,7 @@ async function join_game(sessionId) {
       if (player.name == mynickname.value) result.myId = player.id;
     }
     gameSession.$patch(result);
-    setCookie(result);
+    setCookie(gameSession.asObject());
     router.push("/lobby");
   } else {
     const result = await response_player.json();
@@ -64,6 +57,7 @@ async function join_game(sessionId) {
 }
 
 async function clear_session() {
+  // TODO: leave existing game first !!
   gameSession.$reset();
   router.push("/");
 }
@@ -81,8 +75,8 @@ async function start_game(game) {
 </script>
 
 <template>
-  <main>
-    <div v-cloak class="bg">
+  <main v-cloak>
+    <div class="bg">
       <h1 class="title">{{ T("Chose a name") }}:</h1>
       <div class="container">
         <div class="avatarframe">
@@ -102,9 +96,11 @@ async function start_game(game) {
         </div>
       </div>
       <div v-if="gameSession.name">
-        <button @click="join_game(gameSession.name)">
-          {{ T("Join game") }}
-        </button>
+        <div v-if="!gameSession.secret">
+          <button @click="join_game(gameSession.name)">
+            {{ T("Join game") }}
+          </button>
+        </div>
         <button @click="clear_session()">
           {{ T("Change game") }}
         </button>
