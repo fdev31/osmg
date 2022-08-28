@@ -2,22 +2,21 @@
 import os
 
 from fastapi import FastAPI
-from fastapi.responses import RedirectResponse, Response, FileResponse
+from fastapi.responses import FileResponse, RedirectResponse, Response
 from fastapi.staticfiles import StaticFiles
 
 from .utils import ODict
 
-static_dir = None
+static_dir: str = ""
 
 
 def index_html() -> Response:
     return RedirectResponse("/index.html")
 
 
-async def roomsAccess(sessionId: str) -> RedirectResponse:
+async def roomsAccess(sessionId: str) -> FileResponse:
     "Redirects a nice /r/<session>/ url into the real one"
     return FileResponse(os.path.join(static_dir, "index.html"))
-    return RedirectResponse("/join.html?session=" + sessionId)
 
 
 def init(app: FastAPI, config: ODict) -> None:
