@@ -47,10 +47,10 @@ button {
   color: #fff;
   border: none;
   border-radius: 12px;
-  box-shadow: 0px 1px 2px 2px rgb(0, 0, 0, 0.7);
+  box-shadow: 0px 1px 2px 2px rgb(0, 0, 0, 0.3);
   cursor: pointer;
 }
 button:hover {
   background-color: #8fbeff;
-  box-shadow: 0px 0px 1px 1px rgb(0, 0, 0, 0.7);
+  box-shadow: 0px 0px 1px 1px rgb(0, 0, 0, 0.3);
 }
