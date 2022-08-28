@@ -34,7 +34,7 @@ onMounted(async () => {
   games.value = gamelist;
   namesTimer = setInterval(() => {
     mynickname.value = makeName();
-  }, 5000);
+  }, 7000);
 });
 
 async function join_game(sessionId) {
@@ -175,6 +175,7 @@ input {
   border-radius: 5px;
   border: 0px;
   transition: 0.4s ease-in-out;
+  z-index: 2;
 }
 
 input:hover {
@@ -212,5 +213,6 @@ text {
 }
 div.tile > span > img {
   width: 100%;
+  border-radius: 10px;
 }
 </style>
