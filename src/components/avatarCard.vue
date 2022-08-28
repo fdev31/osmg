@@ -5,7 +5,6 @@ import { Avatar } from "@/assets/avatars.js";
 const avatarDom = ref();
 let avatarObj = null;
 let name = "";
-let showName = false;
 
 function setName(n) {
   name = n;
@@ -1128,7 +1127,7 @@ onMounted(() => {
         </g>
       </g>
     </svg>
-    <span v-if="showName" class="avatarName">{{ name }}</span>
+    <span v-if="$attrs.showName" class="avatarName">{{ name }}</span>
   </div>
 </template>
 

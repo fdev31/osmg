@@ -42,6 +42,7 @@ export default {
     >
       <avatarCard
         class="avatar-lobby"
+        :showName="true"
         :avatarName="item.name"
         :avatar-id="item.id"
       />
