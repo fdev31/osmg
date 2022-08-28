@@ -43,7 +43,17 @@ async function countDown(count = 4) {
   }
 }
 const handlers = {
+  ready: (data) => {
+    gameSession.getPlayerInfo(data.id).ready = true;
+    playerlist.value.players = gameSession.players;
+  },
+  connectPlayer: (data) => {
+    gameSession.getPlayerInfo(data.id).disconnected = false;
+    playerlist.value.players = gameSession.players;
+  },
   disconnectPlayer: (data) => {
+    gameSession.getPlayerInfo(data.id).disconnected = true;
+    playerlist.value.players = gameSession.players;
     toaster.value.show(
       `${gameSession.getPlayerInfo(data.id).name} ${T("is disconnected")}`,
       {
@@ -65,7 +75,6 @@ const handlers = {
     Object.assign(gameSession.playersData, data.playersData);
     Object.assign(gameSession.gameData, data.gameData);
     gameSession.players.push({ id: data.id, name: data.name });
-
     playerlist.value.players = gameSession.players;
     setCookie(gameSession.asObject());
   },

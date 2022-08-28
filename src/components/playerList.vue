@@ -35,6 +35,7 @@ export default {
       :key="item.id"
       :class="{
         players: true,
+        ready: item.ready,
         playing: isPlaying(item),
         disconnected: item.disconnected,
       }"
@@ -56,4 +57,16 @@ export default {
   </transition-group>
 </template>
 
-<style scoped lang="less"></style>
+<style scoped lang="less">
+.playing {
+  background-color: rgb(138, 172, 16);
+}
+
+.ready {
+  background-color: rgb(227, 188, 33);
+}
+
+.disconnected {
+  background-color: brown;
+}
+</style>
