@@ -1,9 +1,9 @@
 <script setup>
 const props = defineProps({
-  width: Number,
-  height: Number,
-  playersData: Object,
-  dataKey: String,
+  width: { type: Number, default: 7 },
+  height: { type: Number, default: 7 },
+  playersData: { type: Object, default: () => {} },
+  dataKey: { type: String, default: "pawns" },
 });
 
 function createGrid() {

@@ -91,7 +91,7 @@ async function start_game(game) {
           <avatarCard
             ref="avatar"
             noname
-            avatarName="Nick"
+            avatar-name="Nick"
             style="margin: -36px 0 0 220px"
             class="avatar"
           />

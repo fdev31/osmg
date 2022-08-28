@@ -23,5 +23,5 @@ defineExpose({ show });
 </script>
 
 <template>
-  <vue-notification-list position="top-right"></vue-notification-list>
+  <vue-notification-list position="top-right" />
 </template>

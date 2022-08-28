@@ -1,15 +1,15 @@
 <script setup>
 import { onMounted, useAttrs, ref, watchEffect } from "vue";
 import { Avatar } from "@/assets/avatars.js";
-import { computed } from "@vue/reactivity";
+import { computed } from "vue";
 
 const avatarDom = ref();
 let avatarObj = null;
 
 const props = defineProps({
-  avatarId: String,
-  avatarName: String,
-  small: Boolean,
+  avatarId: { type: String, default: "" },
+  avatarName: { type: String, default: "" },
+  small: { type: Boolean, default: false },
 });
 
 const className = computed(() => {

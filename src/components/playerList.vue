@@ -2,11 +2,11 @@
 import avatarCard from "./avatarCard.vue";
 
 const props = defineProps({
-  enableKick: Boolean,
-  kickText: String,
-  curPlayer: String,
-  myId: String,
-  players: Array,
+  enableKick: { type: Boolean, default: false },
+  kickText: { type: String, default: "Kick Player" },
+  curPlayer: { type: String, default: "" },
+  myId: { type: String, default: "" },
+  players: { type: Array, default: () => [] },
 });
 
 defineEmits(["kick"]);
@@ -30,9 +30,9 @@ function isPlaying(player) {
     >
       <avatarCard
         class="avatar-list"
-        :showName="true"
+        :show-name="true"
         :small="true"
-        :avatarName="item.name"
+        :avatar-name="item.name"
         :avatar-id="item.id"
       />
       <div>
@@ -40,7 +40,7 @@ function isPlaying(player) {
           v-if="props.enableKick && item.id != props.myId"
           @click="$emit('kick', item, 'true')"
         >
-          {{ props.kickText || "Kick Player" }}
+          {{ props.kickText }}
         </button>
       </div>
     </div>

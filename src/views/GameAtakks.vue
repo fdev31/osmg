@@ -42,12 +42,7 @@ onMounted(() => {
         :my-id="gameSession.myId"
       />
     </div>
-    <atakksGrid
-      :playersData="gameSession.playersData"
-      dataKey="pawns"
-      :width="7"
-      :height="7"
-    />
+    <atakksGrid :players-data="gameSession.playersData" />
   </div>
 </template>
 
