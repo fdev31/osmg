@@ -8,7 +8,6 @@ const gameSession = GameSession();
 const name = gameSession.name;
 
 import {
-  Toaster,
   post,
   setupStreamEventHandler,
   getTranslation as T,
@@ -16,8 +15,10 @@ import {
   copyURL,
   setCookie,
   delay,
-  kickPlayerVote,
 } from "@/lib/utils.js";
+
+import { kickPlayerVote } from "@/lib/voting.js";
+import { Toaster } from "@/lib/toaster.js";
 
 let statuses = {
   NOT_READY: 0,

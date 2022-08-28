@@ -28,9 +28,6 @@ function _setEventStreamHandler(handler, query) {
     handler(JSON.parse(event.data));
   });
 }
-function runOnEnter(code) {
-  if (event.key == "Enter") eval(code);
-}
 export function copyURL(inputId) {
   let w = document.getElementById(inputId);
   w.select();
@@ -73,16 +70,6 @@ export async function post(url, body) {
   var response = await fetch(url, requestOptions);
   const result = await response.json();
   return result;
-}
-
-function setAttr(e, name, val) {
-  e.forEach((x) => x.setAttribute(name, val));
-}
-function show(e) {
-  e.forEach((x) => (x.style.visibility = "visible"));
-}
-function hide(e) {
-  e.forEach((x) => (x.style.visibility = "hidden"));
 }
 
 function arrayEquals(arr1, arr2) {
@@ -185,24 +172,6 @@ export class Toaster {
       setTimeout((x) => this.disableVisibility(), showOptions.closeTimeOut);
   }
 }
-
-/**
- * Trigger a vote between players toward server
- *
- * @param {Object} query.kicker The player kicking.
- * @param {Object} query.kicked The player to kick.
- * @param {boolean} query.validate A binary choice , where true = yes and false = no.
- * @param {string} query.description The text describing the action.
- * @param {Object} query.app The vue app calling the function, must contain secret and sessionName values.
- */
-async function vote(query) {
-  let url = `http://${document.location.host}/c/session/vote?name=kick_${query.kicked.id}&validate=${query.validate}&description=${query.description}`;
-  let action = await post(url, {
-    id: parseInt(query.kicker.id),
-    secret: parseInt(query.app.secret),
-    sessionName: query.app.name,
-  });
-}
 let currentLocale = null;
 
 export function initLocales() {
@@ -228,46 +197,4 @@ export function getTranslation(text) {
   }
   return text;
   //return "/!\\ E: " + text; // to debug english
-}
-
-function removeValueFromArray(value, myarray) {
-  if (myarray == undefined)
-    throw "array is not defined. Provide a proper arguments";
-  for (let index = 0; index < myarray.length; index++) {
-    if (myarray[index] === value) {
-      myarray.splice(index, 1);
-      index--;
-    }
-  }
-}
-function removeAllChildElement(elm) {
-  while (elm.lastChild) {
-    elm.removeChild(elm.lastChild);
-  }
-}
-function createElement(type = "div", innerHtml = null, classList = []) {
-  let elm = document.createElement(type);
-  elm.innerHTML = innerHtml;
-  classList.forEach((x) => elm.classList.add(x));
-  return elm;
-}
-
-// FIXME: kickPlayerVote isn't a generic function, shouldn't be in utils
-// FIXME: passing parameters to a generic function should be done in the Vue application code
-// FIXME: kickPlayerVote uses hardcoded strings
-// FIXME: kickPlayerVote uses translated strings
-export async function kickPlayerVote(app, player, validate = "true") {
-  let appliant;
-  app.players.map((p) => {
-    if (parseInt(p.id) === parseInt(app.myId)) appliant = p;
-  });
-  let description = `${appliant.name}%20veut%20d%C3%A9gager%20${player.name}`;
-  vote({
-    kicker: appliant,
-    kicked: player,
-    validate: validate,
-    description: description,
-    app: app,
-  });
-  app.gameData.hasVoted = true;
 }
