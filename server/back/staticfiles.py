@@ -14,7 +14,7 @@ def index_html() -> Response:
     return RedirectResponse("/index.html")
 
 
-async def directIndex(sessionId: str) -> FileResponse:
+async def directIndex(sessionId: str = "") -> FileResponse:
     "Redirects a nice /r/<session>/ url into the real one"
     return FileResponse(os.path.join(static_dir, "index.html"))
 
@@ -24,5 +24,6 @@ def init(app: FastAPI, config: ODict) -> None:
     static_dir = config.static_dir
     app.get("/r/{sessionId}")(directIndex)
     app.get("/game-{sessionId}")(directIndex)
+    app.get("/lobby")(directIndex)
     app.get("/", include_in_schema=False)(index_html)
     app.mount("/", StaticFiles(directory=config.static_dir), name="static")
