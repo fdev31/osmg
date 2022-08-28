@@ -22,6 +22,7 @@ export const GameSession = defineStore({
       for (let k of Object.keys(obj)) {
         if (k[0] == "_") obj[k] = undefined;
       }
+      return obj;
     },
   },
 });
