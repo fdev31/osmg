@@ -39,9 +39,9 @@ export default {
         disconnected: item.disconnected,
       }"
     >
-      <avatar-card
+      <avatarCard
         class="avatar-lobby"
-        :avatar-name="item.name"
+        :avatarName="item.name"
         :avatar-id="item.id"
       />
       <div>
