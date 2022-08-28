@@ -154,20 +154,20 @@ async function mainAction() {
 </script>
 
 <template>
-  <div id="toaster"></div>
-  <div id="app" v-cloak>
+  <div id="toaster" />
+  <div v-cloak id="app">
     <h2>{{ gameSession.gameType }}</h2>
     <button
       type="button"
-      @click="copyURL('link')"
       :title="T('Click to copy invite link to the clipboard')"
+      @click="copyURL('link')"
     >
       {{ T("Invite") }}
     </button>
     <input
+      id="link"
       size="40"
       type="text"
-      id="link"
       :value="`http://${host}/r/${name}`"
     />
     <h3>{{ T("players") }}</h3>
@@ -179,12 +179,13 @@ async function mainAction() {
       "
       :kick-text="T('Kick player')"
       :my-id="gameSession.myId"
-      v-on:kick="kickPlayerVote"
-    >
-    </playerList>
-    <button v-on:click="mainAction" type="button" class="mainAction">
+      @kick="kickPlayerVote"
+    />
+    <button type="button" class="mainAction" @click="mainAction">
       {{ getMainActionText() }}
     </button>
-    <RouterLink to="/">{{ T("Change game") }}</RouterLink>
+    <RouterLink to="/">
+      {{ T("Change game") }}
+    </RouterLink>
   </div>
 </template>

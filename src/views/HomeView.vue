@@ -82,7 +82,7 @@ async function start_game(game) {
 
 <template>
   <main>
-    <div class="bg" v-cloak>
+    <div v-cloak class="bg">
       <h1 class="title">{{ T("Chose a name") }}:</h1>
       <div class="container">
         <div class="avatarframe">
@@ -93,20 +93,21 @@ async function start_game(game) {
             maxlength="20"
           />
           <avatar-card
-            noname
             ref="avatar"
-            avatarName="Nick"
+            noname
+            avatar-name="Nick"
             style="margin: -36px 0 0 220px"
             class="avatar"
-          >
-          </avatar-card>
+          />
         </div>
       </div>
       <div v-if="gameSession.name">
         <button @click="join_game(gameSession.name)">
           {{ T("Join game") }}
         </button>
-        <button @click="clear_session()">{{ T("Change game") }}</button>
+        <button @click="clear_session()">
+          {{ T("Change game") }}
+        </button>
       </div>
       <div v-else>
         <h1>{{ T("Pick a game") }}:</h1>
@@ -121,7 +122,7 @@ async function start_game(game) {
                   <p
                     class="animate-text"
                     v-html="T(game + '_long_description')"
-                  ></p>
+                  />
                 </div>
               </span>
             </div>

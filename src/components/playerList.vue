@@ -3,17 +3,17 @@ import avatarCard from "./avatarCard.vue";
 
 export default {
   components: { avatarCard },
-  emits: ["kick"],
-  data() {
-    return {
-      players: [],
-    };
-  },
   props: {
     enableKick: Boolean,
     kickText: String,
     curPlayer: String,
     myId: Number,
+  },
+  emits: ["kick"],
+  data() {
+    return {
+      players: [],
+    };
   },
   methods: {
     isPlaying: function (player) {
@@ -28,8 +28,6 @@ export default {
 };
 </script>
 
-<style scoped lang="less"></style>
-
 <template>
   <transition-group name="fade">
     <div
@@ -43,17 +41,19 @@ export default {
     >
       <avatar-card
         class="avatar-lobby"
-        :avatarName="item.name"
+        :avatar-name="item.name"
         :avatar-id="item.id"
       />
       <div>
         <button
-          v-on:click="$emit('kick', item, 'true')"
           v-if="enableKick && parseInt(item.id) != parseInt(myId)"
+          @click="$emit('kick', item, 'true')"
         >
-          {{ this.kickText || "Kick Player" }}
+          {{ kickText || "Kick Player" }}
         </button>
       </div>
     </div>
   </transition-group>
 </template>
+
+<style scoped lang="less"></style>

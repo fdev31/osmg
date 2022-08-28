@@ -12,7 +12,7 @@ import SupportIcon from "./icons/IconSupport.vue";
     <template #icon>
       <DocumentationIcon />
     </template>
-    <template #heading>Documentation</template>
+    <template #heading> Documentation </template>
 
     Vue’s
     <a target="_blank" href="https://vuejs.org/">official documentation</a>
@@ -23,7 +23,7 @@ import SupportIcon from "./icons/IconSupport.vue";
     <template #icon>
       <ToolingIcon />
     </template>
-    <template #heading>Tooling</template>
+    <template #heading> Tooling </template>
 
     This project is served and bundled with
     <a href="https://vitejs.dev/guide/features.html" target="_blank">Vite</a>.
@@ -45,7 +45,7 @@ import SupportIcon from "./icons/IconSupport.vue";
     <template #icon>
       <EcosystemIcon />
     </template>
-    <template #heading>Ecosystem</template>
+    <template #heading> Ecosystem </template>
 
     Get official tools and libraries for your project:
     <a target="_blank" href="https://pinia.vuejs.org/">Pinia</a>,
@@ -64,7 +64,7 @@ import SupportIcon from "./icons/IconSupport.vue";
     <template #icon>
       <CommunityIcon />
     </template>
-    <template #heading>Community</template>
+    <template #heading> Community </template>
 
     Got stuck? Ask your question on
     <a target="_blank" href="https://chat.vuejs.org">Vue Land</a>, our official
@@ -82,7 +82,7 @@ import SupportIcon from "./icons/IconSupport.vue";
     <template #icon>
       <SupportIcon />
     </template>
-    <template #heading>Support Vue</template>
+    <template #heading> Support Vue </template>
 
     As an independent project, Vue relies on community backing for its
     sustainability. You can help us by

@@ -42,12 +42,12 @@ export default {
 
 <template>
   <div class="atakks-grid">
-    <span class="atakks-row" v-for="x in createGrid()" :key="x">
+    <span v-for="x in createGrid()" :key="x" class="atakks-row">
       <span
-        class="atakks-column"
         v-for="y in x"
-        :class="setCellClass(y)"
         :key="y"
+        class="atakks-column"
+        :class="setCellClass(y)"
         >X</span
       >
     </span>
