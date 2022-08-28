@@ -30,50 +30,63 @@ onMounted(async () => {
   const router = useRouter();
   await router.isReady();
   avatar.value.setName(mynickname.value);
-  console.log(gameSession);
   if (!gameSession.name) {
     // no need if not displayed
     games.value = await getJson("/c/gamelist");
   }
 });
 
-async function play_game(game) {
-  var response = await fetch(`/c/session/new?gameType=${game}`, {
-    method: "GET",
-    redirect: "follow",
-  });
-  let result = await response.json();
-
+async function join_game(sessionId) {
   // create a standard player for creator of session game
   const myHeaders = new Headers();
   myHeaders.append("Content-Type", "application/json");
   var raw = JSON.stringify({
     name: mynickname.value,
     avatar: "",
-    sessionName: result.name,
+    sessionName: sessionId || gameSession.name,
   });
-  var response_player = await fetch("/c/session/join", {
+  const response_player = await fetch("/c/session/join", {
     method: "POST",
     redirect: "follow",
     headers: myHeaders,
     body: raw,
   });
-
-  result = await response_player.json();
-  for (let player of result.players) {
-    if (player.name == mynickname.value) result.myId = player.id;
+  if (response_player.status == 200) {
+    const result = await response_player.json();
+    for (let player of result.players) {
+      if (player.name == mynickname.value) result.myId = player.id;
+    }
+    gameSession.$patch(result);
+    setCookie(result);
+    router.push("/lobby");
+  } else {
+    const result = await response_player.json();
+    alert(result.detail);
   }
-  gameSession.gameType = game;
-  gameSession.$patch(result);
-  setCookie(result);
-  router.push("/lobby");
+}
+
+async function clear_session() {
+  gameSession.$reset();
+  games.value = await getJson("/c/gamelist");
+  router.push("/");
+}
+
+defineExpose({ clear_session, join_game });
+
+async function start_game(game) {
+  var response = await fetch(`/c/session/new?gameType=${game}`, {
+    method: "GET",
+    redirect: "follow",
+  });
+  let result = await response.json();
+  await join_game(result.name);
 }
 </script>
 
 <template>
   <main>
     <div class="bg" v-cloak>
-      <h1 class="title">{{ T("Your info") }}:</h1>
+      <h1 class="title">{{ T("Chose a name") }}:</h1>
       <div class="container">
         <div class="avatarframe">
           <input
@@ -88,15 +101,22 @@ async function play_game(game) {
             avatarName="Nick"
             style="margin: -36px 0 0 220px"
             class="avatar"
-          ></avatar-card>
+          >
+          </avatar-card>
         </div>
       </div>
       <div v-if="gameSession.name">
+        <button @click="join_game(gameSession.name)">
+          {{ T("Join game") }}
+        </button>
+        <button @click="clear_session()">{{ T("Change game") }}</button>
+      </div>
+      <div v-else>
         <h1>{{ T("Pick a game") }}:</h1>
         <div class="wrap">
           <div v-for="(info, game) in games" class="gamebutton">
             <div class="tile">
-              <span @click="play_game(game)">
+              <span @click="start_game(game)">
                 <img :src="`/img/${info.card}.jpg`" />
                 <div class="text">
                   <h1>{{ T(game) }}</h1>
@@ -110,10 +130,6 @@ async function play_game(game) {
             </div>
           </div>
         </div>
-      </div>
-      <div v-else>
-        <button>Join game!</button>
-        <button>Exit</button>
       </div>
     </div>
   </main>
