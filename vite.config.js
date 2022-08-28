@@ -9,6 +9,7 @@ export default defineConfig({
     sourcemap: true,
     target: "esnext",
     outDir: "front",
+    minify: false,
   },
   plugins: [vue()],
   resolve: {
