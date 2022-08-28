@@ -4,6 +4,7 @@ import avatarCard from "@/components/avatarCard.vue";
 import { RouterLink, useRouter } from "vue-router";
 import { GameSession } from "@/stores/gamesession.js";
 
+import { gamelist } from "@/lib/gamelist.js";
 const router = useRouter();
 
 const gameSession = GameSession();
@@ -30,10 +31,7 @@ onMounted(async () => {
   const router = useRouter();
   await router.isReady();
   avatar.value.setName(mynickname.value);
-  if (!gameSession.name) {
-    // no need if not displayed
-    games.value = await getJson("/c/gamelist");
-  }
+  games.value = gamelist;
 });
 
 async function join_game(sessionId) {
@@ -67,7 +65,6 @@ async function join_game(sessionId) {
 
 async function clear_session() {
   gameSession.$reset();
-  games.value = await getJson("/c/gamelist");
   router.push("/");
 }
 
