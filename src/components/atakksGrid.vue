@@ -1,43 +1,37 @@
-<script>
-export default {
-  props: {
-    width: Number,
-    height: Number,
-    players: Object,
-  },
-  methods: {
-    createGrid() {
-      var grid = [];
-      for (let i = 0; i < this.width; i++) {
-        grid[i] = [];
-        for (let j = 0; j < this.height; j++) {
-          grid[i][j] = "void";
-        }
-      }
-      this.drawPlayersPawns(grid, this.players);
-      return grid;
-    },
+<script setup>
+const props = defineProps({
+  width: Number,
+  height: Number,
+  playersData: Object,
+  dataKey: String,
+});
 
-    setCellClass(code) {
-      return "atakks-column " + code;
-    },
+function createGrid() {
+  var grid = [];
+  for (let i = 0; i < props.width; i++) {
+    grid[i] = [];
+    for (let j = 0; j < props.height; j++) {
+      grid[i][j] = "void";
+    }
+  }
+  drawPlayersPawns(grid, props.playersData);
+  return grid;
+}
 
-    setPlayerPawnLocation(grid, pawns, id) {
-      for (let coords of pawns) {
-        coords = coords.split("-");
-        grid[parseInt(coords[0])][parseInt(coords[1])] = "p" + id;
-      }
-    },
+function setPlayerPawnLocation(grid, pawns, id) {
+  for (let coords of pawns) {
+    coords = coords.split("-");
+    grid[parseInt(coords[0])][parseInt(coords[1])] = "p" + id;
+  }
+}
 
-    drawPlayersPawns(grid, players) {
-      var i = 1;
-      for (let key in players) {
-        this.setPlayerPawnLocation(grid, players[key]["pawns"], i);
-        i++;
-      }
-    },
-  },
-};
+function drawPlayersPawns(grid, playersData) {
+  var i = 1;
+  for (let key in playersData) {
+    setPlayerPawnLocation(grid, playersData[key][props.dataKey], i);
+    i++;
+  }
+}
 </script>
 
 <template>
@@ -47,7 +41,7 @@ export default {
         v-for="y in x"
         :key="y"
         class="atakks-column"
-        :class="setCellClass(y)"
+        :class="`atakks-column ${y}`"
         >X</span
       >
     </span>
