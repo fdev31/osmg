@@ -30,7 +30,7 @@ onMounted(() => {
   avatarObj = new Avatar("#" + _id);
   // workaround to force update
   avatarDom.value.querySelector("svg").setAttribute("viewBox", "0 0 360 460");
-  avatarObj.fromName(name);
+  if (name) avatarObj.fromName(name);
 });
 </script>
 
