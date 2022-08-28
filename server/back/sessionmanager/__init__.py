@@ -189,7 +189,7 @@ async def startGame(player: PlayerIdentifier, tasks: BackgroundTasks) -> None:
         if await conn.sismember(pr, player.id):
             raise HTTPException(httpstatus.HTTP_409_CONFLICT, "Action already done")
         await publishEvent(
-            player.sessionName, conn, cat=Events.ready.name, player=player.id
+            player.sessionName, conn, cat=Events.ready.name, id=str(player.id)
         )
         await conn.sadd(pr, player.id)
         await conn.set(f"S{player.sessionName}:" + SESSION_S_TIME, int(time.time()))
