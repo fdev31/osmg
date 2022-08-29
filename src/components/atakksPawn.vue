@@ -30,6 +30,7 @@ const emit = defineEmits(["pawnClick"]);
   background-color: rgb(214, 215, 196);
   border: solid 1px grey;
   cursor: pointer;
+  transition-duration: 300ms;
 }
 .pawn.clicked {
   border: solid 2px black;

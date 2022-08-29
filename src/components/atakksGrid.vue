@@ -1,6 +1,6 @@
 <script setup>
 import atakksPawn from "@/components/atakksPawn.vue";
-import { reactive } from "vue";
+import { watch, reactive } from "vue";
 
 const board = new Array(props.width * props.height).fill().map(() => {
   return reactive({});
@@ -12,6 +12,12 @@ const props = defineProps({
   playersData: { type: Object, default: () => {} },
   playersIds: { type: Array, default: () => [] },
   dataKey: { type: String, default: "pawns" },
+});
+
+watch(props.playersData, () => {
+  board.forEach((v) => {
+    v.player = getPlayerAtCoordinate(v.x, v.y);
+  });
 });
 
 function getPlayerAtCoordinate(x, y) {
@@ -35,15 +41,20 @@ board.forEach((v, i) => {
   v.state = "";
 });
 
-let oldClicked;
+const previousState = {};
 
-function setClicked(x, y) {
-  if (oldClicked != undefined) board[oldClicked].state = "";
-  oldClicked = y * props.width + x;
-  board[oldClicked].state = "clicked";
+function setState(state, x, y, clearPrevious = true) {
+  if (clearPrevious) {
+    if (previousState[state] != undefined) {
+      board[previousState[state]].state = "";
+    }
+  }
+  const offset = y * props.width + x;
+  previousState[state] = offset;
+  board[offset].state = state;
 }
 
-defineExpose({ setClicked });
+defineExpose({ setState, getPlayerAtCoordinate });
 defineEmits(["pawnClick"]); // emitted by the children component
 </script>
 
