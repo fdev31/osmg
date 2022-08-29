@@ -51,6 +51,7 @@ function isPlaying(player) {
 <style scoped lang="less">
 .playerEntry {
   border-radius: 5px;
+  padding: 0 1ex;
 }
 .playing {
   background-image: linear-gradient(
