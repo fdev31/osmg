@@ -68,7 +68,7 @@ onMounted(() => {
 let pawnToMove;
 async function handleClick(pos) {
   if (gameSession.gameData.curPlayer != gameSession.myId) {
-    toaster.value.show("Not your turn!", { type: "warning", duration: 2000 });
+    toaster.value.show("Not your turn!", { type: "alert", duration: 2000 });
     return;
   }
   if (pos.idx) {
@@ -97,7 +97,8 @@ async function handleClick(pos) {
         }
       }
       if (valid) {
-        await server.add(pos, valid);
+        const ret = await server.add(pos, valid);
+        if (ret.detail) toaster.value.show(ret.detail, { type: "alert" });
       }
     } else {
       if (
@@ -106,7 +107,8 @@ async function handleClick(pos) {
         pos.y >= pawnToMove.y - 2 &&
         pos.y <= pawnToMove.y + 2
       ) {
-        await server.move(pos, pawnToMove);
+        const ret = await server.move(pos, pawnToMove);
+        if (ret.detail) toaster.value.show(ret.detail, { type: "alert" });
         grid.value.setState("", pawnToMove.x, pawnToMove.y);
         pawnToMove = undefined;
       }
@@ -120,7 +122,7 @@ const server = {
       reference: { x: reference.x, y: reference.y },
       position: { x: pawn.x, y: pawn.y },
     };
-    const ret = await post("/g/atakks/add", obj);
+    return await post("/g/atakks/add", obj);
   },
   async move(pawn, from) {
     const obj = {
@@ -128,7 +130,7 @@ const server = {
       source: { x: from.x, y: from.y },
       destination: { x: pawn.x, y: pawn.y },
     };
-    const ret = await post("/g/atakks/move", obj);
+    return await post("/g/atakks/move", obj);
   },
 };
 </script>

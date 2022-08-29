@@ -9,8 +9,8 @@ const { setNotification } = useNotificationStore();
 function show(text, opts = {}) {
   const notif = {
     message: text,
-    type: "info",
-    appearance: "dark", // ("light"|"dark"|"glass")
+    type: "info", // "info"|"warning"|"alert"|"success"
+    appearance: "dark", // "light"|"dark"|"glass"
     dismiss: { manually: true, automatically: true },
     showDurationProgress: true,
     showIcon: true,
