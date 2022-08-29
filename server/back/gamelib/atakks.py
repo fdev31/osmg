@@ -2,20 +2,20 @@ from enum import Enum
 from logging import getLogger
 from typing import Any, Dict, Optional
 
-from fastapi import HTTPException
-from starlette import status as httpstatus
 import aioredis
+from fastapi import HTTPException
 from pydantic import BaseModel
-from ..sessionmanager.public import isPlayerValid
+from starlette import status as httpstatus
 
 from ..globalHandlers import (
+    PLAYERS_ORDER,
     getConfig,
-    publishEvent,
     getGameDataPrefix,
     getVarName,
-    PLAYERS_ORDER,
+    publishEvent,
 )
 from ..models import SESSION_PLAYERS_DATA, Player, PlayerIdentifier, Session
+from ..sessionmanager.public import isPlayerValid
 from .interfaces import Events, GameInterface, stdVar
 from .std_implem import def_playerAdded
 
