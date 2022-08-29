@@ -6,10 +6,8 @@ import aioredis
 from fastapi import BackgroundTasks, FastAPI, HTTPException
 from starlette import status as httpstatus
 
-from ..gamelib.interfaces import Events, GameInterface
+from ..gamelib.interfaces import Events, GameInterface, sessVar
 from ..globalHandlers import (
-    PLAYERS_ORDER,
-    PLAYERS_READY,
     getRedis,
     getVarName,
     publishEvent,
@@ -118,7 +116,9 @@ async def addPlayer(player: newPlayer) -> Session:
         redisObj[getVarName(name, player.sessionName, spid, gameData=True)] = value
 
     async with getRedis().client() as conn:
-        push = conn.rpush(getVarName(PLAYERS_ORDER, player.sessionName), spid)
+        push = conn.rpush(
+            getVarName(sessVar.playerOrder.name, player.sessionName), spid
+        )
         mset = conn.mset(redisObj)
 
         for k, v in initialPlayerDataSets.items():
@@ -157,7 +157,7 @@ async def restartGame(player: PlayerIdentifier, tasks: BackgroundTasks) -> None:
     uid = player.sessionName
     async with getRedis().client() as conn:
         gameType = await conn.get(getVarName(SESSION_GAME_TYPE, uid))
-        allPlayers = await conn.lrange(getVarName(PLAYERS_ORDER, uid), 0, -1)
+        allPlayers = await conn.lrange(getVarName(sessVar.playerOrder.name, uid), 0, -1)
 
         emptySession = Session(name="", creationTime=0, gameType=gameType)
 
@@ -184,7 +184,7 @@ async def startGame(player: PlayerIdentifier, tasks: BackgroundTasks) -> None:
     """Notifies that some player is ready to start the game"""
     redis = getRedis()
     async with redis.client() as conn:
-        pr = getVarName(PLAYERS_READY, player.sessionName, gameData=True)
+        pr = getVarName(sessVar.playersReady.name, player.sessionName, gameData=True)
         if await conn.sismember(pr, player.id):
             raise HTTPException(httpstatus.HTTP_409_CONFLICT, "Action already done")
         await publishEvent(
@@ -193,7 +193,7 @@ async def startGame(player: PlayerIdentifier, tasks: BackgroundTasks) -> None:
         await conn.sadd(pr, player.id)
         await conn.set(f"S{player.sessionName}:" + SESSION_S_TIME, int(time.time()))
 
-        po = getVarName(PLAYERS_ORDER, player.sessionName)
+        po = getVarName(sessVar.playerOrder.name, player.sessionName)
         nbPlayers = int(await conn.llen(po))
 
         if nbPlayers <= await conn.scard(pr):

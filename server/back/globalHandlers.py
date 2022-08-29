@@ -66,8 +66,3 @@ def getGameDataPrefix(uid: str | int, playerId: Optional[str | int] = None) -> s
     if playerId:
         return "S%s:%s:g:" % (uid, playerId)
     return "S%s:g:" % (uid)
-
-
-PLAYERS_READY = "playersReady"
-PLAYERS_ORDER = "playerOrder"
-PLAYERS_CONNECTED = "playersOnline"

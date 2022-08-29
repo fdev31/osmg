@@ -4,10 +4,8 @@ from typing import Any, Dict, Optional
 
 from aioredis import Redis
 
-from ..gamelib.interfaces import Events, GameInterface
+from ..gamelib.interfaces import Events, GameInterface, sessVar
 from ..globalHandlers import (
-    PLAYERS_CONNECTED,
-    PLAYERS_ORDER,
     getRedis,
     getVarName,
     publishEvent,
@@ -44,22 +42,24 @@ async def isPlayerValid(
 
 
 async def connectPlayer(sessionName: str, playerId: str) -> None:
-    stage = getVarName(PLAYERS_CONNECTED + "stage", sessionName)
+    stage = getVarName(sessVar.playersOnline.name + "stage", sessionName)
     async with getRedis().client() as conn:
         if await conn.sismember(stage, playerId):
             await conn.smove(
-                stage, getVarName(PLAYERS_CONNECTED, sessionName), playerId
+                stage, getVarName(sessVar.playersOnline.name, sessionName), playerId
             )
         else:
-            await conn.sadd(getVarName(PLAYERS_CONNECTED, sessionName), playerId)
+            await conn.sadd(
+                getVarName(sessVar.playersOnline.name, sessionName), playerId
+            )
             await publishEvent(
                 sessionName, conn, cat=Events.connectPlayer.name, id=playerId
             )
 
 
 async def disconnectPlayer(sessionName: str, playerId: str) -> None:
-    pr = getVarName(PLAYERS_CONNECTED, sessionName)
-    stage = getVarName(PLAYERS_CONNECTED + "stage", sessionName)
+    pr = getVarName(sessVar.playersOnline.name, sessionName)
+    stage = getVarName(sessVar.playersOnline.name + "stage", sessionName)
     async with getRedis().client() as conn:
         await conn.smove(pr, stage, playerId)
         await asyncio.sleep(2)
@@ -79,7 +79,7 @@ async def getSession(uid: str, client: Optional[Redis] = None) -> Session:
 
     async with (client or getRedis().client()) as conn:
         gameType = await conn.get(getVarName(SESSION_GAME_TYPE, uid))
-        vn = getVarName(PLAYERS_ORDER, uid)
+        vn = getVarName(sessVar.playerOrder.name, uid)
         allPlayers = await conn.lrange(vn, 0, -1)
 
     iface = games[gameType]

@@ -9,7 +9,6 @@ from fastapi import HTTPException
 from starlette import status as httpstatus
 
 from ..globalHandlers import (
-    PLAYERS_ORDER,
     getConfig,
     getGameDataPrefix,
     getRedis,
@@ -19,7 +18,7 @@ from ..globalHandlers import (
 from ..models import Player, PlayerIdentifier, Session
 from ..sessionmanager.public import isPlayerValid
 from ..utils import dumps, loads
-from .interfaces import Events, GameInterface, stdVar
+from .interfaces import Events, GameInterface, stdVar, sessVar
 from .std_implem import def_playerAdded
 
 ACTIVE_PLAYERS = "curOrder"
@@ -178,7 +177,7 @@ class DiceInterface(GameInterface):
 
     @staticmethod
     async def startGame(sessionId: str, conn: aioredis.Redis) -> None:
-        dump = await conn.lrange(getVarName(PLAYERS_ORDER, sessionId), 0, -1)
+        dump = await conn.lrange(getVarName(sessVar.playerOrder.name, sessionId), 0, -1)
         cp = getVarName(ACTIVE_PLAYERS, sessionId)
         await conn.unlink(cp)
         await conn.rpush(cp, *dump)

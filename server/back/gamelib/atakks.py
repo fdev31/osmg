@@ -12,7 +12,6 @@ from server.back.gamelib.marathon import isPlayerTurn
 MAX_BOARD_INDEX = 6
 
 from ..globalHandlers import (
-    PLAYERS_ORDER,
     getConfig,
     getGameDataPrefix,
     getVarName,
@@ -20,7 +19,7 @@ from ..globalHandlers import (
 )
 from ..models import SESSION_PLAYERS_DATA, Player, PlayerIdentifier, Session
 from ..sessionmanager.public import isPlayerValid
-from .interfaces import Events, GameInterface, stdVar
+from .interfaces import Events, GameInterface, stdVar, sessVar
 from .std_implem import def_playerAdded
 from pydantic import BaseModel
 
@@ -48,7 +47,9 @@ async def getPlayerInfo(
     if not await isPlayerValid(conn, prefix.split(":")[0][1:], playerId, secret):
         return False
     curPlayer = await conn.get(prefix + Events.curPlayer.name)
-    curPlayerId = await conn.lindex(prefix[:-2] + PLAYERS_ORDER, int(curPlayer))
+    curPlayerId = await conn.lindex(
+        prefix[:-2] + sessVar.playerOrder.name, int(curPlayer)
+    )
     return playerConnection(
         isPlayerTurn=int(curPlayerId) == int(playerId),
         playerIndex=curPlayer,
@@ -114,7 +115,7 @@ async def addPawn(params: AtakksAddBody) -> SimpleReturn:
         if not pi.isPlayerTurn:
             raise HTTPException(httpstatus.HTTP_403_FORBIDDEN, "Not your turn!")
 
-        all_players = await conn.lrange(prefix + PLAYERS_ORDER, 0, -1)
+        all_players = await conn.lrange(prefix + sessVar.playerOrder.name, 0, -1)
         my_new_pawns = set([params.position.shortText])
         convertible_zone = set(generateZoneCoords(params.position.x, params.position.y))
         for player in all_players:
@@ -143,7 +144,9 @@ async def addPawn(params: AtakksAddBody) -> SimpleReturn:
             curPlayer = 0
         else:
             curPlayer = await conn.incr(gprefix + Events.curPlayer.name)
-        curPlayerId = await conn.lindex(prefix + PLAYERS_ORDER, int(curPlayer))
+        curPlayerId = await conn.lindex(
+            prefix + sessVar.playerOrder.name, int(curPlayer)
+        )
         await publishEvent(
             params.player.sessionName,
             conn,
@@ -205,7 +208,9 @@ class Game(GameInterface):
 
     @staticmethod
     async def startGame(sessionId: str, conn: aioredis.Redis) -> None:
-        curPlayer = await conn.lindex(getVarName(PLAYERS_ORDER, sessionId), 0)
+        curPlayer = await conn.lindex(
+            getVarName(sessVar.playerOrder.name, sessionId), 0
+        )
         await publishEvent(sessionId, conn, cat=Events.curPlayer.name, val=curPlayer)
 
     actions: Dict[str, Any] = {

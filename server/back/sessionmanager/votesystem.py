@@ -5,11 +5,9 @@ from typing import Any, Callable, Coroutine, Match, Optional, Tuple
 import aioredis
 from fastapi import HTTPException
 from starlette import status as httpstatus
+from ..gamelib.interfaces import sessVar
 
 from ..globalHandlers import (
-    PLAYERS_CONNECTED,
-    PLAYERS_ORDER,
-    PLAYERS_READY,
     getRedis,
     getVarName,
     publishEvent,
@@ -27,9 +25,9 @@ logger = logging.getLogger("SessionVote")
 async def kickPlayer(conn: aioredis.Redis, sessionId: str, match: Match[str]) -> None:
     whom = match.groups()[0]
     # remove session info
-    await conn.lrem(getVarName(PLAYERS_ORDER, sessionId), 1, whom)
-    await conn.srem(getVarName(PLAYERS_CONNECTED, sessionId), whom)
-    await conn.srem(getVarName(PLAYERS_READY, sessionId), whom)
+    await conn.lrem(getVarName(sessVar.playerOrder.name, sessionId), 1, whom)
+    await conn.srem(getVarName(sessVar.playersOnline.name, sessionId), whom)
+    await conn.srem(getVarName(sessVar.playersReady.name, sessionId), whom)
     # remove vote info
     vip = getVarName(VOTE_IN_PROGRESS, whom)
     await conn.srem(vip, whom)
@@ -106,7 +104,7 @@ async def _checkVoteEnd(conn: aioredis.Redis, uid: str, name: str) -> None:
     m, h = findHandler(name)
 
     votants = await conn.scard(vip)
-    totPlayers = await conn.llen(getVarName(PLAYERS_ORDER, uid))
+    totPlayers = await conn.llen(getVarName(sessVar.playerOrder.name, uid))
 
     if votants == totPlayers:
         await conn.unlink(vip)
