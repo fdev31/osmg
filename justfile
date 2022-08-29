@@ -22,8 +22,8 @@ cleanenv:
     rm -fr .tox
     rm -fr node_modules
     npm i
-    just js
     tox -e style
+    just js
 
 # run everything python related
 py: style coverage unit types
@@ -47,9 +47,9 @@ fix:
 gamelist:
    ./scripts/genGameList.py 
 
-# build translations files
+# TODO: build translations files
 locales:
-    cd locales && ./build
+    #cd locales && ./build
 
 # run (any kind of) tests
 test testfile='tests':
