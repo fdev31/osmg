@@ -21,15 +21,6 @@ const toaster = ref();
 const playersByIndex = gameSession.players.map((o) => o.id);
 initLocales();
 
-/*
-        const toBeRemoved = `${pawnToMove.x}-${pawnToMove.y}`;
-        const newList = gameSession.playersData[gameSession.myId][
-          "pawns"
-        ].filter((o) => o != toBeRemoved);
-        newList.push(`${pos.x}-${pos.y}`);
-        gameSession.playersData[gameSession.myId]["pawns"] = newList;
-        */
-
 const handlers = {
   curPlayer(data) {
     gameSession.gameData.curPlayer = data.val;
