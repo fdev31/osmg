@@ -80,6 +80,9 @@ const handlers = {
   },
   start: async () => {
     gameSession.started = true;
+    for (const player of gameSession.players) {
+      player.ready = false; // reset lobby state
+    }
     gameSession.save();
     countDown().then(() => {
       websocket.close();

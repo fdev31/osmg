@@ -13,9 +13,6 @@ import atakksGrid from "@/components/atakksGrid.vue";
 import Toast from "@/components/Toast.vue";
 
 const gameSession = GameSession();
-for (const player of gameSession.players) {
-  player.ready = false; // reset lobby state
-}
 const playerlist = ref();
 const grid = ref();
 const toaster = ref();
