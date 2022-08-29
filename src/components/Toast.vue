@@ -14,7 +14,7 @@ function show(text, opts = {}) {
     dismiss: { manually: true, automatically: true },
     showDurationProgress: true,
     showIcon: true,
-    duration: 5,
+    duration: 3000,
   };
   Object.assign(notif, opts);
   setNotification(notif);

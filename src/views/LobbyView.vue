@@ -44,6 +44,10 @@ async function countDown(count = 4) {
   }
 }
 const handlers = {
+  curPlayer: (data) => {
+    gameSession.gameData.curPlayer = data.val;
+    gameSession.save();
+  },
   ready: (data) => {
     gameSession.getPlayerInfo(data.id).ready = true;
     gameSession.save();

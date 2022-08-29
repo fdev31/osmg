@@ -10,6 +10,7 @@ import {
 
 import playerList from "@/components/playerList.vue";
 import atakksGrid from "@/components/atakksGrid.vue";
+import Toast from "@/components/Toast.vue";
 
 const gameSession = GameSession();
 for (const player of gameSession.players) {
@@ -17,6 +18,7 @@ for (const player of gameSession.players) {
 }
 const playerlist = ref();
 const grid = ref();
+const toaster = ref();
 const playersByIndex = gameSession.players.map((o) => o.id);
 initLocales();
 
@@ -31,7 +33,10 @@ onMounted(() => {
 
 let pawnToMove;
 function handleClick(pos) {
-  //if (gameSession.gameData.curPlayer != gameSession.myId) return;
+  if (gameSession.gameData.curPlayer != gameSession.myId) {
+    toaster.value.show("Not your turn!", { type: "warning", duration: 2000 });
+    return;
+  }
   if (pos.idx) {
     // there is a player at position
     if (playersByIndex[pos.idx - 1] == gameSession.myId) {
@@ -82,6 +87,7 @@ function handleClick(pos) {
 </script>
 
 <template>
+  <Toast ref="toaster" />
   <div v-cloak>
     <h1>{{ T("Attaks, a game of mind") }}</h1>
     <div id="players_frame">
