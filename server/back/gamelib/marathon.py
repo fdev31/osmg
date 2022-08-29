@@ -29,7 +29,7 @@ logger = logging.getLogger("marathon")
 async def isPlayerTurn(
     conn: aioredis.Redis,
     prefix: str,
-    playerId: int,
+    playerId: str,
     secret: Optional[int],
 ) -> bool:
     if not await isPlayerValid(conn, prefix.split(":")[0][1:], playerId, secret):

@@ -7,8 +7,6 @@ from fastapi import HTTPException
 from pydantic import BaseModel
 from starlette import status as httpstatus
 
-from server.back.gamelib.marathon import isPlayerTurn
-
 MAX_BOARD_INDEX = 6
 
 from ..globalHandlers import (
@@ -41,11 +39,11 @@ class playerConnection(BaseModel):
 async def getPlayerInfo(
     conn: aioredis.Redis,
     prefix: str,
-    playerId: int,
+    playerId: str,
     secret: Optional[int],
 ) -> playerConnection:
     if not await isPlayerValid(conn, prefix.split(":")[0][1:], playerId, secret):
-        return False
+        return playerConnection(isPlayerTurn=False, playerIndex=-1)
     curPlayer = await conn.get(prefix + Events.curPlayer.name)
     curPlayerId = await conn.lindex(
         prefix[:-2] + sessVar.playerOrder.name, int(curPlayer)
