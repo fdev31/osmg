@@ -100,25 +100,26 @@ def generateZoneCoords(x: int, y: int) -> Generator[str, None, None]:
             yield f"{lx}-{ly}"
 
 
-async def addPawn(params: AtakksAddBody) -> SimpleReturn:
-    """`player` adds a pawn into `positition`, next to `reference`"""
+async def _movePawn(
+    player: PlayerIdentifier, source: Coords, destination: Coords, move=False
+) -> SimpleReturn:
     redis = aioredis.from_url(
         "redis://" + getConfig().redis_server, decode_responses=True
     )
-    gprefix = getGameDataPrefix(params.player.sessionName)
+    gprefix = getGameDataPrefix(player.sessionName)
     prefix = gprefix[:-2]
 
     async with redis.client() as conn:
-        pi = await getPlayerInfo(conn, gprefix, params.player.id, params.player.secret)
+        pi = await getPlayerInfo(conn, gprefix, player.id, player.secret)
         if not pi.isPlayerTurn:
             raise HTTPException(httpstatus.HTTP_403_FORBIDDEN, "Not your turn!")
 
         all_players = await conn.lrange(prefix + sessVar.playerOrder.name, 0, -1)
-        my_new_pawns = set([params.position.shortText])
-        convertible_zone = set(generateZoneCoords(params.position.x, params.position.y))
-        for player in all_players:
+        my_new_pawns = set([destination.shortText])
+        convertible_zone = set(generateZoneCoords(destination.x, destination.y))
+        for plr in all_players:
             ppawnVar = getVarName(
-                gameVars.pawns.name, params.player.sessionName, player, gameData=True
+                gameVars.pawns.name, player.sessionName, plr, gameData=True
             )
             ppawns = await conn.smembers(ppawnVar)
             stolen = ppawns.intersection(convertible_zone)
@@ -126,15 +127,15 @@ async def addPawn(params: AtakksAddBody) -> SimpleReturn:
                 await conn.srem(ppawnVar, *stolen)
                 my_new_pawns.update(stolen)
 
-        await conn.sadd(
-            getVarName(
-                gameVars.pawns.name,
-                params.player.sessionName,
-                params.player.id,
-                gameData=True,
-            ),
-            *my_new_pawns,
+        myPawnVar = getVarName(
+            gameVars.pawns.name,
+            player.sessionName,
+            player.id,
+            gameData=True,
         )
+        if move:
+            await conn.srem(ppawnVar, source.shortText)
+        await conn.sadd(myPawnVar, *my_new_pawns)
 
         # move to the next player
         if pi.playerIndex + 1 >= len(all_players):
@@ -145,39 +146,34 @@ async def addPawn(params: AtakksAddBody) -> SimpleReturn:
         curPlayerId = await conn.lindex(
             prefix + sessVar.playerOrder.name, int(curPlayer)
         )
+
+        payload = {player.id: list(my_new_pawns)}
+
+        if move:
+            payload["void"] = [source.shortText]
+
         await publishEvent(
-            params.player.sessionName,
+            player.sessionName,
             conn,
             cat=Events.varUpdate.name,
             var=gameVars.pawns.name,
-            val={params.player.id: list(my_new_pawns)},
+            val=payload,
         )
 
         await publishEvent(
-            params.player.sessionName, conn, cat=Events.curPlayer.name, val=curPlayerId
+            player.sessionName, conn, cat=Events.curPlayer.name, val=curPlayerId
         )
     return SimpleReturn()
 
 
 async def movePawn(params: AtakksMoveBody) -> SimpleReturn:
     """`player` moves a pawn from `source` to `destination`"""
-    redis = aioredis.from_url(
-        "redis://" + getConfig().redis_server, decode_responses=True
-    )
-    # gprefix = getGameDataPrefix(params.player.sessionName)
-    # prefix = getGameDataPrefix(params.player.sessionName, params.player.id)
-    await publishEvent(
-        params.player.sessionName,
-        redis,
-        cat=Events.varUpdate.name,
-        var=gameVars.pawns.name,
-        val={
-            "void": [params.source.shortText],
-            params.player.id: [params.destination.shortText],
-        },
-        player=params.player.id,
-    )
-    return SimpleReturn()
+    return await _movePawn(params.player, params.source, params.destination, True)
+
+
+async def addPawn(params: AtakksAddBody) -> SimpleReturn:
+    """`player` adds a pawn into `positition`, next to `reference`"""
+    return await _movePawn(params.player, params.reference, params.position, False)
 
 
 class Game(GameInterface):
