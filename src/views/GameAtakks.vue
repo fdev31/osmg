@@ -188,9 +188,11 @@ const server = {
 #myAvatar:deep(svg) {
   background-color: white;
   border-radius: 1000px;
+  transition-duration: 300ms;
 }
 #myAvatar.playing:deep(svg) {
   background-color: #d5680f;
+  border: solid 3px #333;
 }
 @media (min-width: 1024px) {
   @media (max-width: 1600px) {
