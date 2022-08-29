@@ -34,6 +34,16 @@ const amIplaying = computed(() => {
   return gameSession.gameData.curPlayer == gameSession.myId;
 });
 
+function removeFromOthers(reflist, varname, skipId) {
+  for (const player of gameSession.players) {
+    if (player.id == skipId) continue;
+    const davar = gameSession.playersData[player.id][varname];
+    gameSession.playersData[player.id][varname] = davar.filter(
+      (o) => reflist.indexOf(o) == -1
+    );
+  }
+}
+
 const handlers = {
   curPlayer(data) {
     gameSession.gameData.curPlayer = data.val;
@@ -45,15 +55,9 @@ const handlers = {
         switch (data.var) {
           case "pawns":
             if (pid == "void") {
-              // remove those references on other players
-              const reflist = data.val[pid];
-              for (const player of gameSession.players) {
-                const davar = gameSession.playersData[player.id][data.var];
-                gameSession.playersData[player.id][data.var] = davar.filter(
-                  (o) => reflist.indexOf(o) == -1
-                );
-              }
+              removeFromOthers(data.val[pid], data.var);
             } else {
+              removeFromOthers(data.val[pid], data.var, pid);
               // just append new positions
               const davar = gameSession.playersData[pid][data.var];
               for (const val of data.val[pid]) {

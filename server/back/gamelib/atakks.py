@@ -1,11 +1,15 @@
 from enum import Enum
 from logging import getLogger
-from typing import Any, Dict, Optional
+from typing import Any, Dict, Optional, Generator
 
 import aioredis
 from fastapi import HTTPException
 from pydantic import BaseModel
 from starlette import status as httpstatus
+
+from server.back.gamelib.marathon import isPlayerTurn
+
+MAX_BOARD_INDEX = 6
 
 from ..globalHandlers import (
     PLAYERS_ORDER,
@@ -18,23 +22,37 @@ from ..models import SESSION_PLAYERS_DATA, Player, PlayerIdentifier, Session
 from ..sessionmanager.public import isPlayerValid
 from .interfaces import Events, GameInterface, stdVar
 from .std_implem import def_playerAdded
+from pydantic import BaseModel
 
-placements = ["0-0", "6-6", "0-6", "6-0"]
+placements = [
+    "0-0",
+    "%d-%d" % (MAX_BOARD_INDEX, MAX_BOARD_INDEX),
+    "0-%d" % MAX_BOARD_INDEX,
+    "%d-0" % MAX_BOARD_INDEX,
+]
 
 ACTIVE_PLAYERS = "curOrder"
 
 
-async def isPlayerTurn(
+class playerConnection(BaseModel):
+    isPlayerTurn: bool
+    playerIndex: int
+
+
+async def getPlayerInfo(
     conn: aioredis.Redis,
     prefix: str,
     playerId: int,
     secret: Optional[int],
-) -> bool:
+) -> playerConnection:
     if not await isPlayerValid(conn, prefix.split(":")[0][1:], playerId, secret):
         return False
     curPlayer = await conn.get(prefix + Events.curPlayer.name)
     curPlayerId = await conn.lindex(prefix[:-2] + PLAYERS_ORDER, int(curPlayer))
-    return int(curPlayerId) == int(playerId)
+    return playerConnection(
+        isPlayerTurn=int(curPlayerId) == int(playerId),
+        playerIndex=curPlayer,
+    )
 
 
 class gameVars(str, Enum):
@@ -72,36 +90,66 @@ class AtakksMoveBody(BaseModel):
     destination: Coords
 
 
+def generateZoneCoords(x: int, y: int) -> Generator[str, None, None]:
+    logger.warn(f"generate for {x} & {y}")
+    for lx in range(x - 1, x + 2):
+        if lx < 0 or lx > MAX_BOARD_INDEX:
+            continue
+        for ly in range(y - 1, y + 2):
+            if ly < 0 or ly > MAX_BOARD_INDEX:
+                continue
+            yield f"{lx}-{ly}"
+
+
 async def addPawn(params: AtakksAddBody) -> SimpleReturn:
     """`player` adds a pawn into `positition`, next to `reference`"""
     redis = aioredis.from_url(
         "redis://" + getConfig().redis_server, decode_responses=True
     )
     gprefix = getGameDataPrefix(params.player.sessionName)
-    # prefix = getGameDataPrefix(params.player.sessionName, params.player.id)
+    prefix = gprefix[:-2]
 
     async with redis.client() as conn:
-        if not await isPlayerTurn(
-            conn, gprefix, params.player.id, params.player.secret
-        ):
+        pi = await getPlayerInfo(conn, gprefix, params.player.id, params.player.secret)
+        if not pi.isPlayerTurn:
             raise HTTPException(httpstatus.HTTP_403_FORBIDDEN, "Not your turn!")
-        # TODO: store value
 
-        curPlayer = int(await conn.incr(gprefix + Events.curPlayer.name))
-        curPlayerId = await conn.lindex(gprefix[:-2] + PLAYERS_ORDER, int(curPlayer))
-        if curPlayerId is None:
-            # await publishEvent(params.player.sessionName, conn, cat=Events.newTurn.name, val=turn)
-            curPlayer = 0
-            await conn.set(gprefix + Events.curPlayer.name, curPlayer)
-            curPlayerId = await conn.lindex(
-                gprefix[:-2] + PLAYERS_ORDER, int(curPlayer)
+        all_players = await conn.lrange(prefix + PLAYERS_ORDER, 0, -1)
+        my_new_pawns = set([params.position.shortText])
+        convertible_zone = set(generateZoneCoords(params.position.x, params.position.y))
+        for player in all_players:
+            ppawnVar = getVarName(
+                gameVars.pawns.name, params.player.sessionName, player, gameData=True
             )
+            ppawns = await conn.smembers(ppawnVar)
+            stolen = ppawns.intersection(convertible_zone)
+            if stolen:
+                await conn.srem(ppawnVar, *stolen)
+                my_new_pawns.update(stolen)
+
+        await conn.sadd(
+            getVarName(
+                gameVars.pawns.name,
+                params.player.sessionName,
+                params.player.id,
+                gameData=True,
+            ),
+            *my_new_pawns,
+        )
+
+        # move to the next player
+        if pi.playerIndex + 1 >= len(all_players):
+            await conn.set(gprefix + Events.curPlayer.name, 0)
+            curPlayer = 0
+        else:
+            curPlayer = await conn.incr(gprefix + Events.curPlayer.name)
+        curPlayerId = await conn.lindex(prefix + PLAYERS_ORDER, int(curPlayer))
         await publishEvent(
             params.player.sessionName,
             conn,
             cat=Events.varUpdate.name,
             var=gameVars.pawns.name,
-            val={params.player.id: [params.position.shortText]},
+            val={params.player.id: list(my_new_pawns)},
         )
 
         await publishEvent(
