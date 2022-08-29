@@ -16,7 +16,7 @@ for (const player of gameSession.players) {
   player.ready = false; // reset lobby state
 }
 const playerlist = ref();
-
+const grid = ref();
 initLocales();
 
 const handlers = {};
@@ -27,6 +27,10 @@ onMounted(() => {
     handlers
   );
 });
+
+function handleClick(pos) {
+  grid.value.setClicked(pos.x, pos.y);
+}
 </script>
 
 <template>
@@ -34,7 +38,6 @@ onMounted(() => {
     <h1>{{ T("Attaks, a game of mind") }}</h1>
     <div id="players_frame">
       <playerList
-        id="playersContainer"
         ref="playerlist"
         :enable-kick="false"
         :kick-text="T('Kick player')"
@@ -43,7 +46,13 @@ onMounted(() => {
         :my-id="gameSession.myId"
       />
     </div>
-    <atakksGrid :players-data="gameSession.playersData" />
+    <atakksGrid
+      ref="grid"
+      @pawnClick="handleClick"
+      class="gameGrid"
+      :players-data="gameSession.playersData"
+      :players-ids="gameSession.players.map((o) => o.id)"
+    />
   </div>
 </template>
 
@@ -67,5 +76,9 @@ onMounted(() => {
     position: relative;
     margin: 0;
   }
+}
+.gameGrid {
+  margin: 1em;
+  border-radius: 10px;
 }
 </style>

@@ -1,50 +1,61 @@
 <script setup>
+import atakksPawn from "@/components/atakksPawn.vue";
+import { reactive } from "vue";
+
+const board = new Array(props.width * props.height).fill().map(() => {
+  return reactive({});
+});
+
 const props = defineProps({
   width: { type: Number, default: 7 },
   height: { type: Number, default: 7 },
   playersData: { type: Object, default: () => {} },
+  playersIds: { type: Array, default: () => [] },
   dataKey: { type: String, default: "pawns" },
 });
 
-function createGrid() {
-  var grid = [];
-  for (let i = 0; i < props.width; i++) {
-    grid[i] = [];
-    for (let j = 0; j < props.height; j++) {
-      grid[i][j] = "void";
-    }
+function getPlayerAtCoordinate(x, y) {
+  const str_coord = `${x}-${y}`;
+  const pd = props.playersData;
+  const k = props.dataKey;
+  for (const pid of Object.keys(pd)) {
+    if (pd[pid][k].includes(str_coord)) return pid;
   }
-  drawPlayersPawns(grid, props.playersData);
-  return grid;
+  return "";
 }
 
-function setPlayerPawnLocation(grid, pawns, id) {
-  for (let coords of pawns) {
-    coords = coords.split("-");
-    grid[parseInt(coords[0])][parseInt(coords[1])] = "p" + id;
-  }
+function getPlayerNum(pid) {
+  return props.playersIds.indexOf(pid) + 1;
 }
 
-function drawPlayersPawns(grid, playersData) {
-  var i = 1;
-  for (let key in playersData) {
-    setPlayerPawnLocation(grid, playersData[key][props.dataKey], i);
-    i++;
-  }
+board.forEach((v, i) => {
+  v.x = i % props.width;
+  v.y = Math.floor(i / props.width);
+  v.player = getPlayerAtCoordinate(v.x, v.y);
+  v.state = "";
+});
+
+let oldClicked;
+
+function setClicked(x, y) {
+  if (oldClicked != undefined) board[oldClicked].state = "";
+  oldClicked = y * props.width + x;
+  board[oldClicked].state = "clicked";
 }
+
+defineExpose({ setClicked });
+defineEmits(["pawnClick"]); // emitted by the children component
 </script>
 
 <template>
   <div class="atakks-grid">
-    <span v-for="x in createGrid()" :key="x" class="atakks-row">
-      <span
-        v-for="y in x"
-        :key="y"
-        class="atakks-column"
-        :class="`atakks-column ${y}`"
-        >X</span
-      >
-    </span>
+    <atakksPawn
+      v-for="pawn in board"
+      :x="pawn.x"
+      :y="pawn.y"
+      :state="pawn.state"
+      :idx="getPlayerNum(pawn.player)"
+    ></atakksPawn>
   </div>
 </template>
 
@@ -69,17 +80,5 @@ function drawPlayersPawns(grid, playersData) {
 }
 .atakks-grid {
   background-color: rgba(50, 50, 50, 0.5);
-}
-.atakks-grid .p1 {
-  background-color: blue;
-}
-.atakks-grid .p2 {
-  background-color: red;
-}
-.atakks-grid .p3 {
-  background-color: green;
-}
-.atakks-grid .p4 {
-  background-color: yellow;
 }
 </style>
