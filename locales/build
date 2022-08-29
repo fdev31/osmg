@@ -21,7 +21,7 @@ for root, dirs, files in os.walk('.'):
         cur.update(translations)
 
 output = open('../src/lib/locales.js', 'w')
-output.write("const locales = ")
+output.write("export const locales = ")
 json.dump(structure, output)
 
 if VERIFY:
