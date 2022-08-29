@@ -23,6 +23,7 @@ async def sessionStreamSource(
     try:
         await channel.subscribe(topic)
         async for message in channel.listen():
+            logger.error(ws.client_state)
             if message["type"] == "message":
                 yield message["data"]
     except asyncio.CancelledError:

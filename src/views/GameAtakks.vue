@@ -12,6 +12,7 @@ import {
 
 import playerList from "@/components/playerList.vue";
 import atakksGrid from "@/components/atakksGrid.vue";
+import avatarCard from "@/components/avatarCard.vue";
 import Toast from "@/components/Toast.vue";
 
 const gameSession = GameSession();
@@ -136,6 +137,9 @@ const server = {
   <Toast ref="toaster" />
   <div v-cloak>
     <h1>{{ T("Attaks, a game of mind") }}</h1>
+    <div id="myAvatar">
+      <avatarCard :show-name="false" :avatar-name="gameSession.myName" />
+    </div>
     <div id="players_frame">
       <playerList
         ref="playerlist"
@@ -157,6 +161,18 @@ const server = {
 </template>
 
 <style scoped>
+#myAvatar {
+  float: right;
+  margin-top: -64px;
+  height: 2em;
+}
+@media (min-width: 1024px) {
+  @media (max-width: 1600px) {
+    #myAvatar {
+      margin-right: 200px;
+    }
+  }
+}
 #players_frame {
   position: fixed;
   padding: 1ex 2ex;
