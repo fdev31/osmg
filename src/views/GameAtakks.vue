@@ -103,7 +103,10 @@ async function handleClick(pos) {
         for (let y = -1; y <= 1; y++) {
           if (valid) break;
           if (x || y)
-            if (grid.value.getPlayerAtCoordinate(pos.x + x, pos.y + y)) {
+            if (
+              grid.value.getPlayerAtCoordinate(pos.x + x, pos.y + y) ==
+              gameSession.myId
+            ) {
               valid = { x: pos.x + x, y: pos.y + y };
             }
         }
@@ -111,6 +114,8 @@ async function handleClick(pos) {
       if (valid) {
         const ret = await server.add(pos, valid);
         if (ret.detail) toaster.value.show(ret.detail, { type: "alert" });
+      } else {
+        toaster.value.show("Invalid move.", { duration: 2000 });
       }
     } else {
       if (
@@ -123,6 +128,8 @@ async function handleClick(pos) {
         if (ret.detail) toaster.value.show(ret.detail, { type: "alert" });
         grid.value.setState("", pawnToMove.x, pawnToMove.y);
         pawnToMove = undefined;
+      } else {
+        toaster.value.show("Invalid move.", { duration: 2000 });
       }
     }
   }
