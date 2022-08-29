@@ -49,8 +49,15 @@ function isPlaying(player) {
 </template>
 
 <style scoped lang="less">
+.playerEntry {
+  border-radius: 5px;
+}
 .playing {
-  background-color: rgba(138, 172, 16, 0.4);
+  background-image: linear-gradient(
+    rgba(255, 255, 255, 0),
+    rgba(255, 255, 255, 0),
+    rgb(219, 172, 63)
+  );
 }
 .ready {
   background-color: rgba(227, 188, 33, 0.4);
