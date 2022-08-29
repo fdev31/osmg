@@ -1,7 +1,7 @@
 <script setup>
 import { onMounted, onUnmounted, ref, watch } from "vue";
 import avatarCard from "@/components/avatarCard.vue";
-import { useRouter } from "vue-router";
+import { useRouter, RouterLink } from "vue-router";
 import { GameSession } from "@/stores/gamesession.js";
 import { getTranslation as T, initLocales } from "@/lib/utils.js";
 import { gamelist } from "@/lib/gamelist.js";
@@ -113,6 +113,11 @@ async function start_game(game) {
           <button @click="join_game(gameSession.name)">
             {{ T("Join game") }}
           </button>
+        </div>
+        <div v-else>
+          <RouterLink :to="`game-${gameSession.gameType}`">
+            {{ T("Return to game") }}
+          </RouterLink>
         </div>
         <button @click="clear_session()">
           {{ T("Change game") }}
