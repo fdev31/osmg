@@ -14,12 +14,18 @@ import playerList from "@/components/playerList.vue";
 import atakksGrid from "@/components/atakksGrid.vue";
 import avatarCard from "@/components/avatarCard.vue";
 import Toast from "@/components/Toast.vue";
+import { colors } from "@/lib/playercolors.js";
 
 const gameSession = GameSession();
 const playerlist = ref();
 const grid = ref();
 const toaster = ref();
 const playersByIndex = gameSession.players.map((o) => o.id);
+const myPlayerIndex = computed(() =>
+  gameSession.players.indexOf(
+    gameSession.players.filter((o, i) => o.id == gameSession.myId)[0]
+  )
+);
 
 const UI_CHECKS = false;
 initLocales();
@@ -165,6 +171,7 @@ const server = {
       }"
     >
       <avatarCard :show-name="false" :avatar-name="gameSession.myName" />
+      <div :style="`background-color: ${colors[myPlayerIndex]}`">&nbsp;</div>
     </div>
     <div id="players_frame">
       <playerList

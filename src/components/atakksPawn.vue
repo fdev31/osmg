@@ -36,15 +36,15 @@ const emit = defineEmits(["pawnClick"]);
   border: solid 2px black;
 }
 .p1 {
-  background-color: blue;
+  background-color: #e6194b;
 }
 .p2 {
-  background-color: red;
+  background-color: #4363d8;
 }
 .p3 {
-  background-color: green;
+  background-color: #3cb44b;
 }
 .p4 {
-  background-color: yellow;
+  background-color: #ffe119;
 }
 </style>
