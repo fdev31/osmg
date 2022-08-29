@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref, onMounted, onUnmounted, computed } from "vue";
 
 import { GameSession } from "@/stores/gamesession.js";
 import {
@@ -20,7 +20,13 @@ const playerlist = ref();
 const grid = ref();
 const toaster = ref();
 const playersByIndex = gameSession.players.map((o) => o.id);
+
+const UI_CHECKS = false;
 initLocales();
+
+const amIplaying = computed(() => {
+  return gameSession.gameData.curPlayer == gameSession.myId;
+});
 
 const handlers = {
   curPlayer(data) {
@@ -58,16 +64,22 @@ const handlers = {
   },
 };
 
+let stream;
+
 onMounted(() => {
-  setupStreamEventHandler(
+  stream = setupStreamEventHandler(
     { topic: gameSession.name, uid: gameSession.myId },
     handlers
   );
 });
 
+onUnmounted(() => {
+  stream.close();
+});
+
 let pawnToMove;
 async function handleClick(pos) {
-  if (gameSession.gameData.curPlayer != gameSession.myId) {
+  if (UI_CHECKS && !amIplaying) {
     toaster.value.show("Not your turn!", { type: "alert", duration: 2000 });
     return;
   }
@@ -139,7 +151,12 @@ const server = {
   <Toast ref="toaster" />
   <div v-cloak>
     <h1>{{ T("Attaks, a game of mind") }}</h1>
-    <div id="myAvatar">
+    <div
+      id="myAvatar"
+      :class="{
+        playing: amIplaying,
+      }"
+    >
       <avatarCard :show-name="false" :avatar-name="gameSession.myName" />
     </div>
     <div id="players_frame">
@@ -167,6 +184,13 @@ const server = {
   float: right;
   margin-top: -64px;
   height: 2em;
+}
+#myAvatar:deep(svg) {
+  background-color: white;
+  border-radius: 1000px;
+}
+#myAvatar.playing:deep(svg) {
+  background-color: #d5680f;
 }
 @media (min-width: 1024px) {
   @media (max-width: 1600px) {
