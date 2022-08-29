@@ -58,6 +58,14 @@ export function setupStreamEventHandler(query, handlers) {
   }, query);
 }
 
+export function getPlayerFromSession(sess) {
+  return {
+    id: sess.myId,
+    sessionName: sess.name,
+    secret: sess.secret,
+  };
+}
+
 export async function getJson(url) {
   const req = await fetch(url);
   const data = await req.json();

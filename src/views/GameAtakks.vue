@@ -5,6 +5,8 @@ import { GameSession } from "@/stores/gamesession.js";
 import {
   getTranslation as T,
   initLocales,
+  getPlayerFromSession,
+  post,
   setupStreamEventHandler,
 } from "@/lib/utils.js";
 
@@ -19,7 +21,44 @@ const toaster = ref();
 const playersByIndex = gameSession.players.map((o) => o.id);
 initLocales();
 
-const handlers = {};
+/*
+        const toBeRemoved = `${pawnToMove.x}-${pawnToMove.y}`;
+        const newList = gameSession.playersData[gameSession.myId][
+          "pawns"
+        ].filter((o) => o != toBeRemoved);
+        newList.push(`${pos.x}-${pos.y}`);
+        gameSession.playersData[gameSession.myId]["pawns"] = newList;
+        */
+
+const handlers = {
+  varUpdate(data) {
+    if (data.val && data.var) {
+      for (const pid of Object.keys(data.val)) {
+        switch (data.var) {
+          case "pawns":
+            if (pid == "void") {
+              const reflist = data.val[pid];
+              for (const player of gameSession.players) {
+                const davar = gameSession.playersData[player.id][data.var];
+                gameSession.playersData[player.id][data.var] = davar.filter(
+                  (o) => reflist.indexOf(o) == -1
+                );
+              }
+            } else {
+              const davar = gameSession.playersData[pid][data.var];
+              for (const val of data.val[pid]) {
+                davar.push(val);
+              }
+            }
+            break;
+          default:
+            console.debug("Don't know how to update " + data.var);
+        }
+      }
+    }
+    gameSession.save();
+  },
+};
 
 onMounted(() => {
   setupStreamEventHandler(
@@ -29,7 +68,7 @@ onMounted(() => {
 });
 
 let pawnToMove;
-function handleClick(pos) {
+async function handleClick(pos) {
   if (gameSession.gameData.curPlayer != gameSession.myId) {
     toaster.value.show("Not your turn!", { type: "warning", duration: 2000 });
     return;
@@ -54,13 +93,13 @@ function handleClick(pos) {
         for (let y = -1; y <= 1; y++) {
           if (valid) break;
           if (x || y)
-            valid = grid.value.getPlayerAtCoordinate(pos.x + x, pos.y + y);
+            if (grid.value.getPlayerAtCoordinate(pos.x + x, pos.y + y)) {
+              valid = { x: pos.x + x, y: pos.y + y };
+            }
         }
       }
       if (valid) {
-        gameSession.playersData[gameSession.myId]["pawns"].push(
-          `${pos.x}-${pos.y}`
-        );
+        await server.add(pos, valid);
       }
     } else {
       if (
@@ -69,18 +108,31 @@ function handleClick(pos) {
         pos.y >= pawnToMove.y - 2 &&
         pos.y <= pawnToMove.y + 2
       ) {
-        const toBeRemoved = `${pawnToMove.x}-${pawnToMove.y}`;
-        const newList = gameSession.playersData[gameSession.myId][
-          "pawns"
-        ].filter((o) => o != toBeRemoved);
-        newList.push(`${pos.x}-${pos.y}`);
-        gameSession.playersData[gameSession.myId]["pawns"] = newList;
+        await server.move(pos, pawnToMove);
         grid.value.setState("", pawnToMove.x, pawnToMove.y);
         pawnToMove = undefined;
       }
     }
   }
 }
+const server = {
+  async add(pawn, reference) {
+    const obj = {
+      player: getPlayerFromSession(gameSession),
+      reference: { x: reference.x, y: reference.y },
+      position: { x: pawn.x, y: pawn.y },
+    };
+    const ret = await post("/g/atakks/add", obj);
+  },
+  async move(pawn, from) {
+    const obj = {
+      player: getPlayerFromSession(gameSession),
+      source: { x: from.x, y: from.y },
+      destination: { x: pawn.x, y: pawn.y },
+    };
+    const ret = await post("/g/atakks/move", obj);
+  },
+};
 </script>
 
 <template>
