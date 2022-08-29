@@ -8,7 +8,7 @@ const prop = defineProps({
 });
 
 function getClass(idx, state) {
-  if (idx) return `pawn p${idx} ${state}`;
+  if (idx) return `pawn piece p${idx} ${state}`;
   return `pawn ${state}`;
 }
 const emit = defineEmits(["pawnClick"]);
@@ -17,9 +17,14 @@ const emit = defineEmits(["pawnClick"]);
 <template>
   <div
     @click="$parent.$emit('pawnClick', prop)"
-    :class="getClass(prop.idx, prop.state)"
+    :class="`pawn ${prop.state}`"
     :style="`left: ${prop.x * width}px; top: ${prop.y * width}px;`"
-  ></div>
+  />
+  <div
+    @click="$parent.$emit('pawnClick', prop)"
+    :style="`left: ${prop.x * width}px; top: ${prop.y * width}px;`"
+    :class="getClass(prop.idx, prop.state)"
+  />
 </template>
 
 <style scoped>
@@ -31,6 +36,12 @@ const emit = defineEmits(["pawnClick"]);
   border: solid 1px grey;
   cursor: pointer;
   transition-duration: 300ms;
+}
+.piece {
+  z-index: 2;
+  border-radius: 100px;
+  scale: 0.8;
+  box-shadow: black 2px 2px 5px;
 }
 .pawn.clicked {
   border: solid 2px black;
