@@ -150,7 +150,7 @@ const server = {
 <template>
   <Toast ref="toaster" />
   <div v-cloak>
-    <h1>{{ T("Attaks, a game of mind") }}</h1>
+    <h1>{{ T("Atakks, a game of mind") }}</h1>
     <div
       id="myAvatar"
       :class="{
