@@ -47,9 +47,8 @@ fix:
 gamelist:
    ./scripts/genGameList.py 
 
-# TODO: build translations files
 locales:
-    #cd locales && ./build
+    cd locales && ./build
 
 # run (any kind of) tests
 test testfile='tests':
