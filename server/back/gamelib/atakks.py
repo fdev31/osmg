@@ -7,7 +7,6 @@ from pydantic import BaseModel
 
 from ..globalHandlers import (
     getConfig,
-    getGameDataPrefix,
     publishEvent,
     getVarName,
     PLAYERS_ORDER,
@@ -21,6 +20,11 @@ placements = ["0-0", "6-6", "0-6", "6-0"]
 
 class gameVars(str, Enum):
     pawns = "pawns"
+
+
+class SimpleReturn(BaseModel):
+    "returned when no data is needed"
+    ok: bool = True
 
 
 class Coords(BaseModel):
@@ -49,7 +53,7 @@ class AtakksMoveBody(BaseModel):
     destination: Coords
 
 
-async def addPawn(params: AtakksAddBody) -> dict[str, bool]:
+async def addPawn(params: AtakksAddBody) -> SimpleReturn:
     """`player` adds a pawn into `positition`, next to `reference`"""
     await publishEvent(
         params.player.sessionName,
@@ -58,10 +62,10 @@ async def addPawn(params: AtakksAddBody) -> dict[str, bool]:
         val={params.player.id: [params.position.shortText]},
         player=params.player.id,
     )
-    return {"ok": True}
+    return SimpleReturn()
 
 
-async def movePawn(params: AtakksMoveBody) -> dict[str, bool]:
+async def movePawn(params: AtakksMoveBody) -> SimpleReturn:
     """`player` moves a pawn from `source` to `destination`"""
     redis = aioredis.from_url(
         "redis://" + getConfig().redis_server, decode_responses=True
@@ -79,7 +83,7 @@ async def movePawn(params: AtakksMoveBody) -> dict[str, bool]:
         },
         player=params.player.id,
     )
-    return {"ok": True}
+    return SimpleReturn()
 
 
 class Game(GameInterface):
@@ -114,7 +118,7 @@ class Game(GameInterface):
     actions: Dict[str, Any] = {
         "add": dict(
             handler=addPawn,
-            response_model=bool,
+            response_model=SimpleReturn,
             responses={
                 403: {"description": "not your turn"},
                 421: {"description": "invalid move"},
@@ -126,7 +130,7 @@ class Game(GameInterface):
         ),
         "move": dict(
             handler=movePawn,
-            response_model=bool,
+            response_model=SimpleReturn,
             responses={
                 403: {"description": "not your turn"},
                 421: {"description": "invalid move"},
