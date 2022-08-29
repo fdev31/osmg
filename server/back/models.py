@@ -7,7 +7,7 @@ __all__ = ["Player", "newPlayer", "Session"]
 
 class PlayerIdentifier(BaseModel):
     "identifies a user"
-    id: int
+    id: str
     sessionName: str
     secret: Optional[int] = None
 
