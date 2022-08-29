@@ -10,12 +10,8 @@ let avatarObj = null;
 const props = defineProps({
   avatarId: { type: String, default: "" },
   avatarName: { type: String, default: "" },
-  small: { type: Boolean, default: false },
+  size: { type: String, default: "big" },
   showName: { type: Boolean, default: false },
-});
-
-const className = computed(() => {
-  return props.small ? "avatarCard avatar-small " : "avatarCard avatar-big ";
 });
 
 function setName(n) {
@@ -38,9 +34,9 @@ onMounted(() => {
 
 <template>
   <main>
-    <div ref="avatarDom" :class="className">
+    <div ref="avatarDom" :class="`avatarCard avatar-${props.size}`">
       <span v-html="avatarTemplate"></span>
-      <span v-if="props.showName" :class="className + ' avatarName'">{{
+      <span v-if="props.showName" :class="`avatar-${props.size} avatarName`">{{
         props.avatarName
       }}</span>
     </div>
@@ -59,11 +55,31 @@ onMounted(() => {
 .avatarCard:deep(svg) {
   object-fit: cover;
 }
+// small
 .avatar-small {
   height: 96px;
 }
 .avatar-small:deep(svg) {
   width: 96px;
   height: 96px;
+}
+
+@media (max-width: 1024px) {
+  .avatar-small {
+    height: 64px;
+  }
+  .avatar-small:deep(svg) {
+    width: 64px;
+    height: 64px;
+  }
+}
+
+// tiny
+.avatar-tiny {
+  height: 64px;
+}
+.avatar-tiny:deep(svg) {
+  width: 64px;
+  height: 64px;
 }
 </style>

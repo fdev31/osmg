@@ -7,6 +7,7 @@ const props = defineProps({
   curPlayer: { type: String, default: "" },
   myId: { type: String, default: "" },
   players: { type: Array, default: () => [] },
+  size: { type: String, default: "small" },
 });
 
 defineEmits(["kick"]);
@@ -22,7 +23,7 @@ function isPlaying(player) {
       v-for="item in props.players"
       :key="item.id"
       :class="{
-        players: true,
+        playerEntry: true,
         ready: item.ready,
         playing: isPlaying(item),
         disconnected: item.disconnected,
@@ -31,7 +32,7 @@ function isPlaying(player) {
       <avatarCard
         class="avatar-list"
         :show-name="true"
-        :small="true"
+        :size="props.size"
         :avatar-name="item.name"
         :avatar-id="item.id"
       />

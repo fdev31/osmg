@@ -34,6 +34,7 @@ onMounted(() => {
     <h1>{{ T("Attaks, a game of mind") }}</h1>
     <div id="players_frame">
       <playerList
+        id="playersContainer"
         ref="playerlist"
         :enable-kick="false"
         :kick-text="T('Kick player')"
@@ -60,7 +61,6 @@ onMounted(() => {
 }
 @media (max-width: 1024px) {
   #players_frame {
-    scale: 0.5;
     left: 1em;
     clear: both;
     display: block;
