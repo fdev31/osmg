@@ -31,12 +31,17 @@ initLocales();
         */
 
 const handlers = {
+  curPlayer(data) {
+    gameSession.gameData.curPlayer = data.val;
+    gameSession.save();
+  },
   varUpdate(data) {
     if (data.val && data.var) {
       for (const pid of Object.keys(data.val)) {
         switch (data.var) {
           case "pawns":
             if (pid == "void") {
+              // remove those references on other players
               const reflist = data.val[pid];
               for (const player of gameSession.players) {
                 const davar = gameSession.playersData[player.id][data.var];
@@ -45,6 +50,7 @@ const handlers = {
                 );
               }
             } else {
+              // just append new positions
               const davar = gameSession.playersData[pid][data.var];
               for (const val of data.val[pid]) {
                 davar.push(val);
