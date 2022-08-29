@@ -11,7 +11,7 @@ function show(text, opts = {}) {
     message: text,
     type: "info", // "info"|"warning"|"alert"|"success"
     appearance: "dark", // "light"|"dark"|"glass"
-    dismiss: { manually: true, automatically: true },
+    dismiss: { manually: true, automatically: !opts.sticky },
     showDurationProgress: true,
     showIcon: true,
     duration: 3000,

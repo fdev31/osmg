@@ -1,7 +1,7 @@
 Tickets
 =======
 
-:total-count: 3
+:total-count: 5
 
 --------------------------------------------------------------------------------
 
@@ -37,3 +37,23 @@ Check websocket bug
 :priority: 0
 
 https://github.com/tiangolo/fastapi/issues/3934
+
+--------------------------------------------------------------------------------
+
+TODO: detect end of game when a player can't move
+=================================================
+
+:bugid: 4
+:created: 2022-08-30T00:22:57
+:priority: 0
+
+handle it in the client, check the code from original atakks
+
+--------------------------------------------------------------------------------
+
+Bug: highscore not well handled
+===============================
+
+:bugid: 5
+:created: 2022-08-30T00:42:43
+:priority: 0

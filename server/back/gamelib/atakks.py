@@ -116,16 +116,33 @@ async def _movePawn(
 
         all_players = await conn.lrange(prefix + sessVar.playerOrder.name, 0, -1)
         my_new_pawns = set([destination.shortText])
+        summary = dict(pawnCount=0, bestPlayer=None, bestScore=0)
         convertible_zone = set(generateZoneCoords(destination.x, destination.y))
+        hiScores = {}
         for plr in all_players:
             ppawnVar = getVarName(
                 gameVars.pawns.name, player.sessionName, plr, gameData=True
             )
             ppawns = await conn.smembers(ppawnVar)
-            stolen = ppawns.intersection(convertible_zone)
-            if stolen:
-                await conn.srem(ppawnVar, *stolen)
-                my_new_pawns.update(stolen)
+            nbPawns = len(ppawns)
+            if not move and plr == player.id:
+                nbPawns += 1
+            hiScores[plr] = nbPawns
+            summary["pawnCount"] += nbPawns
+
+            if plr != player.id:
+                stolen = ppawns.intersection(convertible_zone)
+                if stolen:
+                    await conn.srem(ppawnVar, *stolen)
+                    my_new_pawns.update(stolen)
+
+        hiScores[player.id] += len(stolen)
+        logger.warn(hiScores)
+
+        for plr, score in hiScores.items():
+            if score > summary["bestScore"]:
+                summary["bestScore"] = nbPawns
+                summary["bestPlayer"] = plr
 
         myPawnVar = getVarName(
             gameVars.pawns.name,
@@ -160,9 +177,14 @@ async def _movePawn(
             val=payload,
         )
 
-        await publishEvent(
-            player.sessionName, conn, cat=Events.curPlayer.name, val=curPlayerId
-        )
+        if summary["pawnCount"] == (MAX_BOARD_INDEX + 1) ** 2:
+            await publishEvent(
+                player.sessionName, conn, cat=Events.endOfGame.name, player=curPlayerId
+            )
+        else:
+            await publishEvent(
+                player.sessionName, conn, cat=Events.curPlayer.name, val=curPlayerId
+            )
     return SimpleReturn()
 
 

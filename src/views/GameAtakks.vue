@@ -49,6 +49,14 @@ const handlers = {
     gameSession.gameData.curPlayer = data.val;
     gameSession.save();
   },
+  endOfGame(data) {
+    if (data.player === gameSession.myId) {
+      toaster.value.show(`You are the winner !!`, { sticky: true });
+    } else {
+      const winner = gameSession.getPlayerInfo(data.player).name;
+      toaster.value.show(`Game Over.\n${winner} Wins!`, { sticky: true });
+    }
+  },
   varUpdate(data) {
     if (data.val && data.var) {
       for (const pid of Object.keys(data.val)) {
