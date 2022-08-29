@@ -5,7 +5,13 @@ from typing import Any, Dict
 import aioredis
 from pydantic import BaseModel
 
-from ..globalHandlers import getConfig, getGameDataPrefix, publishEvent
+from ..globalHandlers import (
+    getConfig,
+    getGameDataPrefix,
+    publishEvent,
+    getVarName,
+    PLAYERS_ORDER,
+)
 from ..models import SESSION_PLAYERS_DATA, Player, PlayerIdentifier, Session
 from .interfaces import Events, GameInterface, stdVar
 from .std_implem import def_playerAdded
@@ -99,6 +105,11 @@ class Game(GameInterface):
     @classmethod
     async def playerAdded(kls, sess: Session, player: Player) -> None:
         await def_playerAdded(sess, player)
+
+    @staticmethod
+    async def startGame(sessionId: str, conn: aioredis.Redis) -> None:
+        curPlayer = await conn.lindex(getVarName(PLAYERS_ORDER, sessionId), 0)
+        await publishEvent(sessionId, conn, cat=Events.curPlayer.name, val=curPlayer)
 
     actions: Dict[str, Any] = {
         "add": dict(
