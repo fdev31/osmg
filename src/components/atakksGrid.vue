@@ -71,24 +71,6 @@ defineEmits(["pawnClick"]); // emitted by the children component
 </template>
 
 <style scoped>
-.atakks-row {
-  display: inline-grid;
-}
-.atakks-column {
-  border: solid 1px #151515;
-  font-weight: bold;
-  text-align: center;
-  width: 2em;
-  height: 2em;
-}
-
-@media (min-width: 1024px) {
-  .atakks-column {
-    font-size: 200%;
-    width: 3em;
-    height: 3em;
-  }
-}
 .atakks-grid {
   background-color: rgba(50, 50, 50, 0.5);
 }
