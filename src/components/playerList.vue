@@ -6,6 +6,7 @@ const props = defineProps({
   kickText: { type: String, default: "Kick Player" },
   curPlayer: { type: String, default: "" },
   myId: { type: String, default: "" },
+  showMe: { type: Boolean, default: false },
   players: { type: Array, default: () => [] },
   size: { type: String, default: "small" },
 });
@@ -30,6 +31,7 @@ function isPlaying(player) {
       }"
     >
       <avatarCard
+        v-if="props.showMe || item.id != props.myId"
         class="avatar-list"
         :show-name="true"
         :size="props.size"
