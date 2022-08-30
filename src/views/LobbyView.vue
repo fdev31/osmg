@@ -3,6 +3,7 @@ import { ref, onMounted, watchEffect } from "vue";
 import { RouterLink, useRouter } from "vue-router";
 import { GameSession } from "@/stores/gamesession.js";
 import playerList from "@/components/playerList.vue";
+import avatarCard from "@/components/avatarCard.vue";
 import Toast from "@/components/Toast.vue";
 
 import { kickPlayerVote } from "@/lib/voting.js";
@@ -183,6 +184,10 @@ async function mainAction() {
   <Toast ref="toaster" />
   <div v-cloak>
     <h2>{{ gameSession.gameType }}</h2>
+
+    <div id="myAvatar">
+      <avatarCard :show-name="false" :avatar-name="gameSession.myName" />
+    </div>
     <div>
       <button type="button" class="mainAction" @click="mainAction">
         {{ getMainActionText() }}
@@ -204,7 +209,7 @@ async function mainAction() {
       type="text"
       :value="`http://${host}/r/${name}`"
     />
-    <h3>{{ T("players") }}</h3>
+    <h3>{{ T("Other players") }}</h3>
     <playerList
       ref="playerlist"
       :players="gameSession.players"
@@ -217,3 +222,21 @@ async function mainAction() {
     />
   </div>
 </template>
+
+<style scoped>
+#myAvatar {
+  float: right;
+  margin-top: -64px;
+  height: 2em;
+  z-index: 1;
+}
+#myAvatar:deep(svg) {
+  background-color: white;
+  border-radius: 1000px;
+  transition-duration: 300ms;
+}
+#myAvatar.playing:deep(svg) {
+  background-color: #d5680f;
+  border: solid 3px #333;
+}
+</style>
