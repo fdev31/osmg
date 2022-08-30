@@ -1,7 +1,6 @@
 <script setup>
-import { onMounted, useAttrs, ref, watchEffect } from "vue";
+import { onMounted, ref } from "vue";
 import { Avatar } from "@/assets/avatars.js";
-import { computed } from "vue";
 import avatarTemplate from "@/assets/avatarTemplate.svg?raw";
 
 const avatarDom = ref();

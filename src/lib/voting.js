@@ -1,3 +1,5 @@
+import { post } from "@/lib/utils.js";
+
 // FIXME: kickPlayerVote isn't a generic function, shouldn't be in utils
 // FIXME: passing parameters to a generic function should be done in the Vue application code
 // FIXME: kickPlayerVote uses hardcoded strings
@@ -29,7 +31,7 @@ export async function kickPlayerVote(app, player, validate = "true") {
  */
 async function vote(query) {
   let url = `http://${document.location.host}/c/session/vote?name=kick_${query.kicked.id}&validate=${query.validate}&description=${query.description}`;
-  let action = await post(url, {
+  await post(url, {
     id: parseInt(query.kicker.id),
     secret: parseInt(query.app.secret),
     sessionName: query.app.name,

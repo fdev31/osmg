@@ -336,9 +336,3 @@ function show(e) {
 function hide(e) {
   e.forEach((x) => (x.style.visibility = "hidden"));
 }
-
-try {
-  module.exports = {
-    Avatar,
-  };
-} catch {}

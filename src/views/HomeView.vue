@@ -126,19 +126,18 @@ async function start_game(game) {
       <div v-else>
         <h1>{{ T("Pick a game") }}:</h1>
         <div class="wrap">
-          <div v-for="(info, game) in games" class="gamebutton">
+          <div v-for="(info, game) in games" :key="game" class="gamebutton">
             <div class="tile">
               <span @click="start_game(game)">
                 <img :src="`/img/${info.card}.jpg`" />
                 <div class="text">
                   <h1>{{ T(game) }}</h1>
                   <h2 class="animate-text">{{ T(game + "_description") }}</h2>
-                  <p
+                  <div
                     class="animate-text"
-                    v-html="T(game + '_long_description')"
-                  />
-                </div>
-              </span>
+                    v-text="T(game + '_long_description')"
+                  /></div
+              ></span>
             </div>
           </div>
         </div>

@@ -23,7 +23,7 @@ const toaster = ref();
 const playersByIndex = gameSession.players.map((o) => o.id);
 const myPlayerIndex = computed(() =>
   gameSession.players.indexOf(
-    gameSession.players.filter((o, i) => o.id == gameSession.myId)[0]
+    gameSession.players.filter((o) => o.id == gameSession.myId)[0]
   )
 );
 
@@ -200,7 +200,7 @@ const server = {
       class="gameGrid"
       :players-data="gameSession.playersData"
       :players-ids="playersByIndex"
-      @pawnClick="handleClick"
+      @pawn-click="handleClick"
     />
   </div>
 </template>

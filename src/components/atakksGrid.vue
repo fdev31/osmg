@@ -62,6 +62,7 @@ defineEmits(["pawnClick"]); // emitted by the children component
   <div class="atakks-grid">
     <atakksPawn
       v-for="pawn in board"
+      :key="pawn"
       :x="pawn.x"
       :y="pawn.y"
       :state="pawn.state"

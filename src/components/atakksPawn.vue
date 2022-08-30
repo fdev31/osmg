@@ -11,7 +11,6 @@ function getClass(idx, state) {
   if (idx) return `pawn piece p${idx} ${state}`;
   return `pawn ${state}`;
 }
-const emit = defineEmits(["pawnClick"]);
 </script>
 
 <template>
