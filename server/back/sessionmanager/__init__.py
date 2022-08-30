@@ -8,8 +8,8 @@ from starlette import status as httpstatus
 
 from ..gamelib.interfaces import Events, GameInterface, sessVar
 from ..globalHandlers import (
-    getRedis,
     getNewRedis,
+    getRedis,
     getVarName,
     publishEvent,
     setConfig,

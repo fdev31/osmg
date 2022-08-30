@@ -8,7 +8,7 @@ SERVER_PARAMS := "--ws-ping-interval 5 --ws-ping-timeout 2"
 HTTP_PORT := `cat HTTP_PORT`
 
 
-
+export MYPYPATH := "pystubs"
 export PYTHONPATH := "./tests/unit/"
 export NODE_ENV := "dev" # or production
 export WEB_CONCURRENCY := "1"
@@ -47,6 +47,7 @@ fix:
 gamelist:
    ./scripts/genGameList.py 
 
+# generate a bundle with all translations (updates a file in src)
 locales:
     cd locales && ./build
 

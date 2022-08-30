@@ -5,11 +5,7 @@ from typing import Any, Dict, Optional
 from aioredis import Redis
 
 from ..gamelib.interfaces import Events, GameInterface, sessVar
-from ..globalHandlers import (
-    getRedis,
-    getVarName,
-    publishEvent,
-)
+from ..globalHandlers import getRedis, getVarName, publishEvent
 from ..models import (
     SESSION_GAME_DATA,
     SESSION_GAME_TYPE,

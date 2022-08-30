@@ -1,6 +1,6 @@
 from enum import Enum
 from logging import getLogger
-from typing import Any, Dict, Optional, Generator
+from typing import Any, Dict, Generator, Optional
 
 import aioredis
 from fastapi import HTTPException
@@ -9,18 +9,19 @@ from starlette import status as httpstatus
 
 MAX_BOARD_INDEX = 6
 
+from pydantic import BaseModel
+
 from ..globalHandlers import (
     getConfig,
-    getNewRedis,
     getGameDataPrefix,
+    getNewRedis,
     getVarName,
     publishEvent,
 )
 from ..models import SESSION_PLAYERS_DATA, Player, PlayerIdentifier, Session
 from ..sessionmanager.public import isPlayerValid
-from .interfaces import Events, GameInterface, stdVar, sessVar
+from .interfaces import Events, GameInterface, sessVar, stdVar
 from .std_implem import def_playerAdded
-from pydantic import BaseModel
 
 placements = [
     "0-0",
@@ -100,12 +101,18 @@ def generateZoneCoords(x: int, y: int) -> Generator[str, None, None]:
             yield f"{lx}-{ly}"
 
 
+class Summary(BaseModel):
+    pawnCount: int = 0
+    bestPlayer: str = ""
+    bestScore: int = 0
+
+
 async def _movePawn(
-    player: PlayerIdentifier, source: Coords, destination: Coords, move=False
+    player: PlayerIdentifier, source: Coords, destination: Coords, move: bool = False
 ) -> SimpleReturn:
-    redis = getNewRedis()
-    gprefix = getGameDataPrefix(player.sessionName)
-    prefix = gprefix[:-2]
+    redis: aioredis.Redis = getNewRedis()
+    gprefix: str = getGameDataPrefix(player.sessionName)
+    prefix: str = gprefix[:-2]
 
     async with redis.client() as conn:
         pi = await getPlayerInfo(conn, gprefix, player.id, player.secret)
@@ -114,7 +121,7 @@ async def _movePawn(
 
         all_players = await conn.lrange(prefix + sessVar.playerOrder.name, 0, -1)
         my_new_pawns = set([destination.shortText])
-        summary = dict(pawnCount=0, bestPlayer=None, bestScore=0)
+        summary = Summary()
         convertible_zone = set(generateZoneCoords(destination.x, destination.y))
         hiScores = {}
         for plr in all_players:
@@ -126,7 +133,7 @@ async def _movePawn(
             if not move and plr == player.id:
                 nbPawns += 1
             hiScores[plr] = nbPawns
-            summary["pawnCount"] += nbPawns
+            summary.pawnCount += nbPawns
 
             if plr != player.id:
                 stolen = ppawns.intersection(convertible_zone)
@@ -137,9 +144,9 @@ async def _movePawn(
         hiScores[player.id] += len(stolen)
 
         for plr, score in hiScores.items():
-            if score > summary["bestScore"]:
-                summary["bestScore"] = nbPawns
-                summary["bestPlayer"] = plr
+            if score > summary.bestScore:
+                summary.bestScore = nbPawns
+                summary.bestPlayer = plr
 
         myPawnVar = getVarName(
             gameVars.pawns.name,
@@ -174,7 +181,7 @@ async def _movePawn(
             val=payload,
         )
 
-        if summary["pawnCount"] == (MAX_BOARD_INDEX + 1) ** 2:
+        if summary.pawnCount == (MAX_BOARD_INDEX + 1) ** 2:
             await publishEvent(
                 player.sessionName, conn, cat=Events.endOfGame.name, player=curPlayerId
             )

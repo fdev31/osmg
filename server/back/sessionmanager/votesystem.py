@@ -5,13 +5,9 @@ from typing import Any, Callable, Coroutine, Match, Optional, Tuple
 import aioredis
 from fastapi import HTTPException
 from starlette import status as httpstatus
-from ..gamelib.interfaces import sessVar
 
-from ..globalHandlers import (
-    getRedis,
-    getVarName,
-    publishEvent,
-)
+from ..gamelib.interfaces import sessVar
+from ..globalHandlers import getRedis, getVarName, publishEvent
 from ..models import PlayerIdentifier
 from .public import getGameBySessionId, isPlayerValid
 

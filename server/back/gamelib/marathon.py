@@ -11,15 +11,15 @@ from starlette import status as httpstatus
 from ..globalHandlers import (
     getConfig,
     getGameDataPrefix,
-    getRedis,
     getNewRedis,
+    getRedis,
     getVarName,
     publishEvent,
 )
 from ..models import Player, PlayerIdentifier, Session
 from ..sessionmanager.public import isPlayerValid
 from ..utils import dumps, loads
-from .interfaces import Events, GameInterface, stdVar, sessVar
+from .interfaces import Events, GameInterface, sessVar, stdVar
 from .std_implem import def_playerAdded
 
 ACTIVE_PLAYERS = "curOrder"
