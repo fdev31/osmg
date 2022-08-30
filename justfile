@@ -61,8 +61,8 @@ unit: fix
 
 # run frontend tests
 front: fix
-    @just stop
-    @just run 1 &
+    #@just stop
+    #@just run 1 &
     @just test ./tests/front/
 
 # list available events
