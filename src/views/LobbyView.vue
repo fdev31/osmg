@@ -43,6 +43,9 @@ async function countDown(count = 4) {
     await delay(1000);
   }
 }
+
+const justConnected = new Set();
+
 const handlers = {
   curPlayer: (data) => {
     gameSession.gameData.curPlayer = data.val;
@@ -55,12 +58,13 @@ const handlers = {
   connectPlayer: (data) => {
     gameSession.getPlayerInfo(data.id).disconnected = false;
     gameSession.save();
-    toaster.value.show(
-      `Welcome back ${gameSession.getPlayerInfo(data.id).name}!`,
-      {
-        duration: 2500,
-      }
-    );
+    if (!justConnected.has(data.id))
+      toaster.value.show(
+        `Welcome back ${gameSession.getPlayerInfo(data.id).name}!`,
+        {
+          duration: 2500,
+        }
+      );
   },
   disconnectPlayer: (data) => {
     gameSession.getPlayerInfo(data.id).disconnected = true;
@@ -73,6 +77,9 @@ const handlers = {
     );
   },
   newPlayer: (data) => {
+    const playerId = data.id;
+    justConnected.add(playerId);
+    setTimeout(() => justConnected.delete(playerId), 500);
     delete data["cat"];
 
     toaster.value.show(`${data.name} ${T("enters the game")}`, {
@@ -176,6 +183,14 @@ async function mainAction() {
   <Toast ref="toaster" />
   <div v-cloak>
     <h2>{{ gameSession.gameType }}</h2>
+    <div>
+      <button type="button" class="mainAction" @click="mainAction">
+        {{ getMainActionText() }}
+      </button>
+      <RouterLink to="/">
+        {{ T("Change game") }}
+      </RouterLink>
+    </div>
     <button
       type="button"
       :title="T('Click to copy invite link to the clipboard')"
@@ -200,11 +215,5 @@ async function mainAction() {
       :my-id="gameSession.myId"
       @kick="kickPlayerVote"
     />
-    <button type="button" class="mainAction" @click="mainAction">
-      {{ getMainActionText() }}
-    </button>
-    <RouterLink to="/">
-      {{ T("Change game") }}
-    </RouterLink>
   </div>
 </template>
