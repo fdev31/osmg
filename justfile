@@ -53,7 +53,7 @@ locales:
 
 # run (any kind of) tests
 test testfile='tests':
-    {{venv}}/bin/pytest -v {{testfile}}
+    {{venv}}/bin/pytest -s -v {{testfile}}
 
 # run unit tests
 unit: fix
