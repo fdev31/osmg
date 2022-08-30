@@ -39,7 +39,7 @@ const kick_player_threshold = 2;
 async function countDown(count = 4) {
   for (let index = 1; index < count; index++) {
     let display = count - (index + 1) == 0 ? "Go !" : count - (index + 1);
-    toaster.value.show(display, { duration: 2000 });
+    toaster.value.show(display, { duration: 1000 });
     await delay(1000);
   }
 }
@@ -55,6 +55,12 @@ const handlers = {
   connectPlayer: (data) => {
     gameSession.getPlayerInfo(data.id).disconnected = false;
     gameSession.save();
+    toaster.value.show(
+      `Welcome back ${gameSession.getPlayerInfo(data.id).name}!`,
+      {
+        duration: 2500,
+      }
+    );
   },
   disconnectPlayer: (data) => {
     gameSession.getPlayerInfo(data.id).disconnected = true;
