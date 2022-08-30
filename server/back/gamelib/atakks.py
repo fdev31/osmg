@@ -187,11 +187,13 @@ async def _movePawn(
 
 async def movePawn(params: AtakksMoveBody) -> SimpleReturn:
     """`player` moves a pawn from `source` to `destination`"""
+    logger.debug(f"movePawn({params})")
     return await _movePawn(params.player, params.source, params.destination, True)
 
 
 async def addPawn(params: AtakksAddBody) -> SimpleReturn:
     """`player` adds a pawn into `positition`, next to `reference`"""
+    logger.debug(f"addPawn({params})")
     return await _movePawn(params.player, params.reference, params.position, False)
 
 
