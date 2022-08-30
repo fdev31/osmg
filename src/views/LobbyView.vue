@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted, watchEffect } from "vue";
+import { ref } from "vue";
 import { RouterLink, useRouter } from "vue-router";
 import { GameSession } from "@/stores/gamesession.js";
 import playerList from "@/components/playerList.vue";
@@ -115,11 +115,11 @@ const handlers = {
         duration: -1,
         buttonGroup: {
           yes: {
-            action: (x) => kickPlayerVote(gameSession, player_kicked),
+            action: () => kickPlayerVote(gameSession, player_kicked),
             hideOnClick: true,
           },
           no: {
-            action: (x) => kickPlayerVote(gameSession, player_kicked, "false"),
+            action: () => kickPlayerVote(gameSession, player_kicked, "false"),
             hideOnClick: true,
           },
         },
@@ -129,7 +129,7 @@ const handlers = {
     states.hasVoted = true;
   },
   kickPlayer: (data) => {
-    if ((data.result = true)) {
+    if (data.result) {
       for (let index = 0; index < gameSession.players.length; index++) {
         if (parseInt(gameSession.players[index].id) == parseInt(data.id)) {
           gameSession.players.splice(index, 1);
