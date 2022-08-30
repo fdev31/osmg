@@ -26,6 +26,12 @@ def getRedis() -> aioredis.Redis:
     return Context.redis
 
 
+def getNewRedis() -> aioredis.Redis:
+    return aioredis.from_url(
+        "redis://" + getConfig().redis_server, decode_responses=True
+    )
+
+
 def setRedis(handler: aioredis.Redis) -> None:
     Context.redis = handler
 

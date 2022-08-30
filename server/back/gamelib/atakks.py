@@ -11,6 +11,7 @@ MAX_BOARD_INDEX = 6
 
 from ..globalHandlers import (
     getConfig,
+    getNewRedis,
     getGameDataPrefix,
     getVarName,
     publishEvent,
@@ -90,7 +91,6 @@ class AtakksMoveBody(BaseModel):
 
 
 def generateZoneCoords(x: int, y: int) -> Generator[str, None, None]:
-    logger.warn(f"generate for {x} & {y}")
     for lx in range(x - 1, x + 2):
         if lx < 0 or lx > MAX_BOARD_INDEX:
             continue
@@ -103,9 +103,7 @@ def generateZoneCoords(x: int, y: int) -> Generator[str, None, None]:
 async def _movePawn(
     player: PlayerIdentifier, source: Coords, destination: Coords, move=False
 ) -> SimpleReturn:
-    redis = aioredis.from_url(
-        "redis://" + getConfig().redis_server, decode_responses=True
-    )
+    redis = getNewRedis()
     gprefix = getGameDataPrefix(player.sessionName)
     prefix = gprefix[:-2]
 
@@ -137,7 +135,6 @@ async def _movePawn(
                     my_new_pawns.update(stolen)
 
         hiScores[player.id] += len(stolen)
-        logger.warn(hiScores)
 
         for plr, score in hiScores.items():
             if score > summary["bestScore"]:

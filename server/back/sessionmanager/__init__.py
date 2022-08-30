@@ -9,6 +9,7 @@ from starlette import status as httpstatus
 from ..gamelib.interfaces import Events, GameInterface, sessVar
 from ..globalHandlers import (
     getRedis,
+    getNewRedis,
     getVarName,
     publishEvent,
     setConfig,
@@ -218,7 +219,7 @@ async def startGame(player: PlayerIdentifier, tasks: BackgroundTasks) -> None:
 
 def init(app: FastAPI, config: ODict) -> None:
     setConfig(config)
-    setRedis(aioredis.from_url("redis://" + config.redis_server, decode_responses=True))
+    setRedis(getNewRedis())
 
     app.get("/c/session/new", response_model=Session)(makeSession)
 

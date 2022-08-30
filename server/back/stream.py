@@ -6,7 +6,7 @@ import aioredis
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect
 from websockets.exceptions import ConnectionClosedError, ConnectionClosedOK
 
-from .globalHandlers import getConfig
+from .globalHandlers import getConfig, getNewRedis
 from .sessionmanager.public import connectPlayer, disconnectPlayer
 
 logger = logging.getLogger("Stream")
@@ -16,9 +16,7 @@ async def sessionStreamSource(
     ws: WebSocket, topic: str, playerId: str
 ) -> AsyncGenerator[str, None]:
 
-    channel: aioredis.client.PubSub = aioredis.from_url(
-        "redis://" + getConfig().redis_server, decode_responses=True
-    ).pubsub()
+    channel: aioredis.client.PubSub = getNewRedis().pubsub()
     await connectPlayer(topic, playerId)
     try:
         await channel.subscribe(topic)
@@ -47,7 +45,7 @@ async def publish_events(ws: WebSocket, topic: str, uid: str) -> None:
 
 async def gameEventStream(ws: WebSocket, topic: str, uid: str) -> None:
     "Returns an event source for the provided topic & user"
-    logger.debug("New stream for %s @ %s", topic, uid)
+    logger.debug("New stream for %s @ %s", uid, topic)
     await ws.accept()
     waitDisconnect = wait_for_disconnect(ws)
     streamTask = publish_events(ws, topic, uid)
