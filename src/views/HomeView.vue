@@ -13,6 +13,8 @@ const mynickname = ref("Ninon");
 const games = ref({});
 const avatar = ref();
 
+document.debug = { gameSession };
+
 let namesTimer = null;
 
 initLocales();

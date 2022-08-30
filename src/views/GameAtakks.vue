@@ -27,6 +27,8 @@ const myPlayerIndex = computed(() =>
   )
 );
 
+document.debug = { gameSession };
+
 const UI_CHECKS = false;
 initLocales();
 

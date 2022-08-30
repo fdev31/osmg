@@ -21,6 +21,8 @@ const gameSession = GameSession();
 const name = gameSession.name;
 const host = document.location.host;
 
+document.debug = { gameSession };
+
 let statuses = {
   NOT_READY: 0,
   READY: 1,
