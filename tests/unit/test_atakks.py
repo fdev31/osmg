@@ -39,21 +39,24 @@ def test_c_session():
     session2 = response2.json()
     session2["id"] = [p["id"] for p in session2["players"] if p["name"] == "tatie"][0]
 
+    p1 = {
+        "id": session["id"],
+        "secret": session["secret"],
+        "sessionName": session["name"],
+    }
+    p2 = {
+        "id": session2["id"],
+        "secret": session2["secret"],
+        "sessionName": session2["name"],
+    }
+
     response = client.post(
         "/c/session/start",
-        json={
-            "id": session["id"],
-            "secret": session["secret"],
-            "sessionName": session["name"],
-        },
+        json=p1,
     )
     response2 = client.post(
         "/c/session/start",
-        json={
-            "id": session2["id"],
-            "secret": session2["secret"],
-            "sessionName": session2["name"],
-        },
+        json=p2,
     )
 
     time.sleep(0.1)
