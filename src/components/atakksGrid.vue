@@ -66,7 +66,7 @@ defineEmits(["pawnClick"]); // emitted by the children component
       :y="pawn.y"
       :state="pawn.state"
       :idx="getPlayerNum(pawn.player)"
-    ></atakksPawn>
+    />
   </div>
 </template>
 

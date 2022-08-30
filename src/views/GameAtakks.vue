@@ -97,7 +97,7 @@ onUnmounted(() => {
 
 let pawnToMove;
 async function handleClick(pos) {
-  if (UI_CHECKS && !amIplaying) {
+  if (UI_CHECKS && !amIplaying.value) {
     toaster.value.show("Not your turn!", { type: "alert", duration: 2000 });
     return;
   }
@@ -197,10 +197,10 @@ const server = {
     </div>
     <atakksGrid
       ref="grid"
-      @pawnClick="handleClick"
       class="gameGrid"
       :players-data="gameSession.playersData"
       :players-ids="playersByIndex"
+      @pawnClick="handleClick"
     />
   </div>
 </template>

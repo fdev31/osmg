@@ -96,8 +96,8 @@ async function start_game(game) {
             v-model="mynickname"
             type="text"
             placeholder="Nickname"
-            v-on:focus="clearTimers()"
             maxlength="20"
+            @focus="clearTimers()"
           />
           <avatarCard
             ref="avatar"

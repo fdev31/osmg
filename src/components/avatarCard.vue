@@ -35,7 +35,7 @@ onMounted(() => {
 <template>
   <main>
     <div ref="avatarDom" :class="`avatarCard avatar-${props.size}`">
-      <span v-html="avatarTemplate"></span>
+      <span v-html="avatarTemplate" />
       <span v-if="props.showName" :class="`avatar-${props.size} avatarName`">{{
         props.avatarName
       }}</span>

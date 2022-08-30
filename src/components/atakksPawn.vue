@@ -16,14 +16,14 @@ const emit = defineEmits(["pawnClick"]);
 
 <template>
   <div
-    @click="$parent.$emit('pawnClick', prop)"
     :class="`pawn ${prop.state}`"
     :style="`left: ${prop.x * width}px; top: ${prop.y * width}px;`"
+    @click="$parent.$emit('pawnClick', prop)"
   />
   <div
-    @click="$parent.$emit('pawnClick', prop)"
     :style="`left: ${prop.x * width}px; top: ${prop.y * width}px;`"
     :class="getClass(prop.idx, prop.state)"
+    @click="$parent.$emit('pawnClick', prop)"
   />
 </template>
 
