@@ -3,7 +3,7 @@ import logging
 from typing import Any, AsyncGenerator, Dict
 
 import aioredis
-from fastapi import FastAPI, WebSocket
+from fastapi import FastAPI, WebSocket, WebSocketDisconnect
 from websockets.exceptions import ConnectionClosedError, ConnectionClosedOK
 
 from .globalHandlers import getConfig
@@ -23,25 +23,42 @@ async def sessionStreamSource(
     try:
         await channel.subscribe(topic)
         async for message in channel.listen():
-            logger.error(ws.client_state)
             if message["type"] == "message":
                 yield message["data"]
-    except asyncio.CancelledError:
+    except asyncio.CancelledError as e:
         await disconnectPlayer(topic, playerId)
+
+
+async def wait_for_disconnect(ws: WebSocket) -> None:
+    """The second return value bolean will return True if the client disconnected"""
+    try:
+        await ws.receive_text()
+    except WebSocketDisconnect as e:
+        return
+
+
+async def publish_events(ws: WebSocket, topic: str, uid: str) -> None:
+    try:
+        async for event in sessionStreamSource(ws, topic, uid):
+            await ws.send_text(event)
+    except Exception as e:
+        logger.error(f"Exception occurred: {e}, DISCONNECT")
 
 
 async def gameEventStream(ws: WebSocket, topic: str, uid: str) -> None:
     "Returns an event source for the provided topic & user"
     logger.debug("New stream for %s @ %s", topic, uid)
     await ws.accept()
-    try:
-        async for event in sessionStreamSource(ws, topic, uid):
-            await ws.send_text(event)
-    except ConnectionClosedError:
-        logger.debug("Stream disconnected")
-        await disconnectPlayer(topic, uid)
-    except ConnectionClosedOK:
-        logger.debug("Stream disconnected OK")
+    waitDisconnect = wait_for_disconnect(ws)
+    streamTask = publish_events(ws, topic, uid)
+    done, pending = await asyncio.wait(
+        [waitDisconnect, streamTask], return_when=asyncio.FIRST_COMPLETED
+    )
+    done.pop()
+    while len(pending) > 0:
+        # cancel the other tasks in the waiter
+        pending_task = pending.pop()
+        pending_task.cancel()
 
 
 def init(app: FastAPI, config: Dict[str, Any]) -> None:
