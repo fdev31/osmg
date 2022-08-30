@@ -1,7 +1,7 @@
 Tickets
 =======
 
-:total-count: 5
+:total-count: 6
 
 --------------------------------------------------------------------------------
 
@@ -56,4 +56,13 @@ Bug: highscore not well handled
 
 :bugid: 5
 :created: 2022-08-30T00:42:43
+:priority: 0
+
+--------------------------------------------------------------------------------
+
+add connect / disconnect hooks to games so they can react accordingly
+=====================================================================
+
+:bugid: 6
+:created: 2022-08-30T18:19:52
 :priority: 0
