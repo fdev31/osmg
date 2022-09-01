@@ -1,4 +1,3 @@
-from enum import Enum
 from logging import getLogger
 from typing import Any, Dict, Generator, Optional
 
@@ -6,10 +5,6 @@ import aioredis
 from fastapi import HTTPException
 from pydantic import BaseModel
 from starlette import status as httpstatus
-
-MAX_BOARD_INDEX = 6
-
-from pydantic import BaseModel
 
 from ..globalHandlers import (
     getConfig,
@@ -20,8 +15,18 @@ from ..globalHandlers import (
 )
 from ..models import SESSION_PLAYERS_DATA, Player, PlayerIdentifier, Session
 from ..sessionmanager.public import isPlayerValid
+from .atakks_models import (
+    AtakksAddBody,
+    AtakksMoveBody,
+    Coords,
+    SimpleReturn,
+    gameVars,
+    playerConnection,
+)
 from .interfaces import Events, GameInterface, sessVar, stdVar
 from .std_implem import def_playerAdded
+
+MAX_BOARD_INDEX = 6
 
 placements = [
     "0-0",
@@ -29,13 +34,6 @@ placements = [
     "0-%d" % MAX_BOARD_INDEX,
     "%d-0" % MAX_BOARD_INDEX,
 ]
-
-ACTIVE_PLAYERS = "curOrder"
-
-
-class playerConnection(BaseModel):
-    isPlayerTurn: bool
-    playerIndex: int
 
 
 async def getPlayerInfo(
@@ -54,41 +52,6 @@ async def getPlayerInfo(
         isPlayerTurn=int(curPlayerId) == int(playerId),
         playerIndex=curPlayer,
     )
-
-
-class gameVars(str, Enum):
-    pawns = "pawns"
-
-
-class SimpleReturn(BaseModel):
-    "returned when no data is needed"
-    ok: bool = True
-
-
-class Coords(BaseModel):
-    """Corrdinates of a pawn on the board.
-    starts with zero (0)"""
-
-    x: int
-    y: int
-
-    @property
-    def shortText(self) -> str:
-        return "%d-%d" % (self.x, self.y)
-
-
-class AtakksAddBody(BaseModel):
-    "Parameters for an add call in atakks"
-    player: PlayerIdentifier
-    reference: Coords
-    position: Coords
-
-
-class AtakksMoveBody(BaseModel):
-    "Parameters for a move call in atakks"
-    player: PlayerIdentifier
-    source: Coords
-    destination: Coords
 
 
 def generateZoneCoords(x: int, y: int) -> Generator[str, None, None]:
