@@ -73,6 +73,8 @@ defineEmits(["pawnClick"]); // emitted by the children component
 
 <style scoped>
 .atakks-grid {
+  display: inline-grid;
+  gap: 0px;
   background-color: rgba(50, 50, 50, 0.5);
 }
 </style>

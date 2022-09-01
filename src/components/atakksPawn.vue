@@ -1,5 +1,4 @@
 <script setup>
-const width = 64;
 const prop = defineProps({
   x: { type: Number, default: 0 },
   y: { type: Number, default: 0 },
@@ -16,11 +15,11 @@ function getClass(idx, state) {
 <template>
   <div
     :class="`pawn ${prop.state}`"
-    :style="`left: ${prop.x * width}px; top: ${prop.y * width}px;`"
+    :style="`grid-column: ${prop.x + 1}; grid-row: ${prop.y + 1}`"
     @click="$parent.$emit('pawnClick', prop)"
   />
   <div
-    :style="`left: ${prop.x * width}px; top: ${prop.y * width}px;`"
+    :style="`grid-column: ${prop.x + 1}; grid-row: ${prop.y + 1}`"
     :class="getClass(prop.idx, prop.state)"
     @click="$parent.$emit('pawnClick', prop)"
   />
@@ -30,11 +29,16 @@ function getClass(idx, state) {
 .pawn {
   width: 64px;
   height: 64px;
-  position: absolute;
   background-color: rgb(214, 215, 196);
   border: solid 1px grey;
   cursor: pointer;
   transition-duration: 300ms;
+}
+@media (min-width: 1200px) {
+  .pawn {
+    width: 96px;
+    height: 96px;
+  }
 }
 .piece {
   z-index: 2;
