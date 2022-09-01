@@ -9,7 +9,7 @@ HTTP_PORT := `cat HTTP_PORT`
 
 
 export MYPYPATH := "pystubs"
-export PYTHONPATH := "./tests/unit/"
+export PYTHONPATH := "./tests/"
 export NODE_ENV := "dev" # or production
 export WEB_CONCURRENCY := "1"
 
@@ -29,7 +29,7 @@ cleanenv:
 py: style coverage unit types
 
 # run everything JS related
-js: gamelist vue locales front
+js: gamelist vue locales test
 
 # build Javascript components in production mode
 vue:
@@ -52,18 +52,12 @@ locales:
     cd locales && ./build
 
 # run (any kind of) tests
-test testfile='tests':
+test testfile='tests/front/':
     {{venv}}/bin/pytest -s -v {{testfile}}
 
 # run unit tests
 unit: fix
     @just test ./tests/unit/
-
-# run frontend tests
-front: fix
-    #@just stop
-    #@just run 1 &
-    @just test ./tests/front/
 
 # list available events
 list-events:
