@@ -7,9 +7,8 @@ from pydantic import BaseModel
 from starlette import status as httpstatus
 
 from ..globalHandlers import (
-    getConfig,
     getGameDataPrefix,
-    getNewRedis,
+    getRedis,
     getVarName,
     publishEvent,
 )
@@ -114,7 +113,7 @@ async def buildSummary(
 async def _movePawn(
     player: PlayerIdentifier, source: Coords, destination: Coords, move: bool = False
 ) -> SimpleReturn:
-    redis: aioredis.Redis = getNewRedis()
+    redis: aioredis.Redis = getRedis()
     gprefix: str = getGameDataPrefix(player.sessionName)
     prefix: str = gprefix[:-2]
 
@@ -194,7 +193,7 @@ async def addPawn(params: AtakksAddBody) -> SimpleReturn:
 async def surrender(player: PlayerIdentifier) -> SimpleReturn:
     # if someone surrenders, just compute the best scores & claim end of game
     logger.debug(f"surrender({player})")
-    async with getNewRedis().client() as conn:
+    async with getRedis().client() as conn:
         all_players = await conn.lrange(
             getVarName(sessVar.playerOrder.name, player.sessionName), 0, -1
         )

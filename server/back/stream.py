@@ -5,7 +5,7 @@ from typing import Any, AsyncGenerator, Dict
 import aioredis
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect
 
-from .globalHandlers import getNewRedis
+from .globalHandlers import getRedis
 from .sessionmanager.public import connectPlayer, disconnectPlayer
 
 logger = logging.getLogger("Stream")
@@ -15,7 +15,7 @@ async def sessionStreamSource(
     ws: WebSocket, topic: str, playerId: str
 ) -> AsyncGenerator[str, None]:
 
-    channel: aioredis.client.PubSub = getNewRedis().pubsub()
+    channel: aioredis.client.PubSub = getRedis().pubsub()
     await connectPlayer(topic, playerId)
     try:
         await channel.subscribe(topic)

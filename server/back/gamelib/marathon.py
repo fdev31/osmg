@@ -11,7 +11,6 @@ from starlette import status as httpstatus
 from ..globalHandlers import (
     getConfig,
     getGameDataPrefix,
-    getNewRedis,
     getRedis,
     getVarName,
     publishEvent,
@@ -42,7 +41,7 @@ async def isPlayerTurn(
 
 async def throwDice(player: PlayerIdentifier) -> List[int]:
     """Throw a number of dices (defined by the current player score)"""
-    redis = getNewRedis()
+    redis = getRedis()
     gprefix = getGameDataPrefix(player.sessionName)
     prefix = getGameDataPrefix(player.sessionName, player.id)
     propName = prefix + "_diceValue"

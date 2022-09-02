@@ -1,7 +1,7 @@
 Tickets
 =======
 
-:total-count: 6
+:total-count: 7
 
 --------------------------------------------------------------------------------
 
@@ -66,3 +66,15 @@ add connect / disconnect hooks to games so they can react accordingly
 :bugid: 6
 :created: 2022-08-30T18:19:52
 :priority: 0
+
+--------------------------------------------------------------------------------
+
+Handle end in attaks
+====================
+
+:bugid: 7
+:created: 2022-09-02T20:57:54
+:priority: 0
+
+- update server side variables
+- add checks to not repeat operations
