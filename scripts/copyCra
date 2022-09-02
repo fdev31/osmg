@@ -3,3 +3,4 @@ T="."
 D="gate:oag"
 scp -Cr "$T"/server/back $D/server
 scp -Cr "$T"/front $D
+scp -Cr "$T"/{tox.ini,pyproject.toml} $D
