@@ -46,6 +46,29 @@ function removeFromOthers(reflist, varname, skipId) {
   }
 }
 
+function pText2Int(txt) {
+  const [x, y] = txt.split("-");
+  return [parseInt(x), parseInt(y)];
+}
+
+function generateZoneCoords(x, y) {
+  const MAX_BOARD_INDEX = 6;
+  const ret = [];
+  for (let lx = x - 1; lx < x + 2; lx++) {
+    if (lx < 0 || lx > MAX_BOARD_INDEX) continue;
+    for (let ly = x - 1; ly < x + 2; ly++) {
+      if (ly < 0 || ly > MAX_BOARD_INDEX) continue;
+      ret.push(`${lx}-${ly}`);
+    }
+  }
+  return ret;
+}
+
+const MAX_BOARD_INDEX = 6;
+const BOARD_COORDS = [];
+for (let x = 0; x <= MAX_BOARD_INDEX; x++)
+  for (let y = 0; y <= MAX_BOARD_INDEX; y++) BOARD_COORDS.push(`${x}-${y}`);
+
 const handlers = {
   curPlayer(data) {
     gameSession.gameData.curPlayer = data.val;
@@ -78,6 +101,41 @@ const handlers = {
           default:
             console.debug("Don't know how to update " + data.var);
         }
+      }
+      const freePawns = new Set(BOARD_COORDS);
+      for (const pid of gameSession.players) {
+        const pd = gameSession.playersData[pid.id];
+        if (pd.pawns) {
+          for (const pawn of pd.pawns) freePawns.delete(pawn);
+        } else {
+          console.debug(
+            `No pawns for player ${pid} in ${gameSession.playersData}`
+          );
+        }
+      }
+      // now we really only have free pawns
+      const myPawns = new Set(gameSession.playersData[gameSession.myId].pawns);
+      let canIplay = false;
+      const checkedCoords = new Set();
+      for (const pawn of freePawns) {
+        if (canIplay) break;
+        const options = generateZoneCoords(...pText2Int(pawn)).filter(
+          (o) => !checkedCoords.has(o)
+        );
+        for (const coord of options) {
+          checkedCoords.add(coord);
+          if (myPawns.has(coord)) {
+            canIplay = true;
+            break;
+          }
+        }
+      }
+      if (!canIplay) {
+        toaster.value.show("You can't play!", {
+          type: "alert",
+          duration: 2000,
+          sticky: true,
+        });
       }
     }
     gameSession.save();
@@ -189,18 +247,22 @@ const server = {
         container: true,
       }"
     >
-      <avatarCard :show-name="false" :avatar-name="gameSession.myName" />
-      <div class="w-full" :style="`background-color: ${colors[myPlayerIndex]}`">
-        &nbsp;
+      <div
+        class="p-3 m-3 rounded-full"
+        :style="`background-color: ${colors[myPlayerIndex]}`"
+      >
+        <avatarCard :show-name="false" :avatar-name="gameSession.myName" />
       </div>
     </div>
-    <atakksGrid
-      ref="grid"
-      :players-data="gameSession.playersData"
-      :players-ids="playersByIndex"
-      @pawn-click="handleClick"
-    />
-    <div class="w-30 flex-none">
+    <div class="rounded-xl overflow-hidden">
+      <atakksGrid
+        ref="grid"
+        :players-data="gameSession.playersData"
+        :players-ids="playersByIndex"
+        @pawn-click="handleClick"
+      />
+    </div>
+    <div class="w-30 flex-none bg-slate-400 mx-3 px-2 rounded-xl">
       <playerList
         ref="playerlist"
         :enable-kick="false"

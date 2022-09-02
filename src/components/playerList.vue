@@ -1,5 +1,6 @@
 <script setup>
 import avatarCard from "./avatarCard.vue";
+import { colors } from "@/lib/playercolors.js";
 
 const props = defineProps({
   enableKick: { type: Boolean, default: false },
@@ -20,42 +21,38 @@ function isPlaying(player) {
 
 <template>
   <transition-group name="fade">
-    <div
-      v-for="item in props.players"
-      :key="item.id"
-      :class="{
-        playerEntry: true,
-        ready: item.ready,
-        playing: isPlaying(item),
-        disconnected: item.disconnected,
-        'bg-slate-200': true,
-      }"
-    >
-      <avatarCard
+    <div class="content" v-for="(item, index) in props.players" :key="item.id">
+      <div
         v-if="props.showMe || item.id != props.myId"
-        class="avatar-list"
-        :show-name="true"
-        :size="props.size"
-        :avatar-name="item.name"
-        :avatar-id="item.id"
-      />
-      <div>
-        <button
-          v-if="props.enableKick && item.id != props.myId"
-          @click="$emit('kick', item, 'true')"
-        >
-          {{ props.kickText }}
-        </button>
+        :style="`border-bottom: solid 3px ${colors[index]}`"
+        :class="{
+          rounded: true,
+          ready: item.ready,
+          playing: isPlaying(item),
+          disconnected: item.disconnected,
+        }"
+      >
+        <avatarCard
+          :show-name="true"
+          :size="props.size"
+          :avatar-name="item.name"
+          :avatar-id="item.id"
+        />
+        <div>
+          <button
+            v-if="props.enableKick && item.id != props.myId"
+            class="smallbtn"
+            @click="$emit('kick', item, 'true')"
+          >
+            {{ props.kickText }}
+          </button>
+        </div>
       </div>
     </div>
   </transition-group>
 </template>
 
 <style scoped lang="less">
-.playerEntry {
-  border-radius: 5px;
-  padding: 0 1ex;
-}
 .playing {
   background-image: linear-gradient(
     rgba(255, 255, 255, 0),

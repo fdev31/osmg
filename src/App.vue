@@ -36,10 +36,8 @@ onMounted(async () => {
 <template>
   <header class="flex">
     <nav>
-      <RouterLink class="rounded hover:bg-sky-300" to="/"> Home </RouterLink>
-      <RouterLink class="rounded hover:bg-sky-300" to="/about">
-        About
-      </RouterLink>
+      <RouterLink class="navlink" to="/"> Home </RouterLink>
+      <RouterLink class="navlink" to="/about"> About </RouterLink>
     </nav>
   </header>
 

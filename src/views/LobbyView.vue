@@ -202,7 +202,7 @@ async function mainAction() {
       id="link"
       size="40"
       type="text"
-      class="shadow appearance-none border rounded py-2 px-3 text-gray-700 focus:outline-none focus:shadow-outline"
+      class="shadow appearance-none border rounded shrink py-2 w-64 px-3 text-gray-700 focus:outline-none focus:shadow-outline"
       :value="`http://${host}/r/${name}`"
     />
     <div>
@@ -214,16 +214,18 @@ async function mainAction() {
       </button>
     </div>
     <h3>{{ T("Other players") }}</h3>
-    <playerList
-      ref="playerlist"
-      :players="gameSession.players"
-      :enable-kick="
-        !states.hasVoted && gameSession.players.length > kick_player_threshold
-      "
-      :kick-text="T('Kick player')"
-      :my-id="gameSession.myId"
-      @kick="kickPlayerVote"
-    />
+    <div class="w-1/3 rounded-xl container shadow bg-slate-400">
+      <playerList
+        ref="playerlist"
+        :players="gameSession.players"
+        :enable-kick="
+          !states.hasVoted && gameSession.players.length > kick_player_threshold
+        "
+        :kick-text="T('Kick player')"
+        :my-id="gameSession.myId"
+        @kick="kickPlayerVote"
+      />
+    </div>
   </div>
 </template>
 

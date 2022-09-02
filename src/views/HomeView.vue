@@ -91,7 +91,7 @@ async function start_game(game) {
 <template>
   <main v-cloak class="flex flex-col content-start items-center m-5">
     <div>
-      <div class="avatarframe">
+      <div>
         <avatarCard
           ref="avatar"
           noname
@@ -133,7 +133,7 @@ async function start_game(game) {
         <div
           v-for="(info, game) in games"
           :key="game"
-          class="cursor-pointer group tileshadow-md rounded-xl max-w-md mx-auto flex flex-initial flex-col duration-300"
+          class="tile cursor-pointer group tileshadow-md rounded-xl max-w-md mx-auto flex flex-initial flex-col duration-300"
           @click="start_game(game)"
         >
           <img
@@ -142,7 +142,7 @@ async function start_game(game) {
           />
           <div class="font-title">{{ T(game) }}</div>
           <div
-            class="opacity-0 group-hover:opacity-100 duration-300 bg-slate-200 rounded-md px-2 overflow-clip"
+            class="opacity-0 group-hover:opacity-100 text-black duration-300 bg-slate-200 rounded-md px-2 overflow-clip"
           >
             <h2 class="animate-text">{{ T(game + "_description") }}</h2>
             <div class="animate-text" v-html="T(game + '_long_description')" />
@@ -153,14 +153,4 @@ async function start_game(game) {
   </main>
 </template>
 
-<style scoped>
-.avatar {
-  position: relative;
-  margin: -110px 0 0 294px;
-}
-.avatar svg {
-  width: 180px;
-  height: 230px;
-  display: block;
-}
-</style>
+<style scoped></style>
