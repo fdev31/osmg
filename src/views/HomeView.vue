@@ -13,7 +13,7 @@ const mynickname = ref("Ninon");
 const games = ref({});
 const avatar = ref();
 
-document.debug = { gameSession };
+document.debug = import.meta.env.DEV ? { gameSession } : {};
 
 let namesTimer = null;
 

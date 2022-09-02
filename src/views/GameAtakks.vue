@@ -27,7 +27,7 @@ const myPlayerIndex = computed(() =>
   )
 );
 
-document.debug = { gameSession };
+document.debug = import.meta.env.DEV ? { gameSession } : {};
 
 const UI_CHECKS = false;
 initLocales();

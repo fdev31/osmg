@@ -21,7 +21,7 @@ const gameSession = GameSession();
 const name = gameSession.name;
 const host = document.location.host;
 
-document.debug = { gameSession };
+document.debug = import.meta.env.DEV ? { gameSession } : {};
 
 let statuses = {
   NOT_READY: 0,

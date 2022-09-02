@@ -1,9 +1,7 @@
 import { locales } from "./locales.js";
 
-const debug = true;
-
 export const host = (
-  debug ? "http://localhost:5000/" : document.location.host
+  import.meta.env.DEV ? "http://localhost:5000/" : document.location.host
 ).slice(0, -1);
 
 export function delay(duration = 1000) {
