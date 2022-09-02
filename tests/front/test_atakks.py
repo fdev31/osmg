@@ -62,7 +62,6 @@ if not os.path.exists("screenshots"):
 
 
 def shot(driver, name):
-    return
     driver.save_screenshot(os.path.join("screenshots", f"atakks_{name}.png"))
 
 

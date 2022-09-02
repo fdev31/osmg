@@ -111,7 +111,7 @@ async function start_game(game) {
     </div>
     <div v-if="gameSession.name">
       <div v-if="!gameSession.secret" class="contents w-full">
-        <button @click="join_game(gameSession.name)" class="btn btn-main">
+        <button class="btn btn-main" @click="join_game(gameSession.name)">
           {{ T("Join game") }}
         </button>
       </div>
@@ -123,7 +123,7 @@ async function start_game(game) {
           {{ T("Return to game") }}
         </RouterLink>
       </div>
-      <button @click="clear_session()" class="btn">
+      <button class="btn" @click="clear_session()">
         {{ T("Change game") }}
       </button>
     </div>
@@ -140,11 +140,15 @@ async function start_game(game) {
             :src="`/img/${info.card}.jpg`"
             class="object-fill h-96 w-96 rounded-xl md:w-full"
           />
-          <div class="font-title">{{ T(game) }}</div>
+          <div class="font-title">
+            {{ T(game) }}
+          </div>
           <div
             class="opacity-0 group-hover:opacity-100 text-black duration-300 bg-slate-200 rounded-md px-2 overflow-clip"
           >
-            <h2 class="animate-text">{{ T(game + "_description") }}</h2>
+            <h2 class="animate-text">
+              {{ T(game + "_description") }}
+            </h2>
             <div class="animate-text" v-html="T(game + '_long_description')" />
           </div>
         </div>

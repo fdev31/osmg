@@ -70,6 +70,47 @@ class Summary(BaseModel):
     bestScore: int = 0
 
 
+async def buildSummary(
+    conn: aioredis.Redis,
+    destination: Optional[Coords],
+    player: PlayerIdentifier,
+    players: list[str],
+    selfIncrement: bool = False,
+) -> tuple[Summary, set[str]]:
+    summary = Summary()
+    my_new_pawns = set([destination.shortText]) if destination else set()
+    convertible_zone = (
+        set(generateZoneCoords(destination.x, destination.y)) if destination else set()
+    )
+    hiScores = {}
+    for plr in players:
+        ppawnVar = getVarName(
+            gameVars.pawns.name, player.sessionName, plr, gameData=True
+        )
+        ppawns = await conn.smembers(ppawnVar)
+        nbPawns = len(ppawns)
+        if selfIncrement and plr == player.id:
+            nbPawns += 1
+        hiScores[plr] = nbPawns
+        summary.pawnCount += nbPawns
+
+        if plr != player.id:
+            stolen = ppawns.intersection(convertible_zone)
+            if stolen:
+                if destination is not None:
+                    await conn.srem(ppawnVar, *stolen)
+                my_new_pawns.update(stolen)
+
+    hiScores[player.id] += len(stolen)
+
+    for plr, score in hiScores.items():
+        if score > summary.bestScore:
+            summary.bestScore = nbPawns
+            summary.bestPlayer = plr
+
+    return summary, my_new_pawns
+
+
 async def _movePawn(
     player: PlayerIdentifier, source: Coords, destination: Coords, move: bool = False
 ) -> SimpleReturn:
@@ -77,39 +118,19 @@ async def _movePawn(
     gprefix: str = getGameDataPrefix(player.sessionName)
     prefix: str = gprefix[:-2]
 
+    ppawnVar = getVarName(
+        gameVars.pawns.name, player.sessionName, player.id, gameData=True
+    )
+
     async with redis.client() as conn:
         pi = await getPlayerInfo(conn, gprefix, player.id, player.secret)
         if not pi.isPlayerTurn:
             raise HTTPException(httpstatus.HTTP_403_FORBIDDEN, "Not your turn!")
 
         all_players = await conn.lrange(prefix + sessVar.playerOrder.name, 0, -1)
-        my_new_pawns = set([destination.shortText])
-        summary = Summary()
-        convertible_zone = set(generateZoneCoords(destination.x, destination.y))
-        hiScores = {}
-        for plr in all_players:
-            ppawnVar = getVarName(
-                gameVars.pawns.name, player.sessionName, plr, gameData=True
-            )
-            ppawns = await conn.smembers(ppawnVar)
-            nbPawns = len(ppawns)
-            if not move and plr == player.id:
-                nbPawns += 1
-            hiScores[plr] = nbPawns
-            summary.pawnCount += nbPawns
-
-            if plr != player.id:
-                stolen = ppawns.intersection(convertible_zone)
-                if stolen:
-                    await conn.srem(ppawnVar, *stolen)
-                    my_new_pawns.update(stolen)
-
-        hiScores[player.id] += len(stolen)
-
-        for plr, score in hiScores.items():
-            if score > summary.bestScore:
-                summary.bestScore = nbPawns
-                summary.bestPlayer = plr
+        summary, pawnsConverted = await buildSummary(
+            conn, destination, player, all_players, selfIncrement=not move
+        )
 
         myPawnVar = getVarName(
             gameVars.pawns.name,
@@ -119,7 +140,7 @@ async def _movePawn(
         )
         if move:
             await conn.srem(ppawnVar, source.shortText)
-        await conn.sadd(myPawnVar, *my_new_pawns)
+        await conn.sadd(myPawnVar, *pawnsConverted)
 
         # move to the next player
         if pi.playerIndex + 1 >= len(all_players):
@@ -131,7 +152,7 @@ async def _movePawn(
             prefix + sessVar.playerOrder.name, int(curPlayer)
         )
 
-        payload = {player.id: list(my_new_pawns)}
+        payload = {player.id: list(pawnsConverted)}
 
         if move:
             payload["void"] = [source.shortText]
@@ -170,6 +191,25 @@ async def addPawn(params: AtakksAddBody) -> SimpleReturn:
     return await _movePawn(params.player, params.reference, params.position, False)
 
 
+async def surrender(player: PlayerIdentifier) -> SimpleReturn:
+    # if someone surrenders, just compute the best scores & claim end of game
+    logger.debug(f"surrender({player})")
+    async with getNewRedis().client() as conn:
+        all_players = await conn.lrange(
+            getVarName(sessVar.playerOrder.name, player.sessionName), 0, -1
+        )
+        summary, _pawnsConverted = await buildSummary(
+            conn, None, player, all_players, selfIncrement=False
+        )
+        await publishEvent(
+            player.sessionName,
+            conn,
+            cat=Events.endOfGame.name,
+            player=summary.bestPlayer,
+        )
+    return SimpleReturn()
+
+
 class Game(GameInterface):
     name = "atakks"
     card = "quiz"
@@ -202,6 +242,16 @@ class Game(GameInterface):
         await publishEvent(sessionId, conn, cat=Events.curPlayer.name, val=curPlayer)
 
     actions: Dict[str, Any] = {
+        "surrender": dict(
+            handler=surrender,
+            response_model=SimpleReturn,
+            responses={
+                200: {
+                    "description": "makes a move in atakks",
+                    "content": {"application/json": {"ok": True}},
+                },
+            },
+        ),
         "add": dict(
             handler=addPawn,
             response_model=SimpleReturn,

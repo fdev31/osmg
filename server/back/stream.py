@@ -4,9 +4,8 @@ from typing import Any, AsyncGenerator, Dict
 
 import aioredis
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect
-from websockets.exceptions import ConnectionClosedError, ConnectionClosedOK
 
-from .globalHandlers import getConfig, getNewRedis
+from .globalHandlers import getNewRedis
 from .sessionmanager.public import connectPlayer, disconnectPlayer
 
 logger = logging.getLogger("Stream")

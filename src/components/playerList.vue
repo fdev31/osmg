@@ -21,7 +21,7 @@ function isPlaying(player) {
 
 <template>
   <transition-group name="fade">
-    <div class="content" v-for="(item, index) in props.players" :key="item.id">
+    <div v-for="(item, index) in props.players" :key="item.id" class="content">
       <div
         v-if="props.showMe || item.id != props.myId"
         :style="`border-bottom: solid 3px ${colors[index]}`"

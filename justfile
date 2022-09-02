@@ -63,10 +63,11 @@ unit: fix
 list-events:
 	@grep -rE -A5 'publishEvent' server 2>/dev/null | grep "cat=" | sed -Ee 's/.*cat *= *([^,)]+).*/\1/' -e 's#Events.(\S+).name#\1#' -e 's#^"([^"]+)"$#\1#' | uniq | sort
 
-# run python style rules
+# run style rules
 style: fix
     {{venv}}/bin/isort {{src}} tests
     {{venv}}/bin/black {{src}} tests
+    npm run lint
 
 # run python coverage
 coverage: fix

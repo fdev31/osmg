@@ -131,11 +131,7 @@ const handlers = {
         }
       }
       if (!canIplay) {
-        toaster.value.show("You can't play!", {
-          type: "alert",
-          duration: 2000,
-          sticky: true,
-        });
+        server.surrender();
       }
     }
     gameSession.save();
@@ -229,12 +225,18 @@ const server = {
     };
     return await post("/g/atakks/move", obj);
   },
+  async surrender() {
+    const obj = getPlayerFromSession(gameSession);
+    return await post("/g/atakks/surrender", obj);
+  },
 };
 </script>
 
 <template>
   <Toast ref="toaster" />
-  <h1 class="maintitle">{{ T("Atakks, a game of mind") }}</h1>
+  <h1 class="maintitle">
+    {{ T("Atakks, a game of mind") }}
+  </h1>
   <div v-cloak class="flex flex-row flex-wrap mx-auto container p-5">
     <div
       id="myAvatar"

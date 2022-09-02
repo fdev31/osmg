@@ -185,7 +185,9 @@ async function mainAction() {
 <template>
   <Toast ref="toaster" />
   <div v-cloak class="container mx-auto">
-    <h2 class="maintitle">{{ gameSession.gameType }}</h2>
+    <h2 class="maintitle">
+      {{ gameSession.gameType }}
+    </h2>
 
     <div id="myAvatar">
       <avatarCard :show-name="false" :avatar-name="gameSession.myName" />
@@ -193,8 +195,8 @@ async function mainAction() {
     <button
       type="button"
       :title="T('Click to copy invite link to the clipboard')"
-      @click="copyURL('link')"
       class="btn"
+      @click="copyURL('link')"
     >
       {{ T("Invite") }}
     </button>
