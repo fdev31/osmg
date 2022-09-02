@@ -250,7 +250,7 @@ const server = {
       }"
     >
       <div
-        class="p-3 m-3 rounded-full"
+        class="p-3 m-3 rounded-full w-max"
         :style="`background-color: ${colors[myPlayerIndex]}`"
       >
         <avatarCard :show-name="false" :avatar-name="gameSession.myName" />
@@ -285,7 +285,7 @@ const server = {
   transition-duration: 300ms;
 }
 #myAvatar.playing:deep(svg) {
-  background-color: #d6ffe5;
+  background-color: var(--player-playing);
   border: solid 3px #333;
 }
 .gameGrid {
