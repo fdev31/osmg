@@ -146,7 +146,10 @@ async def _movePawn(
 
         if summary.pawnCount == (MAX_BOARD_INDEX + 1) ** 2:
             await publishEvent(
-                player.sessionName, conn, cat=Events.endOfGame.name, player=curPlayerId
+                player.sessionName,
+                conn,
+                cat=Events.endOfGame.name,
+                player=summary.bestPlayer,
             )
         else:
             await publishEvent(
