@@ -32,24 +32,23 @@ onMounted(() => {
 </script>
 
 <template>
-  <main>
-    <div ref="avatarDom" :class="`avatarCard avatar-${props.size}`">
-      <span v-html="avatarTemplate" />
-      <span v-if="props.showName" :class="`avatar-${props.size} avatarName`">{{
-        props.avatarName
-      }}</span>
+  <div ref="avatarDom" :class="`avatarCard flex flex-row avatar-${props.size}`">
+    <div v-html="avatarTemplate" />
+    <div
+      v-if="props.showName"
+      :class="`items-center flex shrink avatar-${props.size} avatarName`"
+    >
+      {{ props.avatarName }}
     </div>
-  </main>
+  </div>
 </template>
 
 <style scoped lang="less">
 .avatarName.avatar-big {
   font-size: 400%;
-  vertical-align: 100%;
 }
 .avatarName.avatar-small {
   font-size: 150%;
-  vertical-align: 75%;
 }
 .avatarCard:deep(svg) {
   object-fit: cover;

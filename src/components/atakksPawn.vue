@@ -34,6 +34,9 @@ function getClass(idx, state) {
   cursor: pointer;
   transition-duration: 300ms;
 }
+.pawn:hover {
+  filter: brightness(120%);
+}
 @media (min-width: 1200px) {
   .pawn {
     width: 96px;
@@ -43,7 +46,7 @@ function getClass(idx, state) {
 .piece {
   z-index: 2;
   border-radius: 100px;
-  scale: 0.8;
+  transform: scale(0.8);
   box-shadow: black 2px 2px 5px;
 }
 .pawn.clicked {

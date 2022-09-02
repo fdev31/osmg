@@ -1,69 +1,30 @@
 @import "./base.css";
 
-#app {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-
-  font-weight: normal;
-}
-
-a,
-.green {
-  text-decoration: none;
-  color: hsla(160, 100%, 37%, 1);
-  transition: 0.4s;
-}
-
-@media (hover: hover) {
-  a:hover {
-    background-color: hsla(160, 100%, 37%, 0.2);
-  }
-}
-
-@media (min-width: 1024px) {
-  body {
-    place-items: center;
-  }
-
-  #app {
-    display: grid;
-    /*    grid-template-columns: 0fr 1fr; */
-    padding: 0 2rem;
-  }
-}
-button.mainAction {
-  background-color: #2d9b31;
-}
-button.mainAction:hover {
-  background-color: #4cbc51;
-}
-button {
-  background-color: #5a89ca;
-  margin: 1ex;
-  padding: 0.5ex 1.5ex;
-  font-size: 120%;
-  color: #fff;
-  border: none;
-  border-radius: 12px;
-  box-shadow: 0px 1px 2px 2px rgb(0, 0, 0, 0.3);
-  cursor: pointer;
-}
-button:hover {
-  background-color: #8fbeff;
-  box-shadow: 0px 0px 1px 1px rgb(0, 0, 0, 0.3);
-}
-
+/* TODO: this may move to base */
 body {
   font: "Aliens Among Us", sans-serif;
 }
 
 @font-face {
   font-family: "Aliens Among Us";
-  src: url("@fonts/aliensamongus.ttf");
+  src: url("/fonts/Aliens Among Us.ttf");
 }
 
 @font-face {
   font-family: "Aliens Among Us Italic";
-  src: url("@fonts/aliensamongus-italic.ttf");
+  src: url("/fonts/Aliens Among Us Italic.ttf");
+}
+
+.btn {
+  @apply font-bold py-2 px-4 rounded-full m-2 bg-orange-300;
+}
+.btn:hover {
+  @apply brightness-125 -hue-rotate-15;
+}
+.btn-main {
+  @apply bg-blue-500 text-white;
+}
+
+.maintitle {
+  @apply text-center text-4xl lg:text-6xl  font-title;
 }

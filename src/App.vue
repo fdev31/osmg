@@ -34,10 +34,12 @@ onMounted(async () => {
 </script>
 
 <template>
-  <header class="wrapper">
+  <header class="flex">
     <nav>
-      <RouterLink to="/"> Home </RouterLink>
-      <RouterLink to="/about"> About </RouterLink>
+      <RouterLink class="rounded hover:bg-sky-300" to="/"> Home </RouterLink>
+      <RouterLink class="rounded hover:bg-sky-300" to="/about">
+        About
+      </RouterLink>
     </nav>
   </header>
 
@@ -47,5 +49,8 @@ onMounted(async () => {
 <style scoped>
 nav > a {
   margin: 0 1ex;
+  padding: 0 3px;
+}
+body {
 }
 </style>

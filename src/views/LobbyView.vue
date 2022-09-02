@@ -184,24 +184,17 @@ async function mainAction() {
 
 <template>
   <Toast ref="toaster" />
-  <div v-cloak>
-    <h2>{{ gameSession.gameType }}</h2>
+  <div v-cloak class="container mx-auto">
+    <h2 class="maintitle">{{ gameSession.gameType }}</h2>
 
     <div id="myAvatar">
       <avatarCard :show-name="false" :avatar-name="gameSession.myName" />
-    </div>
-    <div>
-      <button type="button" class="mainAction" @click="mainAction">
-        {{ getMainActionText() }}
-      </button>
-      <RouterLink to="/">
-        {{ T("Change game") }}
-      </RouterLink>
     </div>
     <button
       type="button"
       :title="T('Click to copy invite link to the clipboard')"
       @click="copyURL('link')"
+      class="btn"
     >
       {{ T("Invite") }}
     </button>
@@ -209,8 +202,17 @@ async function mainAction() {
       id="link"
       size="40"
       type="text"
+      class="shadow appearance-none border rounded py-2 px-3 text-gray-700 focus:outline-none focus:shadow-outline"
       :value="`http://${host}/r/${name}`"
     />
+    <div>
+      <RouterLink to="/" class="btn">
+        {{ T("Change game") }}
+      </RouterLink>
+      <button type="button" class="btn btn-main" @click="mainAction">
+        {{ getMainActionText() }}
+      </button>
+    </div>
     <h3>{{ T("Other players") }}</h3>
     <playerList
       ref="playerlist"
@@ -236,6 +238,7 @@ async function mainAction() {
   background-color: white;
   border-radius: 1000px;
   transition-duration: 300ms;
+  border: solid 3px #333;
 }
 #myAvatar.playing:deep(svg) {
   background-color: #d5680f;

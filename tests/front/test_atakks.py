@@ -2,10 +2,10 @@ import os
 import random
 import unittest
 from time import sleep
-from pydantic import BaseModel
 
 from common import getStream, pretty
 from config import HOST
+from pydantic import BaseModel
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options as ChromeOptions
 from selenium.webdriver.common.by import By

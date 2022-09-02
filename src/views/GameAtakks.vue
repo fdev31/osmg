@@ -176,18 +176,31 @@ const server = {
 
 <template>
   <Toast ref="toaster" />
-  <div v-cloak>
-    <h1>{{ T("Atakks, a game of mind") }}</h1>
+  <h1 class="maintitle">{{ T("Atakks, a game of mind") }}</h1>
+  <div v-cloak class="flex flex-row flex-wrap mx-auto container p-5">
     <div
       id="myAvatar"
       :class="{
         playing: amIplaying,
+        flex: true,
+        'flex-1': true,
+        'flex-col': true,
+        'items-center': true,
+        container: true,
       }"
     >
       <avatarCard :show-name="false" :avatar-name="gameSession.myName" />
-      <div :style="`background-color: ${colors[myPlayerIndex]}`">&nbsp;</div>
+      <div class="w-full" :style="`background-color: ${colors[myPlayerIndex]}`">
+        &nbsp;
+      </div>
     </div>
-    <div id="players_frame">
+    <atakksGrid
+      ref="grid"
+      :players-data="gameSession.playersData"
+      :players-ids="playersByIndex"
+      @pawn-click="handleClick"
+    />
+    <div class="w-30 flex-none">
       <playerList
         ref="playerlist"
         :enable-kick="false"
@@ -197,57 +210,19 @@ const server = {
         :my-id="gameSession.myId"
       />
     </div>
-    <atakksGrid
-      ref="grid"
-      class="gameGrid"
-      :players-data="gameSession.playersData"
-      :players-ids="playersByIndex"
-      @pawn-click="handleClick"
-    />
   </div>
 </template>
 
 <style scoped>
-#myAvatar {
-  float: right;
-  margin-top: -64px;
-  height: 2em;
-}
 #myAvatar:deep(svg) {
   background-color: white;
   border-radius: 1000px;
+  border: solid 3px #333;
   transition-duration: 300ms;
 }
 #myAvatar.playing:deep(svg) {
-  background-color: #d5680f;
+  background-color: #d6ffe5;
   border: solid 3px #333;
-}
-@media (min-width: 1024px) {
-  @media (max-width: 1600px) {
-    #myAvatar {
-      margin-right: 200px;
-    }
-  }
-}
-#players_frame {
-  position: fixed;
-  padding: 1ex 2ex;
-  right: 1em;
-  display: block;
-  border: solid 2px grey;
-  border-radius: 10px;
-  background-color: rgba(0, 0, 0, 0.5);
-  display: block;
-  inline-size: fit-content;
-}
-@media (max-width: 1024px) {
-  #players_frame {
-    left: 1em;
-    clear: both;
-    display: block;
-    position: relative;
-    margin: 0;
-  }
 }
 .gameGrid {
   margin: 1em;

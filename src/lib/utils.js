@@ -1,5 +1,11 @@
 import { locales } from "./locales.js";
 
+const debug = true;
+
+export const host = (
+  debug ? "http://localhost:5000/" : document.location.host
+).slice(0, -1);
+
 export function delay(duration = 1000) {
   return new Promise((res) => {
     setTimeout(res, duration);
@@ -30,7 +36,7 @@ function _setEventStreamHandler(handler, query) {
   if (typeof query.topic == "undefined" || typeof query.uid == "undefined")
     throw new Error("parameter missing");
   const evtSource = new WebSocket(
-    `ws://${document.location.host}/c/stream?topic=${query.topic}&uid=${query.uid}`
+    `ws://${host.split("//")[1]}/c/stream?topic=${query.topic}&uid=${query.uid}`
   );
   evtSource.addEventListener("message", (event) => {
     handler(JSON.parse(event.data));
@@ -67,7 +73,7 @@ export function getPlayerFromSession(sess) {
 }
 
 export async function getJson(url) {
-  const req = await fetch(url);
+  const req = await fetch(host + url);
   const data = await req.json();
   return data;
 }
@@ -84,7 +90,7 @@ export async function post(url, body) {
     redirect: "follow",
   };
 
-  var response = await fetch(url, requestOptions);
+  var response = await fetch(host + url, requestOptions);
   const result = await response.json();
   return result;
 }

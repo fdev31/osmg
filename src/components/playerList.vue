@@ -28,6 +28,7 @@ function isPlaying(player) {
         ready: item.ready,
         playing: isPlaying(item),
         disconnected: item.disconnected,
+        'bg-slate-200': true,
       }"
     >
       <avatarCard
