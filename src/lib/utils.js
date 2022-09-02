@@ -1,8 +1,9 @@
 import { locales } from "./locales.js";
 
-export const host = (
-  import.meta.env.DEV ? "http://localhost:5000/" : document.location.host
-).slice(0, -1);
+export const host =
+  import.meta.env.DEV == true
+    ? "http://localhost:5000"
+    : document.location.href.slice(0, -document.location.pathname.length);
 
 export function delay(duration = 1000) {
   return new Promise((res) => {
