@@ -7,10 +7,10 @@ import svgLoader from "vite-svg-loader";
 // https://vitejs.dev/config/
 export default defineConfig({
   build: {
-    sourcemap: true,
+    sourcemap: process.env.NODE_ENV != "production",
+    minify: process.env.NODE_ENV == "production",
     target: "esnext",
     outDir: "front",
-    minify: false,
   },
   plugins: [vue(), svgLoader()],
   resolve: {

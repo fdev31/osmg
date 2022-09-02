@@ -39,6 +39,10 @@ vue:
 dev:
     ./node_modules/.bin/vite build --mode dev
 
+# build js in dev production mode
+prod:
+    ./node_modules/.bin/vite build --mode production
+
 # make python package run from the sources
 fix:
     ./scripts/install_editable {{venv}} {{pkg}}

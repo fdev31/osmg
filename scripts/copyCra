@@ -1,6 +1,5 @@
 #!/bin/sh
 T=$(mktemp -d CopyCraXXXXXX)
 git clone . "$T"
-rm "$T/front/static"
 scp -Cr "$T"/{front,server} cra:/home/fab/our-awesome-game
 rm -fr $T
