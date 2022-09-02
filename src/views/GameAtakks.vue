@@ -13,7 +13,7 @@ import {
 import playerList from "@/components/playerList.vue";
 import atakksGrid from "@/components/atakksGrid.vue";
 import avatarCard from "@/components/avatarCard.vue";
-import Toast from "@/components/Toast.vue";
+import ToastNotifs from "@/components/ToastNotifs.vue";
 import { colors } from "@/lib/playercolors.js";
 
 const gameSession = GameSession();
@@ -233,7 +233,7 @@ const server = {
 </script>
 
 <template>
-  <Toast ref="toaster" />
+  <ToastNotifs ref="toaster" />
   <h1 class="maintitle">
     {{ T("Atakks, a game of mind") }}
   </h1>

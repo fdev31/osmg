@@ -4,7 +4,7 @@ import { RouterLink, useRouter } from "vue-router";
 import { GameSession } from "@/stores/gamesession.js";
 import playerList from "@/components/playerList.vue";
 import avatarCard from "@/components/avatarCard.vue";
-import Toast from "@/components/Toast.vue";
+import ToastNotifs from "@/components/ToastNotifs.vue";
 
 import { kickPlayerVote } from "@/lib/voting.js";
 import {
@@ -183,7 +183,7 @@ async function mainAction() {
 </script>
 
 <template>
-  <Toast ref="toaster" />
+  <ToastNotifs ref="toaster" />
   <div v-cloak class="container mx-auto">
     <h2 class="maintitle">
       {{ gameSession.gameType }}
