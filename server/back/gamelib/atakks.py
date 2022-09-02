@@ -6,12 +6,7 @@ from fastapi import HTTPException
 from pydantic import BaseModel
 from starlette import status as httpstatus
 
-from ..globalHandlers import (
-    getGameDataPrefix,
-    getRedis,
-    getVarName,
-    publishEvent,
-)
+from ..globalHandlers import getGameDataPrefix, getRedis, getVarName, publishEvent
 from ..models import SESSION_PLAYERS_DATA, Player, PlayerIdentifier, Session
 from ..sessionmanager.public import isPlayerValid
 from .atakks_models import (

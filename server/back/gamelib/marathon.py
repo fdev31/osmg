@@ -8,12 +8,7 @@ import aioredis
 from fastapi import HTTPException
 from starlette import status as httpstatus
 
-from ..globalHandlers import (
-    getGameDataPrefix,
-    getRedis,
-    getVarName,
-    publishEvent,
-)
+from ..globalHandlers import getGameDataPrefix, getRedis, getVarName, publishEvent
 from ..models import Player, PlayerIdentifier, Session
 from ..sessionmanager.public import isPlayerValid
 from ..utils import dumps, loads

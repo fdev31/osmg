@@ -56,7 +56,7 @@ locales:
     cd locales && ./build
 
 # run (any kind of) tests
-test testfile='tests/front/':
+test testfile='tests/front/': dev
     {{venv}}/bin/pytest -s -v {{testfile}}
 
 # run unit tests
