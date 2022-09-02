@@ -9,7 +9,6 @@ from fastapi import HTTPException
 from starlette import status as httpstatus
 
 from ..globalHandlers import (
-    getConfig,
     getGameDataPrefix,
     getRedis,
     getVarName,

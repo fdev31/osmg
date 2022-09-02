@@ -95,19 +95,6 @@ export async function post(url, body) {
   return result;
 }
 
-function arrayEquals(arr1, arr2) {
-  if (!Array.isArray(arr1) || !Array.isArray(arr2))
-    throw `arguments must be Array objects , ${typeof arr1} and ${typeof arr2} given`;
-  if (arr1.length != arr2.length) return false;
-  arr1.sort();
-  arr2.sort();
-  isEquals = true;
-  arr1.every(function (element, index) {
-    if (element !== arr2[index]) isEquals = false;
-  });
-  return isEquals;
-}
-
 let currentLocale = null;
 
 export function initLocales() {
