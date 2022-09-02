@@ -56,7 +56,7 @@ function generateZoneCoords(x, y) {
   const ret = [];
   for (let lx = x - 1; lx < x + 2; lx++) {
     if (lx < 0 || lx > MAX_BOARD_INDEX) continue;
-    for (let ly = x - 1; ly < x + 2; ly++) {
+    for (let ly = y - 1; ly < y + 2; ly++) {
       if (ly < 0 || ly > MAX_BOARD_INDEX) continue;
       ret.push(`${lx}-${ly}`);
     }
