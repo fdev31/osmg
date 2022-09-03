@@ -27,7 +27,6 @@ function clearTimers() {
   if (namesTimer) {
     clearInterval(namesTimer);
     gameSession.uiStates.namePicked = mynickname.value;
-    gameSession.save();
   }
 }
 
