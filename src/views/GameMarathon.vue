@@ -5,6 +5,7 @@ import { GameSession } from "@/stores/gamesession.js";
 import ToastNotifs from "@/components/ToastNotifs.vue";
 import playerList from "@/components/playerList.vue";
 import DiceArray from "@/components/DiceArray.vue";
+import avatarCard from "@/components/avatarCard.vue";
 
 import { kickPlayerVote } from "@/lib/voting.js";
 
@@ -42,6 +43,9 @@ const kick_player_threshold = 2;
 onMounted(() => {
   if (ui.status == undefined) {
     ui.status = statuses.UNINITIALIZED;
+  } else if (ui.currentThrow) {
+    mydice.value.updateDice(ui.currentThrow, false);
+    mydice.value.enableDrag(true);
   }
 });
 
@@ -199,6 +203,7 @@ const server = {
     try {
       let diceValues = await post("/g/marathon/throwDice", getPostArg());
       ui.status = statuses.DICE_THROWN;
+      ui.currentThrow = diceValues;
 
       mydice.value.diceNumber = diceValues.length;
       mydice.value.updateDice(diceValues);
@@ -213,6 +218,7 @@ const server = {
     await server.player_advance(0);
   },
   async player_advance(value) {
+    ui.currentThrow = false;
     let choice =
       value === undefined ? mydice.value.getDiceValues().join("") : value;
 
@@ -267,57 +273,59 @@ document.debug = import.meta.env.DEV ? { gameSession, mydice, server } : {};
         :my-id="gameSession.myId"
       />
     </div>
-    <h2>
-      {{ T("Welcome") }} {{ gameSession.getPlayerInfo(gameSession.myId).name }},
-      {{ T("It's turn").toLowerCase() }}
-      {{ parseInt(gameSession.gameData.turns + 1) }}
-    </h2>
-    <div v-if="ui.status == statuses.GAME_WON">
-      <h1>{{ T("You Win") }}!</h1>
-    </div>
-    <div v-else-if="ui.status == statuses.GAME_OVER">
-      <h1>{{ T("You Lose") }}!</h1>
-    </div>
-    <div v-else>
-      <div>
-        <b>{{ getPlayerAction() }}</b>
-      </div>
-      {{ gameSession.playersData[gameSession.myId].distance }}
-      {{ T("meters left") }}
-      <button
-        v-if="isMyTurn"
-        type="button"
-        class="btn btn-main"
-        @click="mainPlayButton"
+    <div class="flex container items-center">
+      <span
+        class="m-3 rounded-full"
+        :style="`background-color: ${gameSession.getPlayerColor(
+          gameSession.myId
+        )}`"
       >
-        {{ getPlayerAction() }}
-      </button>
-      <button
-        v-if="isLastAction"
-        type="button"
-        class="btn"
-        @click="server.skipTurn"
-      >
-        {{ T("Pass") }}
-      </button>
+        <avatarCard
+          size="small"
+          :show-name="false"
+          :avatar-name="gameSession.myName"
+        />
+      </span>
       <transition name="fade">
-        <div v-if="isMyTurn" class="w-full m-10 items-center container">
-          <dice-array ref="mydice" />
+        <div v-if="isMyTurn" class="w-full flex items-center container">
+          <div class="mx-5">
+            <dice-array ref="mydice" />
+          </div>
+          <button type="button" class="btn btn-main" @click="mainPlayButton">
+            {{ getPlayerAction() }}
+          </button>
+          <button
+            v-if="isLastAction"
+            type="button"
+            class="btn"
+            @click="server.skipTurn"
+          >
+            {{ T("Pass") }}
+          </button>
         </div>
       </transition>
     </div>
+    <div class="font-bold text-xl">
+      {{ T("It's turn").toLowerCase() }}
+      {{ parseInt(gameSession.gameData.turns + 1) }}, {{ getPlayerAction() }}:
+      <b>
+        {{ gameSession.playersData[gameSession.myId].distance }}
+      </b>
+      {{ T("meters left") }}
+    </div>
+    <b></b>
 
-    <div class="marathon-rank">
+    <div>
       <transition-group name="flip-list">
         <div
           v-for="item in sortedPlayers"
           :key="item.id"
           class="container flex flex-row"
         >
-          <span class="name w-36">{{ item.name }}</span>
+          <span class="w-36 text-right mx-2">{{ item.name }}</span>
           <div class="w-96 bg-gray-200 h-5 mb-6 rounded">
             <div
-              class="bg-blue-600 h-5 text-xs text-black text-right rounded duration-300"
+              class="bg-blue-600 h-5 text-xs text-black text-right rounded duration-900"
               :style="`background-color: ${gameSession.getPlayerColor(
                 item.id
               )}; width: ${getProgress(item.id)}%`"
