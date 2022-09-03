@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted, onUnmounted, computed } from "vue";
+import { ref, onMounted, computed } from "vue";
 import { GameSession } from "@/stores/gamesession.js";
 
 import ToastNotifs from "@/components/ToastNotifs.vue";
@@ -7,19 +7,13 @@ import playerList from "@/components/playerList.vue";
 import DiceArray from "@/components/DiceArray.vue";
 import avatarCard from "@/components/avatarCard.vue";
 
-import { kickPlayerVote } from "@/lib/voting.js";
-
 import {
   getTranslation as T,
   initLocales,
-  getPlayerFromSession,
-  host,
   post,
-  getLogger,
   setupStreamEventHandler,
 } from "@/lib/utils.js";
 
-const log = getLogger("marathon");
 const gameSession = GameSession();
 const toaster = ref();
 const playerlist = ref();
@@ -29,11 +23,10 @@ const statuses = {
   UNINITIALIZED: 0,
   THROW: 1,
   DICE_THROWN: 2,
-  WAITING: 3,
-  END_TURN: 4,
-  GAME_OVER: 5,
-  GAME_WON: 6,
-  ERROR: 7,
+  END_TURN: 3,
+  GAME_OVER: 4,
+  GAME_WON: 5,
+  ERROR: 6,
 };
 
 const ui = gameSession.uiStates;
@@ -46,7 +39,7 @@ onMounted(() => {
   } else if (ui.currentThrow) {
     mydice.value.updateDice(ui.currentThrow, false);
     mydice.value.enableDrag(true);
-  } else if (isMyTurn) {
+  } else if (isMyTurn.value) {
     mydice.value && mydice.value.updateDice([0, 0, 0, 0], false);
   }
 });
@@ -57,8 +50,6 @@ function isError(res) {
 
 function checkLost() {
   if (gameSession.playersData[gameSession.myId].distance < 0) {
-    ui.status = statuses.GAME_OVER;
-    gameSession.save();
     return true;
   }
 }
@@ -70,15 +61,15 @@ const handlers = {
         ui.status = statuses.THROW;
         gameSession.save();
         setTimeout(() => {
-          mydice.value.updateDice([0, 0, 0, 0], false);
           mydice.value.diceNumber = Math.min(
             4,
             ("" + (gameSession.playersData[gameSession.myId].distance - 1))
               .length
           );
+          mydice.value.updateDice([0, 0, 0, 0], false);
         }, 1);
         toaster.value.show(T("It's your turn to play!"), {
-          closeTimeOut: 3500,
+          duration: 1000,
         });
       }
     }
@@ -122,6 +113,7 @@ const handlers = {
   newTurn: (data) => {
     checkLost();
     gameSession.gameData.turns = data.val;
+    gameSession.save();
   },
   endOfGame: (data) => {
     let message = data.message;
@@ -140,7 +132,6 @@ const handlers = {
   },
 };
 
-const isLastAction = computed(() => statuses.DICE_THROWN == ui.status);
 const isMyTurn = computed(
   () => gameSession.gameData.curPlayer == gameSession.myId
 );
@@ -157,31 +148,20 @@ const kickEnabled = computed(
     gameSession.players.length > kick_player_threshold
 );
 
+const currentActionName = computed(
+  () =>
+    [
+      T("waiting for other players"),
+      T("throw dices"),
+      T("move forward"),
+      T("wait for your turn"),
+      T("game over"),
+      T("game won"),
+      T("error"),
+    ][ui.status]
+);
+
 initLocales();
-
-function getPlayerAction() {
-  return [
-    T("Waiting for other players"),
-    T("Throw dices"),
-    T("Move forward"),
-    T("Wait"),
-    T("End of Turn"),
-    T("Game won"),
-    T("Game"),
-    T("Error"),
-  ][ui.status];
-}
-
-async function mainPlayButton() {
-  switch (ui.status) {
-    case statuses.THROW:
-      await server.throw_dices();
-      break;
-    case statuses.DICE_THROWN:
-      await server.player_advance();
-      break;
-  }
-}
 
 function getPostArg() {
   return {
@@ -202,7 +182,7 @@ const server = {
       mydice.value.updateDice(diceValues);
       mydice.value.enableDrag(true);
     } catch (e) {
-      toaster.value.show(e.message, { closeTimeOut: 10000 });
+      toaster.value.show(e.message, { duration: 10000 });
       ui.status = statuses.ERROR;
     }
     gameSession.save();
@@ -233,15 +213,7 @@ function getProgress(id) {
   );
 }
 function showRules() {
-  let closeBtn = {
-    close: {
-      hideOnClick: true,
-    },
-  };
-  toaster.value.show(T("marathon_rules"), {
-    closeTimeOut: -1,
-    buttonGroup: closeBtn,
-  });
+  toaster.value.show(T("marathon_rules"), { sticky: true });
 }
 
 setupStreamEventHandler(
@@ -255,7 +227,9 @@ document.debug = import.meta.env.DEV ? { gameSession, mydice, server } : {};
 <template>
   <div v-cloak class="container mx-auto">
     <ToastNotifs ref="toaster" />
-    <h1 class="font-title">{{ T("Marathon , the dice game") }}</h1>
+    <h1 class="font-title">
+      {{ T("Marathon , the dice game") }}
+    </h1>
     <div class="w-96">
       <player-list
         ref="playerlist"
@@ -285,15 +259,23 @@ document.debug = import.meta.env.DEV ? { gameSession, mydice, server } : {};
             <dice-array ref="mydice" />
           </div>
           <button
+            v-if="isMyTurn && !ui.currentThrow"
             id="playButton"
             type="button"
             class="btn btn-main"
-            @click="mainPlayButton"
-          >
-            {{ getPlayerAction() }}
-          </button>
+            @click="server.throw_dices()"
+            v-text="T('Throw')"
+          />
           <button
-            v-if="isLastAction"
+            v-if="isMyTurn && ui.currentThrow"
+            id="playButton"
+            type="button"
+            class="btn btn-main"
+            @click="server.player_advance()"
+            v-text="T('Confirm')"
+          />
+          <button
+            v-if="statuses.DICE_THROWN == ui.status"
             type="button"
             class="btn"
             @click="server.skipTurn"
@@ -304,15 +286,13 @@ document.debug = import.meta.env.DEV ? { gameSession, mydice, server } : {};
       </transition>
     </div>
     <div class="font-bold text-xl my-5">
-      {{ T("It's turn").toLowerCase() }}
-      {{ parseInt(gameSession.gameData.turns + 1) }}, {{ getPlayerAction() }}:
+      {{ T("Turn") }}
+      {{ parseInt(gameSession.gameData.turns + 1) }}, {{ currentActionName }}:
       <b>
         {{ gameSession.playersData[gameSession.myId].distance }}
       </b>
       {{ T("meters left") }}
     </div>
-    <b></b>
-
     <div>
       <transition-group name="fade">
         <div
@@ -336,7 +316,9 @@ document.debug = import.meta.env.DEV ? { gameSession, mydice, server } : {};
     </div>
 
     <div>
-      <button class="btn" @click="showRules">{{ T("Show rules") }}</button>
+      <button class="btn" @click="showRules">
+        {{ T("Show rules") }}
+      </button>
     </div>
   </div>
 </template>

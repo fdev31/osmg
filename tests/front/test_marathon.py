@@ -1,10 +1,10 @@
 import os
-from pydantic import BaseModel
 import unittest
 from time import sleep
 
 from common import getStream, pretty
 from config import HOST
+from pydantic import BaseModel
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options as ChromeOptions
 from selenium.webdriver.common.by import By

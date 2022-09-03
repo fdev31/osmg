@@ -4,5 +4,14 @@
   "Pick a game": "Choisissez un jeu",
   "Kick player": "Expulser jouer",
   "Ready": "Prêt",
-  "Not ready": "Pas prêt"
+  "Not ready": "Pas prêt",
+  "meters": "mètres",
+  "Turn": "Tour",
+  "Confirm": "Confirmer",
+  "Throw": "Lancer",
+  "Quit": "Quitter",
+  "Close": "Fermer",
+  "error": "erreur",
+  "wait": "attendez",
+  "Show rules": "Afficher les rêgles"
 }

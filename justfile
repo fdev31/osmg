@@ -66,7 +66,7 @@ list-events:
 	@grep -rE -A5 'publishEvent' server 2>/dev/null | grep "cat=" | sed -Ee 's/.*cat *= *([^,)]+).*/\1/' -e 's#Events.(\S+).name#\1#' -e 's#^"([^"]+)"$#\1#' | uniq | sort
 
 # check linting rules
-style: fix
+lint: fix
     {{venv}}/bin/isort {{src}} tests
     {{venv}}/bin/black {{src}} tests
     {{venv}}/bin/vulture {{src}} tests
