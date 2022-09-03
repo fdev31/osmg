@@ -7,11 +7,11 @@ import { getTranslation as T, initLocales, host } from "@/lib/utils.js";
 import { gamelist } from "@/lib/gamelist.js";
 import { makeName } from "@/lib/wordsMaker.js";
 
-const router = useRouter();
 const gameSession = GameSession();
-const mynickname = ref("Ninon");
+const router = useRouter();
 const games = ref({});
 const avatar = ref();
+const mynickname = ref();
 
 document.debug = import.meta.env.DEV ? { gameSession } : {};
 
@@ -24,7 +24,11 @@ watch(mynickname, (newVal) => {
 });
 
 function clearTimers() {
-  if (namesTimer) clearInterval(namesTimer);
+  if (namesTimer) {
+    clearInterval(namesTimer);
+    gameSession.uiStates.namePicked = mynickname.value;
+    gameSession.save();
+  }
 }
 
 onUnmounted(clearTimers);
@@ -32,11 +36,13 @@ onUnmounted(clearTimers);
 onMounted(async () => {
   const router = useRouter();
   await router.isReady();
-  mynickname.value = makeName();
+  mynickname.value = gameSession.uiStates.namePicked || makeName();
+  if (!gameSession.uiStates.namePicked) {
+    namesTimer = setInterval(() => {
+      mynickname.value = makeName();
+    }, 5000);
+  }
   games.value = gamelist;
-  namesTimer = setInterval(() => {
-    mynickname.value = makeName();
-  }, 5000);
 });
 
 async function join_game(sessionId) {
@@ -59,6 +65,7 @@ async function join_game(sessionId) {
     for (let player of result.players) {
       if (player.name == mynickname.value) result.myId = player.id;
     }
+    gameSession.uiStates.namePicked = mynickname.value;
     gameSession.$patch(result);
     gameSession.save();
     router.push("/lobby");
