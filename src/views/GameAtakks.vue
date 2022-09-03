@@ -32,7 +32,7 @@ const log = getLogger("atakks");
 
 document.debug = import.meta.env.DEV ? { gameSession } : {};
 
-const UI_CHECKS = false;
+const UI_CHECKS = true;
 initLocales();
 
 const amIplaying = computed(() => {
@@ -238,7 +238,10 @@ const server = {
   <h1 class="maintitle">
     {{ T("Atakks, a game of mind") }}
   </h1>
-  <div v-cloak class="flex flex-row flex-wrap mx-auto container p-5">
+  <div
+    v-cloak
+    class="flex flex-row flex-wrap mx-auto container p-5 place-content-center"
+  >
     <div
       id="myAvatar"
       :class="{
@@ -265,7 +268,7 @@ const server = {
         @pawn-click="handleClick"
       />
     </div>
-    <div class="w-30 flex-none bg-slate-400 mx-3 px-2 rounded-xl">
+    <div class="w-30 flex-none bg-slate-400 mx-3 my-3 xl:my-0 px-2 rounded-xl">
       <playerList
         ref="playerlist"
         :enable-kick="false"
