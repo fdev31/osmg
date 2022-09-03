@@ -215,7 +215,7 @@ async function mainAction() {
         {{ getMainActionText() }}
       </button>
     </div>
-    <h3>{{ T("Other players") }}</h3>
+    <h3 v-if="gameSession.players.length > 1">{{ T("Other players") }}</h3>
     <div class="w-1/3 rounded-xl container shadow bg-slate-400">
       <playerList
         ref="playerlist"
