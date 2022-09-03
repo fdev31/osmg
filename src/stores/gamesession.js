@@ -2,10 +2,9 @@ import { defineStore } from "pinia";
 import { setCookie, getLogger } from "../lib/utils";
 
 const specialProps = new Set(["myName", "save", "getPlayerInfo", "asObject"]);
+const simpleTypes = new Set([typeof 1, typeof "1", typeof true]);
 
 const log = getLogger("gameSession");
-
-const simpleTypes = new Set([typeof 1, typeof "1"]);
 
 export const GameSession = defineStore({
   id: "session",
@@ -30,15 +29,22 @@ export const GameSession = defineStore({
     save() {
       setCookie(this.asObject());
       if (log.enabled) {
-        log.table(
-          "Saving...",
-          Object.keys(this)
-            .filter((k) => simpleTypes.has(k))
-            .map((k) => this[k])
+        console.group("Saving session:");
+        const plain = this.asObject();
+        log.print(
+          Object.keys(plain)
+            .filter((k) => simpleTypes.has(typeof plain[k]))
+            .map((k) => `${k}=${plain[k]}`)
+            .join(" ; ")
         );
-        log.table("players", this.players);
-        log.table("playersData", this.players);
-        log.table("uiStates", this.uiStates);
+        log.table("uiStates", plain.uiStates);
+        log.table("players", plain.players);
+        for (const plr of Object.keys(plain.playersData)) {
+          log.print(`${plr}::`);
+          log.print(plain.playersData[plr]);
+        }
+        log.print("gameData", plain.gameData);
+        console.groupEnd();
       }
     },
     getPlayerInfo(pid) {

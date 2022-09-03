@@ -20,12 +20,15 @@ class Logger {
     this.enabled && this.obj.debug(this.name, ...args);
   }
   print(...args) {
-    this.enabled && this.obj.log(this.name, ...args);
+    if (this.enabled) {
+      this.obj.log(...args);
+    }
   }
   table(title, obj) {
     if (this.obj) {
-      this.debug(title);
+      console.group(title);
       this.obj.table(obj);
+      console.groupEnd();
     }
   }
 }
