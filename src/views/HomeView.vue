@@ -136,7 +136,7 @@ async function start_game(game) {
           @click="start_game(game)"
         >
           <img
-            :src="`/img/${info.card}.jpg`"
+            :src="`/img/hometiles/${info.card}.jpg`"
             class="object-fill h-96 w-96 rounded-xl md:w-full"
           />
           <div class="font-title">

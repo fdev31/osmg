@@ -206,7 +206,7 @@ async def surrender(player: PlayerIdentifier) -> SimpleReturn:
 
 class Game(GameInterface):
     name = "atakks"
-    card = "quiz"
+    card = "atakks"
     min_players = 2
     max_players = 4
 
