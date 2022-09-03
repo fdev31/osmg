@@ -116,17 +116,17 @@ const handlers = {
     gameSession.save();
   },
   endOfGame: (data) => {
+    ui.gameEnded = true;
     let message = data.message;
-    let myStatus = statuses.GAME_OVER;
-    for (let player of gameSession.players) {
-      if (player.id == data.player) {
-        message += "\nPlayer " + player.name + " wins!";
-        if (player.id == gameSession.myId) myStatus = statuses.GAME_WON;
-      }
+    let plr = gameSession.getPlayerInfo(data.player);
+    if (plr.id == gameSession.myId) {
+      message += "\nAnd YOU are the winner!";
+      ui.status = statuses.GAME_WON;
+    } else {
+      message += "\nPlayer " + plr.name + " wins!";
+      ui.status = statuses.GAME_OVER;
     }
     toaster.value.show(message, { sticky: true });
-    ui.status = myStatus;
-    gameSession.gameData.turn = 0;
     gameSession.save();
     // TODO: move to end of game
   },
@@ -226,7 +226,7 @@ document.debug = import.meta.env.DEV ? { gameSession, mydice, server } : {};
 
 <template>
   <div v-cloak class="container mx-auto">
-    <ToastNotifs ref="toaster" />
+    <ToastNotifs ref="toaster" position="bottom-right" />
     <h1 class="font-title">
       {{ T("Marathon , the dice game") }}
     </h1>
@@ -254,7 +254,10 @@ document.debug = import.meta.env.DEV ? { gameSession, mydice, server } : {};
         />
       </span>
       <transition name="fade">
-        <div v-if="isMyTurn" class="w-full flex items-center container">
+        <div
+          v-if="isMyTurn && !ui.gameEnded"
+          class="w-full flex items-center container"
+        >
           <div class="mx-5">
             <dice-array ref="mydice" />
           </div>

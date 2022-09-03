@@ -6,6 +6,13 @@ import {
 import "@dafcoe/vue-notification/dist/vue-notification.css"; // style
 const { setNotification } = useNotificationStore();
 
+const prop = defineProps({
+  position: {
+    type: String,
+    default: "top-right",
+  },
+});
+
 function show(text, opts = {}) {
   const notif = {
     message: text,
@@ -23,5 +30,5 @@ defineExpose({ show });
 </script>
 
 <template>
-  <vue-notification-list position="top-right" />
+  <vue-notification-list :position="prop.position" />
 </template>
