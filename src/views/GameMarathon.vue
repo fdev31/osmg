@@ -303,7 +303,7 @@ document.debug = import.meta.env.DEV ? { gameSession, mydice, server } : {};
         </div>
       </transition>
     </div>
-    <div class="font-bold text-xl">
+    <div class="font-bold text-xl my-5">
       {{ T("It's turn").toLowerCase() }}
       {{ parseInt(gameSession.gameData.turns + 1) }}, {{ getPlayerAction() }}:
       <b>
