@@ -1,7 +1,14 @@
 import { defineStore } from "pinia";
 import { setCookie, getLogger } from "../lib/utils";
+import { colors } from "../lib/playercolors";
 
-const specialProps = new Set(["myName", "save", "getPlayerInfo", "asObject"]);
+const specialProps = new Set([
+  "myName",
+  "save",
+  "getPlayerInfo",
+  "getPlayerColor",
+  "asObject",
+]);
 const simpleTypes = new Set([typeof 1, typeof "1", typeof true]);
 
 const log = getLogger("gameSession");
@@ -49,6 +56,10 @@ export const GameSession = defineStore({
     },
     getPlayerInfo(pid) {
       for (let player of this.players) if (player.id == pid) return player;
+    },
+    getPlayerColor(pid) {
+      for (let i in this.players)
+        if (this.players[i].id == pid) return colors[i];
     },
     asObject() {
       const obj = {};

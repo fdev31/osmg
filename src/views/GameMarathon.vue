@@ -78,6 +78,7 @@ const handlers = {
         });
       }
     }
+    gameSession.save();
   },
   connectPlayer: (data) => {
     gameSession.playersData[data.id].disconnected = false;
@@ -105,10 +106,11 @@ const handlers = {
           } ${T("meters")}`
         );
       }
-      animateProgressBar(data.player, pd.distance, data.val);
+      gameSession.playersData[data.player].distance = data.val;
     } else {
       gameSession.gameData[data.var] = data.val;
     }
+    gameSession.save();
     checkLost();
   },
   newTurn: (data) => {
@@ -229,16 +231,6 @@ function getProgress(id) {
     100 * ((42195 - gameSession.playersData[`${id}`].distance) / 42195) || 0
   );
 }
-function animateProgressBar(id, start, stop, fps = 120) {
-  let distInterval = Math.ceil((start - stop) / 20);
-  let intervalId = setInterval(() => {
-    gameSession.playersData[`${id}`].distance -= distInterval;
-    if (gameSession.playersData[`${id}`].distance < stop) {
-      clearInterval(intervalId);
-      gameSession.playersData[`${id}`].distance = stop;
-    }
-  }, Math.floor(3600 / fps));
-}
 function showRules() {
   let closeBtn = {
     close: {
@@ -266,17 +258,19 @@ if (gameSession.gameData.turns == 0) {
 </script>
 
 <template>
-  <div v-cloak>
+  <div v-cloak class="container mx-auto">
     <ToastNotifs ref="toaster" />
-    <h1>{{ T("Marathon , the dice game") }}</h1>
-    <player-list
-      ref="playerlist"
-      :enable-kick="kickEnabled"
-      kick-text="kick"
-      :players="gameSession.players"
-      :cur-player="gameSession.gameData.curPlayer"
-      :my-id="gameSession.myId"
-    />
+    <h1 class="font-title">{{ T("Marathon , the dice game") }}</h1>
+    <div class="w-96">
+      <player-list
+        ref="playerlist"
+        :enable-kick="kickEnabled"
+        kick-text="kick"
+        :players="gameSession.players"
+        :cur-player="gameSession.gameData.curPlayer"
+        :my-id="gameSession.myId"
+      />
+    </div>
     <h2>
       {{ T("Welcome") }} {{ gameSession.getPlayerInfo(gameSession.myId).name }},
       {{ T("It's turn").toLowerCase() }}
@@ -311,7 +305,7 @@ if (gameSession.gameData.turns == 0) {
         {{ T("Pass") }}
       </button>
       <transition name="fade">
-        <div v-if="diceVisible" class="diceArea">
+        <div v-if="diceVisible" class="w-full m-10 items-center container">
           <dice-array ref="mydice" />
         </div>
       </transition>
@@ -319,10 +313,22 @@ if (gameSession.gameData.turns == 0) {
 
     <div class="marathon-rank">
       <transition-group name="flip-list">
-        <div v-for="item in sortedPlayers" :key="item.name" class="player">
-          <span class="name">{{ item.name }}</span>
-          <span> <progress max="100" :value="getProgress(item.id)" /> </span
-          ><span> {{ item.distance }} {{ T("meters") }}</span>
+        <div
+          v-for="item in sortedPlayers"
+          :key="item.id"
+          class="container flex flex-row"
+        >
+          <span class="name w-36">{{ item.name }}</span>
+          <div class="w-96 bg-gray-200 h-5 mb-6 rounded">
+            <div
+              class="bg-blue-600 h-5 text-xs text-black text-right rounded duration-300"
+              :style="`background-color: ${gameSession.getPlayerColor(
+                item.id
+              )}; width: ${getProgress(item.id)}%`"
+            >
+              {{ item.distance }}m
+            </div>
+          </div>
         </div>
       </transition-group>
     </div>
