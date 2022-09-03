@@ -1,10 +1,10 @@
 <script>
-import * as Snap from "snapsvg-cjs";
+import "snapsvg-cjs";
 import mina from "snapsvg-cjs";
 
 export default {
   mounted() {
-    this.snap = Snap(this.$el.querySelector("svg"));
+    this.snap = window.Snap(this.$el.querySelector("svg"));
     this.$_value = this.$attrs["value"] || "?";
     this.setValue(this.$_value);
   },
