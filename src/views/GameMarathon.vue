@@ -47,7 +47,7 @@ onMounted(() => {
     mydice.value.updateDice(ui.currentThrow, false);
     mydice.value.enableDrag(true);
   } else if (isMyTurn) {
-    mydice.value.updateDice([0, 0, 0, 0], false);
+    mydice.value && mydice.value.updateDice([0, 0, 0, 0], false);
   }
 });
 
@@ -293,7 +293,12 @@ document.debug = import.meta.env.DEV ? { gameSession, mydice, server } : {};
           <div class="mx-5">
             <dice-array ref="mydice" />
           </div>
-          <button type="button" class="btn btn-main" @click="mainPlayButton">
+          <button
+            id="playButton"
+            type="button"
+            class="btn btn-main"
+            @click="mainPlayButton"
+          >
             {{ getPlayerAction() }}
           </button>
           <button
@@ -327,7 +332,7 @@ document.debug = import.meta.env.DEV ? { gameSession, mydice, server } : {};
           <span class="w-36 text-right mx-2">{{ item.name }}</span>
           <div class="w-96 bg-gray-200 h-5 mb-6 rounded">
             <div
-              class="bg-blue-600 h-5 text-xs text-black text-right rounded"
+              class="bg-blue-600 h-5 text-xs text-white px-1 text-right rounded"
               :style="`background-color: ${gameSession.getPlayerColor(
                 item.id
               )}; width: ${getProgress(item.id)}%`"
@@ -340,7 +345,7 @@ document.debug = import.meta.env.DEV ? { gameSession, mydice, server } : {};
     </div>
 
     <div>
-      <button class="btn" @click="showRules">Voir les règles</button>
+      <button class="btn" @click="showRules">{{ T("Show rules") }}</button>
     </div>
   </div>
 </template>

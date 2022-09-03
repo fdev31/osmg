@@ -1,5 +1,5 @@
 import os
-import random
+from pydantic import BaseModel
 import unittest
 from time import sleep
 
@@ -15,10 +15,14 @@ class EndOfGameError(Exception):
     pass
 
 
+class GameCtx(BaseModel):
+    endOfGame: int = False
+
+
+ctx = GameCtx()
+
 HOME_INDEX = 0
 NB_PLAYERS = 3
-
-endOfGame = False
 
 
 def getId(driver):
@@ -34,21 +38,22 @@ def getPlayerData(driver, attr):
 
 def diceValue(driver, value=None):
     if value is None:
-        return driver.execute_script("return document.debug.mydice.getDiceValues()")
+        return driver.execute_script(
+            "return document.debug.mydice.value.getDiceValues()"
+        )
     driver.execute_script(
         "document.debug.server.player_advance('%s')" % ("".join(str(x) for x in value))
     )
 
 
 def waitEvent(names: list, maxTime=None):
-    global endOfGame
     print("Waiting for %s" % (" or ".join(names)))
     while True:
         events = getStream()
         for e in events:
             if e.isA("endOfGame"):
-                endOfGame = True
-            print(endOfGame, "got %s" % pretty(e))
+                ctx.endOfGame = True
+            print(ctx.endOfGame, "got %s" % pretty(e))
         for evt in events:
             if any(evt.isA(name) for name in names):
                 sleep(0.2)
@@ -154,35 +159,23 @@ class MarathonTest(unittest.TestCase):
         def playerTurn(drv):
             distance = getPlayerData(drv, "distance")
             if distance > 0:
-                try:
-                    drv.find_elements(By.CLASS_NAME, "mainAction")[0].click()
-                except IndexError:
-                    raise EndOfGameError("No main action on this screen")
-                sleep(1)
-                dices = diceValue(drv)
-                print("Remains %d, choices: %s" % (distance, dices))
-                dices.sort(reverse=True)
-                if isThrowValid(dices, distance):
-                    diceValue(drv, dices)
-                else:
-                    dices.sort()
-                    if (isThrowValid(dices, distance)) or random.randint(0, 50) == 1:
-                        diceValue(drv, dices)
-                    else:
-                        diceValue(drv, [0])
-                waitEvent(["varUpdate"])
-                sleep(0.1)
-            sleep(0.2)
+                for n in range(2):
+                    try:
+                        drv.find_elements(By.ID, "playButton")[0].click()
+                    except IndexError:
+                        pass
+                    sleep(0.1)
 
         evt = waitEvent(["start"])
 
         assert "max" in evt
         assert "min" in evt
 
-        for n in range(100):
+        for n in range(20):
             try:
                 for drv in self.drv:
                     playerTurn(drv)
+                    sleep(0.3)
             except EndOfGameError as e:
                 print("game end detected", e)
                 sleep(1)
@@ -192,13 +185,10 @@ class MarathonTest(unittest.TestCase):
                 if n == 6:
                     makeShots(self.drv, "mid_game")
 
-        for elt in getStream():
-            print(pretty(elt))
+        if not ctx.endOfGame:
+            waitEvent(["endOfGame"], maxTime=1)
 
-        if not endOfGame:
-            waitEvent(["endOfGame"], maxTime=5)
-
-        assert endOfGame is True, "Game didn't finish !!"
+        assert ctx.endOfGame is True, "Game didn't finish !!"
 
     def tearDown(self):
         if "WAIT" in os.environ:
