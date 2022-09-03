@@ -16,7 +16,7 @@ body {
 }
 
 .btn {
-  @apply font-bold py-2 px-4 rounded-full m-2 bg-lime-600 text-center;
+  @apply font-bold py-2 px-4 rounded-full m-2 bg-lime-600 text-center md:text-xl;
 }
 .btn:hover {
   @apply brightness-125 -hue-rotate-15;
@@ -27,14 +27,12 @@ body {
 .maintitle {
   @apply text-center text-4xl lg:text-6xl  font-title;
 }
-
 .smallbtn {
   @apply py-0 px-1 rounded m-2 bg-lime-600;
 }
 .smallbtn:hover {
   @apply brightness-125 -hue-rotate-15;
 }
-
 .navlink {
   @apply py-0 px-1 rounded m-2 bg-slate-800 text-slate-300;
 }

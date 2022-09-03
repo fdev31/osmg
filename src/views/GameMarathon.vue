@@ -227,7 +227,7 @@ document.debug = import.meta.env.DEV ? { gameSession, mydice, server } : {};
 <template>
   <div v-cloak class="container mx-auto">
     <ToastNotifs ref="toaster" position="bottom-right" />
-    <h1 class="font-title">
+    <h1 class="maintitle">
       {{ T("Marathon , the dice game") }}
     </h1>
     <div class="w-96">
