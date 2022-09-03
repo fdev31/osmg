@@ -36,7 +36,7 @@ onMounted(() => {
     <div v-html="avatarTemplate" />
     <div
       v-if="props.showName"
-      :class="`items-center text-black flex shrink avatar-${props.size} avatarName`"
+      :class="`items-center text-slate-800 flex shrink avatar-${props.size} avatarName`"
     >
       {{ props.avatarName }}
     </div>
