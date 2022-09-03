@@ -145,19 +145,10 @@ const isMyTurn = computed(
   () => gameSession.gameData.curPlayer == gameSession.myId
 );
 const sortedPlayers = computed(() => {
-  let data = gameSession.playersData;
-  let result = [];
-  Object.keys(data).map(function (key) {
-    return result.push([key, data[key]]);
-  });
-  result = result
-    .sort(function (a, b) {
-      return a[1].distance - b[1].distance;
-    })
-    .map((x) => {
-      return Object.assign(gameSession.getPlayerInfo(x[0]), x[1]);
-    });
-  return result;
+  const players = gameSession.players.map((o) =>
+    Object.assign({}, o, gameSession.playersData[o.id])
+  );
+  return players.sort((a, b) => a.distance - b.distance);
 });
 
 const kickEnabled = computed(
@@ -323,7 +314,7 @@ document.debug = import.meta.env.DEV ? { gameSession, mydice, server } : {};
     <b></b>
 
     <div>
-      <transition-group name="flip-list">
+      <transition-group name="fade">
         <div
           v-for="item in sortedPlayers"
           :key="item.id"
@@ -332,7 +323,7 @@ document.debug = import.meta.env.DEV ? { gameSession, mydice, server } : {};
           <span class="w-36 text-right mx-2">{{ item.name }}</span>
           <div class="w-96 bg-gray-200 h-5 mb-6 rounded">
             <div
-              class="bg-blue-600 h-5 text-xs text-white px-1 text-right rounded"
+              class="duration-300 bg-blue-600 h-5 text-xs text-white px-1 text-right rounded"
               :style="`background-color: ${gameSession.getPlayerColor(
                 item.id
               )}; width: ${getProgress(item.id)}%`"
@@ -350,4 +341,24 @@ document.debug = import.meta.env.DEV ? { gameSession, mydice, server } : {};
   </div>
 </template>
 
-<style></style>
+<style scoped>
+/* 1. declare transition */
+.fade-move,
+.fade-enter-active,
+.fade-leave-active {
+  transition: all 0.5s cubic-bezier(0.55, 0, 0.1, 1);
+}
+
+/* 2. declare enter from and leave to state */
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+  transform: scaleX(0.01) translate(30px, 0);
+}
+
+/* 3. ensure leaving items are taken out of layout flow so that moving
+      animations can be calculated correctly. */
+.fade-leave-active {
+  /* position: absolute; */
+}
+</style>
