@@ -303,10 +303,10 @@ document.debug = import.meta.env.DEV ? { gameSession, mydice, server } : {};
           :key="item.id"
           class="container flex flex-row"
         >
-          <span class="w-36 text-right mx-2">{{ item.name }}</span>
-          <div class="w-96 bg-gray-200 h-5 mb-6 rounded">
+          <span class="w-36 text-right mx-2 md:text-xl">{{ item.name }}</span>
+          <div class="w-96 bg-gray-200 h-5 md:text-xl xl:h-10 mb-6 rounded">
             <div
-              class="duration-300 bg-blue-600 h-5 text-xs text-white px-1 text-right rounded"
+              class="duration-300 bg-blue-600 h-5 xl:h-10 text-xs md:text-xl text-white px-1 text-right rounded"
               :style="`background-color: ${gameSession.getPlayerColor(
                 item.id
               )}; width: ${getProgress(item.id)}%`"

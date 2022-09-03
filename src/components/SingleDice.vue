@@ -172,7 +172,12 @@ export default {
   position: relative;
 }
 .dice > svg {
-  width: 40px;
+  width: 48px;
   height: auto;
+}
+@media (min-width: 1024px) {
+  .dice > svg {
+    width: 96px;
+  }
 }
 </style>
