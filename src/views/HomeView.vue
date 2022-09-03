@@ -3,12 +3,7 @@ import { onMounted, onUnmounted, ref, watch } from "vue";
 import avatarCard from "@/components/avatarCard.vue";
 import { useRouter, RouterLink } from "vue-router";
 import { GameSession } from "@/stores/gamesession.js";
-import {
-  getTranslation as T,
-  initLocales,
-  getLogger,
-  host,
-} from "@/lib/utils.js";
+import { getTranslation as T, initLocales, host } from "@/lib/utils.js";
 import { gamelist } from "@/lib/gamelist.js";
 import { makeName } from "@/lib/wordsMaker.js";
 
@@ -18,7 +13,6 @@ const mynickname = ref("Ninon");
 const games = ref({});
 const avatar = ref();
 
-const log = getLogger("home");
 document.debug = import.meta.env.DEV ? { gameSession } : {};
 
 let namesTimer = null;
@@ -116,19 +110,19 @@ async function start_game(game) {
     </div>
     <div v-if="gameSession.name">
       <div v-if="!gameSession.secret" class="contents w-full">
-        <button class="btn btn-main" @click="join_game(gameSession.name)">
+        <button class="btn w-48 btn-main" @click="join_game(gameSession.name)">
           {{ T("Join game") }}
         </button>
       </div>
       <div v-else>
         <RouterLink
           :to="`game-${gameSession.gameType}`"
-          class="btn btn-main block"
+          class="btn btn-main block w-48"
         >
           {{ T("Return to game") }}
         </RouterLink>
       </div>
-      <button class="btn" @click="clear_session()">
+      <button class="btn w-48" @click="clear_session()">
         {{ T("Change game") }}
       </button>
     </div>
