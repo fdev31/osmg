@@ -119,7 +119,7 @@ const handlers = {
   },
   newTurn: (data) => {
     checkLost();
-    gameSession.gameData.turn = data.val;
+    gameSession.gameData.turns = data.val;
   },
   endOfGame: (data) => {
     let message = data.message;
