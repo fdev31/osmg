@@ -107,13 +107,6 @@ class MarathonTest(unittest.TestCase):
     def setUp(self):
         opts = ChromeOptions()
         opts.add_argument("--no-sandbox")
-        """
-        opts.add_argument("--test-type")
-        opts.add_argument("--verbose")
-        opts.add_argument("--no-sandbox")
-        opts.add_argument("--disable-dev-shm-usage")
-        """
-
         self.drv = [webdriver.Chrome(options=opts)]
         for n in range(1, NB_PLAYERS):
             self.drv.append(webdriver.Chrome(options=opts))
