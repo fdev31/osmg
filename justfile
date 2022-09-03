@@ -17,6 +17,10 @@ export WEB_CONCURRENCY := "1"
 default:
     @just --list
 
+# Deploy the pie
+deploy: prod
+    ./scripts/copyCra
+
 # removes & re-install everything
 cleanenv:
     rm -fr .tox
