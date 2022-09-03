@@ -149,12 +149,7 @@ class MarathonTest(unittest.TestCase):
         for drv in self.drv:
             drv.find_elements(By.CLASS_NAME, "btn-main")[0].click()
 
-        sleep(5)
-        print("Start")
-
-        def isThrowValid(curDice, distance):
-            val = int("".join(str(x) for x in curDice))
-            return distance - val >= 0
+        evt = waitEvent(["start"])
 
         def playerTurn(drv):
             distance = getPlayerData(drv, "distance")
@@ -165,8 +160,6 @@ class MarathonTest(unittest.TestCase):
                     except IndexError:
                         pass
                     sleep(0.1)
-
-        evt = waitEvent(["start"])
 
         assert "max" in evt
         assert "min" in evt
