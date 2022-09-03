@@ -23,17 +23,11 @@ cleanenv:
     rm -fr node_modules
     npm i
     tox -e style
-    just js
+    just dev
 
-# run everything python related
-py: style coverage unit types
-
-# run everything JS related
-js: gamelist vue locales test
-
-# build Javascript components in production mode
-vue:
-    npm run build
+# start a live dev session
+live:
+    ./node_modules/.bin/vite
 
 # build js in dev mode
 dev:
@@ -67,18 +61,12 @@ unit: fix
 list-events:
 	@grep -rE -A5 'publishEvent' server 2>/dev/null | grep "cat=" | sed -Ee 's/.*cat *= *([^,)]+).*/\1/' -e 's#Events.(\S+).name#\1#' -e 's#^"([^"]+)"$#\1#' | uniq | sort
 
-# run style rules
+# check linting rules
 style: fix
     {{venv}}/bin/isort {{src}} tests
     {{venv}}/bin/black {{src}} tests
-    npm run lint
-
-# run python coverage
-coverage: fix
     {{venv}}/bin/vulture {{src}} tests
-
-# run python type checks
-types: fix
+    npm run lint
     {{venv}}/bin/mypy {{src}}
 
 # run in debug or standard mode
