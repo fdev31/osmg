@@ -24,8 +24,6 @@ const toaster = ref();
 const playerlist = ref();
 const mydice = ref();
 
-document.debug = import.meta.env.DEV ? { gameSession, mydice } : {};
-
 const statuses = {
   UNINITIALIZED: 0,
   THROW: 1,
@@ -85,12 +83,14 @@ const handlers = {
     toaster.value.show(
       `${gameSession.getPlayerInfo(data.id).name} ${T("enters the game")}`
     );
+    gameSession.save();
   },
   disconnectPlayer: (data) => {
     gameSession.playersData[data.id].disconnected = true;
     toaster.value.show(
       `${gameSession.getPlayerInfo(data.id).name} ${T("is disconnected")}`
     );
+    gameSession.save();
   },
   varUpdate: (data) => {
     if (data.player) {
@@ -135,8 +135,8 @@ const handlers = {
 };
 
 const isLastAction = computed(() => statuses.DICE_THROWN == ui.status);
-const diceVisible = computed(() =>
-  [statuses.THROW, statuses.DICE_THROWN].includes(ui.status)
+const isMyTurn = computed(
+  () => gameSession.gameData.curPlayer == gameSession.myId
 );
 const sortedPlayers = computed(() => {
   let data = gameSession.playersData;
@@ -207,6 +207,7 @@ const server = {
       toaster.value.show(e.message, { closeTimeOut: 10000 });
       ui.status = statuses.ERROR;
     }
+    gameSession.save();
   },
   async skipTurn() {
     await server.player_advance(0);
@@ -223,6 +224,7 @@ const server = {
       alert(action.detail);
     } else {
       ui.status = statuses.END_TURN;
+      gameSession.save();
     }
   },
 };
@@ -248,13 +250,7 @@ setupStreamEventHandler(
   handlers
 );
 
-if (gameSession.gameData.turns == 0) {
-  for (const key in gameSession.playersData) {
-    if (Object.hasOwnProperty.call(gameSession.playersData, key)) {
-      gameSession.playersData[key].distance = 42195;
-    }
-  }
-}
+document.debug = import.meta.env.DEV ? { gameSession, mydice, server } : {};
 </script>
 
 <template>
@@ -289,7 +285,7 @@ if (gameSession.gameData.turns == 0) {
       {{ gameSession.playersData[gameSession.myId].distance }}
       {{ T("meters left") }}
       <button
-        v-if="diceVisible"
+        v-if="isMyTurn"
         type="button"
         class="btn btn-main"
         @click="mainPlayButton"
@@ -305,7 +301,7 @@ if (gameSession.gameData.turns == 0) {
         {{ T("Pass") }}
       </button>
       <transition name="fade">
-        <div v-if="diceVisible" class="w-full m-10 items-center container">
+        <div v-if="isMyTurn" class="w-full m-10 items-center container">
           <dice-array ref="mydice" />
         </div>
       </transition>

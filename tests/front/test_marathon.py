@@ -22,20 +22,21 @@ endOfGame = False
 
 
 def getId(driver):
-    return driver.execute_script("return application.myId")
+    return driver.execute_script("return document.debug.gameSession.myId")
 
 
 def getPlayerData(driver, attr):
     return driver.execute_script(
-        "return application.playersData[application.myId].%s" % attr
+        "return document.debug.gameSession.playersData[document.debug.gameSession.myId].%s"
+        % attr
     )
 
 
 def diceValue(driver, value=None):
     if value is None:
-        return driver.execute_script("return application.$refs.mydice.getDiceValues()")
+        return driver.execute_script("return document.debug.mydice.getDiceValues()")
     driver.execute_script(
-        "application.player_advance('%s')" % ("".join(str(x) for x in value))
+        "document.debug.server.player_advance('%s')" % ("".join(str(x) for x in value))
     )
 
 
@@ -93,7 +94,7 @@ def create_game(driver, gameIndex):
     driver.execute_script("window.scrollTo(0, 100)")
 
     # click game tile
-    but = driver.find_elements(By.CLASS_NAME, "gamebutton")[gameIndex]
+    but = driver.find_elements(By.CLASS_NAME, "tile")[gameIndex]
     but.click()
 
 
@@ -141,7 +142,7 @@ class MarathonTest(unittest.TestCase):
 
         # start game
         for drv in self.drv:
-            drv.find_elements(By.CLASS_NAME, "mainAction")[0].click()
+            drv.find_elements(By.CLASS_NAME, "btn-main")[0].click()
 
         sleep(5)
         print("Start")
