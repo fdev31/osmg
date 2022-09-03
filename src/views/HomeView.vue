@@ -3,7 +3,12 @@ import { onMounted, onUnmounted, ref, watch } from "vue";
 import avatarCard from "@/components/avatarCard.vue";
 import { useRouter, RouterLink } from "vue-router";
 import { GameSession } from "@/stores/gamesession.js";
-import { getTranslation as T, initLocales, host } from "@/lib/utils.js";
+import {
+  getTranslation as T,
+  initLocales,
+  getLogger,
+  host,
+} from "@/lib/utils.js";
 import { gamelist } from "@/lib/gamelist.js";
 import { makeName } from "@/lib/wordsMaker.js";
 
@@ -13,6 +18,7 @@ const mynickname = ref("Ninon");
 const games = ref({});
 const avatar = ref();
 
+const log = getLogger("home");
 document.debug = import.meta.env.DEV ? { gameSession } : {};
 
 let namesTimer = null;
@@ -60,7 +66,6 @@ async function join_game(sessionId) {
       if (player.name == mynickname.value) result.myId = player.id;
     }
     gameSession.$patch(result);
-    console.log(gameSession.asObject());
     gameSession.save();
     router.push("/lobby");
   } else {

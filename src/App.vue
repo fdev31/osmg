@@ -1,14 +1,16 @@
 <script setup>
 import { onMounted } from "vue";
 import { RouterLink, RouterView, useRouter } from "vue-router";
-import { extractJsonFromCookie } from "./lib/utils";
+import { getLogger, extractJsonFromCookie } from "./lib/utils";
 
 import { GameSession } from "@/stores/gamesession.js";
+const log = getLogger("App");
 const gameSession = GameSession();
+
 try {
   gameSession.$patch(extractJsonFromCookie());
 } catch (e) {
-  console.log("Bad cookie!");
+  log.error("Bad cookie!");
 }
 const router = useRouter();
 

@@ -7,6 +7,7 @@ import {
   initLocales,
   getPlayerFromSession,
   post,
+  getLogger,
   setupStreamEventHandler,
 } from "@/lib/utils.js";
 
@@ -26,6 +27,8 @@ const myPlayerIndex = computed(() =>
     gameSession.players.filter((o) => o.id == gameSession.myId)[0]
   )
 );
+
+const log = getLogger("atakks");
 
 document.debug = import.meta.env.DEV ? { gameSession } : {};
 
@@ -99,7 +102,7 @@ const handlers = {
             }
             break;
           default:
-            console.debug("Don't know how to update " + data.var);
+            log.debug("Don't know how to update " + data.var);
         }
       }
       const freePawns = new Set(BOARD_COORDS);
@@ -108,9 +111,7 @@ const handlers = {
         if (pd.pawns) {
           for (const pawn of pd.pawns) freePawns.delete(pawn);
         } else {
-          console.debug(
-            `No pawns for player ${pid} in ${gameSession.playersData}`
-          );
+          log.debug(`No pawns for player ${pid} in ${gameSession.playersData}`);
         }
       }
       // now we really only have free pawns

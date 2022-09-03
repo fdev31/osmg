@@ -1,9 +1,40 @@
 import { locales } from "./locales.js";
 
-export const host =
-  import.meta.env.DEV == true
-    ? "http://localhost:5000"
-    : document.location.href.slice(0, -document.location.pathname.length);
+export const host = import.meta.env.DEV
+  ? "http://localhost:5000"
+  : document.location.href.slice(0, -document.location.pathname.length);
+
+class Logger {
+  constructor(name, baseObj) {
+    this.name = name;
+    this.obj = baseObj;
+    this.enabled = import.meta.env.DEV;
+  }
+  error(...args) {
+    this.enabled && this.obj.error(this.name, ...args);
+  }
+  warn(...args) {
+    this.enabled && this.obj.warn(this.name, ...args);
+  }
+  debug(...args) {
+    this.enabled && this.obj.debug(this.name, ...args);
+  }
+  print(...args) {
+    this.enabled && this.obj.log(this.name, ...args);
+  }
+  table(title, obj) {
+    if (this.obj) {
+      this.debug(title);
+      this.obj.table(obj);
+    }
+  }
+}
+
+export function getLogger(name) {
+  return new Logger(`${name}::`, import.meta.env.DEV ? console : false);
+}
+
+const log = getLogger("utils");
 
 export function delay(duration = 1000) {
   return new Promise((res) => {
@@ -25,7 +56,6 @@ export function extractJsonFromCookie() {
   }
 }
 export function setCookie(data) {
-  console.debug("Set cookie", data);
   document.cookie = `${cookie_name}=${JSON.stringify(
     data
   )}; SameSite=Strict; path=/;`;
@@ -53,7 +83,7 @@ export function setupStreamEventHandler(query, handlers) {
     let logO = { ...data };
     let cat = logO.cat;
     delete logO.cat;
-    console.debug(
+    log.debug(
       `${(handlers[cat] && "Handled") || "Unhandled"} Event ${cat}: `,
       logO
     );
@@ -115,7 +145,7 @@ export function getTranslation(text) {
   let r = locales[currentLocale][text];
   if (r) return r;
   if (!_transWarnings.has(text)) {
-    console.debug(`No translation found for "${text}" using ${currentLocale}`);
+    log.debug(`No translation found for "${text}" using ${currentLocale}`);
     _transWarnings.add(text);
   }
   return text;
