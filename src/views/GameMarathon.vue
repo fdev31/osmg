@@ -242,7 +242,7 @@ document.debug = import.meta.env.DEV ? { gameSession, mydice, server } : {};
     </div>
     <div class="flex container items-center">
       <span
-        class="m-3 rounded-full"
+        class="m-3 rounded-full overflow-hidden"
         :style="`background-color: ${gameSession.getPlayerColor(
           gameSession.myId
         )}`"
