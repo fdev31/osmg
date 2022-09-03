@@ -46,6 +46,8 @@ onMounted(() => {
   } else if (ui.currentThrow) {
     mydice.value.updateDice(ui.currentThrow, false);
     mydice.value.enableDrag(true);
+  } else if (isMyTurn) {
+    mydice.value.updateDice([0, 0, 0, 0], false);
   }
 });
 
@@ -325,7 +327,7 @@ document.debug = import.meta.env.DEV ? { gameSession, mydice, server } : {};
           <span class="w-36 text-right mx-2">{{ item.name }}</span>
           <div class="w-96 bg-gray-200 h-5 mb-6 rounded">
             <div
-              class="bg-blue-600 h-5 text-xs text-black text-right rounded duration-900"
+              class="bg-blue-600 h-5 text-xs text-black text-right rounded"
               :style="`background-color: ${gameSession.getPlayerColor(
                 item.id
               )}; width: ${getProgress(item.id)}%`"
