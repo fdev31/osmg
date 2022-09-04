@@ -6,6 +6,7 @@ import { getLogger, extractJsonFromCookie } from "./lib/utils";
 import { GameSession } from "@/stores/gamesession.js";
 const log = getLogger("App");
 const gameSession = GameSession();
+import homeIcon from "@/assets/icons/home.svg?url";
 
 try {
   gameSession.$patch(extractJsonFromCookie());
@@ -37,20 +38,13 @@ onMounted(async () => {
 
 <template>
   <header class="flex">
-    <nav>
-      <RouterLink class="navlink" to="/"> Home </RouterLink>
-      <RouterLink class="navlink" to="/about"> About </RouterLink>
+    <nav class="h-0">
+      <RouterLink to="/"
+        ><img :src="homeIcon" class="hover:brightness-150 w-8 h-8 p-0 m-0" />
+      </RouterLink>
     </nav>
   </header>
-
   <RouterView />
 </template>
 
-<style scoped>
-nav > a {
-  margin: 0 1ex;
-  padding: 0 3px;
-}
-body {
-}
-</style>
+<style scoped></style>
