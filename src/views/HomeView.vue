@@ -87,24 +87,22 @@ async function start_game(game) {
 
 <template>
   <main v-cloak class="flex flex-col content-start items-center m-5">
-    <div>
-      <div>
-        <avatarCard
-          ref="avatar"
-          noname
-          avatar-name="Nick"
-          class="bg-sky-300 w-max rounded-full"
-        />
-        <input
-          id="username"
-          v-model="mynickname"
-          type="text"
-          placeholder="Nickname"
-          maxlength="20"
-          class="text-center shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 focus:outline-none focus:shadow-outline"
-          @focus="clearTimers()"
-        />
-      </div>
+    <div class="items-center">
+      <avatarCard
+        ref="avatar"
+        noname
+        avatar-name="Nick"
+        class="bg-sky-300 w-max rounded-full mx-auto"
+      />
+      <input
+        id="username"
+        v-model="mynickname"
+        type="text"
+        placeholder="Nickname"
+        maxlength="20"
+        class="text-center shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 focus:outline-none focus:shadow-outline"
+        @focus="clearTimers()"
+      />
     </div>
     <div v-if="!gameSession.secret && gameSession.name" class="contents w-full">
       <button class="btn w-48 btn-main" @click="join_game(gameSession.name)">

@@ -63,6 +63,13 @@ onMounted(() => {
 }
 
 @media (max-width: 1024px) {
+  .avatar-big {
+    height: 250px;
+  }
+  .avatar-big:deep(svg) {
+    width: 250px;
+    height: 250px;
+  }
   .avatar-small {
     height: 64px;
   }
