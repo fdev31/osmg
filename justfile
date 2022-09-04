@@ -31,7 +31,7 @@ cleanenv:
 
 # start a live dev session
 live:
-    ./node_modules/.bin/vite
+    ./node_modules/.bin/vite --host 0.0.0.0
 
 # build js in dev mode
 dev:
