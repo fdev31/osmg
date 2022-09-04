@@ -185,18 +185,22 @@ async function mainAction() {
       <div id="myAvatar" class="my-4 mx-auto">
         <avatarCard :show-name="false" :avatar-name="gameSession.myName" />
         <div class="flex place-content-center">
-          <button
-            v-if="states.status != statuses.READY"
-            type="button"
-            class="btn btn-main w-1/2"
-            @click="mainAction"
-            v-text="T('Ready')"
-          />
-          <button
-            class="btn w-1/2"
-            @click="backToHome(gameSession, router)"
-            v-text="T('Leave')"
-          />
+          <transition-group name="fade">
+            <button
+              key="ready"
+              v-if="states.status != statuses.READY"
+              type="button"
+              class="btn btn-main w-1/2"
+              @click="mainAction"
+              v-text="T('Ready')"
+            />
+            <button
+              key="leave"
+              class="btn w-1/2"
+              @click="backToHome(gameSession, router)"
+              v-text="T('Leave')"
+            />
+          </transition-group>
         </div>
       </div>
 
@@ -250,5 +254,24 @@ async function mainAction() {
   border-radius: 1000px;
   transition-duration: 300ms;
   border: solid 3px #333;
+}
+/* 1. declare transition */
+.fade-move,
+.fade-enter-active,
+.fade-leave-active {
+  transition: all 0.5s cubic-bezier(0.55, 0, 0.1, 1);
+}
+
+/* 2. declare enter from and leave to state */
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+  transform: scaleX(0.01) translate(30px, 0);
+}
+
+/* 3. ensure leaving items are taken out of layout flow so that moving
+      animations can be calculated correctly. */
+.fade-leave-active {
+  position: absolute;
 }
 </style>
