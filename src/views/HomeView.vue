@@ -92,7 +92,7 @@ async function start_game(game) {
         ref="avatar"
         noname
         avatar-name="Nick"
-        class="bg-sky-300 w-max rounded-full mx-auto"
+        class="bg-sky-300 bg-opacity-50 w-max rounded-full mx-auto shadow-lg"
       />
       <input
         id="username"
@@ -100,7 +100,7 @@ async function start_game(game) {
         type="text"
         placeholder="Nickname"
         maxlength="20"
-        class="text-center shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 focus:outline-none focus:shadow-outline"
+        class="text-center shadow-lg appearance-none border rounded w-full py-2 px-3 text-gray-700 focus:outline-none focus:shadow-outline"
         @focus="clearTimers()"
       />
     </div>
@@ -132,13 +132,13 @@ async function start_game(game) {
         >
           <img
             :src="`/img/hometiles/${info.card}.jpg`"
-            class="object-fill h-96 w-96 rounded-xl md:w-full"
+            class="shadow-lg object-fill h-96 w-96 rounded-xl md:w-full"
           />
           <div class="font-title">
             {{ T(game) }}
           </div>
           <div
-            class="opacity-0 group-hover:opacity-100 text-black duration-300 bg-slate-200 rounded-md px-2 overflow-clip"
+            class="shadow-xl opacity-0 group-hover:opacity-100 text-black duration-300 bg-slate-200 rounded-md px-2 overflow-clip"
           >
             <h2 class="animate-text">
               {{ T(game + "_description") }}
