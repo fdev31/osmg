@@ -5,7 +5,8 @@ import {
 } from "@dafcoe/vue-notification"; // component
 import "@dafcoe/vue-notification/dist/vue-notification.css"; // style
 import { isDarkMode } from "@/lib/utils.js";
-const { setNotification } = useNotificationStore();
+const { setNotification, unsetNotification, notifications } =
+  useNotificationStore();
 
 const prop = defineProps({
   position: {
@@ -14,11 +15,18 @@ const prop = defineProps({
   },
 });
 
+const colorScheme = isDarkMode() ? "dark" : "light";
+
+function clearAll() {
+  for (const nid of Object.keys(notifications)) {
+    unsetNotification(nid);
+  }
+}
 function show(text, opts = {}) {
   const notif = {
     message: text,
     type: "info", // "info"|"warning"|"alert"|"success"
-    appearance: isDarkMode() ? "dark" : "light", // "light"|"dark"|"glass"
+    appearance: colorScheme, // "light"|"dark"|"glass"
     dismiss: { manually: true, automatically: !opts.sticky },
     showDurationProgress: true,
     showIcon: true,
@@ -27,7 +35,7 @@ function show(text, opts = {}) {
   Object.assign(notif, opts);
   setNotification(notif);
 }
-defineExpose({ show });
+defineExpose({ show, clearAll });
 </script>
 
 <template>
