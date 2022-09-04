@@ -5,6 +5,7 @@ import { colors } from "../lib/playercolors";
 const specialProps = new Set([
   "myName",
   "save",
+  "print",
   "getPlayerInfo",
   "getPlayerColor",
   "asObject",
@@ -33,10 +34,9 @@ export const GameSession = defineStore({
     },
   },
   actions: {
-    save() {
-      setCookie(this.asObject());
+    print() {
       if (log.enabled) {
-        console.group("Saving session:");
+        console.group("Session:");
         const plain = this.asObject();
         log.print(
           Object.keys(plain)
@@ -53,6 +53,9 @@ export const GameSession = defineStore({
         log.print("gameData", plain.gameData);
         console.groupEnd();
       }
+    },
+    save() {
+      setCookie(this.asObject());
     },
     getPlayerInfo(pid) {
       for (let player of this.players) if (player.id == pid) return player;
