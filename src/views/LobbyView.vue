@@ -228,7 +228,7 @@ async function mainAction() {
               :value="joinURL"
             />
           </div>
-          <QrCode class="m-4 mx-auto" :text="joinURL" />
+          <QrCode class="m-4 mx-auto rounded-xl" :text="joinURL" />
         </div>
       </div>
 
