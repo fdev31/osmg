@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from "vue";
+import { ref, computed } from "vue";
 import { RouterLink, useRouter } from "vue-router";
 import { GameSession } from "@/stores/gamesession.js";
 import playerList from "@/components/playerList.vue";
@@ -163,9 +163,9 @@ const websocket = setupStreamEventHandler(
   handlers
 );
 
-function getMainActionText() {
-  return [T("Ready"), T("Not ready")][states.status];
-}
+const mainActionText = computed(
+  () => [T("Ready"), T("Not ready")][states.status]
+);
 
 async function mainAction() {
   switch (states.status) {
@@ -212,9 +212,13 @@ async function mainAction() {
       <RouterLink to="/" class="btn">
         {{ T("Change game") }}
       </RouterLink>
-      <button type="button" class="btn btn-main" @click="mainAction">
-        {{ getMainActionText() }}
-      </button>
+      <button
+        v-if="mainActionText"
+        v-text="mainActionText"
+        type="button"
+        class="btn btn-main"
+        @click="mainAction"
+      />
     </div>
     <h3 v-if="gameSession.players.length > 1">
       {{ T("Other players") }}
