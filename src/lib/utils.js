@@ -74,8 +74,11 @@ export function setCookie(data) {
 function _setEventStreamHandler(handler, query) {
   if (typeof query.topic == "undefined" || typeof query.uid == "undefined")
     throw new Error("parameter missing");
+  const proto = document.location.href.startsWith("https") ? "wss" : "ws";
   const evtSource = new WebSocket(
-    `ws://${host.split("//")[1]}/c/stream?topic=${query.topic}&uid=${query.uid}`
+    `${proto}://${host.split("//")[1]}/c/stream?topic=${query.topic}&uid=${
+      query.uid
+    }`
   );
   evtSource.addEventListener("message", (event) => {
     handler(JSON.parse(event.data));
