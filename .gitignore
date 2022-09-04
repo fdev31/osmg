@@ -2,6 +2,8 @@ node_modules
 dump.rdb
 venv
 front/**
+**.pyc
+**.orig
 back/build
 back/back.egg-info
 back/dist
