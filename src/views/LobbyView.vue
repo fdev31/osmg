@@ -214,10 +214,10 @@ async function mainAction() {
       </RouterLink>
       <button
         v-if="mainActionText"
-        v-text="mainActionText"
         type="button"
         class="btn btn-main"
         @click="mainAction"
+        v-text="mainActionText"
       />
     </div>
     <h3 v-if="gameSession.players.length > 1">
