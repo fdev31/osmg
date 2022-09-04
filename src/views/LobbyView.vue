@@ -21,7 +21,7 @@ import {
 
 const router = useRouter();
 const gameSession = GameSession();
-const joinURL = `http://${host}/r/${gameSession.name}`;
+const joinURL = `${host}/r/${gameSession.name}`;
 
 document.debug = import.meta.env.DEV ? { gameSession } : {};
 
