@@ -36,8 +36,12 @@ onUnmounted(clearTimers);
 onMounted(async () => {
   const router = useRouter();
   await router.isReady();
-  mynickname.value = gameSession.namePicked || makeName();
-  if (!gameSession.namePicked) {
+  if (gameSession.name.length) {
+    mynickname.value = gameSession.getPlayerInfo(gameSession.myId).name;
+  } else {
+    mynickname.value = gameSession.namePicked || makeName();
+  }
+  if (!(gameSession.namePicked || gameSession.name.length)) {
     namesTimer = setInterval(() => {
       mynickname.value = makeName();
     }, 5000);

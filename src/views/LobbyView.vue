@@ -182,8 +182,15 @@ async function mainAction() {
       {{ gameSession.gameType }}
     </h2>
     <div class="flex portrait:flex-col content-center">
-      <div id="myAvatar" class="my-4 mx-auto">
-        <avatarCard :show-name="false" :avatar-name="gameSession.myName" />
+      <div
+        id="myAvatar"
+        class="flex-col my-4 mx-auto w-full justify-center items-center"
+      >
+        <avatarCard
+          class="w-96 mx-auto"
+          :show-name="false"
+          :avatar-name="gameSession.myName"
+        />
         <div class="flex place-content-center">
           <transition-group name="fade">
             <button
@@ -202,28 +209,27 @@ async function mainAction() {
             />
           </transition-group>
         </div>
-      </div>
+        <div class="grow">
+          <div class="flex-col">
+            <div class="flex grow">
+              <button
+                type="button"
+                :title="T('Click to copy invite link to the clipboard')"
+                class="btn"
+                @click="copyURL('link')"
+              >
+                {{ T("Invite") }}
+              </button>
 
-      <div class="grow">
-        <div class="flex-col">
-          <QrCode class="m-4 mx-auto rounded-xl" :text="joinURL" />
-          <div class="flex grow">
-            <button
-              type="button"
-              :title="T('Click to copy invite link to the clipboard')"
-              class="btn"
-              @click="copyURL('link')"
-            >
-              {{ T("Invite") }}
-            </button>
-
-            <input
-              id="link"
-              size="40"
-              type="text"
-              class="grow shadow appearance-none border rounded shrink py-2 w-64 px-3 text-gray-700 focus:outline-none focus:shadow-outline"
-              :value="joinURL"
-            />
+              <input
+                id="link"
+                size="40"
+                type="text"
+                class="grow shadow appearance-none border rounded shrink py-2 w-64 px-3 text-gray-700 focus:outline-none focus:shadow-outline"
+                :value="joinURL"
+              />
+            </div>
+            <QrCode class="m-4 mx-auto rounded-xl" :text="joinURL" />
           </div>
         </div>
       </div>
