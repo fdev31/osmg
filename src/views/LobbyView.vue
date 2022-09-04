@@ -5,13 +5,15 @@ import { GameSession } from "@/stores/gamesession.js";
 import playerList from "@/components/playerList.vue";
 import avatarCard from "@/components/avatarCard.vue";
 import ToastNotifs from "@/components/ToastNotifs.vue";
-import { backToHome } from "@/lib/session";
+import QrCode from "@/components/QrCode.vue";
+import { backToHome } from "@/lib/session.js";
 
 import { kickPlayerVote } from "@/lib/voting.js";
 import {
   post,
   setupStreamEventHandler,
   getTranslation as T,
+  host,
   initLocales,
   copyURL,
   delay,
@@ -19,8 +21,7 @@ import {
 
 const router = useRouter();
 const gameSession = GameSession();
-const name = gameSession.name;
-const host = document.location.host;
+const joinURL = `http://${host}/r/${gameSession.name}`;
 
 document.debug = import.meta.env.DEV ? { gameSession } : {};
 
@@ -224,9 +225,10 @@ async function mainAction() {
               size="40"
               type="text"
               class="grow shadow appearance-none border rounded shrink py-2 w-64 px-3 text-gray-700 focus:outline-none focus:shadow-outline"
-              :value="`http://${host}/r/${name}`"
+              :value="joinURL"
             />
           </div>
+          <QrCode class="m-4 mx-auto" :text="joinURL" />
         </div>
       </div>
 
