@@ -78,12 +78,3 @@ Handle end in attaks
 
 - update server side variables
 - add checks to not repeat operations
-
---------------------------------------------------------------------------------
-
-Add a QRcode in the lobby
-=========================
-
-:bugid: 8
-:created: 2022-09-04T17:04:02
-:priority: 0
