@@ -194,22 +194,25 @@ async function mainAction() {
     <div class="flex portrait:flex-col content-center">
       <div id="myAvatar" class="my-4 mx-auto">
         <avatarCard :show-name="false" :avatar-name="gameSession.myName" />
-      </div>
-
-      <div class="grow">
-        <div class="flex-col">
+        <div class="flex">
           <button
             v-if="mainActionText"
             type="button"
-            class="btn btn-main"
+            class="btn btn-main w-1/2"
             @click="mainAction"
             v-text="mainActionText"
           />
           <button
-            class="btn"
+            class="btn w-1/2"
             @click="backToHome(gameSession, router)"
             v-text="T('Change game')"
           />
+        </div>
+      </div>
+
+      <div class="grow">
+        <div class="flex-col">
+          <QrCode class="m-4 mx-auto rounded-xl" :text="joinURL" />
           <div class="flex grow">
             <button
               type="button"
@@ -228,7 +231,6 @@ async function mainAction() {
               :value="joinURL"
             />
           </div>
-          <QrCode class="m-4 mx-auto rounded-xl" :text="joinURL" />
         </div>
       </div>
 
