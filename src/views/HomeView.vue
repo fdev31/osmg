@@ -121,6 +121,7 @@ async function start_game(game) {
     </div>
     <div v-if="gameSession.secret && gameSession.name" class="contents w-full">
       <RouterLink
+        v-if="gameSession.gameType"
         :to="`game-${gameSession.gameType}`"
         class="btn btn-main block w-48"
       >
