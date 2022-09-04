@@ -6,7 +6,7 @@ import { GameSession } from "@/stores/gamesession.js";
 import { getTranslation as T, initLocales, host } from "@/lib/utils.js";
 import { gamelist } from "@/lib/gamelist.js";
 import { makeName } from "@/lib/wordsMaker.js";
-import { backToHome } from "@/lib/session";
+import { backToHome } from "@/lib/session.js";
 
 const gameSession = GameSession();
 const router = useRouter();
@@ -111,11 +111,18 @@ async function start_game(game) {
     </div>
     <div v-if="gameSession.secret && gameSession.name" class="contents w-full">
       <RouterLink
-        v-if="gameSession.gameType"
-        :to="`game-${gameSession.gameType}`"
+        v-if="gameSession.gameType && gameSession.started"
+        :to="`/game-${gameSession.gameType}`"
         class="btn btn-main block w-48"
       >
         {{ T("Return to game") }}
+      </RouterLink>
+      <RouterLink
+        v-if="gameSession.gameType && !gameSession.started"
+        :to="`/lobby`"
+        class="btn btn-main block w-48"
+      >
+        {{ T("Return to lobby") }}
       </RouterLink>
       <button class="btn w-48" @click="backToHome(gameSession, router)">
         {{ T("Leave") }}
