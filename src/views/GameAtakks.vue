@@ -37,7 +37,7 @@ const BOARD_COORDS = [];
 for (let x = 0; x <= MAX_BOARD_INDEX; x++)
   for (let y = 0; y <= MAX_BOARD_INDEX; y++) BOARD_COORDS.push(`${x}-${y}`);
 
-watch(router, () => {
+watch(router.currentRoute, () => {
   toaster.value.clearAll();
 });
 

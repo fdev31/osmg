@@ -33,7 +33,7 @@ const statuses = {
   ERROR: 6,
 };
 
-watch(router, () => {
+watch(router.currentRoute, () => {
   toaster.value.clearAll();
 });
 
@@ -243,7 +243,9 @@ onUnmounted(() => {
   stream.close();
 });
 
-document.debug = import.meta.env.DEV ? { gameSession, mydice, server } : {};
+document.debug = import.meta.env.DEV
+  ? { gameSession, mydice, server, router }
+  : {};
 </script>
 
 <template>
