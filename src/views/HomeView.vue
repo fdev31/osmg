@@ -6,6 +6,7 @@ import { GameSession } from "@/stores/gamesession.js";
 import { getTranslation as T, initLocales, host } from "@/lib/utils.js";
 import { gamelist } from "@/lib/gamelist.js";
 import { makeName } from "@/lib/wordsMaker.js";
+import { backToHome } from "@/lib/session";
 
 const gameSession = GameSession();
 const router = useRouter();
@@ -74,15 +75,6 @@ async function join_game(sessionId) {
   }
 }
 
-async function clear_session() {
-  // TODO: leave existing game first !!
-  gameSession.$reset();
-  gameSession.save();
-  router.push("/");
-}
-
-defineExpose({ clear_session, join_game });
-
 async function start_game(game) {
   var response = await fetch(`${host}/c/session/new?gameType=${game}`, {
     method: "GET",
@@ -127,7 +119,7 @@ async function start_game(game) {
       >
         {{ T("Return to game") }}
       </RouterLink>
-      <button class="btn w-48" @click="clear_session()">
+      <button class="btn w-48" @click="backToHome(gameSession, router)">
         {{ T("Change game") }}
       </button>
     </div>

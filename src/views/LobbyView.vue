@@ -1,10 +1,11 @@
 <script setup>
 import { ref, computed } from "vue";
-import { RouterLink, useRouter } from "vue-router";
+import { useRouter } from "vue-router";
 import { GameSession } from "@/stores/gamesession.js";
 import playerList from "@/components/playerList.vue";
 import avatarCard from "@/components/avatarCard.vue";
 import ToastNotifs from "@/components/ToastNotifs.vue";
+import { backToHome } from "@/lib/session";
 
 import { kickPlayerVote } from "@/lib/voting.js";
 import {
@@ -209,9 +210,11 @@ async function mainAction() {
       :value="`http://${host}/r/${name}`"
     />
     <div>
-      <RouterLink to="/" class="btn">
-        {{ T("Change game") }}
-      </RouterLink>
+      <button
+        class="btn"
+        @click="backToHome(gameSession, router)"
+        v-text="T('Change game')"
+      />
       <button
         v-if="mainActionText"
         type="button"
