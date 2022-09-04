@@ -33,6 +33,13 @@ class Logger {
   }
 }
 
+export function isDarkMode() {
+  return !!(
+    window.matchMedia &&
+    window.matchMedia("(prefers-color-scheme: dark)").matches
+  );
+}
+
 export function getLogger(name) {
   return new Logger(`${name}::`, import.meta.env.DEV ? console : false);
 }
