@@ -1,7 +1,9 @@
 <script setup>
 import { ref, onMounted, onUnmounted, computed } from "vue";
+import { useRouter } from "vue-router";
 
 import { GameSession } from "@/stores/gamesession.js";
+import { HighScores } from "@/stores/highscores.js";
 import {
   getTranslation as T,
   initLocales,
@@ -17,27 +19,37 @@ import avatarCard from "@/components/avatarCard.vue";
 import ToastNotifs from "@/components/ToastNotifs.vue";
 import { colors } from "@/lib/playercolors.js";
 
+const log = getLogger("atakks");
+let stream;
+
+const router = useRouter();
+
 const gameSession = GameSession();
+const highScores = HighScores();
+
 const playerlist = ref();
 const grid = ref();
 const toaster = ref();
+
+const UI_CHECKS = false; // TODO: set to true when versions are managed
 const playersByIndex = gameSession.players.map((o) => o.id);
 const myPlayerIndex = computed(() =>
   gameSession.players.indexOf(
     gameSession.players.filter((o) => o.id == gameSession.myId)[0]
   )
 );
-
-const log = getLogger("atakks");
-
-document.debug = import.meta.env.DEV ? { gameSession } : {};
-
-const UI_CHECKS = true;
-initLocales();
-
 const amIplaying = computed(() => {
   return gameSession.gameData.curPlayer == gameSession.myId;
 });
+
+const MAX_BOARD_INDEX = 6;
+const BOARD_COORDS = [];
+for (let x = 0; x <= MAX_BOARD_INDEX; x++)
+  for (let y = 0; y <= MAX_BOARD_INDEX; y++) BOARD_COORDS.push(`${x}-${y}`);
+
+document.debug = import.meta.env.DEV ? { gameSession } : {};
+
+initLocales();
 
 function removeFromOthers(reflist, varname, skipId) {
   for (const player of gameSession.players) {
@@ -67,11 +79,6 @@ function generateZoneCoords(x, y) {
   return ret;
 }
 
-const MAX_BOARD_INDEX = 6;
-const BOARD_COORDS = [];
-for (let x = 0; x <= MAX_BOARD_INDEX; x++)
-  for (let y = 0; y <= MAX_BOARD_INDEX; y++) BOARD_COORDS.push(`${x}-${y}`);
-
 const handlers = {
   curPlayer(data) {
     gameSession.gameData.curPlayer = data.val;
@@ -84,6 +91,15 @@ const handlers = {
       const winner = gameSession.getPlayerInfo(data.player).name;
       toaster.value.show(`Game Over.\n${winner} Wins!`, { sticky: true });
     }
+    highScores.ranking = gameSession.players
+      .map((o) => o.id)
+      .sort(
+        (b, a) =>
+          gameSession.playersData[a].pawns.length -
+          gameSession.playersData[b].pawns.length
+      );
+    highScores.winners = [data.player];
+    setTimeout(() => router.push("/scoreboard"), 3000);
   },
   varUpdate(data) {
     if (data.val && data.var) {
@@ -139,8 +155,6 @@ const handlers = {
   },
 };
 
-let stream;
-
 onMounted(() => {
   stream = setupStreamEventHandler(
     { topic: gameSession.name, uid: gameSession.myId },
@@ -153,6 +167,7 @@ onUnmounted(() => {
 });
 
 let pawnToMove;
+
 async function handleClick(pos) {
   if (UI_CHECKS && !amIplaying.value) {
     toaster.value.show("Not your turn!", { type: "alert", duration: 2000 });

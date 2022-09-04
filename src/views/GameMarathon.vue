@@ -1,6 +1,8 @@
 <script setup>
-import { ref, onMounted, computed } from "vue";
+import { ref, onMounted, onUnmounted, computed } from "vue";
+import { useRouter } from "vue-router";
 import { GameSession } from "@/stores/gamesession.js";
+import { HighScores } from "@/stores/highscores.js";
 
 import ToastNotifs from "@/components/ToastNotifs.vue";
 import playerList from "@/components/playerList.vue";
@@ -14,7 +16,9 @@ import {
   setupStreamEventHandler,
 } from "@/lib/utils.js";
 
+const router = useRouter();
 const gameSession = GameSession();
+const highScores = HighScores();
 const toaster = ref();
 const playerlist = ref();
 const mydice = ref();
@@ -32,6 +36,8 @@ const statuses = {
 const ui = gameSession.uiStates;
 
 const kick_player_threshold = 2;
+
+let stream;
 
 onMounted(() => {
   if (ui.status == undefined) {
@@ -128,7 +134,9 @@ const handlers = {
     }
     toaster.value.show(message, { sticky: true });
     gameSession.save();
-    // TODO: move to end of game
+    highScores.ranking = sortedPlayers.value.reverse().map((o) => o.id);
+    highScores.winners = [plr.id];
+    setTimeout(() => router.push("/scoreboard"), 3000);
   },
 };
 
@@ -216,10 +224,16 @@ function showRules() {
   toaster.value.show(T("marathon_rules"), { sticky: true });
 }
 
-setupStreamEventHandler(
-  { topic: gameSession.name, uid: gameSession.myId },
-  handlers
-);
+onMounted(() => {
+  stream = setupStreamEventHandler(
+    { topic: gameSession.name, uid: gameSession.myId },
+    handlers
+  );
+});
+
+onUnmounted(() => {
+  stream.close();
+});
 
 document.debug = import.meta.env.DEV ? { gameSession, mydice, server } : {};
 </script>
