@@ -139,7 +139,7 @@ const handlers = {
     }
     toaster.value.show(message, { sticky: true });
     gameSession.save();
-    highScores.ranking = sortedPlayers.value.reverse().map((o) => o.id);
+    highScores.ranking = sortedPlayers.value.map((o) => o.id);
     highScores.winners = [plr.id];
     setTimeout(() => {
       router.push("/scoreboard");
@@ -150,11 +150,15 @@ const handlers = {
 const isMyTurn = computed(
   () => gameSession.gameData.curPlayer == gameSession.myId
 );
+const positiveOrDie = (i) => (i > 0 ? i : 99999 - i);
+
 const sortedPlayers = computed(() => {
   const players = gameSession.players.map((o) =>
     Object.assign({}, o, gameSession.playersData[o.id])
   );
-  return players.sort((a, b) => a.distance - b.distance);
+  return players.sort(
+    (a, b) => positiveOrDie(a.distance) - positiveOrDie(b.distance)
+  );
 });
 
 const kickEnabled = computed(
