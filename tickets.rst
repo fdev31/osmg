@@ -1,7 +1,7 @@
 Tickets
 =======
 
-:total-count: 8
+:total-count: 9
 
 --------------------------------------------------------------------------------
 
@@ -56,3 +56,12 @@ Handle end in attaks
 
 - update server side variables
 - add checks to not repeat operations
+
+--------------------------------------------------------------------------------
+
+Review & fix the vote system
+============================
+
+:bugid: 9
+:created: 2022-09-04T20:07:14
+:priority: 0

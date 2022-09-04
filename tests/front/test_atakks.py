@@ -2,7 +2,7 @@ import os
 import unittest
 from time import sleep
 
-from common import getStream, getId, waitEvent, ctx, resetStream
+from common import ctx, getId, getStream, resetStream, waitEvent
 from config import HOST
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options as ChromeOptions

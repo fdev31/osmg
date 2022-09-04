@@ -9,25 +9,17 @@ from starlette import status as httpstatus
 
 from ..gamelib.interfaces import Events, GameInterface, sessVar
 from ..globalHandlers import (
+    getGameVar,
     getNewRedis,
+    getPlayerGameVar,
+    getPlayerVar,
     getRedis,
-    getVarName,
+    getSessionVar,
     publishEvent,
     setConfig,
     setRedis,
 )
-from ..models import (
-    SESSION_C_TIME,
-    SESSION_GAME_TYPE,
-    SESSION_NAME,
-    SESSION_PLAYERS,
-    SESSION_PLAYERS_DATA,
-    SESSION_S_TIME,
-    Player,
-    PlayerIdentifier,
-    Session,
-    newPlayer,
-)
+from ..models import Player, PlayerIdentifier, Session, newPlayer
 from ..utils import ODict
 from .base import genUniqueSessionId, getUniquePlayerId
 from .library import games, getGameInitialData, getPlayerInitialData
@@ -58,23 +50,23 @@ async def _resetSession(
     props, lists, sets = getGameInitialData(sess.gameType)
 
     for name, value in props.items():
-        mprops[getVarName(name, sess.name, gameData=True)] = value
+        mprops[getGameVar(name, sess.name)] = value
         sess.gameData[name] = value
 
     sess.gameData.update(lists)
     sess.gameData.update(sets)
 
-    for field in (SESSION_C_TIME, SESSION_NAME, SESSION_GAME_TYPE):
-        mprops[getVarName(field, sess.name)] = getattr(sess, field)
+    for field in (sessVar.c_time.value, sessVar.name.value, sessVar.gameType.value):
+        mprops[getSessionVar(field, sess.name)] = getattr(sess, field)
 
     async with (conn or getRedis()) as conn:
         await conn.mset(mprops)
         for k, v in lists.items():
             if v:
-                await conn.rpush(getVarName(k, sess.name, gameData=True), *v)
+                await conn.rpush(getGameVar(k, sess.name), *v)
         for k, v in sets.items():
             if v:
-                await conn.sadd(getVarName(k, sess.name, gameData=True), *v)
+                await conn.sadd(getGameVar(k, sess.name), *v)
 
     for k, o in lists.items():
         props[k] = o
@@ -106,7 +98,7 @@ async def _clearPlayer(
 
     redisObj = {}
     for name, value in initialPlayerData.items():
-        redisObj[getVarName(name, sess.name, pid, gameData=True)] = value
+        redisObj[getPlayerGameVar(name, sess.name, pid)] = value
 
     async with (conn or getRedis().client()) as conn:
         if redisObj:
@@ -114,14 +106,10 @@ async def _clearPlayer(
 
         for k, v in initialPlayerDataSets.items():
             if v:
-                await conn.sadd(
-                    getVarName(k, sess.name, playerId=pid, gameData=True), *v
-                )
+                await conn.sadd(getPlayerGameVar(k, sess.name, playerId=pid), *v)
         for k, v in initialPlayerDataLists.items():
             if v:
-                await conn.rpush(
-                    getVarName(k, sess.name, playerId=pid, gameData=True), *v
-                )
+                await conn.rpush(getPlayerGameVar(k, sess.name, playerId=pid), *v)
         if redisObj:
             await mset
 
@@ -164,26 +152,26 @@ async def addPlayer(player: newPlayer) -> Session:
 
     redisObj = {}
     for name, value in player_info.items():
-        redisObj[getVarName(name, player.sessionName, spid)] = value
+        redisObj[getPlayerVar(name, player.sessionName, spid)] = value
 
     for name, value in initialPlayerData.items():
-        redisObj[getVarName(name, player.sessionName, spid, gameData=True)] = value
+        redisObj[getPlayerGameVar(name, player.sessionName, spid)] = value
 
     async with getRedis().client() as conn:
         push = conn.rpush(
-            getVarName(sessVar.playerOrder.name, player.sessionName), spid
+            getSessionVar(sessVar.playerOrder.name, player.sessionName), spid
         )
         mset = conn.mset(redisObj)
 
         for k, v in initialPlayerDataSets.items():
             if v:
                 await conn.sadd(
-                    getVarName(k, player.sessionName, playerId=spid, gameData=True), *v
+                    getPlayerGameVar(k, player.sessionName, playerId=spid), *v
                 )
         for k, v in initialPlayerDataLists.items():
             if v:
                 await conn.rpush(
-                    getVarName(k, player.sessionName, playerId=spid, gameData=True), *v
+                    getPlayerGameVar(k, player.sessionName, playerId=spid), *v
                 )
 
         await push
@@ -196,8 +184,8 @@ async def addPlayer(player: newPlayer) -> Session:
         initialPlayerData[k] = v
     for k, v in initialPlayerDataSets.items():
         initialPlayerData[k] = list(v)
-    getattr(sess, SESSION_PLAYERS_DATA)[spid] = initialPlayerData
-    getattr(sess, SESSION_PLAYERS).append(player_info)
+    getattr(sess, sessVar.playersData.name)[spid] = initialPlayerData
+    getattr(sess, sessVar.players.name).append(player_info)
     sess.secret = secretId
     fullPlayer = player.dict()
     fullPlayer["id"] = spid
@@ -210,8 +198,10 @@ async def restartGame(player: PlayerIdentifier, tasks: BackgroundTasks) -> None:
     """resets a game state"""
     uid = player.sessionName
     async with getRedis().client() as conn:
-        gameType = await conn.get(getVarName(SESSION_GAME_TYPE, uid))
-        allPlayers = await conn.lrange(getVarName(sessVar.playerOrder.name, uid), 0, -1)
+        gameType = await conn.get(getSessionVar(sessVar.gameType.name, uid))
+        allPlayers = await conn.lrange(
+            getSessionVar(sessVar.playerOrder.name, uid), 0, -1
+        )
 
         iface = games[gameType]
         playersData = {}
@@ -242,16 +232,18 @@ async def startGame(player: PlayerIdentifier, tasks: BackgroundTasks) -> None:
     """Notifies that some player is ready to start the game"""
     redis = getRedis()
     async with redis.client() as conn:
-        pr = getVarName(sessVar.playersReady.name, player.sessionName, gameData=True)
+        pr = getSessionVar(sessVar.playersReady.name, player.sessionName)
         if await conn.sismember(pr, player.id):
             raise HTTPException(httpstatus.HTTP_409_CONFLICT, "Action already done")
         await publishEvent(
             player.sessionName, conn, cat=Events.ready.name, id=str(player.id)
         )
         await conn.sadd(pr, player.id)
-        await conn.set(f"S{player.sessionName}:" + SESSION_S_TIME, int(time.time()))
+        await conn.set(
+            f"S{player.sessionName}:" + sessVar.s_time.value, int(time.time())
+        )
 
-        po = getVarName(sessVar.playerOrder.name, player.sessionName)
+        po = getSessionVar(sessVar.playerOrder.name, player.sessionName)
         nbPlayers = int(await conn.llen(po))
 
         if nbPlayers <= await conn.scard(pr):
@@ -261,7 +253,7 @@ async def startGame(player: PlayerIdentifier, tasks: BackgroundTasks) -> None:
                 async with redis.client() as conn:
                     game = games[
                         await conn.get(
-                            getVarName(SESSION_GAME_TYPE, player.sessionName)
+                            getSessionVar(sessVar.gameType.name, player.sessionName)
                         )
                     ]
                     nbPlayersReady = int(await conn.scard(pr))

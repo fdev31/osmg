@@ -5,18 +5,15 @@ from typing import Any, Dict, Optional
 from aioredis import Redis
 
 from ..gamelib.interfaces import Events, GameInterface, sessVar
-from ..globalHandlers import getRedis, getVarName, publishEvent
-from ..models import (
-    SESSION_GAME_DATA,
-    SESSION_GAME_TYPE,
-    SESSION_NAME,
-    SESSION_PLAYERS,
-    SESSION_PLAYERS_DATA,
-    SESSION_S_TIME,
-    RedisSession,
-    Session,
-    getPropertieList,
+from ..globalHandlers import (
+    getGameVar,
+    getPlayerGameVar,
+    getPlayerVar,
+    getRedis,
+    getSessionVar,
+    publishEvent,
 )
+from ..models import RedisSession, Session, getPropertieList
 from .base import removeSession
 from .library import games
 
@@ -26,27 +23,27 @@ GAME_DATA = "g"
 
 
 async def getGameBySessionId(uid: str, conn: Redis) -> GameInterface:
-    gameType = await conn.get(getVarName(SESSION_GAME_TYPE, uid))
+    gameType = await conn.get(getSessionVar(sessVar.gameType.name, uid))
     return games[gameType]
 
 
 async def isPlayerValid(
     conn: Redis, sessionId: str, playerId: str | int, secret: int | None
 ) -> bool:
-    actualSecret = await conn.get(getVarName("_secret", sessionId, str(playerId)))
+    actualSecret = await conn.get(getPlayerVar("_secret", sessionId, str(playerId)))
     return int(actualSecret) == secret
 
 
 async def connectPlayer(sessionName: str, playerId: str) -> None:
-    stage = getVarName(sessVar.playersOnline.name + "stage", sessionName)
+    stage = getSessionVar(sessVar.playersOnline.name + "stage", sessionName)
     async with getRedis().client() as conn:
         if await conn.sismember(stage, playerId):
             await conn.smove(
-                stage, getVarName(sessVar.playersOnline.name, sessionName), playerId
+                stage, getSessionVar(sessVar.playersOnline.name, sessionName), playerId
             )
         else:
             await conn.sadd(
-                getVarName(sessVar.playersOnline.name, sessionName), playerId
+                getSessionVar(sessVar.playersOnline.name, sessionName), playerId
             )
             await publishEvent(
                 sessionName, conn, cat=Events.connectPlayer.name, id=playerId
@@ -54,8 +51,8 @@ async def connectPlayer(sessionName: str, playerId: str) -> None:
 
 
 async def disconnectPlayer(sessionName: str, playerId: str) -> None:
-    pr = getVarName(sessVar.playersOnline.name, sessionName)
-    stage = getVarName(sessVar.playersOnline.name + "stage", sessionName)
+    pr = getSessionVar(sessVar.playersOnline.name, sessionName)
+    stage = getSessionVar(sessVar.playersOnline.name + "stage", sessionName)
     async with getRedis().client() as conn:
         await conn.smove(pr, stage, playerId)
         await asyncio.sleep(2)
@@ -74,15 +71,13 @@ async def getSession(uid: str, client: Optional[Redis] = None) -> Session:
     "fetch session info from redis"
 
     async with (client or getRedis().client()) as conn:
-        gameType = await conn.get(getVarName(SESSION_GAME_TYPE, uid))
-        vn = getVarName(sessVar.playerOrder.name, uid)
+        gameType = await conn.get(getSessionVar(sessVar.gameType.name, uid))
+        vn = getSessionVar(sessVar.playerOrder.name, uid)
         allPlayers = await conn.lrange(vn, 0, -1)
 
     iface = games[gameType]
-    all_keys = [getVarName(name, uid) for name in getPropertieList(RedisSession)]
-    all_keys.extend(
-        getVarName(name, uid, gameData=True) for name in iface.getGameData().keys()
-    )
+    all_keys = [getSessionVar(name, uid) for name in getPropertieList(RedisSession)]
+    all_keys.extend(getGameVar(name, uid) for name in iface.getGameData().keys())
 
     emptySession = Session(name="", creationTime=0, gameType=gameType)
 
@@ -93,18 +88,14 @@ async def getSession(uid: str, client: Optional[Redis] = None) -> Session:
     playerDataKeys = set(iface.getPlayerData(emptySession).keys())
     for playername in allPlayers:
         all_keys.extend(
-            getVarName(name, uid, playername, gameData=True)
+            getPlayerGameVar(name, uid, playername)
             for name in playerDataKeys.difference(lists).difference(sets)
         )
-        sets_keys.extend(
-            getVarName(name, uid, playername, gameData=True) for name in sets
-        )
-        lists_keys.extend(
-            getVarName(name, uid, playername, gameData=True) for name in lists
-        )
+        sets_keys.extend(getPlayerGameVar(name, uid, playername) for name in sets)
+        lists_keys.extend(getPlayerGameVar(name, uid, playername) for name in lists)
 
         all_keys.extend(
-            getVarName(name, uid, playername) for name in iface.getPlayerIdentifiers()
+            getPlayerVar(name, uid, playername) for name in iface.getPlayerIdentifiers()
         )
 
     o = {}
@@ -137,10 +128,10 @@ async def getSession(uid: str, client: Optional[Redis] = None) -> Session:
             else:
                 players[splitk[1]][splitk[2]] = val
 
-    o[SESSION_PLAYERS] = list(players.values())
-    o[SESSION_PLAYERS_DATA] = players_data
-    o[SESSION_GAME_DATA] = game_data
-    o[SESSION_NAME] = uid
-    if o[SESSION_S_TIME] is None:
-        o[SESSION_S_TIME] = 0
+    o[sessVar.players.name] = list(players.values())
+    o[sessVar.playersData.name] = players_data
+    o[sessVar.gameData.name] = game_data
+    o[sessVar.name.name] = uid
+    if o[sessVar.s_time.value] is None:
+        o[sessVar.s_time.value] = 0
     return Session(**o)

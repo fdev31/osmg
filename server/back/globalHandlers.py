@@ -65,6 +65,26 @@ def getVarName(
     return _getVarPrefix(sessionId, playerId, gameData) + name
 
 
+@lru_cache(128)
+def getGameVar(name: str, sessionId: str) -> str:
+    return f"S{sessionId}:g:{name}"
+
+
+@lru_cache(128)
+def getSessionVar(name: str, sessionId: str) -> str:
+    return f"S{sessionId}:{name}"
+
+
+@lru_cache(128)
+def getPlayerGameVar(name: str, sessionId: str, playerId: str) -> str:
+    return f"S{sessionId}:{playerId}:g:{name}"
+
+
+@lru_cache(128)
+def getPlayerVar(name: str, sessionId: str, playerId: str) -> str:
+    return f"S{sessionId}:{playerId}:{name}"
+
+
 # deprecated functions:
 
 

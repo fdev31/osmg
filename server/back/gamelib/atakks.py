@@ -6,8 +6,14 @@ from fastapi import HTTPException
 from pydantic import BaseModel
 from starlette import status as httpstatus
 
-from ..globalHandlers import getGameDataPrefix, getRedis, getVarName, publishEvent
-from ..models import SESSION_PLAYERS_DATA, Player, PlayerIdentifier, Session
+from ..globalHandlers import (
+    getGameDataPrefix,
+    getPlayerGameVar,
+    getRedis,
+    getSessionVar,
+    publishEvent,
+)
+from ..models import Player, PlayerIdentifier, Session
 from ..sessionmanager.public import isPlayerValid
 from .atakks_models import (
     AtakksAddBody,
@@ -78,9 +84,7 @@ async def buildSummary(
     )
     hiScores = {}
     for plr in players:
-        ppawnVar = getVarName(
-            gameVars.pawns.name, player.sessionName, plr, gameData=True
-        )
+        ppawnVar = getPlayerGameVar(gameVars.pawns.name, player.sessionName, plr)
         ppawns = await conn.smembers(ppawnVar)
         nbPawns = len(ppawns)
         if selfIncrement and plr == player.id:
@@ -112,9 +116,7 @@ async def _movePawn(
     gprefix: str = getGameDataPrefix(player.sessionName)
     prefix: str = gprefix[:-2]
 
-    ppawnVar = getVarName(
-        gameVars.pawns.name, player.sessionName, player.id, gameData=True
-    )
+    ppawnVar = getPlayerGameVar(gameVars.pawns.name, player.sessionName, player.id)
 
     async with redis.client() as conn:
         pi = await getPlayerInfo(conn, gprefix, player.id, player.secret)
@@ -126,11 +128,10 @@ async def _movePawn(
             conn, destination, player, all_players, selfIncrement=not move
         )
 
-        myPawnVar = getVarName(
+        myPawnVar = getPlayerGameVar(
             gameVars.pawns.name,
             player.sessionName,
             player.id,
-            gameData=True,
         )
         if move:
             await conn.srem(ppawnVar, source.shortText)
@@ -190,7 +191,7 @@ async def surrender(player: PlayerIdentifier) -> SimpleReturn:
     logger.debug(f"surrender({player})")
     async with getRedis().client() as conn:
         all_players = await conn.lrange(
-            getVarName(sessVar.playerOrder.name, player.sessionName), 0, -1
+            getSessionVar(sessVar.playerOrder.name, player.sessionName), 0, -1
         )
         summary, _pawnsConverted = await buildSummary(
             conn, None, player, all_players, selfIncrement=False
@@ -231,7 +232,7 @@ class Game(GameInterface):
     @staticmethod
     async def startGame(sessionId: str, conn: aioredis.Redis) -> None:
         curPlayer = await conn.lindex(
-            getVarName(sessVar.playerOrder.name, sessionId), 0
+            getSessionVar(sessVar.playerOrder.name, sessionId), 0
         )
         await publishEvent(sessionId, conn, cat=Events.curPlayer.name, val=curPlayer)
 

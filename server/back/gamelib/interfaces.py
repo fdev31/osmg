@@ -14,6 +14,13 @@ class sessVar(str, Enum):
     playersReady = "playersReady"
     playerOrder = "playerOrder"
     playersOnline = "playersOnline"
+    gameType = "gameType"
+    name = "name"
+    c_time = "creationTime"
+    s_time = "startTime"
+    players = "players"
+    playersData = "playersData"
+    gameData = "gameData"
 
 
 class stdVar(str, Enum):

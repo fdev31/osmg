@@ -8,7 +8,15 @@ import aioredis
 from fastapi import HTTPException
 from starlette import status as httpstatus
 
-from ..globalHandlers import getGameDataPrefix, getRedis, getVarName, publishEvent
+from ..globalHandlers import (
+    getGameDataPrefix,
+    getGameVar,
+    getPlayerGameVar,
+    getPlayerVar,
+    getRedis,
+    getSessionVar,
+    publishEvent,
+)
 from ..models import Player, PlayerIdentifier, Session
 from ..sessionmanager.public import isPlayerValid
 from ..utils import dumps, loads
@@ -29,7 +37,7 @@ async def isPlayerTurn(
     if not await isPlayerValid(conn, prefix.split(":")[0][1:], playerId, secret):
         return False
     curPlayer = await conn.get(prefix + Events.curPlayer.name)
-    curPlayerId = await conn.lindex(prefix[:-2] + ACTIVE_PLAYERS, int(curPlayer))
+    curPlayerId = await conn.lindex(prefix + ACTIVE_PLAYERS, int(curPlayer))
     return int(curPlayerId) == int(playerId)
 
 
@@ -110,7 +118,7 @@ async def turnLogic(
         conn = getRedis()
 
     g_prefix = getGameDataPrefix(player.sessionName)
-    po = getVarName(ACTIVE_PLAYERS, player.sessionName)
+    po = getGameVar(ACTIVE_PLAYERS, player.sessionName)
     nbPlayers = int(await conn.llen(po))
     playerLost = False
 
@@ -159,8 +167,8 @@ class DiceInterface(GameInterface):
         topic, data = name.split("_", 1)
         if topic == "kick":
             whom = data
-            ap = getVarName(ACTIVE_PLAYERS, sessionId)
-            cp = getVarName(Events.curPlayer.name, sessionId, gameData=True)
+            ap = getGameVar(ACTIVE_PLAYERS, sessionId)
+            cp = getSessionVar(stdVar.curPlayer.name, sessionId)
             cu = int(await conn.get(cp))
             pindex = await conn.lpos(ap, whom)
             if pindex is not None and pindex < cu:
@@ -169,8 +177,10 @@ class DiceInterface(GameInterface):
 
     @staticmethod
     async def startGame(sessionId: str, conn: aioredis.Redis) -> None:
-        dump = await conn.lrange(getVarName(sessVar.playerOrder.name, sessionId), 0, -1)
-        cp = getVarName(ACTIVE_PLAYERS, sessionId)
+        dump = await conn.lrange(
+            getSessionVar(sessVar.playerOrder.name, sessionId), 0, -1
+        )
+        cp = getGameVar(ACTIVE_PLAYERS, sessionId)
         await conn.unlink(cp)
         await conn.rpush(cp, *dump)
         await turnLogic(None, PlayerIdentifier(id=0, sessionName=sessionId), conn)
