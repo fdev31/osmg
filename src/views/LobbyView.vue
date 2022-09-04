@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed } from "vue";
+import { ref } from "vue";
 import { useRouter } from "vue-router";
 import { GameSession } from "@/stores/gamesession.js";
 import playerList from "@/components/playerList.vue";
@@ -165,23 +165,13 @@ const websocket = setupStreamEventHandler(
   handlers
 );
 
-const mainActionText = computed(
-  () => [T("Ready"), T("Not ready")][states.status]
-);
-
 async function mainAction() {
-  switch (states.status) {
-    case statuses.NOT_READY:
-      states.status = statuses.READY;
-      gameSession.save();
-      await post(`/c/session/start`, {
-        id: gameSession.myId,
-        sessionName: gameSession.name,
-      });
-      break;
-    default:
-      break;
-  }
+  states.status = statuses.READY;
+  gameSession.save();
+  await post(`/c/session/start`, {
+    id: gameSession.myId,
+    sessionName: gameSession.name,
+  });
 }
 </script>
 
@@ -194,13 +184,13 @@ async function mainAction() {
     <div class="flex portrait:flex-col content-center">
       <div id="myAvatar" class="my-4 mx-auto">
         <avatarCard :show-name="false" :avatar-name="gameSession.myName" />
-        <div class="flex">
+        <div class="flex place-content-center">
           <button
-            v-if="mainActionText"
+            v-if="states.status != statuses.READY"
             type="button"
             class="btn btn-main w-1/2"
             @click="mainAction"
-            v-text="mainActionText"
+            v-text="T('Ready')"
           />
           <button
             class="btn w-1/2"
