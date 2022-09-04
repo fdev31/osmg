@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted, onUnmounted, computed } from "vue";
+import { ref, onMounted, onUnmounted, computed, watch } from "vue";
 import { useRouter } from "vue-router";
 import { GameSession } from "@/stores/gamesession.js";
 import { HighScores } from "@/stores/highscores.js";
@@ -33,6 +33,10 @@ const statuses = {
   ERROR: 6,
 };
 
+watch(router, () => {
+  toaster.value.clearAll();
+});
+
 const ui = gameSession.uiStates;
 
 const kick_player_threshold = 2;
@@ -42,7 +46,8 @@ let stream;
 onMounted(() => {
   if (ui.status == undefined) {
     ui.status = statuses.UNINITIALIZED;
-  } else if (ui.currentThrow) {
+  }
+  if (ui.currentThrow) {
     mydice.value.updateDice(ui.currentThrow, false);
     mydice.value.enableDrag(true);
   } else if (isMyTurn.value) {
@@ -136,7 +141,9 @@ const handlers = {
     gameSession.save();
     highScores.ranking = sortedPlayers.value.reverse().map((o) => o.id);
     highScores.winners = [plr.id];
-    setTimeout(() => router.push("/scoreboard"), 3000);
+    setTimeout(() => {
+      router.push("/scoreboard");
+    }, 3000);
   },
 };
 
@@ -257,7 +264,7 @@ document.debug = import.meta.env.DEV ? { gameSession, mydice, server } : {};
     </div>
     <div class="flex container items-center">
       <span
-        class="m-3 rounded-full overflow-hidden"
+        class="m-3 rounded-full overflow-hidden flex-none"
         :style="`background-color: ${gameSession.getPlayerColor(
           gameSession.myId
         )}`"
@@ -318,15 +325,18 @@ document.debug = import.meta.env.DEV ? { gameSession, mydice, server } : {};
           :key="item.id"
           class="container flex flex-row"
         >
-          <span class="w-36 text-right mx-2 md:text-xl">{{ item.name }}</span>
-          <div class="w-96 bg-gray-200 h-5 md:text-xl xl:h-10 mb-6 rounded">
+          <span class="w-36 text-right mx-2 xl:text-xl">{{ item.name }}</span>
+          <div class="w-96 bg-gray-200 h-5 xl:h-10 mb-6 rounded">
             <div
-              class="duration-300 bg-blue-600 h-5 xl:h-10 text-xs md:text-xl text-white px-1 text-right rounded"
+              class="duration-300 bg-blue-600 h-5 xl:h-10 px-1 rounded text-right"
               :style="`background-color: ${gameSession.getPlayerColor(
                 item.id
               )}; width: ${getProgress(item.id)}%`"
             >
-              {{ item.distance }}m
+              <span
+                class="bg-slate-900 rounded bg-opacity-50 text-white text-xs xl:text-xl"
+                >{{ item.distance }}m</span
+              >
             </div>
           </div>
         </div>
