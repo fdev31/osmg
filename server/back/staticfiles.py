@@ -25,5 +25,6 @@ def init(app: FastAPI, config: ODict) -> None:
     app.get("/r/{sessionId}")(index_html)
     app.get("/game-{sessionId}")(redirectIndex)
     app.get("/lobby")(redirectIndex)
+    app.get("/scoreboard")(redirectIndex)
     app.get("/", include_in_schema=False)(index_html)
     app.mount("/", StaticFiles(directory=config.static_dir), name="static")
