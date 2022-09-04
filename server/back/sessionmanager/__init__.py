@@ -109,7 +109,8 @@ async def _clearPlayer(
         redisObj[getVarName(name, sess.name, pid, gameData=True)] = value
 
     async with (conn or getRedis().client()) as conn:
-        mset = conn.mset(redisObj)
+        if redisObj:
+            mset = conn.mset(redisObj)
 
         for k, v in initialPlayerDataSets.items():
             if v:
@@ -121,7 +122,8 @@ async def _clearPlayer(
                 await conn.rpush(
                     getVarName(k, sess.name, playerId=pid, gameData=True), *v
                 )
-        await mset
+        if redisObj:
+            await mset
 
     initialPlayerData = dict(initialPlayerData)
     # add sets & lists to player data
