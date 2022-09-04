@@ -190,72 +190,71 @@ async function mainAction() {
     <h2 class="maintitle">
       {{ gameSession.gameType }}
     </h2>
+    <div class="flex portrait:flex-col content-center">
+      <div id="myAvatar" class="my-4 mx-auto">
+        <avatarCard :show-name="false" :avatar-name="gameSession.myName" />
+      </div>
 
-    <div id="myAvatar">
-      <avatarCard :show-name="false" :avatar-name="gameSession.myName" />
-    </div>
-    <button
-      type="button"
-      :title="T('Click to copy invite link to the clipboard')"
-      class="btn"
-      @click="copyURL('link')"
-    >
-      {{ T("Invite") }}
-    </button>
-    <input
-      id="link"
-      size="40"
-      type="text"
-      class="shadow appearance-none border rounded shrink py-2 w-64 px-3 text-gray-700 focus:outline-none focus:shadow-outline"
-      :value="`http://${host}/r/${name}`"
-    />
-    <div>
-      <button
-        class="btn"
-        @click="backToHome(gameSession, router)"
-        v-text="T('Change game')"
-      />
-      <button
-        v-if="mainActionText"
-        type="button"
-        class="btn btn-main"
-        @click="mainAction"
-        v-text="mainActionText"
-      />
-    </div>
-    <h3 v-if="gameSession.players.length > 1">
-      {{ T("Other players") }}
-    </h3>
-    <div class="w-1/3 rounded-xl container shadow bg-slate-400">
-      <playerList
-        ref="playerlist"
-        :players="gameSession.players"
-        :enable-kick="
-          !states.hasVoted && gameSession.players.length > kick_player_threshold
-        "
-        :kick-text="T('Kick player')"
-        :my-id="gameSession.myId"
-        @kick="kickPlayerVote"
-      />
+      <div class="grow">
+        <div class="flex-col">
+          <button
+            v-if="mainActionText"
+            type="button"
+            class="btn btn-main"
+            @click="mainAction"
+            v-text="mainActionText"
+          />
+          <button
+            class="btn"
+            @click="backToHome(gameSession, router)"
+            v-text="T('Change game')"
+          />
+          <div class="flex grow">
+            <button
+              type="button"
+              :title="T('Click to copy invite link to the clipboard')"
+              class="btn"
+              @click="copyURL('link')"
+            >
+              {{ T("Invite") }}
+            </button>
+
+            <input
+              id="link"
+              size="40"
+              type="text"
+              class="grow shadow appearance-none border rounded shrink py-2 w-64 px-3 text-gray-700 focus:outline-none focus:shadow-outline"
+              :value="`http://${host}/r/${name}`"
+            />
+          </div>
+        </div>
+      </div>
+
+      <div class="m-2 rounded-xl container shadow bg-slate-400 lg:w-1/3 shrink">
+        <playerList
+          ref="playerlist"
+          :players="gameSession.players"
+          :enable-kick="
+            !states.hasVoted &&
+            gameSession.players.length > kick_player_threshold
+          "
+          :kick-text="T('Kick player')"
+          :my-id="gameSession.myId"
+          @kick="kickPlayerVote"
+        />
+      </div>
     </div>
   </div>
 </template>
 
 <style scoped>
 #myAvatar {
-  float: right;
-  margin-top: -64px;
-  height: 2em;
   z-index: 1;
 }
 #myAvatar:deep(svg) {
   background-color: white;
   border-radius: 1000px;
   transition-duration: 300ms;
-  border: solid 3px #333;
-}
-#myAvatar.playing:deep(svg) {
-  background-color: #d5680f;
   border: solid 3px #333;
 }
 </style>
