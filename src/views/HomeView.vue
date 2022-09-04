@@ -118,7 +118,7 @@ async function start_game(game) {
         {{ T("Return to game") }}
       </RouterLink>
       <button class="btn w-48" @click="backToHome(gameSession, router)">
-        {{ T("Change game") }}
+        {{ T("Leave") }}
       </button>
     </div>
     <div v-if="!gameSession.name" class="basis">

@@ -205,7 +205,7 @@ async function mainAction() {
           <button
             class="btn w-1/2"
             @click="backToHome(gameSession, router)"
-            v-text="T('Change game')"
+            v-text="T('Leave')"
           />
         </div>
       </div>
