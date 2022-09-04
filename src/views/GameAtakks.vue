@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted, onUnmounted, computed } from "vue";
+import { ref, onMounted, onUnmounted, computed, watch } from "vue";
 import { useRouter } from "vue-router";
 
 import { GameSession } from "@/stores/gamesession.js";
@@ -32,6 +32,15 @@ const grid = ref();
 const toaster = ref();
 
 const UI_CHECKS = false; // TODO: set to true when versions are managed
+const MAX_BOARD_INDEX = 6;
+const BOARD_COORDS = [];
+for (let x = 0; x <= MAX_BOARD_INDEX; x++)
+  for (let y = 0; y <= MAX_BOARD_INDEX; y++) BOARD_COORDS.push(`${x}-${y}`);
+
+watch(router, () => {
+  toaster.value.clearAll();
+});
+
 const playersByIndex = gameSession.players.map((o) => o.id);
 const myPlayerIndex = computed(() =>
   gameSession.players.indexOf(
@@ -41,11 +50,6 @@ const myPlayerIndex = computed(() =>
 const amIplaying = computed(() => {
   return gameSession.gameData.curPlayer == gameSession.myId;
 });
-
-const MAX_BOARD_INDEX = 6;
-const BOARD_COORDS = [];
-for (let x = 0; x <= MAX_BOARD_INDEX; x++)
-  for (let y = 0; y <= MAX_BOARD_INDEX; y++) BOARD_COORDS.push(`${x}-${y}`);
 
 document.debug = import.meta.env.DEV ? { gameSession } : {};
 
