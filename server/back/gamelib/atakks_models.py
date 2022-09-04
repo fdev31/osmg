@@ -13,6 +13,7 @@ class playerConnection(BaseModel):
 
 class gameVars(str, Enum):
     pawns = "pawns"
+    gameOver = "gameOver"
 
 
 class SimpleReturn(BaseModel):

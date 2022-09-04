@@ -8,6 +8,7 @@ from starlette import status as httpstatus
 
 from ..globalHandlers import (
     getGameDataPrefix,
+    getGameVar,
     getPlayerGameVar,
     getRedis,
     getSessionVar,
@@ -161,12 +162,16 @@ async def _movePawn(
         )
 
         if summary.pawnCount == (MAX_BOARD_INDEX + 1) ** 2:
-            await publishEvent(
-                player.sessionName,
-                conn,
-                cat=Events.endOfGame.name,
-                player=summary.bestPlayer,
-            )
+            if (
+                await conn.incr(getGameVar(gameVars.gameOver.value, player.sessionName))
+                == 1
+            ):
+                await publishEvent(
+                    player.sessionName,
+                    conn,
+                    cat=Events.endOfGame.name,
+                    player=summary.bestPlayer,
+                )
         else:
             await publishEvent(
                 player.sessionName, conn, cat=Events.curPlayer.name, val=curPlayerId
@@ -196,12 +201,16 @@ async def surrender(player: PlayerIdentifier) -> SimpleReturn:
         summary, _pawnsConverted = await buildSummary(
             conn, None, player, all_players, selfIncrement=False
         )
-        await publishEvent(
-            player.sessionName,
-            conn,
-            cat=Events.endOfGame.name,
-            player=summary.bestPlayer,
-        )
+        if (
+            await conn.incr(getGameVar(gameVars.gameOver.value, player.sessionName))
+            == 1
+        ):
+            await publishEvent(
+                player.sessionName,
+                conn,
+                cat=Events.endOfGame.name,
+                player=summary.bestPlayer,
+            )
     return SimpleReturn()
 
 
@@ -234,6 +243,7 @@ class Game(GameInterface):
         curPlayer = await conn.lindex(
             getSessionVar(sessVar.playerOrder.name, sessionId), 0
         )
+        await conn.set(getGameVar(gameVars.gameOver.value, sessionId), 0)
         await publishEvent(sessionId, conn, cat=Events.curPlayer.name, val=curPlayer)
 
     actions: Dict[str, Any] = {
