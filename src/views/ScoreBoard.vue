@@ -12,7 +12,6 @@ import {
 } from "@/lib/utils.js";
 
 import avatarCard from "@/components/avatarCard.vue";
-import ToastNotifs from "@/components/ToastNotifs.vue";
 import router from "../router";
 
 const highScores = HighScores();
@@ -55,7 +54,6 @@ onMounted(() => {
 </script>
 
 <template>
-  <ToastNotifs ref="toaster" />
   <h1 class="maintitle">
     {{ T("HIGH SCORES") }}
   </h1>
