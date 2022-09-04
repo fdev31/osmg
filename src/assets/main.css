@@ -16,26 +16,17 @@ body {
 }
 
 .btn {
-  @apply font-bold py-2 px-4 rounded-full m-2 bg-lime-600 text-center md:text-xl;
-}
-.btn:hover {
-  @apply brightness-125 -hue-rotate-15;
+  @apply font-bold py-2 px-4 rounded-full m-2 bg-lime-600 text-center md:text-xl shadow duration-200 hover:brightness-125 hover:-hue-rotate-15 hover:shadow-xl;
 }
 .btn-main {
   @apply bg-blue-500 text-white;
 }
 .maintitle {
-  @apply text-center text-4xl lg:text-6xl  font-title;
+  @apply text-center text-4xl lg:text-6xl  font-title my-3;
 }
 .smallbtn {
-  @apply py-0 px-1 rounded m-2 bg-lime-600;
-}
-.smallbtn:hover {
-  @apply brightness-125 -hue-rotate-15;
+  @apply py-0 px-1 rounded m-2 bg-lime-600 hover:brightness-125 hover:-hue-rotate-15;
 }
 .navlink {
-  @apply py-0 px-1 rounded m-2 bg-slate-800 text-slate-300;
-}
-.navlink:hover {
-  @apply text-slate-100;
+  @apply py-0 px-1 rounded m-2 bg-slate-800 text-slate-300 hover:text-slate-100 hover:shadow duration-200;
 }
