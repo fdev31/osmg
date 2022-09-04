@@ -114,25 +114,23 @@ async function start_game(game) {
         />
       </div>
     </div>
-    <div v-if="gameSession.name">
-      <div v-if="!gameSession.secret" class="contents w-full">
-        <button class="btn w-48 btn-main" @click="join_game(gameSession.name)">
-          {{ T("Join game") }}
-        </button>
-      </div>
-      <div v-else>
-        <RouterLink
-          :to="`game-${gameSession.gameType}`"
-          class="btn btn-main block w-48"
-        >
-          {{ T("Return to game") }}
-        </RouterLink>
-      </div>
+    <div v-if="!gameSession.secret && gameSession.name" class="contents w-full">
+      <button class="btn w-48 btn-main" @click="join_game(gameSession.name)">
+        {{ T("Join game") }}
+      </button>
+    </div>
+    <div v-if="gameSession.secret && gameSession.name" class="contents w-full">
+      <RouterLink
+        :to="`game-${gameSession.gameType}`"
+        class="btn btn-main block w-48"
+      >
+        {{ T("Return to game") }}
+      </RouterLink>
       <button class="btn w-48" @click="clear_session()">
         {{ T("Change game") }}
       </button>
     </div>
-    <div v-else class="basis">
+    <div v-if="!gameSession.name" class="basis">
       <div class="font-title text-center m-10">{{ T("Select a game") }}:</div>
       <div class="grid xl:grid-cols-3 md:grid-cols-2 sm:grid-cols-1 gap-1">
         <div
