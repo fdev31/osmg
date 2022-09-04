@@ -7,6 +7,8 @@ from fastapi.testclient import TestClient
 client = TestClient(app)
 stream = None
 
+resetStream()
+
 
 def teardown_module():
     resetStream()

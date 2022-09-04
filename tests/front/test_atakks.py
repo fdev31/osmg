@@ -1,11 +1,9 @@
 import os
-import random
 import unittest
 from time import sleep
 
-from common import getStream, pretty
+from common import getStream, getId, waitEvent, ctx, resetStream
 from config import HOST
-from pydantic import BaseModel
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options as ChromeOptions
 from selenium.webdriver.common.by import By
@@ -16,46 +14,15 @@ class EndOfGameError(Exception):
     pass
 
 
+resetStream()
+
+
+def teardown_module():
+    resetStream()
+
+
 HOME_INDEX = 2
 NB_PLAYERS = 2
-
-
-class GameCtx(BaseModel):
-    endOfGame: int = False
-
-
-ctx = GameCtx()
-
-
-def getId(driver):
-    return driver.execute_script("return document.debug.gameSession.myId")
-
-
-def getPlayerData(driver, attr):
-    return driver.execute_script(
-        "return document.debug.gameSession.getPlayerInfo(document.debug.gameSession.myId).%s"
-        % attr
-    )
-
-
-def waitEvent(names: list, maxTime=None):
-    print("Waiting for %s" % (" or ".join(names)))
-    while True:
-        events = getStream()
-        for e in events:
-            if e.isA("endOfGame"):
-                ctx.endOfGame = True
-            print(ctx.endOfGame, "got %s" % pretty(e))
-        for evt in events:
-            if any(evt.isA(name) for name in names):
-                sleep(0.2)
-                return evt
-        sleep(0.150)
-        if maxTime is not None:
-            maxTime -= 0.15
-            if maxTime <= 0:
-                return False
-
 
 if not os.path.exists("screenshots"):
     os.mkdir("screenshots")
@@ -72,6 +39,7 @@ def makeShots(drivers, suffix):
 
 
 def setInputText(inp, value, delete=30):
+    sleep(1)
     inp.click()
     sleep(0.5)
     if delete:
