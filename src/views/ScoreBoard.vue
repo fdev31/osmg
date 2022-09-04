@@ -31,11 +31,8 @@ const handlers = {
   restart(data) {
     gameSession.gameType = data.game;
     gameSession.started = false;
-    Object.assign(gameSession.gameData, data.gameData);
-    for (const plr of Object.keys(gameSession.playersData)) {
-      const pi = data.playersData[plr];
-      if (pi) Object.assign(gameSession.playersData[plr], pi);
-    }
+    gameSession.gameData = data.gameData;
+    gameSession.playersData = data.playersData;
     gameSession.save();
     router.push(`/lobby`);
   },
