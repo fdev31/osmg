@@ -1,6 +1,7 @@
 import asyncio
 import logging
 import time
+from typing import Any
 
 import aioredis
 from fastapi import BackgroundTasks, FastAPI, HTTPException
@@ -50,12 +51,9 @@ async def _triggerGameStart(
     await game.startGame(uid, conn)
 
 
-async def makeSession(gameType: str) -> Session:
-    "Create a new emtpy session with no players"
-    uid = await genUniqueSessionId()
-    sess = Session(
-        name=uid, players=[], creationTime=int(time.time()), gameType=gameType
-    )
+async def _resetSession(
+    sess: Session, conn: aioredis.Redis | None = None
+) -> tuple[Session, dict[str, Any]]:
     mprops = {}
     props, lists, sets = getGameInitialData(sess.gameType)
 
@@ -69,17 +67,69 @@ async def makeSession(gameType: str) -> Session:
     for field in (SESSION_C_TIME, SESSION_NAME, SESSION_GAME_TYPE):
         mprops[getVarName(field, sess.name)] = getattr(sess, field)
 
-    async with getRedis() as conn:
+    async with (conn or getRedis()) as conn:
         await conn.mset(mprops)
         for k, v in lists.items():
             if v:
-                await conn.rpush(getVarName(k, uid, gameData=True), *v)
+                await conn.rpush(getVarName(k, sess.name, gameData=True), *v)
         for k, v in sets.items():
             if v:
-                await conn.sadd(getVarName(k, uid, gameData=True), *v)
+                await conn.sadd(getVarName(k, sess.name, gameData=True), *v)
 
-    logger.debug(f"New session: {uid}")
-    return sess
+    for k, o in lists.items():
+        props[k] = o
+    for k, o in sets.items():
+        props[k] = list(o)
+
+    logger.debug(f"Cleared session: {sess.name}")
+    return sess, props
+
+
+async def makeSession(gameType: str) -> Session:
+    "Create a new emtpy session with no players"
+    uid = await genUniqueSessionId()
+    sess = Session(
+        name=uid, players=[], creationTime=int(time.time()), gameType=gameType
+    )
+    logger.debug(f"New session: {sess.name}")
+    return (await _resetSession(sess))[0]
+
+
+async def _clearPlayer(
+    sess: Session, pid: str, conn: aioredis.Redis | None = None
+) -> dict[str, Any]:
+    (
+        initialPlayerData,
+        initialPlayerDataLists,
+        initialPlayerDataSets,
+    ) = getPlayerInitialData(sess)
+
+    redisObj = {}
+    for name, value in initialPlayerData.items():
+        redisObj[getVarName(name, sess.name, pid, gameData=True)] = value
+
+    async with (conn or getRedis().client()) as conn:
+        mset = conn.mset(redisObj)
+
+        for k, v in initialPlayerDataSets.items():
+            if v:
+                await conn.sadd(
+                    getVarName(k, sess.name, playerId=pid, gameData=True), *v
+                )
+        for k, v in initialPlayerDataLists.items():
+            if v:
+                await conn.rpush(
+                    getVarName(k, sess.name, playerId=pid, gameData=True), *v
+                )
+        await mset
+
+    initialPlayerData = dict(initialPlayerData)
+    # add sets & lists to player data
+    for k, v in initialPlayerDataLists.items():
+        initialPlayerData[k] = v
+    for k, v in initialPlayerDataSets.items():
+        initialPlayerData[k] = list(v)
+    return initialPlayerData
 
 
 async def addPlayer(player: newPlayer) -> Session:
@@ -95,6 +145,7 @@ async def addPlayer(player: newPlayer) -> Session:
                 f"A player called {player.name} already exists",
             )
 
+    # TODO: simplify using _clearPlayer
     pidP = getUniquePlayerId()
     player_info = player.dict()
     del player_info["sessionName"]
@@ -160,19 +211,23 @@ async def restartGame(player: PlayerIdentifier, tasks: BackgroundTasks) -> None:
         gameType = await conn.get(getVarName(SESSION_GAME_TYPE, uid))
         allPlayers = await conn.lrange(getVarName(sessVar.playerOrder.name, uid), 0, -1)
 
-        emptySession = Session(name="", creationTime=0, gameType=gameType)
-
         iface = games[gameType]
-        newVals = {}
-        for name, val in iface.getGameData().items():
-            newVals[getVarName(name, uid, gameData=True)] = val
-        # FIXME: only base props are handled here:
-        for name, val in iface.getPlayerData(emptySession).items():
-            for playername in allPlayers:
-                newVals[getVarName(name, uid, playername, gameData=True)] = val
+        playersData = {}
 
-        await conn.mset(newVals)
-        await publishEvent(uid, conn, cat="restart")
+        sess, gameData = await _resetSession(
+            Session(name=player.sessionName, creationTime=0, gameType=gameType), conn
+        )
+        for playername in allPlayers:
+            playersData[playername] = await _clearPlayer(sess, playername, conn)
+
+        await publishEvent(
+            uid,
+            conn,
+            cat="restart",
+            game=gameType,
+            playersData=playersData,
+            gameData=gameData,
+        )
 
     async def delayedStart() -> None:
         await asyncio.sleep(3)

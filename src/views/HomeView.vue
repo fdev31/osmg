@@ -26,7 +26,7 @@ watch(mynickname, (newVal) => {
 function clearTimers() {
   if (namesTimer) {
     clearInterval(namesTimer);
-    gameSession.uiStates.namePicked = mynickname.value;
+    gameSession.namePicked = mynickname.value;
   }
 }
 
@@ -35,8 +35,8 @@ onUnmounted(clearTimers);
 onMounted(async () => {
   const router = useRouter();
   await router.isReady();
-  mynickname.value = gameSession.uiStates.namePicked || makeName();
-  if (!gameSession.uiStates.namePicked) {
+  mynickname.value = gameSession.namePicked || makeName();
+  if (!gameSession.namePicked) {
     namesTimer = setInterval(() => {
       mynickname.value = makeName();
     }, 5000);
@@ -64,7 +64,7 @@ async function join_game(sessionId) {
     for (let player of result.players) {
       if (player.name == mynickname.value) result.myId = player.id;
     }
-    gameSession.uiStates.namePicked = mynickname.value;
+    gameSession.namePicked = mynickname.value;
     gameSession.$patch(result);
     gameSession.save();
     router.push("/lobby");

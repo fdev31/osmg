@@ -96,6 +96,7 @@ const handlers = {
   },
   start: async () => {
     gameSession.started = true;
+    gameSession.uiStates = {};
     for (const player of gameSession.players) {
       player.ready = false; // reset lobby state
     }

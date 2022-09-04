@@ -70,8 +70,8 @@ lint: fix
     {{venv}}/bin/isort {{src}} tests
     {{venv}}/bin/black {{src}} tests
     {{venv}}/bin/vulture {{src}} tests
-    npm run lint
     {{venv}}/bin/mypy {{src}}
+    npm run lint
 
 # run in debug or standard mode
 run debug="1": fix

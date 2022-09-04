@@ -156,6 +156,7 @@ const handlers = {
 };
 
 onMounted(() => {
+  highScores.$reset();
   stream = setupStreamEventHandler(
     { topic: gameSession.name, uid: gameSession.myId },
     handlers
