@@ -1,1 +1,3 @@
-{}
+{
+  "atakks_rules": "<ul><li>Ajoutez un galet à côté d'un galet existant, ou déplacez un galet de deux cases.</li><li>Tous les galets proches prennent alors votre couleur.</li><li>Terminez la partie avec plus de galets que votre adversaire pour gagner!</li>"
+}

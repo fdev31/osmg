@@ -30,6 +30,9 @@ function clearAll() {
 function show(text, opts = {}) {
   if (opts.uniqueId && has(selfReferrences[opts.uniqueId])) return;
   const origNotifs = new Set(Object.keys(notifications.value));
+  if (opts.fontSize) {
+    text = `<div class="text-${opts.fontSize}">${text}</div>`;
+  }
   const notif = {
     message: text,
     type: "info", // "info"|"warning"|"alert"|"success"

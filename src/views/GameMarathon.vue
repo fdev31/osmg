@@ -235,6 +235,7 @@ function getProgress(id) {
 function showRules() {
   toaster.value.show(T("marathon_rules"), {
     duration: 10000,
+    fontSize: "xl",
     uniqueId: "marathon-help",
   });
 }

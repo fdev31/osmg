@@ -55,6 +55,14 @@ document.debug = import.meta.env.DEV ? { gameSession } : {};
 
 initLocales();
 
+function showRules() {
+  toaster.value.show(T("atakks_rules"), {
+    duration: 20000,
+    fontSize: "xl",
+    uniqueId: "atakks-help",
+  });
+}
+
 function removeFromOthers(reflist, varname, skipId) {
   for (const player of gameSession.players) {
     if (player.id == skipId) continue;
@@ -298,6 +306,11 @@ const server = {
         :my-id="gameSession.myId"
       />
     </div>
+  </div>
+  <div class="flex flex-row place-content-center">
+    <button class="btn flex-none" @click="showRules">
+      {{ T("Show rules") }}
+    </button>
   </div>
 </template>
 
