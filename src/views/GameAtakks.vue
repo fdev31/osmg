@@ -44,8 +44,8 @@ watch(router.currentRoute, () => {
 const playersByIndex = gameSession.players.map((o) => o.id);
 const myPlayerIndex = computed(() =>
   gameSession.players.indexOf(
-    gameSession.players.filter((o) => o.id == gameSession.myId)[0]
-  )
+    gameSession.players.filter((o) => o.id == gameSession.myId)[0],
+  ),
 );
 const amIplaying = computed(() => {
   return gameSession.gameData.curPlayer == gameSession.myId;
@@ -60,7 +60,7 @@ function removeFromOthers(reflist, varname, skipId) {
     if (player.id == skipId) continue;
     const davar = gameSession.playersData[player.id][varname];
     gameSession.playersData[player.id][varname] = davar.filter(
-      (o) => reflist.indexOf(o) == -1
+      (o) => reflist.indexOf(o) == -1,
     );
   }
 }
@@ -100,7 +100,7 @@ const handlers = {
       .sort(
         (b, a) =>
           gameSession.playersData[a].pawns.length -
-          gameSession.playersData[b].pawns.length
+          gameSession.playersData[b].pawns.length,
       );
     highScores.winners = [data.player];
     setTimeout(() => router.push("/scoreboard"), 3000);
@@ -141,7 +141,7 @@ const handlers = {
       for (const pawn of freePawns) {
         if (canIplay) break;
         const options = generateZoneCoords(...pText2Int(pawn)).filter(
-          (o) => !checkedCoords.has(o)
+          (o) => !checkedCoords.has(o),
         );
         for (const coord of options) {
           checkedCoords.add(coord);
@@ -163,7 +163,7 @@ onMounted(() => {
   highScores.$reset();
   stream = setupStreamEventHandler(
     { topic: gameSession.name, uid: gameSession.myId },
-    handlers
+    handlers,
   );
 });
 

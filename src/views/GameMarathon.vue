@@ -75,7 +75,7 @@ const handlers = {
           mydice.value.diceNumber = Math.min(
             4,
             ("" + (gameSession.playersData[gameSession.myId].distance - 1))
-              .length
+              .length,
           );
           mydice.value.updateDice([0, 0, 0, 0], false);
         }, 1);
@@ -89,14 +89,14 @@ const handlers = {
   connectPlayer: (data) => {
     gameSession.playersData[data.id].disconnected = false;
     toaster.value.show(
-      `${gameSession.getPlayerInfo(data.id).name} ${T("enters the game")}`
+      `${gameSession.getPlayerInfo(data.id).name} ${T("enters the game")}`,
     );
     gameSession.save();
   },
   disconnectPlayer: (data) => {
     gameSession.playersData[data.id].disconnected = true;
     toaster.value.show(
-      `${gameSession.getPlayerInfo(data.id).name} ${T("is disconnected")}`
+      `${gameSession.getPlayerInfo(data.id).name} ${T("is disconnected")}`,
     );
     gameSession.save();
   },
@@ -111,7 +111,7 @@ const handlers = {
           `${gameSession.getPlayerInfo(data.player).name} ${T("moved")} ${
             parseInt(gameSession.playersData[data.player].distance) -
             parseInt(data.val)
-          } ${T("meters")}`
+          } ${T("meters")}`,
         );
       }
       gameSession.playersData[data.player].distance = data.val;
@@ -148,23 +148,23 @@ const handlers = {
 };
 
 const isMyTurn = computed(
-  () => gameSession.gameData.curPlayer == gameSession.myId
+  () => gameSession.gameData.curPlayer == gameSession.myId,
 );
 const positiveOrDie = (i) => (i > 0 ? i : 99999 - i);
 
 const sortedPlayers = computed(() => {
   const players = gameSession.players.map((o) =>
-    Object.assign({}, o, gameSession.playersData[o.id])
+    Object.assign({}, o, gameSession.playersData[o.id]),
   );
   return players.sort(
-    (a, b) => positiveOrDie(a.distance) - positiveOrDie(b.distance)
+    (a, b) => positiveOrDie(a.distance) - positiveOrDie(b.distance),
   );
 });
 
 const kickEnabled = computed(
   () =>
     !gameSession.gameData.hasVoted &&
-    gameSession.players.length > kick_player_threshold
+    gameSession.players.length > kick_player_threshold,
 );
 
 const currentActionName = computed(
@@ -177,7 +177,7 @@ const currentActionName = computed(
       T("game over"),
       T("game won"),
       T("error"),
-    ][ui.status]
+    ][ui.status],
 );
 
 initLocales();
@@ -216,7 +216,7 @@ const server = {
 
     let action = await post(
       `/g/marathon/validateDice?value=${choice}`,
-      getPostArg()
+      getPostArg(),
     );
     if (isError(action)) {
       alert(action.detail);
@@ -239,7 +239,7 @@ onMounted(() => {
   highScores.$reset();
   stream = setupStreamEventHandler(
     { topic: gameSession.name, uid: gameSession.myId },
-    handlers
+    handlers,
   );
 });
 
@@ -272,7 +272,7 @@ document.debug = import.meta.env.DEV
       <span
         class="m-3 rounded-full overflow-hidden flex-none"
         :style="`background-color: ${gameSession.getPlayerColor(
-          gameSession.myId
+          gameSession.myId,
         )}`"
       >
         <avatarCard
@@ -336,7 +336,7 @@ document.debug = import.meta.env.DEV
             <div
               class="duration-300 bg-blue-600 h-5 xl:h-10 px-1 rounded text-right"
               :style="`background-color: ${gameSession.getPlayerColor(
-                item.id
+                item.id,
               )}; width: ${getProgress(item.id)}%`"
             >
               <span

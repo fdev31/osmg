@@ -68,7 +68,7 @@ const handlers = {
         `Welcome back ${gameSession.getPlayerInfo(data.id).name}!`,
         {
           duration: 2500,
-        }
+        },
       );
   },
   disconnectPlayer: (data) => {
@@ -78,7 +78,7 @@ const handlers = {
       `${gameSession.getPlayerInfo(data.id).name} ${T("is disconnected")}`,
       {
         duration: 2500,
-      }
+      },
     );
   },
   newPlayer: (data) => {
@@ -162,7 +162,7 @@ initLocales();
 
 const websocket = setupStreamEventHandler(
   { topic: gameSession.name, uid: gameSession.myId },
-  handlers
+  handlers,
 );
 
 async function mainAction() {
@@ -194,8 +194,8 @@ async function mainAction() {
         <div class="flex place-content-center">
           <transition-group name="fade">
             <button
-              key="ready"
               v-if="states.status != statuses.READY"
+              key="ready"
               type="button"
               class="btn btn-main w-1/2"
               @click="mainAction"

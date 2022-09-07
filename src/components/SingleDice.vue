@@ -54,7 +54,7 @@ export default {
             this.snap.animate(
               { transform: `rotate(${i * 180})` },
               d,
-              mina.easeinout
+              mina.easeinout,
             );
             if (i == lastIndex) {
               this.setDots(val);

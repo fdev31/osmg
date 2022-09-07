@@ -39,8 +39,8 @@ onMounted(async () => {
 <template>
   <header class="flex">
     <nav class="h-0">
-      <RouterLink to="/"
-        ><img :src="homeIcon" class="hover:brightness-150 w-8 h-8 p-0 m-0" />
+      <RouterLink to="/">
+        <img :src="homeIcon" class="hover:brightness-150 w-8 h-8 p-0 m-0" />
       </RouterLink>
     </nav>
   </header>

@@ -45,7 +45,7 @@ async function restart() {
 onMounted(() => {
   stream = setupStreamEventHandler(
     { topic: gameSession.name, uid: gameSession.myId },
-    handlers
+    handlers,
   );
   gameSession.started = false;
   gameSession.gameType = false;
