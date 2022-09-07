@@ -253,12 +253,15 @@ document.debug = import.meta.env.DEV
 </script>
 
 <template>
-  <div v-cloak class="container mx-auto">
+  <div
+    v-cloak
+    class="flex flex-col flex-wrap mx-auto container p-5 place-content-center"
+  >
     <ToastNotifs ref="toaster" position="bottom-right" />
     <h1 class="maintitle">
       {{ T("Marathon , the dice game") }}
     </h1>
-    <div class="w-96">
+    <div class="w-96 items-center">
       <player-list
         ref="playerlist"
         :enable-kick="kickEnabled"
@@ -268,7 +271,7 @@ document.debug = import.meta.env.DEV
         :my-id="gameSession.myId"
       />
     </div>
-    <div class="flex container items-center">
+    <div class="flex items-center">
       <span
         class="m-3 rounded-full overflow-hidden flex-none"
         :style="`background-color: ${gameSession.getPlayerColor(
@@ -349,8 +352,8 @@ document.debug = import.meta.env.DEV
       </transition-group>
     </div>
 
-    <div>
-      <button class="btn" @click="showRules">
+    <div class="flex flex-row place-content-center">
+      <button class="btn flex-none" @click="showRules">
         {{ T("Show rules") }}
       </button>
     </div>
