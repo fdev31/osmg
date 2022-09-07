@@ -18,6 +18,11 @@ repos:
         exclude: ^src/lib/locales.js|.*[.]svg
   - repo: local
     hooks:
+      - id: noconsolelog
+        name: forbid console.log usage
+        entry: ./scripts/no_console_log.sh
+        files: \.(js|vue)$
+        language: system
       - id: jslint
         name: run jslint checks
         entry: just jslint
