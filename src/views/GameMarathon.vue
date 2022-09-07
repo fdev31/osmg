@@ -231,8 +231,12 @@ function getProgress(id) {
     100 * ((42195 - gameSession.playersData[`${id}`].distance) / 42195) || 0
   );
 }
+
 function showRules() {
-  toaster.value.show(T("marathon_rules"), { duration: 10000 });
+  toaster.value.show(T("marathon_rules"), {
+    duration: 10000,
+    uniqueId: "marathon-help",
+  });
 }
 
 onMounted(() => {

@@ -17,12 +17,19 @@ const prop = defineProps({
 
 const colorScheme = isDarkMode() ? "dark" : "light";
 
+const selfReferrences = {};
+
 function clearAll() {
-  for (const nid of Object.keys(notifications)) {
+  for (const nid of Object.keys(notifications.value)) {
     unsetNotification(nid);
+  }
+  for (const nid of Object.keys(selfReferrences)) {
+    delete selfReferrences[nid];
   }
 }
 function show(text, opts = {}) {
+  if (opts.uniqueId && has(selfReferrences[opts.uniqueId])) return;
+  const origNotifs = new Set(Object.keys(notifications.value));
   const notif = {
     message: text,
     type: "info", // "info"|"warning"|"alert"|"success"
@@ -34,8 +41,15 @@ function show(text, opts = {}) {
   };
   Object.assign(notif, opts);
   setNotification(notif);
+  const curNotifs = new Set(Object.keys(notifications.value));
+  const tid = Array.from(curNotifs).filter((o) => !origNotifs.has(o))[0];
+  if (opts.uniqueId) selfReferrences[opts.uniqueId] = tid;
+  return tid;
 }
-defineExpose({ show, clearAll });
+function has(nid) {
+  return !!notifications.value[nid];
+}
+defineExpose({ show, clearAll, has });
 </script>
 
 <template>
