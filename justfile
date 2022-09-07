@@ -25,7 +25,7 @@ deploy: prod
 cleanenv:
     rm -fr .tox
     rm -fr node_modules
-    npm i
+    npm i -D
     tox -e style
     just dev
 
