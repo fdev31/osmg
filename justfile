@@ -27,6 +27,8 @@ cleanenv:
     rm -fr node_modules
     npm i -D
     tox -e style
+    {{venv}}/bin/pip install chromedriver_installer --install-option="--chromedriver-version=2.10" --install-option="--chromedriver-checksums=4fecc99b066cb1a346035bf022607104,058cd8b7b4b9688507701b5e648fd821"
+
     just dev
 
 # start a live dev session
