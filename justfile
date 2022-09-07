@@ -34,11 +34,11 @@ live:
     ./node_modules/.bin/vite --host 0.0.0.0
 
 # build js in dev mode
-dev:
+dev: gamelist locales
     ./node_modules/.bin/vite build --mode dev
 
 # build js in dev production mode
-prod:
+prod: gamelist locales
     ./node_modules/.bin/vite build --mode production
 
 # make python package run from the sources
@@ -47,7 +47,7 @@ fix:
 
 # builds the gamelist
 gamelist:
-   ./scripts/genGameList.py 
+   ./scripts/genGameList.py
 
 # generate a bundle with all translations (updates a file in src)
 locales:
