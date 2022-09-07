@@ -11,7 +11,6 @@ const props = defineProps({
 });
 
 onMounted(() => {
-  console.log(QRCode);
   QRCode.toCanvas(divRef.value, props.text);
 });
 </script>
