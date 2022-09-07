@@ -1,7 +1,7 @@
 Tickets
 =======
 
-:total-count: 9
+:total-count: 10
 
 --------------------------------------------------------------------------------
 
@@ -65,3 +65,15 @@ Review & fix the vote system
 :bugid: 9
 :created: 2022-09-04T20:07:14
 :priority: 0
+
+--------------------------------------------------------------------------------
+
+Fix dependencies
+================
+
+:bugid: 10
+:created: 2022-09-08T00:21:55
+:priority: 0
+
+- bug open on fastapi https://github.com/tiangolo/fastapi/issues/4473
+- front tests / geckodriver : try to solve before chrome update
