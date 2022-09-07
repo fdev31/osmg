@@ -11,25 +11,27 @@ repos:
     rev: 22.8.0
     hooks:
       - id: black
+        name: "Python strict styling"
   - repo: https://github.com/pre-commit/mirrors-prettier
     rev: "v3.0.0-alpha.0" # Use the sha or tag you want to point at
     hooks:
       - id: prettier
         exclude: ^src/lib/locales.js|.*[.]svg
+        name: "JS styling"
   - repo: local
     hooks:
       - id: noconsolelog
-        name: forbid console.log usage
+        name: Ensure no console.log is used
         entry: ./scripts/no_console_log.sh
         files: \.(js|vue)$
         language: system
       - id: jslint
-        name: run jslint checks
+        name: JS static tests and final style
         entry: just jslint
         files: \.(js|vue)$
         language: system
       - id: pylint
-        name: run pylint checks
+        name: PY static tests and final style
         entry: just pylint
         files: \.(py)$
         language: system
