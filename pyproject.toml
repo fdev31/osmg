@@ -9,7 +9,7 @@ packages = [
 
 [tool.poetry.dependencies]
 python = "^3.10"
-fastapi = ">=0.65"
+fastapi = "^0.68"
 uvicorn = {extras = ["standard"], version = ">= 0.18.2"}
 aioredis = ">= 2.0.1"
 hiredis = ">= 2.0.0"
