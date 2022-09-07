@@ -65,13 +65,16 @@ unit: fix
 list-events:
 	@grep -rE -A5 'publishEvent' server 2>/dev/null | grep "cat=" | sed -Ee 's/.*cat *= *([^,)]+).*/\1/' -e 's#Events.(\S+).name#\1#' -e 's#^"([^"]+)"$#\1#' | uniq | sort
 
-# check linting rules
-lint: fix
-    {{venv}}/bin/isort {{src}} tests
-    {{venv}}/bin/black {{src}} tests
-    {{venv}}/bin/vulture {{src}} tests
-    {{venv}}/bin/mypy {{src}}
-    npm run lint
+# check JS linting rules
+jslint *args='src':
+    npm run lint {{args}}
+
+# check PY linting rules
+pylint *args='server': fix
+    {{venv}}/bin/isort  {{args}}
+    {{venv}}/bin/black  {{args}}
+    {{venv}}/bin/vulture  {{args}}
+    {{venv}}/bin/mypy {{args}}
 
 # run in debug or standard mode
 run debug="1": fix

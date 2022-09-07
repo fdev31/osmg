@@ -8,3 +8,15 @@ repos:
     hooks:
       - id: prettier
         exclude: ^src/lib/locales.js|.*[.]svg
+  - repo: local
+    hooks:
+      - id: jslint
+        name: run jslint checks
+        entry: just jslint
+        files: \.(js|vue)$
+        language: system
+      - id: pylint
+        name: run pylint checks
+        entry: just pylint
+        files: \.(py)$
+        language: system
