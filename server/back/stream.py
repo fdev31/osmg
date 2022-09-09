@@ -23,7 +23,7 @@ async def sessionStreamSource(
             if message["type"] == "message":
                 yield message["data"]
     except asyncio.CancelledError as e:
-        await disconnectPlayer(topic, playerId)
+        return
 
 
 async def wait_for_disconnect(ws: WebSocket) -> None:
@@ -57,6 +57,8 @@ async def gameEventStream(ws: WebSocket, topic: str, uid: str) -> None:
         pending_task = pending.pop()
         pending_task.cancel()
 
+    await disconnectPlayer(topic, uid)
 
-def init(app: FastAPI, config: Dict[str, Any]) -> None:
+
+def init(app: FastAPI, _config: Dict[str, Any]) -> None:
     app.websocket("/c/stream")(gameEventStream)
