@@ -7,7 +7,6 @@ from fastapi import FastAPI, WebSocket, WebSocketDisconnect
 
 from .globalHandlers import getRedis
 from .sessionmanager.public import connectPlayer, disconnectPlayer
-from .utils import loads
 
 logger = logging.getLogger("Stream")
 
@@ -20,11 +19,10 @@ async def sessionStreamSource(
     await connectPlayer(topic, playerId)
     try:
         await channel.subscribe(topic)
+        await channel.subscribe(topic + ":" + playerId)
         async for message in channel.listen():
             if message["type"] == "message":
-                payload = loads(message["data"])
-                if payload.get("rcpt", playerId) == playerId:
-                    yield message["data"]
+                yield message["data"]
     except asyncio.CancelledError as e:
         return
 

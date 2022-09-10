@@ -37,9 +37,14 @@ def setRedis(handler: aioredis.Redis) -> None:
 
 
 def publishEvent(
-    topic: str, client: Optional[aioredis.Redis] = None, **params: Any
+    topic: str,
+    client: Optional[aioredis.Redis] = None,
+    rcpt: str | None = None,
+    **params: Any,
 ) -> Awaitable[int]:
     logger.debug("PUBLISH %s %s", topic, params)
+    if rcpt:
+        topic = topic + ":" + rcpt
     return (client or Context.redis).publish(topic, dumps(params))
 
 
