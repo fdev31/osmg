@@ -30,7 +30,7 @@ export async function kickPlayerVote(app, player, validate = "true") {
  * @param {Object} query.app The vue app calling the function, must contain secret and sessionName values.
  */
 async function vote(query) {
-  let url = `http://${document.location.host}/c/session/vote?name=kick_${query.kicked.id}&validate=${query.validate}&description=${query.description}`;
+  let url = `/c/session/vote?name=kick_${query.kicked.id}&validate=${query.validate}&description=${query.description}`;
   await post(url, {
     id: parseInt(query.kicker.id),
     secret: parseInt(query.app.secret),

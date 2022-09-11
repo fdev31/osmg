@@ -3,6 +3,7 @@ import avatarCard from "./avatarCard.vue";
 import { colors } from "@/lib/playercolors.js";
 
 const props = defineProps({
+  gameSession: { type: Object, default: null },
   enableKick: { type: Boolean, default: false },
   kickText: { type: String, default: "Kick Player" },
   curPlayer: { type: String, default: "" },
@@ -13,7 +14,6 @@ const props = defineProps({
 });
 
 defineEmits(["kick"]);
-
 function isPlaying(player) {
   return props.curPlayer && player.id === props.curPlayer;
 }
@@ -42,7 +42,7 @@ function isPlaying(player) {
           <button
             v-if="props.enableKick && item.id != props.myId"
             class="smallbtn"
-            @click="$emit('kick', item, 'true')"
+            @click="$emit('kick', gameSession, item, 'true')"
           >
             {{ props.kickText }}
           </button>

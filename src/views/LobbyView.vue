@@ -39,7 +39,7 @@ if (gameSession.uiStates.status === undefined) {
 const playerlist = ref();
 const toaster = ref();
 
-const kick_player_threshold = 2;
+const kick_player_threshold = 1;
 
 async function countDown(count = 4) {
   for (let index = 1; index < count; index++) {
@@ -237,6 +237,7 @@ async function mainAction() {
       <div class="m-2 rounded-xl container shadow bg-slate-400 lg:w-1/3 shrink">
         <playerList
           ref="playerlist"
+          :game-session="gameSession"
           :players="gameSession.players"
           :enable-kick="
             !states.hasVoted &&
