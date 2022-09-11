@@ -39,7 +39,7 @@ if (gameSession.uiStates.status === undefined) {
 const playerlist = ref();
 const toaster = ref();
 
-const kick_player_threshold = 1;
+const kick_player_threshold = 2;
 
 async function countDown(count = 4) {
   for (let index = 1; index < count; index++) {
