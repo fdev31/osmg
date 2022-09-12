@@ -237,7 +237,6 @@ async function mainAction() {
       <div class="m-2 rounded-xl container shadow bg-slate-400 lg:w-1/3 shrink">
         <playerList
           ref="playerlist"
-          :game-session="gameSession"
           :players="gameSession.players"
           :enable-kick="
             !states.hasVoted &&
@@ -245,7 +244,7 @@ async function mainAction() {
           "
           :kick-text="T('Kick player')"
           :my-id="gameSession.myId"
-          @kick="kickPlayerVote"
+          @kick="(player) => kickPlayerVote(gameSession, player, 'true')"
         />
       </div>
     </div>
