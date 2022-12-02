@@ -2,6 +2,10 @@ import { randomChoice } from "./utils";
 
 const adj = [
   "Red",
+  "Smart",
+  "Cute",
+  "Mysterious",
+  "Surprising",
   "Sexy",
   "Calm",
   "Smashed",
@@ -15,6 +19,9 @@ const adj = [
   "Shinny",
   "Funky",
   "Rocking",
+  "Silly",
+  "Anonymous",
+  "Random",
   "Melting",
   "Hot",
   "Warm",
@@ -29,7 +36,11 @@ const adj = [
 ];
 const names = [
   "Squirrel",
+  "Bunny",
+  "Tomato",
   "Plant",
+  "Pumpkin",
+  "Lemon",
   "Sushi",
   "Ball",
   "Cube",
@@ -42,6 +53,7 @@ const names = [
   "Rock",
   "Water",
   "Pencil",
+  "Ruler",
   "Cup",
   "Fire",
   "Glasses",
