@@ -13,7 +13,7 @@ import {
   post,
   setupStreamEventHandler,
   getTranslation as T,
-  host,
+  client_host,
   initLocales,
   copyURL,
   delay,
@@ -21,7 +21,7 @@ import {
 
 const router = useRouter();
 const gameSession = GameSession();
-const joinURL = `${host}/r/${gameSession.name}`;
+const joinURL = `${client_host}/r/${gameSession.name}`;
 
 document.debug = import.meta.env.DEV ? { gameSession } : {};
 
