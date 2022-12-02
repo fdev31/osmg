@@ -1,5 +1,10 @@
 import { locales } from "./locales.js";
 
+export const client_host = document.location.href.slice(
+  0,
+  -document.location.pathname.length,
+);
+
 export const host = import.meta.env.DEV
   ? "http://localhost:5000"
   : document.location.href.slice(0, -document.location.pathname.length);
@@ -67,7 +72,7 @@ export function extractJsonFromCookie() {
 }
 export function setCookie(data) {
   document.cookie = `${cookie_name}=${JSON.stringify(
-    data
+    data,
   )}; SameSite=Strict; path=/;`;
 }
 
@@ -78,7 +83,7 @@ function _setEventStreamHandler(handler, query) {
   const evtSource = new WebSocket(
     `${proto}://${host.split("//")[1]}/c/stream?topic=${query.topic}&uid=${
       query.uid
-    }`
+    }`,
   );
   evtSource.addEventListener("message", (event) => {
     handler(JSON.parse(event.data));
@@ -98,7 +103,7 @@ export function setupStreamEventHandler(query, handlers) {
     delete logO.cat;
     log.debug(
       `${(handlers[cat] && "Handled") || "Unhandled"} Event ${cat}: `,
-      logO
+      logO,
     );
     if (handlers[cat]) {
       handlers[cat](logO);
