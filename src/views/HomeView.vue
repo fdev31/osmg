@@ -36,12 +36,14 @@ onUnmounted(clearTimers);
 onMounted(async () => {
   const router = useRouter();
   await router.isReady();
-  if (gameSession.name.length) {
+  let generateName = false;
+  if (gameSession.name.length && gameSession.myId) {
     mynickname.value = gameSession.getPlayerInfo(gameSession.myId).name;
   } else {
     mynickname.value = gameSession.namePicked || makeName();
+    generateName = true;
   }
-  if (!(gameSession.namePicked || gameSession.name.length)) {
+  if (generateName || !(gameSession.namePicked || gameSession.name.length)) {
     namesTimer = setInterval(() => {
       mynickname.value = makeName();
     }, 5000);
@@ -50,6 +52,8 @@ onMounted(async () => {
 });
 
 async function join_game(sessionId) {
+  clearTimers();
+
   // create a standard player for creator of session game
   const myHeaders = new Headers();
   myHeaders.append("Content-Type", "application/json");
