@@ -6,6 +6,10 @@ An platform aiming at radpid development of online slow-paced multiplayer games.
 
 Check https://game.crava.ch/ for a quick demo
 
+# Issues
+
+Check [the ticket list](https://github.com/fdev31/osmg/blob/main/tickets.rst)
+
 # Installing for development
 
 You will need [just](https://github.com/casey/just), `npm` and `tox` at least.
