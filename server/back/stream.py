@@ -14,7 +14,6 @@ logger = logging.getLogger("Stream")
 async def sessionStreamSource(
     ws: WebSocket, topic: str, playerId: str
 ) -> AsyncGenerator[str, None]:
-
     channel: aioredis.client.PubSub = getRedis().pubsub()
     await connectPlayer(topic, playerId)
     try:
