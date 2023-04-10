@@ -2,11 +2,11 @@
 import { onMounted } from "vue";
 import { RouterLink, RouterView, useRouter } from "vue-router";
 import { getLogger, extractJsonFromCookie } from "./lib/utils";
+import homeIcon from "@/assets/icons/home.svg?url";
 
 import { GameSession } from "@/stores/gamesession.js";
 const log = getLogger("App");
 const gameSession = GameSession();
-import homeIcon from "@/assets/icons/home.svg?url";
 
 try {
   gameSession.$patch(extractJsonFromCookie());
