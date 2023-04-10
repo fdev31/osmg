@@ -1,44 +1,70 @@
-# REFACTOR IN PROGRESS
+# OSMG!
 
-## Todo
+One platform many games
 
-- lobby
-- games
-- locales generation
-- review styling
+An platform aiming at radpid development of online slow-paced multiplayer games.
 
-# our-awesome-game
+Check https://game.crava.ch/ for a quick demo
 
-This template should help get you started developing with Vue 3 in Vite.
+# Installing for development
 
-## Recommended IDE Setup
+You will need [just](https://github.com/casey/just), `npm` and `tox` at least.
+To get started, just type:
 
-[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur) + [TypeScript Vue Plugin (Volar)](https://marketplace.visualstudio.com/items?itemName=Vue.vscode-typescript-vue-plugin).
-
-## Customize configuration
-
-See [Vite Configuration Reference](https://vitejs.dev/config/).
-
-## Project Setup
-
-```sh
-npm install
+```
+just cleanenv
 ```
 
-### Compile and Hot-Reload for Development
+it will install every tool and create the base setup.
 
-```sh
-npm run dev
+# Running
+
+## Development
+
+If you make changes to the content in the `locales` folder to change text, you'll need to type `just locales` to re-build the required files.
+
+### Linting rules
+
+for js (client):
+
+```
+just jslint
 ```
 
-### Compile and Minify for Production
+for python (server):
 
-```sh
-npm run build
+```
+just pylint
 ```
 
-### Lint with [ESLint](https://eslint.org/)
+### Running tests
 
-```sh
-npm run lint
 ```
+just test
+```
+
+or for something more basic (no selenium)
+
+```
+just unit
+```
+
+### Re-build JS un debug mode (optional)
+
+```
+just dev
+```
+
+### Run the server
+
+```
+just run
+```
+
+### Use live compilation of the JS (optional)
+
+```
+just live
+```
+
+## Testing
