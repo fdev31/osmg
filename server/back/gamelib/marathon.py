@@ -11,8 +11,6 @@ from starlette import status as httpstatus
 from ..globalHandlers import (
     getGameDataPrefix,
     getGameVar,
-    getPlayerGameVar,
-    getPlayerVar,
     getRedis,
     getSessionVar,
     publishEvent,
@@ -168,7 +166,7 @@ class DiceInterface(GameInterface):
         if topic == "kick":
             whom = data
             ap = getGameVar(ACTIVE_PLAYERS, sessionId)
-            cp = getSessionVar(stdVar.curPlayer.name, sessionId)
+            cp = getGameVar(stdVar.curPlayer.name, sessionId)
             cu = int(await conn.get(cp))
             pindex = await conn.lpos(ap, whom)
             if pindex is not None and pindex < cu:
@@ -197,7 +195,7 @@ class DiceInterface(GameInterface):
         }
 
     @classmethod
-    async def playerAdded(kls, sess: Session, player: Player) -> None:
+    async def playerAdded(_cls, sess: Session, player: Player) -> None:
         await def_playerAdded(sess, player)
 
     actions = {
