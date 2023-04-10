@@ -29,51 +29,9 @@ Introduce a game utils (server side)
 
 --------------------------------------------------------------------------------
 
-Bug: highscore not well handled
-===============================
-
-:bugid: 5
-:created: 2022-08-30T00:42:43
-:priority: 0
-
---------------------------------------------------------------------------------
-
 add connect / disconnect hooks to games so they can react accordingly
 =====================================================================
 
 :bugid: 6
 :created: 2022-08-30T18:19:52
 :priority: 0
-
---------------------------------------------------------------------------------
-
-Handle end in attaks
-====================
-
-:bugid: 7
-:created: 2022-09-02T20:57:54
-:priority: 0
-
-- update server side variables
-- add checks to not repeat operations
-
---------------------------------------------------------------------------------
-
-Review & fix the vote system
-============================
-
-:bugid: 9
-:created: 2022-09-04T20:07:14
-:priority: 0
-
---------------------------------------------------------------------------------
-
-Fix dependencies
-================
-
-:bugid: 10
-:created: 2022-09-08T00:21:55
-:priority: 0
-
-- bug open on fastapi https://github.com/tiangolo/fastapi/issues/4473
-- front tests / geckodriver : try to solve before chrome update
