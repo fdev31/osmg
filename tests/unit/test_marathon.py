@@ -83,7 +83,6 @@ def test_c_session():
     # Game started
 
     for n in [True, False, True]:
-
         # test some vote
         client.post(
             "/c/session/vote?name=kick_my_ass&description=AssKicker",

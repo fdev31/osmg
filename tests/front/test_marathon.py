@@ -161,7 +161,7 @@ class MarathonTest(unittest.TestCase):
             try:
                 for drv in self.drv:
                     playerTurn(drv)
-                    sleep(0.3)
+                    sleep(0.5)
             except EndOfGameError as e:
                 print("game end detected", e)
                 sleep(1)
