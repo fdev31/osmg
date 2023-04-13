@@ -8,16 +8,16 @@ packages = [
     ]
 
 [tool.poetry.dependencies]
-python = "^3.10"
-fastapi = "^0.68"
-uvicorn = {extras = ["standard"], version = ">= 0.18.2"}
-aioredis = ">= 2.0.1"
-hiredis = ">= 2.0.0"
-aiojobs = ">= 1.0.0"
-aiofiles = ">= 0.8.0"
-anyio = ">= 3.6.1"
-orjson = ">= 3.7.11"
-websockets = ">=10.3"
+python = "^3.10" # 3.10.10
+fastapi = "^0.68" # 0.68.2
+uvicorn = {extras = ["standard"], version = ">= 0.18.2"} # 0.21.1
+aioredis = ">= 2.0.1" # 2.0.1
+hiredis = ">= 2.0.0" # 2.2.2
+aiojobs = ">= 1.0.0" # 1.1.0
+aiofiles = ">= 0.8.0" # 23.1.0
+anyio = ">= 3.6.1" # 3.6.2
+orjson = ">= 3.7.11" # 3.8.10
+websockets = ">=10.3" # 11.0.1
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
