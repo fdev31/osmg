@@ -2,7 +2,7 @@ import logging
 import re
 from typing import Any, Callable, Coroutine, Match, Optional, Tuple
 
-import aioredis
+import redis
 from fastapi import HTTPException
 from starlette import status as httpstatus
 
@@ -18,7 +18,7 @@ logger = logging.getLogger("SessionVote")
 # Internal handlers definition
 
 
-async def kickPlayer(conn: aioredis.Redis, sessionId: str, match: Match[str]) -> None:
+async def kickPlayer(conn: redis.Redis, sessionId: str, match: Match[str]) -> None:
     whom = match.groups()[0]
     # remove session info
     await conn.lrem(getVarName(sessVar.playerOrder.name, sessionId), 1, whom)
@@ -43,7 +43,7 @@ def findHandler(
     name: str,
 ) -> Tuple[
     Optional[Match[str]],
-    Optional[Callable[[aioredis.Redis, str, Match[str]], Coroutine[Any, Any, Any]]],
+    Optional[Callable[[redis.Redis, str, Match[str]], Coroutine[Any, Any, Any]]],
 ]:
     for handler in votesHandlers:
         m = handler.match(name)
@@ -93,7 +93,7 @@ async def vote(
         await _checkVoteEnd(conn, uid, name)
 
 
-async def _checkVoteEnd(conn: aioredis.Redis, uid: str, name: str) -> None:
+async def _checkVoteEnd(conn: redis.Redis, uid: str, name: str) -> None:
     # check if everybody voted
     vip = getVarName(VOTE_IN_PROGRESS, uid)
     curVote = getVarName("vote_" + name, uid)

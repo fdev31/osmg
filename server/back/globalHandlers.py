@@ -2,7 +2,7 @@ import logging
 from functools import lru_cache
 from typing import Any, Awaitable, Optional
 
-import aioredis
+import redis
 
 from .utils import ODict, dumps
 
@@ -11,7 +11,7 @@ logger = logging.getLogger("redis")
 
 class Context:
     config: ODict = ODict()
-    redis: aioredis.Redis
+    redis: redis.Redis
 
 
 def setConfig(config: ODict) -> None:
@@ -22,23 +22,21 @@ def getConfig() -> ODict:
     return Context.config
 
 
-def getRedis() -> aioredis.Redis:
+def getRedis() -> redis.Redis:
     return Context.redis
 
 
-def getNewRedis() -> aioredis.Redis:
-    return aioredis.from_url(
-        "redis://" + getConfig().redis_server, decode_responses=True
-    )
+def getNewRedis() -> redis.Redis:
+    return redis.from_url("redis://" + getConfig().redis_server, decode_responses=True)
 
 
-def setRedis(handler: aioredis.Redis) -> None:
+def setRedis(handler: redis.Redis) -> None:
     Context.redis = handler
 
 
 def publishEvent(
     topic: str,
-    client: Optional[aioredis.Redis] = None,
+    client: Optional[redis.Redis] = None,
     rcpt: str | None = None,
     **params: Any,
 ) -> Awaitable[int]:

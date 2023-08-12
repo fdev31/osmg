@@ -11,7 +11,7 @@ packages = [
 python = "^3.10"
 fastapi = "^0.68"
 uvicorn = {extras = ["standard"], version = ">= 0.18.2"}
-aioredis = ">= 2.0.1"
+redis = ">= 4.6.0"
 hiredis = ">= 2.0.0"
 aiojobs = ">= 1.0.0"
 aiofiles = ">= 0.8.0"
