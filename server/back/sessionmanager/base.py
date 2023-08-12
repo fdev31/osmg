@@ -1,7 +1,7 @@
 import logging
 import time
 
-from aioredis import Redis
+from redis import Redis
 
 from ..globalHandlers import getRedis
 

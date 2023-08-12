@@ -2,7 +2,7 @@ import asyncio
 import logging
 from typing import Any, Dict, Optional
 
-from aioredis import Redis
+from redis import Redis
 
 from ..gamelib.interfaces import Events, GameInterface, sessVar
 from ..globalHandlers import (

@@ -3,7 +3,7 @@ import logging
 import time
 from typing import Any
 
-import aioredis
+import redis
 from fastapi import BackgroundTasks, FastAPI, HTTPException
 from starlette import status as httpstatus
 
@@ -29,9 +29,7 @@ from .votesystem import vote
 logger = logging.getLogger("Session")
 
 
-async def _triggerGameStart(
-    game: GameInterface, uid: str, conn: aioredis.Redis
-) -> None:
+async def _triggerGameStart(game: GameInterface, uid: str, conn: redis.Redis) -> None:
     await publishEvent(
         uid,
         conn,
@@ -44,7 +42,7 @@ async def _triggerGameStart(
 
 
 async def _resetSession(
-    sess: Session, conn: aioredis.Redis | None = None
+    sess: Session, conn: redis.Redis | None = None
 ) -> tuple[Session, dict[str, Any]]:
     mprops = {}
     props, lists, sets = getGameInitialData(sess.gameType)
@@ -88,7 +86,7 @@ async def makeSession(gameType: str) -> Session:
 
 
 async def _clearPlayer(
-    sess: Session, pid: str, conn: aioredis.Redis | None = None
+    sess: Session, pid: str, conn: redis.Redis | None = None
 ) -> dict[str, Any]:
     (
         initialPlayerData,

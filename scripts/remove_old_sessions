@@ -3,7 +3,7 @@ import sys
 import time
 import asyncio
 import itertools
-import aioredis
+import redis
 
 counter = itertools.count()
 now = int(time.time())
@@ -16,7 +16,7 @@ if 'all' in sys.argv:
 old_keys = []
 
 async def main():
-    redis = aioredis.from_url("redis://localhost", decode_responses=True)
+    redis = redis.from_url("redis://localhost", decode_responses=True)
     async with redis.client() as conn:
         cur = b"0"
         while cur:

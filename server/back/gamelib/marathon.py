@@ -4,7 +4,7 @@ import logging
 import random
 from typing import Any, List, Optional
 
-import aioredis
+import redis
 from fastapi import HTTPException
 from starlette import status as httpstatus
 
@@ -27,7 +27,7 @@ logger = logging.getLogger("marathon")
 
 
 async def isPlayerTurn(
-    conn: aioredis.Redis,
+    conn: redis.Redis,
     prefix: str,
     playerId: str,
     secret: Optional[int],
@@ -101,7 +101,7 @@ async def validateDice(player: PlayerIdentifier, value: str) -> None:
         await turnLogic(newVal, player, conn)
 
 
-async def declareWinner(session: str, pid: str, conn: aioredis.Redis) -> None:
+async def declareWinner(session: str, pid: str, conn: redis.Redis) -> None:
     await publishEvent(
         session, conn, cat="endOfGame", message="We have a winner!", player=pid
     )
@@ -110,7 +110,7 @@ async def declareWinner(session: str, pid: str, conn: aioredis.Redis) -> None:
 async def turnLogic(
     distance: Optional[int],
     player: PlayerIdentifier,
-    conn: Optional[aioredis.Redis] = None,
+    conn: Optional[redis.Redis] = None,
 ) -> None:
     if not conn:
         conn = getRedis()
@@ -161,7 +161,7 @@ class DiceInterface(GameInterface):
     max_players: Optional[int] = None
 
     @staticmethod
-    async def votePassed(sessionId: str, name: str, conn: aioredis.Redis) -> None:
+    async def votePassed(sessionId: str, name: str, conn: redis.Redis) -> None:
         topic, data = name.split("_", 1)
         if topic == "kick":
             whom = data
@@ -174,7 +174,7 @@ class DiceInterface(GameInterface):
                 await conn.lrem(ap, 1, whom)
 
     @staticmethod
-    async def startGame(sessionId: str, conn: aioredis.Redis) -> None:
+    async def startGame(sessionId: str, conn: redis.Redis) -> None:
         dump = await conn.lrange(
             getSessionVar(sessVar.playerOrder.name, sessionId), 0, -1
         )

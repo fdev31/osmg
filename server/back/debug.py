@@ -1,6 +1,6 @@
 from typing import Any, Dict
 
-import aioredis
+import redis
 from fastapi import FastAPI
 
 from .globalHandlers import getRedis
@@ -15,10 +15,10 @@ async def getAllData() -> Dict[str, Dict[str, Any]]:
             # collect data
             try:
                 val = await conn.get(key)
-            except aioredis.exceptions.ResponseError:
+            except redis.exceptions.ResponseError:
                 try:
                     val = await conn.smembers(key)
-                except aioredis.exceptions.ResponseError:
+                except redis.exceptions.ResponseError:
                     val = await conn.lrange(key, 0, -1)
             splitk = key.split(":")
             if splitk[0] not in sessions:

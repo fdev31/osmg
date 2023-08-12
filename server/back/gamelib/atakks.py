@@ -1,7 +1,7 @@
 from logging import getLogger
 from typing import Any, Dict, Generator, Optional
 
-import aioredis
+import redis
 from fastapi import HTTPException
 from pydantic import BaseModel
 from starlette import status as httpstatus
@@ -38,7 +38,7 @@ placements = [
 
 
 async def getPlayerInfo(
-    conn: aioredis.Redis,
+    conn: redis.Redis,
     prefix: str,
     playerId: str,
     secret: Optional[int],
@@ -72,7 +72,7 @@ class Summary(BaseModel):
 
 
 async def buildSummary(
-    conn: aioredis.Redis,
+    conn: redis.Redis,
     destination: Optional[Coords],
     player: PlayerIdentifier,
     players: list[str],
@@ -113,7 +113,7 @@ async def buildSummary(
 async def _movePawn(
     player: PlayerIdentifier, source: Coords, destination: Coords, move: bool = False
 ) -> SimpleReturn:
-    redis: aioredis.Redis = getRedis()
+    redis: redis.Redis = getRedis()
     gprefix: str = getGameDataPrefix(player.sessionName)
     prefix: str = gprefix[:-2]
 
@@ -239,7 +239,7 @@ class Game(GameInterface):
         await def_playerAdded(sess, player)
 
     @staticmethod
-    async def startGame(sessionId: str, conn: aioredis.Redis) -> None:
+    async def startGame(sessionId: str, conn: redis.Redis) -> None:
         curPlayer = await conn.lindex(
             getSessionVar(sessVar.playerOrder.name, sessionId), 0
         )

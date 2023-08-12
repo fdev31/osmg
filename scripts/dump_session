@@ -1,7 +1,7 @@
 #!./cuspy
 import sys
 import asyncio
-import aioredis
+import redis
 
 sessions = {}
 
@@ -12,7 +12,7 @@ async def main():
     name = sys.argv[1]
     if name[0] == 'S':
         name = name[1:]
-    redis = aioredis.from_url("redis://localhost", decode_responses=True)
+    redis = redis.from_url("redis://localhost", decode_responses=True)
     async with redis.client() as conn:
         cur = b"0"
         # collect data
@@ -21,10 +21,10 @@ async def main():
             for key in keys:
                 try:
                     val = await conn.get(key)
-                except aioredis.exceptions.ResponseError:
+                except redis.exceptions.ResponseError:
                     try:
                         val = await conn.smembers(key)
-                    except aioredis.exceptions.ResponseError as e:
+                    except redis.exceptions.ResponseError as e:
                         val = await conn.lrange(key, 0, -1)
                 splitk = key.split(':')
                 if splitk[0] not in sessions:
