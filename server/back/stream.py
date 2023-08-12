@@ -2,7 +2,7 @@ import asyncio
 import logging
 from typing import Any, AsyncGenerator, Dict
 
-import redis
+import redis.asyncio as redis
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect
 
 from .globalHandlers import getRedis
@@ -46,8 +46,8 @@ async def gameEventStream(ws: WebSocket, topic: str, uid: str) -> None:
     "Returns an event source for the provided topic & user"
     logger.debug("New stream for %s @ %s", uid, topic)
     await ws.accept()
-    waitDisconnect = wait_for_disconnect(ws)
-    streamTask = publish_events(ws, topic, uid)
+    waitDisconnect = asyncio.Task(wait_for_disconnect(ws))
+    streamTask = asyncio.Task(publish_events(ws, topic, uid))
     done, pending = await asyncio.wait(
         [waitDisconnect, streamTask], return_when=asyncio.FIRST_COMPLETED
     )

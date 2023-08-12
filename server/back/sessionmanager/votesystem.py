@@ -2,7 +2,7 @@ import logging
 import re
 from typing import Any, Callable, Coroutine, Match, Optional, Tuple
 
-import redis
+import redis.asyncio as redis
 from fastapi import HTTPException
 from starlette import status as httpstatus
 

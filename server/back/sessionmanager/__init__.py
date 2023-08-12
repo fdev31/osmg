@@ -3,7 +3,7 @@ import logging
 import time
 from typing import Any
 
-import redis
+import redis.asyncio as redis
 from fastapi import BackgroundTasks, FastAPI, HTTPException
 from starlette import status as httpstatus
 
