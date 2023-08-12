@@ -5,7 +5,7 @@ __all__ = ["GameInterface", "Events"]
 from enum import Enum
 from typing import Any, Dict, List, Optional, Set
 
-from redis import Redis
+from redis.asyncio import Redis
 
 from ..models import Player, PlayerIdentifier, Session
 

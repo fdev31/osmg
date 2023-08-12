@@ -4,7 +4,7 @@ import logging
 import random
 from typing import Any, List, Optional
 
-import redis
+import redis.asyncio as redis
 from fastapi import HTTPException
 from starlette import status as httpstatus
 

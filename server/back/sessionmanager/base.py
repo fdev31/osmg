@@ -1,7 +1,7 @@
 import logging
 import time
 
-from redis import Redis
+from redis.asyncio import Redis
 
 from ..globalHandlers import getRedis
 

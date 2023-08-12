@@ -1,6 +1,6 @@
 from typing import Any, Dict
 
-import redis
+import redis.asyncio as redis
 from fastapi import FastAPI
 
 from .globalHandlers import getRedis

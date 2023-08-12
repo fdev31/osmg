@@ -1,8 +1,8 @@
 import logging
 from functools import lru_cache
-from typing import Any, Awaitable, Optional
+from typing import Any, Awaitable, Optional, cast
 
-import redis
+import redis.asyncio as redis
 
 from .utils import ODict, dumps
 
@@ -27,7 +27,10 @@ def getRedis() -> redis.Redis:
 
 
 def getNewRedis() -> redis.Redis:
-    return redis.from_url("redis://" + getConfig().redis_server, decode_responses=True)
+    return cast(
+        redis.Redis,
+        redis.from_url("redis://" + getConfig().redis_server, decode_responses=True),
+    )
 
 
 def setRedis(handler: redis.Redis) -> None:
