@@ -75,7 +75,7 @@ pylint *args='server': fix
     {{venv}}/bin/isort  {{args}}
     {{venv}}/bin/black  {{args}}
     {{venv}}/bin/vulture  {{args}}
-    {{venv}}/bin/mypy {{args}}
+    {{venv}}/bin/mypy --exclude 'pystubs/*' {{args}}
 
 # run in debug or standard mode
 run debug="1": fix
