@@ -234,7 +234,7 @@ class Game(GameInterface):
             stdVar.curPlayer.name: 0,
         }
 
-    @staticmethod
+    @classmethod
     async def playerAdded(_kls, sess: Session, player: Player) -> None:
         await def_playerAdded(sess, player)
 
