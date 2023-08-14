@@ -1,6 +1,9 @@
 #!/bin/sh
 T="."
 D="gate:oag"
+knock prepare 192.168.2.6
 scp -Cr "$T"/server/back $D/server
+knock prepare 192.168.2.6
 scp -Cr "$T"/front $D
+knock prepare 192.168.2.6
 scp -Cr "$T"/{tox.ini,pyproject.toml} $D
