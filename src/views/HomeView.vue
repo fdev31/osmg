@@ -100,7 +100,7 @@ async function start_game(game) {
         ref="avatar"
         noname
         avatar-name="Nick"
-        class="bg-sky-300 bg-opacity-50 w-max rounded-full mx-auto shadow-lg"
+        class="bg-black bg-opacity-50 w-max rounded-full mx-auto shadow-lg"
       />
       <input
         id="username"
